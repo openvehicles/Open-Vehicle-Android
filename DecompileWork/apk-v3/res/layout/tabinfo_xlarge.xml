@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center" android:layout_gravity="top|center" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:layout_gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content">
+        <LinearLayout android:gravity="left" android:id="@id/tabInfoXLLayoutParking" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentLeft="true">
+            <ImageView android:id="@id/tabInfoXLImageParking" android:visibility="visible" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginRight="5.0dip" android:src="@drawable/parking" android:scaleType="fitCenter" />
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ffffffff" android:gravity="center" android:id="@id/tabInfoXLTextParkedTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:text="" />
+        </LinearLayout>
+        <LinearLayout android:gravity="right" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentRight="true">
+            <ImageView android:layout_gravity="bottom" android:id="@id/tabInfoXLImageError" android:visibility="visible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="-6.0dip" android:src="@android:drawable/stat_sys_warning" />
+            <ImageView android:layout_gravity="bottom" android:id="@id/tabInfoXLImageLock" android:visibility="gone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="-5.0dip" android:src="@android:drawable/ic_lock_idle_lock" />
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="right" android:layout_gravity="bottom" android:id="@id/tabInfoXLTextLastUpdated" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+            <ImageView android:layout_gravity="bottom" android:id="@id/tabInfoXLImageSignalRSSI" android:visibility="visible" android:layout_width="25.0dip" android:layout_height="25.0dip" android:layout_marginLeft="5.0dip" android:layout_marginRight="2.0dip" android:layout_marginBottom="-5.0dip" android:src="@drawable/signal_strength_0" android:scaleType="fitCenter" />
+        </LinearLayout>
+    </RelativeLayout>
+    <LinearLayout android:gravity="center" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <TableLayout android:id="@id/tabInfoXLTableVehicleInfo" android:layout_width="240.0dip" android:layout_height="wrap_content">
+            <TableRow android:gravity="bottom|center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.4">
+                <TextView android:textAppearance="?android:textAppearanceLarge" android:gravity="center" android:id="@id/tabInfoXLTextVehicleID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/Loading" />
+            </TableRow>
+            <TableRow android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <ImageView android:id="@id/tabInfoXLImageCar" android:layout_width="fill_parent" android:layout_height="fill_parent" android:src="@drawable/car_roadster_brilliantyellow" android:scaleType="fitCenter" />
+            </TableRow>
+            <TableRow android:gravity="center" android:id="@id/tabInfoXLRowCharger" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                <RelativeLayout android:layout_gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/tabInfoXLImageCharger" android:layout_width="300.0dip" android:layout_height="55.0dip" android:src="@drawable/charger_plug" android:scaleType="fitXY" />
+                    <TextView android:textSize="10.0dip" android:textColor="#ffffffff" android:id="@id/tabInfoXLTextChargeStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="150.0dip" android:layout_marginTop="19.0dip" android:text="70A/220V" android:layout_alignLeft="@id/tabInfoXLImageCharger" android:layout_alignTop="@id/tabInfoXLImageCharger" />
+                    <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ffffffff" android:id="@id/tabInfoXLTextChargeMode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="60.0dip" android:text="STANDARD" android:layout_centerHorizontal="true" />
+                    <com.openvehicles.OVMS.ReversedSeekBar android:id="@id/tabInfoXLSliderChargerControl" android:layout_width="96.0dip" android:layout_height="16.0dip" android:layout_marginLeft="148.0dip" android:layout_marginTop="18.0dip" android:max="100" android:progress="30" android:indeterminate="false" android:indeterminateOnly="false" android:progressDrawable="@drawable/ui_charger_bg" android:thumb="@drawable/charger_button" android:thumbOffset="-8.0dip" android:layout_alignLeft="@id/tabInfoXLImageCharger" android:layout_alignTop="@id/tabInfoXLImageCharger" />
+                </RelativeLayout>
+            </TableRow>
+            <TableRow android:gravity="bottom|center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.5">
+                <RelativeLayout android:layout_gravity="center" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <ImageView android:id="@id/tabInfoXLImageBattery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_000" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                    <ImageView android:id="@id/tabInfoXLImageBatteryChargingOverlay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_coppertops" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                    <ImageView android:id="@id/tabInfoXLImageBatteryOverlay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                    <TextView android:textAppearance="?android:textAppearanceMedium" android:id="@id/tabInfoXLTextSOC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="%" android:layout_centerHorizontal="true" android:layout_centerVertical="true" style="@style/SOCOverlayText" />
+                </RelativeLayout>
+            </TableRow>
+            <TableRow android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                <LinearLayout android:gravity="center" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                    <LinearLayout android:gravity="right|center" android:orientation="vertical" android:paddingRight="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                        <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="top|center" android:id="@id/tabInfoXLTextEstimatedRange" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+                        <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="top|center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Est." />
+                    </LinearLayout>
+                    <View android:background="#40ffffff" android:layout_width="1.0dip" android:layout_height="50.0dip" />
+                    <LinearLayout android:gravity="left|center" android:orientation="vertical" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+                        <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ff91b5ff" android:gravity="top|center" android:id="@id/tabInfoXLTextIdealRange" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+                        <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ff91b5ff" android:gravity="top|center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Ideal" />
+                    </LinearLayout>
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+        <FrameLayout android:layout_width="350.0dip" android:layout_height="350.0dip">
+            <RelativeLayout android:layout_width="wrap_content" android:layout_height="wrap_content">
+                <ImageView android:id="@id/tabInfoXLImageCarOutline" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarChargePortOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline_cp" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarTrunkOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline_tr" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarRightDoorOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline_rd" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarHoodOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline_hd" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarLeftDoorOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/roadster_outline_ld" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarLocked" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/carunlock" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarValetMode" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/carvaleton" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <ImageView android:id="@id/tabInfoXLImageCarHeadlightsON" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/carlights" android:scaleType="fitCenter" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="right" android:id="@id/tabInfoXLTextFLWheel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="35.0dip" android:layout_marginTop="54.0dip" android:text="FL" android:singleLine="false" android:layout_alignTop="@id/tabInfoXLImageCarOutline" android:layout_alignParentLeft="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:id="@id/tabInfoXLTextFRWheel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="260.0dip" android:text="FR" android:singleLine="false" android:layout_alignTop="@id/tabInfoXLTextFLWheel" android:layout_alignParentLeft="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="right" android:id="@id/tabInfoXLTextRLWheel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="66.0dip" android:text="RL" android:singleLine="false" android:layout_alignRight="@id/tabInfoXLTextFLWheel" android:layout_alignBottom="@id/tabInfoXLImageCarOutline" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:id="@id/tabInfoXLTextRRWheel" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="RR" android:singleLine="false" android:layout_alignLeft="@id/tabInfoXLTextFRWheel" android:layout_alignTop="@id/tabInfoXLTextRLWheel" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#fff50000" android:gravity="right" android:id="@id/tabInfoXLTextLeftDoorOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Left Door\nOpen" android:singleLine="false" android:layout_alignTop="@id/tabInfoXLTextRightDoorOpen" android:layout_alignRight="@id/tabInfoXLTextFLWheel" android:layout_alignParentLeft="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#fff50000" android:id="@id/tabInfoXLTextRightDoorOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="88.0dip" android:text="Right Door\nOpen" android:singleLine="false" android:layout_above="@id/tabInfoXLTextRLWheel" android:layout_alignLeft="@id/tabInfoXLTextFRWheel" android:layout_alignParentRight="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#fff50000" android:gravity="right" android:id="@id/tabInfoXLTextChargePortOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="10.0dip" android:text="Charge\nPort Open" android:singleLine="false" android:layout_above="@id/tabInfoXLTextRLWheel" android:layout_alignRight="@id/tabInfoXLTextFLWheel" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#fff50000" android:id="@id/tabInfoXLTextTrunkOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="5.0dip" android:text="Trunk Open" android:singleLine="false" android:layout_alignBottom="@id/tabInfoXLTextChargePortOpen" android:layout_centerHorizontal="true" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#fff50000" android:id="@id/tabInfoXLTextHoodOpen" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hood Open" android:singleLine="false" android:layout_alignParentTop="true" android:layout_centerHorizontal="true" />
+                <TextView android:textAppearance="?android:textAppearanceLarge" android:id="@id/tabInfoXLTextSpeed" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="100.0dip" android:text="0 kph" android:layout_centerHorizontal="true" />
+                <FrameLayout android:id="@id/tabInfoXLHotSpotLeft" android:layout_width="70.0dip" android:layout_height="100.0dip" android:layout_marginLeft="90.0dip" android:layout_marginTop="140.0dip" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                <FrameLayout android:id="@id/tabInfoXLHotSpotRight" android:layout_width="70.0dip" android:layout_height="100.0dip" android:layout_toRightOf="@id/tabInfoXLHotSpotLeft" android:layout_alignTop="@id/tabInfoXLHotSpotLeft" />
+            </RelativeLayout>
+        </FrameLayout>
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:id="@id/tabInfoXLHotSpotTemperatures" android:layout_width="80.0dip" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip" android:layout_weight="1.0">
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="PEM" />
+                <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="center" android:id="@id/tabInfoXLTextPEM" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00°C" />
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip" android:layout_weight="1.0">
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="MOTOR" />
+                <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="center" android:id="@id/tabInfoXLTextMotor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00°C" />
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip" android:layout_weight="1.0">
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="BATTERY" />
+                <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="center" android:id="@id/tabInfoXLTextBattery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00°C" />
+            </LinearLayout>
+            <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="20.0dip" android:layout_weight="1.0">
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="AMBIENT" />
+                <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="center" android:id="@id/tabInfoXLTextAmbient" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="00°C" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <com.google.android.maps.MapView android:id="@id/tabInfoXLMapView" android:clickable="false" android:layout_width="fill_parent" android:layout_height="0.0dip" android:layout_weight="1.0" android:apiKey="0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw" />
+</LinearLayout>

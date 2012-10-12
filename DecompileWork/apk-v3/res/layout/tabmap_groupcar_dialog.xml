@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <Spinner android:id="@id/tabMapGroupDialogSpinnerCarColor" android:layout_width="fill_parent" android:layout_height="80.0dip" />
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="60.0dip">
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="150.0dip" android:layout_height="fill_parent">
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ccffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="SOC" />
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ffffffff" android:id="@id/tabMapGroupDialogTextSOC" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="150.0dip" android:layout_height="fill_parent">
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ccffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Speed" />
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ffffffff" android:id="@id/tabMapGroupDialogTextSpeed" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="60.0dip">
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="150.0dip" android:layout_height="fill_parent">
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ccffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Dir./Alt." />
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ffffffff" android:id="@id/tabMapGroupDialogTextDirection" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+        <LinearLayout android:gravity="center" android:orientation="vertical" android:layout_width="150.0dip" android:layout_height="fill_parent">
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ccffffff" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="GPS" />
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ffffffff" android:id="@id/tabMapGroupDialogTextGPS" android:layout_width="wrap_content" android:layout_height="wrap_content" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

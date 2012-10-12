@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center_vertical" android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="80.0dip" android:layout_marginTop="7.0dip" android:layout_marginBottom="7.0dip"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/tabMapListImageVehicle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" android:src="@drawable/car_roadster_brilliantyellow96x44" />
+    <LinearLayout android:orientation="vertical" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_weight="1.0">
+        <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ffffffff" android:id="@id/tabMapListTextVehicleID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VehicleID" />
+    </LinearLayout>
+    <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="left|center" android:id="@id/tabMapListTextVehicleDetails" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginLeft="10.0dip" android:layout_marginRight="10.0dip" />
+    <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="right|center" android:id="@id/tabMapListDistance" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginRight="10.0dip" android:text="0.20 mi" android:singleLine="true" />
+</LinearLayout>

@@ -1,0 +1,444 @@
+Manifest-Version: 1.0
+Created-By: 1.0 (Android)
+
+Name: res/drawable-hdpi/car_roadster_lightninggreen32x32.png
+SHA1-Digest: zRvCP3tqFzvKSIgMqPC3re45v2Q=
+
+Name: res/drawable-hdpi/ic_menu_compass.png
+SHA1-Digest: V64LN8afPU6mydrk1vRUW+cINtM=
+
+Name: res/drawable-hdpi/ic_menu_phone_small.png
+SHA1-Digest: wduCooJ1qGngsqjWe1S0Yscjaog=
+
+Name: org/achartengine/image/zoom_out.png
+SHA1-Digest: HWsYDP3/t8o1MVA+fRdTWspICt8=
+
+Name: res/drawable-hdpi/car_roadster_fushionred32x32.png
+SHA1-Digest: oypn8JFVblqGulO0+QPMglcIe58=
+
+Name: res/drawable-hdpi/carlights.png
+SHA1-Digest: azux+yuf8fzYilYBtnpNiUC+zl4=
+
+Name: res/drawable-hdpi/battery_coppertops_widget.png
+SHA1-Digest: KGxbjTNr+Scz15ue9xYNlyL3JZ0=
+
+Name: res/drawable-hdpi/car_roadster_electricblue32x32.png
+SHA1-Digest: v4WfgBsukvA9IgWg0pkYL2w3eu4=
+
+Name: res/drawable-hdpi/car_roadster_glacierblue96x44.png
+SHA1-Digest: XfbKQ/ovzKRvXCWLbY+ff/mbgUE=
+
+Name: res/drawable-hdpi/car_roadster_thundergray96x44.png
+SHA1-Digest: xr+t8RjkS8qAElzWa0yotsDRsEs=
+
+Name: res/drawable-hdpi/carvaleton.png
+SHA1-Digest: hGcD25DIHtNqaQn0M6XCYmfcNnI=
+
+Name: res/layout/tab_subtabdatautilization.xml
+SHA1-Digest: uQcXjaTQ9QwV9666N5BGakyf3sQ=
+
+Name: res/drawable-hdpi/car_roadster_brilliantyellow32x32.png
+SHA1-Digest: XSVVBbr9hjd7sfzQwF1cm7Eu4sI=
+
+Name: res/layout/carlist_menu.xml
+SHA1-Digest: 600ZnFb328rVH78IzZ102ThPCN4=
+
+Name: res/drawable-hdpi/widget_background.xml
+SHA1-Digest: p4ATK74tl102k+jC3QW2kHCKuZk=
+
+Name: res/drawable-hdpi/car_models_signaturered32x32.png
+SHA1-Digest: XSZS9MruVU3kbqO9BDfM/37wWxE=
+
+Name: res/drawable-hdpi/carlock.png
+SHA1-Digest: SVFXYxm7vr40zQ+g/WktL99tjNs=
+
+Name: res/drawable-hdpi/signal_strength_1.png
+SHA1-Digest: WTbsuNAvxN36pHiWSUBmC950JfQ=
+
+Name: res/drawable-hdpi/car_models_montereyblue32x32.png
+SHA1-Digest: Nt6czYojWUM7i5WMcFMK5+/WexI=
+
+Name: res/layout/careditor.xml
+SHA1-Digest: L8k+64a6Uxh7uCu+5Vpr75alJAM=
+
+Name: res/drawable-hdpi/roadster_outline.png
+SHA1-Digest: 6KCXszbHE6a+sDU2kDFm8f9IoyU=
+
+Name: res/drawable-hdpi/car_models_tiburongrey32x32.png
+SHA1-Digest: AyEyuMzS6Y3AQ/Vs5MDQCtwyr5E=
+
+Name: res/drawable-hdpi/car_roadster_brilliantyellow72x72.png
+SHA1-Digest: 1H+yr7X7yntL1JI6YM1AfsKZ4W8=
+
+Name: res/drawable-hdpi/car_roadster_obsidianblack32x32.png
+SHA1-Digest: l/XjDupkai1mx+RR0E9X9rEJHmg=
+
+Name: res/drawable-hdpi/car_roadster_radiantred32x32.png
+SHA1-Digest: zgtTWAU7CF0L5hcRwus9ZP3R6eg=
+
+Name: res/drawable-hdpi/signal_strength_2.png
+SHA1-Digest: RwlP3okYJw4OvHmTQeDqaTMPRbA=
+
+Name: res/drawable-hdpi/ic_menu_chart.png
+SHA1-Digest: vLI0PzqznMwz9dao91L/bYkAma4=
+
+Name: res/drawable-hdpi/car_models_shastapearlwhite96x44.png
+SHA1-Digest: bia/PWa12hHokXiYwoQeDLkiZ2k=
+
+Name: res/drawable-hdpi/ic_menu_phone.png
+SHA1-Digest: mjtksnLY0nwcLahpy1WCP61m5zk=
+
+Name: res/drawable-hdpi/ic_menu_largetiles.png
+SHA1-Digest: VOsF3NpqYqU+oMN1fGD6jiJjKB8=
+
+Name: res/drawable-hdpi/car_roadster_sterlingsilver96x44.png
+SHA1-Digest: gkmiCnCiqSrDHLefDxF1K/O5qHM=
+
+Name: res/drawable-hdpi/roadster_outline_ld.png
+SHA1-Digest: Qfn/hMUZocJ1SPRuRxcEbQBovbc=
+
+Name: org/achartengine/image/zoom_in.png
+SHA1-Digest: 8BdHj5K0I7rn17mdrqnDMNYpb30=
+
+Name: res/drawable-hdpi/signal_strength_4.png
+SHA1-Digest: 8nWwRp7a7oYuWQEGHushDNe7ruU=
+
+Name: res/layout/widget_1x1.xml
+SHA1-Digest: 2vCcZEK4SSo+79mWbDcdJDPXeYc=
+
+Name: res/drawable-hdpi/parking.png
+SHA1-Digest: 9eBkVK5ejDj/tqIbT1Y/AvrUByw=
+
+Name: res/drawable-hdpi/roadster_outline_hd.png
+SHA1-Digest: EQc/jkNmIs9yoG1QRQOWBZMXH20=
+
+Name: res/xml/widget_4x1.xml
+SHA1-Digest: y/5rm7BuRcApWl2CuRH3A9XTLYQ=
+
+Name: res/layout/tabcareditorcars_listitem.xml
+SHA1-Digest: fbYsVOm+7xMOWwZkIijpHzAIYxw=
+
+Name: res/drawable-hdpi/signal_strength_3.png
+SHA1-Digest: N0PXjWLDbV1nY/QQNkMhrYwq7YA=
+
+Name: res/layout/tabinfo_xlarge.xml
+SHA1-Digest: q425S9sXkWHNV1Es9MdGQL4Dbl4=
+
+Name: res/drawable-hdpi/ic_menu_car_zoom.png
+SHA1-Digest: fnjomD17qreUIYdAH2T6Ht7ZnPo=
+
+Name: res/drawable-hdpi/car_roadster_arcticwhite32x32.png
+SHA1-Digest: 1LkAi8s1y/vvplE3nZ6Omd876nY=
+
+Name: res/drawable-hdpi/charger_plug.png
+SHA1-Digest: WSBXIfihzKzdu+0crNR9CeYJfq8=
+
+Name: res/drawable-hdpi/ic_launcher.png
+SHA1-Digest: Vj/qhxk8ic8FE0/kT6E3vgRJ4mE=
+
+Name: resources.arsc
+SHA1-Digest: FQTa5W1SbxTqsVMvqfJYzsjHHBM=
+
+Name: res/drawable-hdpi/car_roadster_thundergray32x32.png
+SHA1-Digest: qnyoLHnpoPCVEwx4k/RUFUmbh60=
+
+Name: res/drawable-hdpi/battery_000.png
+SHA1-Digest: Cxo9O9MRX0Fcf7mV5TOVyM1uy+A=
+
+Name: AndroidManifest.xml
+SHA1-Digest: DBZAQCZBmlJrM7DBYDw1ihxKfqU=
+
+Name: res/layout-land/tabcar.xml
+SHA1-Digest: p3xnX5rRflfW1/+mAjtU4zWR/MU=
+
+Name: res/drawable-hdpi/roadster_outline_tr.png
+SHA1-Digest: RTYwsx8Bw07LKGjkAlxTeAF8a+4=
+
+Name: res/drawable-hdpi/car_roadster_arcticwhite96x44.png
+SHA1-Digest: Y307iqL03FsUPuRZWf0ctAcvqko=
+
+Name: res/drawable-hdpi/ic_menu_start_conversation.png
+SHA1-Digest: pZkG0Rke3xZESLERTWnLr5FDKbA=
+
+Name: res/drawable-hdpi/ic_menu_checkin.png
+SHA1-Digest: +qvZlzSxHJGkUaGoay5+n+T5Kcg=
+
+Name: res/drawable-hdpi/charger_button.png
+SHA1-Digest: vcdF0j9n1iL/IAzf9BUfTs106Lc=
+
+Name: res/layout/tabcars_listitem.xml
+SHA1-Digest: CthHfsdQi5exB4F57bzMiVhgJdE=
+
+Name: res/drawable-hdpi/appwidget_bg.9.png
+SHA1-Digest: nj5u18uu0S/TcKmTDzeBpkFfAvA=
+
+Name: res/drawable-hdpi/appwidget_dark_bg.9.png
+SHA1-Digest: nycjXy/ksyHRh99w1URCjj/tzGc=
+
+Name: res/drawable-hdpi/car_models_anzabrown32x32.png
+SHA1-Digest: SOzh+1dorRjE4E+DJeoetb1Ye3o=
+
+Name: res/drawable-hdpi/car_roadster_veryorange32x32.png
+SHA1-Digest: S4CXEgkYXa2Rq0G/bHlPHurD3xc=
+
+Name: classes.dex
+SHA1-Digest: pCQ9NKgWgNpjnakn58FcEGytTWM=
+
+Name: res/drawable-hdpi/roadster_outline_ce.png
+SHA1-Digest: 3WmWeuofnDocLrBD//1X/MN51iA=
+
+Name: res/drawable-hdpi/battery_100.png
+SHA1-Digest: yRXQROL0UwuXfvMASH6NzI8EBtE=
+
+Name: res/drawable-hdpi/car_roadster_glacierblue32x32.png
+SHA1-Digest: /JlVBMxz2CIRwtLkZmqw+K5PgKM=
+
+Name: res/drawable-hdpi/charger_bg_label.png
+SHA1-Digest: BMWwJXYjJfMs43FzsAZaltgtyPo=
+
+Name: res/drawable-hdpi/car_roadster_radiantred96x44.png
+SHA1-Digest: v568FVn9EmMHOXJJy7mErO1fqY0=
+
+Name: res/drawable-hdpi/roadster_outline_rd.png
+SHA1-Digest: 62BGl+QdmDID5trn4VDFI7J+Hks=
+
+Name: res/drawable-hdpi/car_models_montereyblue96x44.png
+SHA1-Digest: RleH0vUgWTp9Wj4pNoDjVqKRofc=
+
+Name: res/drawable-hdpi/ic_menu_dialog.png
+SHA1-Digest: 09WDuXohs/tYarsFz4cfEw8h07g=
+
+Name: res/layout/main_menu.xml
+SHA1-Digest: EL4NQnhT9mM0l1W0rSK4SDy+xaM=
+
+Name: res/drawable-hdpi/ic_maps_indicator_current_position.png
+SHA1-Digest: aoiPLAcHaBxczlvBgtrPT/6f/q8=
+
+Name: res/drawable-hdpi/car_roadster_brilliantyellow.png
+SHA1-Digest: eBtpxQSCG8VfmMUXUOLYtrI9g+A=
+
+Name: res/drawable-hdpi/car_roadster_twilightblue96x44.png
+SHA1-Digest: 5IMH57mTofPnwXfA4vui5XwHvNo=
+
+Name: res/drawable-hdpi/car_roadster_jetblack96x44.png
+SHA1-Digest: aqpABvDc56Q5bFQc/g0qF1jIViU=
+
+Name: res/layout/widget_4x1.xml
+SHA1-Digest: HA4bgPXR2pKYL5YcGaxs+hVnWsQ=
+
+Name: res/drawable-hdpi/signal_strength_5.png
+SHA1-Digest: 34FHVuAJrPLXDMXn6ToSIgT2lxM=
+
+Name: res/drawable-hdpi/battery_000_widget.png
+SHA1-Digest: /JZOmtIpl8AwKko1209GFAla3DY=
+
+Name: res/drawable-hdpi/battery_coppertops.png
+SHA1-Digest: tW03dX9OqON4eupQO6IGsGN9zgo=
+
+Name: org/achartengine/image/zoom-1.png
+SHA1-Digest: pgbFWKrA/2/sF0BNcNPxdVbDjVE=
+
+Name: res/drawable-hdpi/car_roadster_lightninggreen96x44.png
+SHA1-Digest: /IJHcIBLwoKzsqwzO5taqcb7S8A=
+
+Name: res/drawable-hdpi/car_roadster_sterlingsilver32x32.png
+SHA1-Digest: wLTDbJCQVOl8Oc+VEJKudnNwzxA=
+
+Name: res/layout/tabmap_groupcar_dialog.xml
+SHA1-Digest: PlNw0faJM3QTjPvhtfyUgB6Az3A=
+
+Name: res/drawable-hdpi/signal_strength_0.png
+SHA1-Digest: BJSnS/z9IekRjv57Svy7w0ykILM=
+
+Name: res/drawable-hdpi/ic_menu_settings.png
+SHA1-Digest: VEbbt/XcTE2JNsF/1hQjhSpfcyo=
+
+Name: res/drawable-hdpi/ic_menu_smalltiles.png
+SHA1-Digest: 0IH6HbfQFOv+LgiveL6EIfc7kBs=
+
+Name: res/drawable-hdpi/ic_menu_notifications.png
+SHA1-Digest: PZ+34nfyhRtx1IiqlwullOBsx7Q=
+
+Name: res/xml/widget_1x1.xml
+SHA1-Digest: e3vh/pW8ajsNQMpqWGwL2cZIpO4=
+
+Name: res/drawable-hdpi/car_roadster_electricblue96x44.png
+SHA1-Digest: 0xGECaMTCqldWrXRJSm/j99c3ZU=
+
+Name: res/drawable-hdpi/roadster_outline_cp.png
+SHA1-Digest: g782fYGz3BiFeAU0yBW78JIijVc=
+
+Name: res/drawable-hdpi/car_roadster_twilightblue32x32.png
+SHA1-Digest: Dzxk39x/sLUntYCen0cfhAeEa5M=
+
+Name: res/layout/tab_subtabnotifications.xml
+SHA1-Digest: DIcN0dUH+Y0GNayVSLP9K0HaNco=
+
+Name: res/drawable-hdpi/car_roadster_jetblack32x32.png
+SHA1-Digest: v+d9hGjwO13FDXac+1J6Jkyiq7U=
+
+Name: res/drawable-hdpi/car_models_catalinawhite96x44.png
+SHA1-Digest: CK/miAbjZiRhd/EsIULiIMcdnxI=
+
+Name: res/layout/tabcar.xml
+SHA1-Digest: 8zzN8mT9p0x3ppSlhP+yCoHFeKA=
+
+Name: res/drawable-hdpi/ic_menu_setting.png
+SHA1-Digest: 0RzvA9QUG0FqUK5qfCukCRFKG6Y=
+
+Name: res/drawable-hdpi/car_models_sierrablack96x44.png
+SHA1-Digest: /DyE90MBsemfmJqb2mygffhiGDs=
+
+Name: res/drawable-hdpi/ic_menu_flag.png
+SHA1-Digest: 3JVkv81VZwcLmSKzcmkCiojFxrY=
+
+Name: res/layout/sendsmsdialog.xml
+SHA1-Digest: QuS/SK5TJyGa6OXKw4D7kk1Njuo=
+
+Name: res/drawable-hdpi/car_models_sansimeonsilver96x44.png
+SHA1-Digest: Wn36VoZOqEJlm/pK0sRezHclUwg=
+
+Name: res/drawable-hdpi/car_models_sequolagreen32x32.png
+SHA1-Digest: fggVP9/XblHZslSAhNDscpYvAdQ=
+
+Name: res/drawable-hdpi/car_direction_arrow_overlay.png
+SHA1-Digest: r9UShpGDtW5sQJOiwXu33eicHBI=
+
+Name: res/layout/main.xml
+SHA1-Digest: q4C7WyPt66iNOBMhhsLOXwtNYMc=
+
+Name: res/drawable-hdpi/car_roadster_racinggreen32x32.png
+SHA1-Digest: qV+2RoxJ6kSaHvOUj906nFDimAk=
+
+Name: res/drawable-hdpi/car_roadster_racinggreen96x44.png
+SHA1-Digest: s4QjZIpsxPLST44wbcpdpnUQHMI=
+
+Name: res/drawable-hdpi/charger_bg.png
+SHA1-Digest: iegfFlL45XSKgaFaiH+sGNvt250=
+
+Name: res/drawable-hdpi/carvaletoff.png
+SHA1-Digest: kc3+7G/u5OHTt25ndGawN6fE5kU=
+
+Name: res/layout/tabsettings.xml
+SHA1-Digest: x+T+gqzC8Xb7wKC341L+W1x53tE=
+
+Name: res/drawable-hdpi/car_roadster_veryorange96x44.png
+SHA1-Digest: SFgJeK+bN+QlKTc5hJFtgZ1AlwA=
+
+Name: res/layout/tabmiscfeatures.xml
+SHA1-Digest: q4C7WyPt66iNOBMhhsLOXwtNYMc=
+
+Name: res/drawable-hdpi/ic_menu_categories.png
+SHA1-Digest: xGnfWPXW4MzXvSlOn2H3XREOcQc=
+
+Name: res/layout/tab_subtabcarsettings_prefs.xml
+SHA1-Digest: ZMIL5/ZHUVW0ux67cb63GkwEX2g=
+
+Name: res/drawable-hdpi/battery_100_widget.png
+SHA1-Digest: 9tYMl0HFXAnf7vki97443Zik1N0=
+
+Name: res/drawable-hdpi/car_roadster_brilliantyellow96x44.png
+SHA1-Digest: e9Z9uFVhYVuG7VjC62+Fa20DORU=
+
+Name: res/drawable-hdpi/ic_menu_flash.png
+SHA1-Digest: 9A5BwsBY8WowSi2iu1u9Surr4o0=
+
+Name: res/drawable-hdpi/car_models_tiburongrey96x44.png
+SHA1-Digest: iyx0ZLnsShah41g7TW7AliE7NPs=
+
+Name: res/layout/tab_subtabcarsettings.xml
+SHA1-Digest: wF26ZYNjalgpv1MC+GITVbmYjps=
+
+Name: res/drawable-ldpi/ic_launcher.png
+SHA1-Digest: i7vxaosoiS+9HzKB7ZgIsXMYRLY=
+
+Name: res/drawable-hdpi/car_models_sansimeonsilver32x32.png
+SHA1-Digest: PfRFXOXUbN0fRRxUSAn7nYYS83s=
+
+Name: res/layout/tab_subtabnotifications_listitem.xml
+SHA1-Digest: F77iqQ5nb50cQromcoh7mkpE6lc=
+
+Name: res/drawable-hdpi/carunlock.png
+SHA1-Digest: u6JW1MX6tTPyRXB5N5Kgn/Qqh84=
+
+Name: res/drawable-hdpi/ic_menu_more3.png
+SHA1-Digest: qlGhI5WxKcMYF0I8K0bFIsr/i3g=
+
+Name: res/drawable-hdpi/ui_charger_bg.xml
+SHA1-Digest: nJRFMkGaViEFUluwLsZj7XzNzU8=
+
+Name: res/drawable-hdpi/car_models_sequolagreen96x44.png
+SHA1-Digest: JLkEAPLGqwrM1UBv/8jbUZDL3kw=
+
+Name: res/drawable-hdpi/car_models_sierrablack32x32.png
+SHA1-Digest: Y28tk6P1EDajN6iQo7TdAXawzdE=
+
+Name: res/drawable-hdpi/car_models_signaturered96x44.png
+SHA1-Digest: yc1csapGFEv7yPtbDxRpje/qgc0=
+
+Name: res/layout/tabmap_groupcar_listitem.xml
+SHA1-Digest: riFyMGtnim0xW9pMvryCMFVcy6Y=
+
+Name: res/layout-land/tabinfo.xml
+SHA1-Digest: AgAlRQcaz8/wMJgMbYPe9Cp0Zxs=
+
+Name: res/drawable-hdpi/car_models_anzabrown96x44.png
+SHA1-Digest: QdJgNGN+Thkn4HTnRCZ3291jCnU=
+
+Name: res/drawable-hdpi/ic_menu_refresh.png
+SHA1-Digest: ZJ0AmedPUUWkuID7iLQqlJtbOoc=
+
+Name: res/drawable-hdpi/ic_menu_phone_zoom.png
+SHA1-Digest: zXkhbUdmJVhxOxSYC4gzRSUw0+c=
+
+Name: res/drawable-hdpi/ic_menu_equalizer.png
+SHA1-Digest: 2wkLMwqybuPrjDGOuEh0KMvZIyw=
+
+Name: res/layout/tabcars.xml
+SHA1-Digest: koQ7581rH3+MbMecTJO94m4YTCo=
+
+Name: res/drawable-hdpi/ic_menu_car.png
+SHA1-Digest: h2PofHbTJYUaG+4PxNjln+x++CI=
+
+Name: res/drawable-hdpi/car_models_shastapearlwhite32x32.png
+SHA1-Digest: tcwkwE2OtEZoGUDmlzFs93S0yco=
+
+Name: res/drawable-hdpi/car_roadster_brilliantyellow96x96.png
+SHA1-Digest: nA97XjwyQTbVzIjH0sgV91oNoiI=
+
+Name: res/drawable-hdpi/ic_menu_database.png
+SHA1-Digest: unnZCn4RGwvkOZTKNb5nSSLzaww=
+
+Name: res/drawable-hdpi/car_models_catalinawhite32x32.png
+SHA1-Digest: in7mgG3LMVVaXZHW+KW/uF+Nv0U=
+
+Name: res/layout/tabmap.xml
+SHA1-Digest: 6pwq01C6ACVMHGDSoVPTTEym54c=
+
+Name: res/drawable-mdpi/ic_launcher.png
+SHA1-Digest: 7Ft/Rirt+l/JRX2KjDREScdbCZk=
+
+Name: res/drawable-hdpi/roadster_outline_cu.png
+SHA1-Digest: q7cUDl9JQmXWdkwRxkCEkEjW4qs=
+
+Name: res/drawable-hdpi/car_roadster_obsidianblack96x44.png
+SHA1-Digest: cpKajuKr3IjbNBAPBgbPj6PY9QY=
+
+Name: res/drawable-hdpi/car_roadster_fushionred96x44.png
+SHA1-Digest: v6xSl/+lQedFmcws0eWrZ+/WP9k=
+
+Name: res/layout/tabinfo.xml
+SHA1-Digest: df1Jh5rfYAx0H+cgKlU7pQVHwL8=
+
+Name: res/drawable-hdpi/ovms_logo_72.png
+SHA1-Digest: jG3tCsQYzqLrjqPWYOAE+zy76Q4=
+
+Name: res/drawable-hdpi/ic_menu_globe.png
+SHA1-Digest: iWo2OUXHWkBb/J4W2CIeqRCFbsM=
+
+Name: res/drawable-hdpi/ic_menu_exit.png
+SHA1-Digest: Vs7bRVN98iEmULObJ8taumu3nP8=
+
+Name: res/drawable-hdpi/ic_menu_about.png
+SHA1-Digest: UmgWE6HOPi7vZEgnDmkHqSm+7Vo=
+

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/relativeLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <com.google.android.maps.MapView android:id="@id/mapview" android:clickable="true" android:layout_width="fill_parent" android:layout_height="fill_parent" android:apiKey="[INSERT API KEY]"
+      xmlns:android="http://schemas.android.com/apk/res/android" />
+    <ImageButton android:id="@id/btnCenterMap" android:background="@null" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@android:drawable/ic_menu_mylocation" android:scaleType="fitXY" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+</RelativeLayout>

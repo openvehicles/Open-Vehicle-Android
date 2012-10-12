@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:gravity="center" android:orientation="horizontal" android:id="@id/widget41" android:background="@drawable/appwidget_bg" android:layout_width="fill_parent" android:layout_height="72.0dip" android:layout_marginLeft="4.0dip" android:layout_marginRight="4.0dip"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <ImageView android:id="@id/widget41VehicleImage" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip" android:src="@drawable/car_roadster_brilliantyellow72x72" />
+    <LinearLayout android:gravity="top|left|center" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="wrap_content">
+        <LinearLayout android:gravity="bottom|left|center" android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="fill_parent">
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ff000000" android:id="@id/widget41VehicleID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="OVMS" style="@style/WidgetShadowedText" />
+            <LinearLayout android:gravity="bottom|left|center" android:orientation="horizontal" android:layout_width="wrap_content" android:layout_height="fill_parent" android:layout_marginLeft="3.0dip">
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#cc000000" android:gravity="bottom|left|center" android:id="@id/widget41EstimatedRange" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="Est. / " android:singleLine="false" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ff3376ff" android:gravity="bottom|left|center" android:id="@id/widget41IdealRange" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="Ideal" android:singleLine="false" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#99000000" android:gravity="bottom|left|center" android:id="@id/widget41DistanceUnit" android:layout_width="wrap_content" android:layout_height="fill_parent" android:text="" android:singleLine="false" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout android:gravity="right|center" android:orientation="vertical" android:layout_width="0.0dip" android:layout_height="wrap_content" android:layout_weight="1.0">
+        <LinearLayout android:gravity="bottom|right|center" android:orientation="horizontal" android:id="@id/widget41LayoutParking" android:visibility="visible" android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_marginRight="5.0dip">
+            <Chronometer android:textAppearance="?android:textAppearanceSmall" android:textColor="#ee000000" android:gravity="right" android:id="@id/widget41ChronoParkedTime" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="1.0dip" android:layout_marginRight="5.0dip" android:singleLine="true" />
+            <ImageView android:id="@id/widget41ImageParking" android:layout_width="20.0dip" android:layout_height="20.0dip" android:layout_marginLeft="1.0dip" android:layout_marginTop="1.0dip" android:layout_marginRight="5.0dip" android:src="@drawable/parking" android:scaleType="fitCenter" />
+        </LinearLayout>
+        <RelativeLayout android:layout_gravity="center" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginLeft="5.0dip" android:layout_marginRight="5.0dip">
+            <ImageView android:id="@id/widget41ImageBattery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_000_widget" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+            <ImageView android:id="@id/widget41ImageBatteryChargingOverlay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_coppertops_widget" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+            <ImageView android:id="@id/widget41ImageBatteryOverlay" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_100_widget" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+            <TextView android:textAppearance="?android:textAppearanceSmall" android:textColor="#ffffffff" android:id="@id/widget41SOC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="100%" android:layout_centerInParent="true" style="@style/WidgetShadowedText" />
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

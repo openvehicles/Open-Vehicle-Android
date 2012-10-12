@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:id="@id/relativeLayoutMaster" android:layout_width="fill_parent" android:layout_height="fill_parent"
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <TableLayout android:id="@id/tableLayout1" android:layout_width="fill_parent" android:layout_height="fill_parent">
+        <TableRow android:gravity="right" android:id="@id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <LinearLayout android:gravity="right" android:id="@id/linearLayout1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <ImageView android:layout_gravity="bottom" android:id="@id/imgError" android:visibility="visible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="-5.0dip" android:src="@android:drawable/stat_sys_warning" />
+                <ImageView android:layout_gravity="bottom" android:id="@id/imgLock" android:visibility="invisible" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginBottom="-5.0dip" android:src="@android:drawable/ic_lock_idle_lock" />
+                <TextView android:textAppearance="?android:textAppearanceSmall" android:gravity="right" android:layout_gravity="bottom" android:id="@id/textLastUpdated" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+            </LinearLayout>
+        </TableRow>
+        <TableRow android:gravity="bottom|center" android:id="@id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.6">
+            <TextView android:textAppearance="?android:textAppearanceLarge" android:gravity="center" android:id="@id/textVehicleID" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/Loading" />
+        </TableRow>
+        <TableRow android:gravity="center" android:id="@id/tableRow4" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <ImageView android:id="@id/imgCar" android:layout_width="fill_parent" android:layout_height="fill_parent" android:src="@drawable/car_roadster_brilliantyellow" android:scaleType="center" />
+        </TableRow>
+        <TableRow android:gravity="bottom|center" android:id="@id/tableRow5" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.8">
+            <RelativeLayout android:layout_gravity="center" android:id="@id/relativeLayout1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <ImageView android:id="@id/imgBattery" android:layout_width="wrap_content" android:layout_height="wrap_content" android:src="@drawable/battery_000" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                <ImageView android:id="@id/imgBatteryOverlay" android:background="@drawable/battery_100" android:layout_width="wrap_content" android:layout_height="wrap_content" android:scaleType="fitStart" android:layout_alignParentLeft="true" android:layout_alignParentTop="true" />
+                <TextView android:textAppearance="?android:textAppearanceMedium" android:id="@id/textSOC" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:layout_centerHorizontal="true" android:layout_centerVertical="true" style="@style/SOCOverlayText" />
+            </RelativeLayout>
+        </TableRow>
+        <TableRow android:gravity="center" android:id="@id/tableRow7" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="0.5">
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:textColor="#ff679fd2" android:gravity="center" android:id="@id/textChargeStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" />
+        </TableRow>
+        <TableRow android:gravity="top|center" android:id="@id/tableRow6" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_weight="1.0">
+            <TextView android:textAppearance="?android:textAppearanceMedium" android:gravity="top|center" android:id="@id/textRange" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="" android:layout_weight="1.3" />
+        </TableRow>
+    </TableLayout>
+</RelativeLayout>

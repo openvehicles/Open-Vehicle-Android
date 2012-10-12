@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list
+  xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@android:id/progress">
+        <bitmap android:gravity="fill_vertical" android:src="@drawable/charger_bg_label"
+          xmlns:android="http://schemas.android.com/apk/res/android" />
+    </item>
+    <item android:id="@android:id/background">
+        <clip>
+            <shape>
+                <solid android:color="#00000000" />
+            </shape>
+        </clip>
+    </item>
+</layer-list>
