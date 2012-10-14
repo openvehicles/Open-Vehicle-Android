@@ -1,701 +1,595 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-
 package com.openvehicles.OVMS;
 
-import android.app.*;
-import android.content.DialogInterface;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.graphics.BitmapFactory;
-import android.os.*;
-import android.util.Log;
-import android.view.View;
-import android.widget.*;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-// Referenced classes of package com.openvehicles.OVMS:
-//            CarData, OVMSActivity, ServerCommands
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 public class TabCar extends Activity
 {
+	public int CurrentScreenOrientation;
+	private CarData data;
+	private ProgressDialog downloadProgress;
+	private ServerCommands.CarLayoutDownloader downloadTask;
+	private Handler handler = new Handler()
+	{
+		public void handleMessage(Message paramAnonymousMessage)
+		{
+			TabCar.this.updateLastUpdatedView();
+			((TextView)TabCar.this.findViewById(2131296281)).setText(TabCar.this.data.VehicleID);
+			TextView localTextView1 = (TextView)TabCar.this.findViewById(2131296299);
+			int i;
+			if (TabCar.this.data.Data_LeftDoorOpen)
+				i = 0;
+			label132: label528: label2067: 
+				while (true)
+				{
+					localTextView1.setVisibility(i);
+					TextView localTextView2 = (TextView)TabCar.this.findViewById(2131296300);
+					int j;
+					label95: int k;
+					int m;
+					label169: int n;
+					label206: String str2;
+					label288: String str1;
+					label303: int i1;
+					label354: int i2;
+					label441: int i3;
+					int i4;
+					label628: int i5;
+					label702: int i6;
+					label742: int i7;
+					label832: int i8;
+					label872: int i9;
+					label962: int i10;
+					label1002: int i11;
+					label1092: int i12;
+					label1132: label1279: int i13;
+					label1309: int i14;
+					label1346: int i15;
+					label1383: int i16;
+					int i17;
+					label1457: int i18;
+					label1495: int i19;
+					label1533: int i20;
+					label1570: int i21;
+					label1607: ImageView localImageView11;
+					if (TabCar.this.data.Data_RightDoorOpen)
+					{
+						j = 0;
+						localTextView2.setVisibility(j);
+						TextView localTextView3 = (TextView)TabCar.this.findViewById(2131296301);
+						if (!TabCar.this.data.Data_ChargePortOpen)
+							break label1703;
+						k = 0;
+						localTextView3.setVisibility(k);
+						TextView localTextView4 = (TextView)TabCar.this.findViewById(2131296303);
+						if (!TabCar.this.data.Data_BonnetOpen)
+							break label1709;
+						m = 0;
+						localTextView4.setVisibility(m);
+						TextView localTextView5 = (TextView)TabCar.this.findViewById(2131296302);
+						if (!TabCar.this.data.Data_TrunkOpen)
+							break label1715;
+						n = 0;
+						localTextView5.setVisibility(n);
+						TextView localTextView6 = (TextView)TabCar.this.findViewById(2131296304);
+						if (TabCar.this.data.Data_Speed <= 0.0D)
+							break label1729;
+						Object[] arrayOfObject11 = new Object[2];
+						arrayOfObject11[0] = Integer.valueOf((int)TabCar.this.data.Data_Speed);
+						if (!TabCar.this.data.Data_DistanceUnit.equals("K"))
+							break label1721;
+						str2 = "kph";
+						arrayOfObject11[1] = str2;
+						str1 = String.format("%d %s", arrayOfObject11);
+						localTextView6.setText(str1);
+						TextView localTextView7 = (TextView)TabCar.this.findViewById(2131296308);
+						if ((TabCar.this.data.Data_CarPoweredON) || (TabCar.this.data.Data_CoolingPumpON_DoorState3))
+							break label1737;
+						i1 = -12303292;
+						localTextView7.setTextColor(i1);
+						Object[] arrayOfObject1 = new Object[1];
+						arrayOfObject1[0] = Integer.valueOf((int)TabCar.this.data.Data_TemperaturePEM);
+						localTextView7.setText(String.format("%d¡C", arrayOfObject1));
+						TextView localTextView8 = (TextView)TabCar.this.findViewById(2131296309);
+						if ((TabCar.this.data.Data_CarPoweredON) || (TabCar.this.data.Data_CoolingPumpON_DoorState3))
+							break label1744;
+						i2 = -12303292;
+						localTextView8.setTextColor(i2);
+						Object[] arrayOfObject2 = new Object[1];
+						arrayOfObject2[0] = Integer.valueOf((int)TabCar.this.data.Data_TemperatureMotor);
+						localTextView8.setText(String.format("%d¡C", arrayOfObject2));
+						TextView localTextView9 = (TextView)TabCar.this.findViewById(2131296310);
+						if ((TabCar.this.data.Data_CarPoweredON) || (TabCar.this.data.Data_CoolingPumpON_DoorState3))
+							break label1751;
+						i3 = -12303292;
+						localTextView9.setTextColor(i3);
+						Object[] arrayOfObject3 = new Object[1];
+						arrayOfObject3[0] = Integer.valueOf((int)TabCar.this.data.Data_TemperatureBattery);
+						localTextView9.setText(String.format("%d¡C", arrayOfObject3));
+						TextView localTextView10 = (TextView)TabCar.this.findViewById(2131296311);
+						if ((!TabCar.this.data.Data_AmbientTemperatureDataStale) && ((TabCar.this.data.Data_CarPoweredON) || (TabCar.this.data.Data_CoolingPumpON_DoorState3)))
+							break label1758;
+						i4 = -12303292;
+						localTextView10.setTextColor(i4);
+						Object[] arrayOfObject4 = new Object[1];
+						arrayOfObject4[0] = Integer.valueOf((int)TabCar.this.data.Data_TemperatureAmbient);
+						localTextView10.setText(String.format("%d¡C", arrayOfObject4));
+						TextView localTextView11 = (TextView)TabCar.this.findViewById(2131296295);
+						if (!TabCar.this.data.Data_TPMSDataStale)
+							break label1765;
+						i5 = -12303292;
+						localTextView11.setTextColor(i5);
+						if ((TabCar.this.data.Data_FLWheelPressure == 0.0D) && (TabCar.this.data.Data_FLWheelTemperature == 0.0D))
+							break label1772;
+						i6 = 0;
+						localTextView11.setVisibility(i6);
+						Object[] arrayOfObject5 = new Object[2];
+						arrayOfObject5[0] = Double.valueOf(TabCar.this.data.Data_FLWheelPressure);
+						arrayOfObject5[1] = Double.valueOf(TabCar.this.data.Data_FLWheelTemperature);
+						localTextView11.setText(String.format("%.1fpsi\n%.0f¡C", arrayOfObject5));
+						TextView localTextView12 = (TextView)TabCar.this.findViewById(2131296296);
+						if (!TabCar.this.data.Data_TPMSDataStale)
+							break label1778;
+						i7 = -12303292;
+						localTextView12.setTextColor(i7);
+						if ((TabCar.this.data.Data_FRWheelPressure == 0.0D) && (TabCar.this.data.Data_FRWheelTemperature == 0.0D))
+							break label1785;
+						i8 = 0;
+						localTextView12.setVisibility(i8);
+						Object[] arrayOfObject6 = new Object[2];
+						arrayOfObject6[0] = Double.valueOf(TabCar.this.data.Data_FRWheelPressure);
+						arrayOfObject6[1] = Double.valueOf(TabCar.this.data.Data_FRWheelTemperature);
+						localTextView12.setText(String.format("%.1fpsi\n%.0f¡C", arrayOfObject6));
+						TextView localTextView13 = (TextView)TabCar.this.findViewById(2131296297);
+						if (!TabCar.this.data.Data_TPMSDataStale)
+							break label1791;
+						i9 = -12303292;
+						localTextView13.setTextColor(i9);
+						if ((TabCar.this.data.Data_RLWheelPressure == 0.0D) && (TabCar.this.data.Data_RLWheelTemperature == 0.0D))
+							break label1798;
+						i10 = 0;
+						localTextView13.setVisibility(i10);
+						Object[] arrayOfObject7 = new Object[2];
+						arrayOfObject7[0] = Double.valueOf(TabCar.this.data.Data_RLWheelPressure);
+						arrayOfObject7[1] = Double.valueOf(TabCar.this.data.Data_RLWheelTemperature);
+						localTextView13.setText(String.format("%.1fpsi\n%.0f¡C", arrayOfObject7));
+						TextView localTextView14 = (TextView)TabCar.this.findViewById(2131296298);
+						if (!TabCar.this.data.Data_TPMSDataStale)
+							break label1804;
+						i11 = -12303292;
+						localTextView14.setTextColor(i11);
+						if ((TabCar.this.data.Data_RRWheelPressure == 0.0D) && (TabCar.this.data.Data_RRWheelTemperature == 0.0D))
+							break label1811;
+						i12 = 0;
+						localTextView14.setVisibility(i12);
+						Object[] arrayOfObject8 = new Object[2];
+						arrayOfObject8[0] = Double.valueOf(TabCar.this.data.Data_RRWheelPressure);
+						arrayOfObject8[1] = Double.valueOf(TabCar.this.data.Data_RRWheelTemperature);
+						localTextView14.setText(String.format("%.1fpsi\n%.0f¡C", arrayOfObject8));
+						ImageView localImageView1 = (ImageView)TabCar.this.findViewById(2131296286);
+						StringBuilder localStringBuilder1 = new StringBuilder(String.valueOf(TabCar.this.getCacheDir().getAbsolutePath()));
+						Object[] arrayOfObject9 = new Object[1];
+						arrayOfObject9[0] = TabCar.this.data.VehicleImageDrawable;
+						Bitmap localBitmap = BitmapFactory.decodeFile(String.format("/ol_%s.png", arrayOfObject9));
+						if (localBitmap == null)
+							break label1817;
+						localImageView1.setImageBitmap(localBitmap);
+						ImageView localImageView2 = (ImageView)TabCar.this.findViewById(2131296287);
+						if (!TabCar.this.data.Data_ChargePortOpen)
+							break label2016;
+						i13 = 0;
+						localImageView2.setVisibility(i13);
+						ImageView localImageView3 = (ImageView)TabCar.this.findViewById(2131296290);
+						if (!TabCar.this.data.Data_BonnetOpen)
+							break label2023;
+						i14 = 0;
+						localImageView3.setVisibility(i14);
+						ImageView localImageView4 = (ImageView)TabCar.this.findViewById(2131296291);
+						if (!TabCar.this.data.Data_LeftDoorOpen)
+							break label2030;
+						i15 = 0;
+						localImageView4.setVisibility(i15);
+						ImageView localImageView5 = (ImageView)TabCar.this.findViewById(2131296289);
+						if (!TabCar.this.data.Data_RightDoorOpen)
+							break label2037;
+						i16 = 0;
+						localImageView5.setVisibility(i16);
+						ImageView localImageView6 = (ImageView)TabCar.this.findViewById(2131296288);
+						if (!TabCar.this.data.Data_TrunkOpen)
+							break label2044;
+						i17 = 0;
+						localImageView6.setVisibility(i17);
+						ImageView localImageView7 = (ImageView)TabCar.this.findViewById(2131296292);
+						if (!TabCar.this.data.Data_CarLocked)
+							break label2051;
+						i18 = 2130837563;
+						localImageView7.setImageResource(i18);
+						ImageView localImageView8 = (ImageView)TabCar.this.findViewById(2131296293);
+						if (!TabCar.this.data.Data_ValetON)
+							break label2059;
+						i19 = 2130837566;
+						localImageView8.setImageResource(i19);
+						ImageView localImageView9 = (ImageView)TabCar.this.findViewById(2131296294);
+						if (!TabCar.this.data.Data_HeadlightsON)
+							break label2067;
+						i20 = 0;
+						localImageView9.setVisibility(i20);
+						ImageView localImageView10 = (ImageView)TabCar.this.findViewById(2131296283);
+						if (!TabCar.this.data.ParanoidMode)
+							break label2074;
+						i21 = 0;
+						localImageView10.setVisibility(i21);
+						localImageView11 = (ImageView)TabCar.this.findViewById(2131296285);
+					}
+					label1811: label1817: label2074: 
+						try
+					{
+							int i23 = Integer.parseInt(TabCar.this.data.Data_CarModuleGSMSignalLevel);
+							label1656: ImageView localImageView12;
+							if (i23 < 1)
+							{
+								localImageView11.setImageResource(2130837608);
+								localImageView12 = (ImageView)TabCar.this.findViewById(2131296282);
+								if (!TabCar.this.isLoggedIn)
+									break label2164;
+							}
+							label1703: label1709: label1715: label1721: label1729: label1737: label1744: label1751: label1758: label1765: label1772: label1778: label2164: for (int i22 = 8; ; i22 = 0)
+							{
+								localImageView12.setVisibility(i22);
+								return;
+								i = 4;
+								break;
+								j = 4;
+								break label95;
+								k = 4;
+								break label132;
+								m = 4;
+								break label169;
+								n = 4;
+								break label206;
+								str2 = "mph";
+								break label288;
+								str1 = "";
+								break label303;
+								i1 = -1;
+								break label354;
+								i2 = -1;
+								break label441;
+								i3 = -1;
+								break label528;
+								i4 = -1;
+								break label628;
+								i5 = -1;
+								break label702;
+								i6 = 4;
+								break label742;
+								i7 = -1;
+								break label832;
+								label1785: i8 = 4;
+								break label872;
+								label1791: i9 = -1;
+								break label962;
+								i10 = 4;
+								break label1002;
+								i11 = -1;
+								break label1092;
+								i12 = 4;
+								break label1132;
+								StringBuilder localStringBuilder2 = new StringBuilder("** File Not Found: ").append(TabCar.this.getCacheDir().getAbsolutePath());
+								Object[] arrayOfObject10 = new Object[1];
+								arrayOfObject10[0] = TabCar.this.data.VehicleImageDrawable;
+								Log.d("OVMS", String.format("/ol_%s.png", arrayOfObject10));
+								if ((TabCar.this.data.DontAskLayoutDownload) || ((TabCar.this.lastUpdatedDialog != null) && (TabCar.this.lastUpdatedDialog.isShowing())))
+									break label1279;
+								TabCar.this.data.DontAskLayoutDownload = true;
+								AlertDialog.Builder localBuilder = new AlertDialog.Builder(TabCar.this);
+								localBuilder.setMessage("Would you like to download a set of high resolution car images specifically drawn for your car?\n\nThe download is approx. 300KB.\n\nNote: a manual download button is available in the car commands and settings tab.").setTitle("Download Graphics").setCancelable(true).setPositiveButton("Download Now", new DialogInterface.OnClickListener()
+								{
+									public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int)
+									{
+										TabCar.this.downloadLayout();
+										paramAnonymous2DialogInterface.dismiss();
+									}
+								}).setNegativeButton("Later", new DialogInterface.OnClickListener()
+								{
+									public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int)
+									{
+										paramAnonymous2DialogInterface.dismiss();
+									}
+								});
+								TabCar.this.lastUpdatedDialog = localBuilder.create();
+								TabCar.this.lastUpdatedDialog.show();
+								break label1279;
+								i13 = 8;
+								break label1309;
+								i14 = 8;
+								break label1346;
+								i15 = 8;
+								break label1383;
+								label2037: i16 = 8;
+								break label1420;
+								label2044: i17 = 8;
+								break label1457;
+								i18 = 2130837564;
+								break label1495;
+								i19 = 2130837565;
+								break label1533;
+								i20 = 8;
+								break label1570;
+								i21 = 8;
+								break label1607;
+								if (i23 < 7)
+								{
+									localImageView11.setImageResource(2130837609);
+									break label1656;
+								}
+								if (i23 < 14)
+								{
+									localImageView11.setImageResource(2130837610);
+									break label1656;
+								}
+								if (i23 < 21)
+								{
+									localImageView11.setImageResource(2130837611);
+									break label1656;
+								}
+								if (i23 < 28)
+								{
+									localImageView11.setImageResource(2130837612);
+									break label1656;
+								}
+								localImageView11.setImageResource(2130837613);
+								break label1656;
+							}
+					}
+					catch (Exception localException)
+					{
+						label2016: label2023: label2030: break label1656;
+					}
+				}
+		}
+	};
+	private boolean isLoggedIn;
+	private Runnable lastUpdateTimer = new Runnable()
+	{
+		public void run()
+		{
+			TabCar.this.updateLastUpdatedView();
+			TabCar.this.lastUpdateTimerHandler.postDelayed(TabCar.this.lastUpdateTimer, 5000L);
+		}
+	};
+	private Handler lastUpdateTimerHandler = new Handler();
+	private AlertDialog lastUpdatedDialog;
+	private Handler orientationChangedHandler = new Handler()
+	{
+		public void handleMessage(Message paramAnonymousMessage)
+		{
+			TabCar.this.setContentView(2130903050);
+			TabCar.this.CurrentScreenOrientation = TabCar.this.getResources().getConfiguration().orientation;
+			TabCar.this.initUI();
+		}
+	};
 
-    public TabCar()
-    {
-        lastUpdateTimerHandler = new Handler();
-        lastUpdateTimer = new Runnable() {
+	private void downloadLayout()
+	{
+		this.downloadProgress = new ProgressDialog(this);
+		this.downloadProgress.setMessage("Downloading Hi-Res Graphics");
+		this.downloadProgress.setIndeterminate(true);
+		this.downloadProgress.setMax(100);
+		this.downloadProgress.setCancelable(true);
+		this.downloadProgress.setProgressStyle(1);
+		this.downloadProgress.show();
+		this.downloadProgress.setOnDismissListener(new DialogInterface.OnDismissListener()
+		{
+			public void onDismiss(DialogInterface paramAnonymousDialogInterface)
+			{
+				StringBuilder localStringBuilder = new StringBuilder(String.valueOf(TabCar.this.getCacheDir().getAbsolutePath()));
+				Object[] arrayOfObject = new Object[1];
+				arrayOfObject[0] = TabCar.this.data.VehicleImageDrawable;
+				Bitmap localBitmap = BitmapFactory.decodeFile(String.format("/ol_%s.png", arrayOfObject));
+				if (localBitmap != null)
+				{
+					((ImageView)TabCar.this.findViewById(2131296286)).setImageBitmap(localBitmap);
+					Toast.makeText(TabCar.this, "Graphics Downloaded", 0).show();
+				}
+				while (true)
+				{
+					return;
+					Toast.makeText(TabCar.this, "Download Failed", 0).show();
+				}
+			}
+		});
+		this.downloadTask = new ServerCommands.CarLayoutDownloader(this.downloadProgress);
+		ServerCommands.CarLayoutDownloader localCarLayoutDownloader = this.downloadTask;
+		String[] arrayOfString = new String[2];
+		arrayOfString[0] = this.data.VehicleImageDrawable;
+		arrayOfString[1] = getCacheDir().getAbsolutePath();
+		localCarLayoutDownloader.execute(arrayOfString);
+	}
 
-            public void run()
-            {
-                updateLastUpdatedView();
-                lastUpdateTimerHandler.postDelayed(lastUpdateTimer, 5000L);
-            }
+	private void initUI()
+	{
+		((TextView)findViewById(2131296284)).setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View paramAnonymousView)
+			{
+				String str = "-";
+				if ((TabCar.this.data != null) && (TabCar.this.data.Data_LastCarUpdate != null))
+					str = new SimpleDateFormat("MMM d, K:mm:ss a").format(TabCar.this.data.Data_LastCarUpdate);
+				AlertDialog.Builder localBuilder = new AlertDialog.Builder(TabCar.this);
+				localBuilder.setMessage("Last update: " + str).setCancelable(true).setPositiveButton("Close", new DialogInterface.OnClickListener()
+				{
+					public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int)
+					{
+						paramAnonymous2DialogInterface.dismiss();
+					}
+				}).setTitle(TabCar.this.data.VehicleID);
+				TabCar.this.lastUpdatedDialog = localBuilder.create();
+				TabCar.this.lastUpdatedDialog.show();
+			}
+		});
+		((FrameLayout)findViewById(2131296305)).setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View paramAnonymousView)
+			{
+				if (TabCar.this.isFinishing())
+					return;
+				TabCar localTabCar = TabCar.this;
+				OVMSActivity localOVMSActivity = (OVMSActivity)TabCar.this.getParent();
+				if (TabCar.this.data.Data_CarLocked);
+				for (boolean bool = false; ; bool = true)
+				{
+					ServerCommands.LockUnlockCar(localTabCar, localOVMSActivity, null, bool);
+					break;
+				}
+			}
+		});
+		((FrameLayout)findViewById(2131296306)).setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View paramAnonymousView)
+			{
+				if (TabCar.this.isFinishing())
+					return;
+				TabCar localTabCar = TabCar.this;
+				OVMSActivity localOVMSActivity = (OVMSActivity)TabCar.this.getParent();
+				if (TabCar.this.data.Data_ValetON);
+				for (boolean bool = false; ; bool = true)
+				{
+					ServerCommands.ValetModeOnOff(localTabCar, localOVMSActivity, null, bool);
+					break;
+				}
+			}
+		});
+		((LinearLayout)findViewById(2131296307)).setOnClickListener(new View.OnClickListener()
+		{
+			public void onClick(View paramAnonymousView)
+			{
+				if ((TabCar.this.isFinishing()) || (TabCar.this.data.Data_CoolingPumpON_DoorState3));
+				while (true)
+				{
+					return;
+					ServerCommands.WakeUp(TabCar.this, (OVMSActivity)TabCar.this.getParent(), null, true);
+				}
+			}
+		});
+	}
 
-            final TabCar this$0;
+	private void updateLastUpdatedView()
+	{
+		if ((this.data == null) || (this.data.Data_LastCarUpdate == null));
+		while (true)
+		{
+			return;
+			TextView localTextView = (TextView)findViewById(2131296284);
+			long l = (new Date().getTime() - this.data.Data_LastCarUpdate.getTime()) / 1000L;
+			if (l < 60L)
+			{
+				localTextView.setText("live");
+			}
+			else
+			{
+				if (l < 3600L)
+				{
+					int k = (int)Math.ceil(l / 60L);
+					Object[] arrayOfObject4 = new Object[2];
+					arrayOfObject4[0] = Integer.valueOf(k);
+					if (k > 1);
+					for (String str4 = "s"; ; str4 = "")
+					{
+						arrayOfObject4[1] = str4;
+						localTextView.setText(String.format("Updated: %d min%s ago", arrayOfObject4));
+						break;
+					}
+				}
+				if (l < 86400L)
+				{
+					int j = (int)Math.ceil(l / 3600L);
+					Object[] arrayOfObject3 = new Object[2];
+					arrayOfObject3[0] = Integer.valueOf(j);
+					if (j > 1);
+					for (String str3 = "s"; ; str3 = "")
+					{
+						arrayOfObject3[1] = str3;
+						localTextView.setText(String.format("Updated: %d hr%s ago", arrayOfObject3));
+						break;
+					}
+				}
+				if (l < 864000L)
+				{
+					int i = (int)Math.ceil(l / 86400L);
+					Object[] arrayOfObject2 = new Object[2];
+					arrayOfObject2[0] = Integer.valueOf(i);
+					if (i > 1);
+					for (String str2 = "s"; ; str2 = "")
+					{
+						arrayOfObject2[1] = str2;
+						localTextView.setText(String.format("Updated: %d day%s ago", arrayOfObject2));
+						break;
+					}
+				}
+				String str1 = getString(2131099651);
+				Object[] arrayOfObject1 = new Object[1];
+				arrayOfObject1[0] = this.data.Data_LastCarUpdate;
+				localTextView.setText(String.format(str1, arrayOfObject1));
+			}
+		}
+	}
 
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-;
-        handler = new Handler() {
+	public void OrientationChanged()
+	{
+		this.orientationChangedHandler.sendEmptyMessage(0);
+	}
 
-            public void handleMessage(Message message)
-            {
-                ImageView imageview10;
-                int k6;
-                updateLastUpdatedView();
-                ((TextView)findViewById(0x7f090019)).setText(data.VehicleID);
-                TextView textview = (TextView)findViewById(0x7f09002b);
-                int i;
-                TextView textview1;
-                int j;
-                TextView textview2;
-                int k;
-                TextView textview3;
-                int l;
-                TextView textview4;
-                int i1;
-                TextView textview5;
-                String s;
-                int j1;
-                int k1;
-                int l1;
-                int i2;
-                int j2;
-                int k2;
-                int l2;
-                int i3;
-                int j3;
-                int k3;
-                int l3;
-                int i4;
-                int j4;
-                int k4;
-                int l4;
-                int i5;
-                int j5;
-                int k5;
-                int l5;
-                int i6;
-                int j6;
-                if(data.Data_LeftDoorOpen)
-                    i = 0;
-                else
-                    i = 4;
-                textview.setVisibility(i);
-                textview1 = (TextView)findViewById(0x7f09002c);
-                if(data.Data_RightDoorOpen)
-                    j = 0;
-                else
-                    j = 4;
-                textview1.setVisibility(j);
-                textview2 = (TextView)findViewById(0x7f09002d);
-                if(data.Data_ChargePortOpen)
-                    k = 0;
-                else
-                    k = 4;
-                textview2.setVisibility(k);
-                textview3 = (TextView)findViewById(0x7f09002f);
-                if(data.Data_BonnetOpen)
-                    l = 0;
-                else
-                    l = 4;
-                textview3.setVisibility(l);
-                textview4 = (TextView)findViewById(0x7f09002e);
-                if(data.Data_TrunkOpen)
-                    i1 = 0;
-                else
-                    i1 = 4;
-                textview4.setVisibility(i1);
-                textview5 = (TextView)findViewById(0x7f090030);
-                if(data.Data_Speed > 0.0D)
-                {
-                    Object aobj10[] = new Object[2];
-                    aobj10[0] = Integer.valueOf((int)data.Data_Speed);
-                    TextView textview6;
-                    Object aobj[];
-                    TextView textview7;
-                    Object aobj1[];
-                    TextView textview8;
-                    Object aobj2[];
-                    TextView textview9;
-                    Object aobj3[];
-                    TextView textview10;
-                    Object aobj4[];
-                    TextView textview11;
-                    Object aobj5[];
-                    TextView textview12;
-                    Object aobj6[];
-                    TextView textview13;
-                    Object aobj7[];
-                    ImageView imageview;
-                    StringBuilder stringbuilder;
-                    Object aobj8[];
-                    android.graphics.Bitmap bitmap;
-                    ImageView imageview1;
-                    ImageView imageview2;
-                    ImageView imageview3;
-                    ImageView imageview4;
-                    ImageView imageview5;
-                    ImageView imageview6;
-                    ImageView imageview7;
-                    ImageView imageview8;
-                    ImageView imageview9;
-                    ImageView imageview11;
-                    String s1;
-                    if(data.Data_DistanceUnit.equals("K"))
-                        s1 = "kph";
-                    else
-                        s1 = "mph";
-                    aobj10[1] = s1;
-                    s = String.format("%d %s", aobj10);
-                } else
-                {
-                    s = "";
-                }
-                textview5.setText(s);
-                textview6 = (TextView)findViewById(0x7f090034);
-                if(!data.Data_CarPoweredON && !data.Data_CoolingPumpON_DoorState3)
-                    j1 = 0xff444444;
-                else
-                    j1 = -1;
-                textview6.setTextColor(j1);
-                aobj = new Object[1];
-                aobj[0] = Integer.valueOf((int)data.Data_TemperaturePEM);
-                textview6.setText(String.format("%d\260C", aobj));
-                textview7 = (TextView)findViewById(0x7f090035);
-                if(!data.Data_CarPoweredON && !data.Data_CoolingPumpON_DoorState3)
-                    k1 = 0xff444444;
-                else
-                    k1 = -1;
-                textview7.setTextColor(k1);
-                aobj1 = new Object[1];
-                aobj1[0] = Integer.valueOf((int)data.Data_TemperatureMotor);
-                textview7.setText(String.format("%d\260C", aobj1));
-                textview8 = (TextView)findViewById(0x7f090036);
-                if(!data.Data_CarPoweredON && !data.Data_CoolingPumpON_DoorState3)
-                    l1 = 0xff444444;
-                else
-                    l1 = -1;
-                textview8.setTextColor(l1);
-                aobj2 = new Object[1];
-                aobj2[0] = Integer.valueOf((int)data.Data_TemperatureBattery);
-                textview8.setText(String.format("%d\260C", aobj2));
-                textview9 = (TextView)findViewById(0x7f090037);
-                if(data.Data_AmbientTemperatureDataStale || !data.Data_CarPoweredON && !data.Data_CoolingPumpON_DoorState3)
-                    i2 = 0xff444444;
-                else
-                    i2 = -1;
-                textview9.setTextColor(i2);
-                aobj3 = new Object[1];
-                aobj3[0] = Integer.valueOf((int)data.Data_TemperatureAmbient);
-                textview9.setText(String.format("%d\260C", aobj3));
-                textview10 = (TextView)findViewById(0x7f090027);
-                if(data.Data_TPMSDataStale)
-                    j2 = 0xff444444;
-                else
-                    j2 = -1;
-                textview10.setTextColor(j2);
-                if(data.Data_FLWheelPressure != 0.0D || data.Data_FLWheelTemperature != 0.0D)
-                    k2 = 0;
-                else
-                    k2 = 4;
-                textview10.setVisibility(k2);
-                aobj4 = new Object[2];
-                aobj4[0] = Double.valueOf(data.Data_FLWheelPressure);
-                aobj4[1] = Double.valueOf(data.Data_FLWheelTemperature);
-                textview10.setText(String.format("%.1fpsi\n%.0f\260C", aobj4));
-                textview11 = (TextView)findViewById(0x7f090028);
-                if(data.Data_TPMSDataStale)
-                    l2 = 0xff444444;
-                else
-                    l2 = -1;
-                textview11.setTextColor(l2);
-                if(data.Data_FRWheelPressure != 0.0D || data.Data_FRWheelTemperature != 0.0D)
-                    i3 = 0;
-                else
-                    i3 = 4;
-                textview11.setVisibility(i3);
-                aobj5 = new Object[2];
-                aobj5[0] = Double.valueOf(data.Data_FRWheelPressure);
-                aobj5[1] = Double.valueOf(data.Data_FRWheelTemperature);
-                textview11.setText(String.format("%.1fpsi\n%.0f\260C", aobj5));
-                textview12 = (TextView)findViewById(0x7f090029);
-                if(data.Data_TPMSDataStale)
-                    j3 = 0xff444444;
-                else
-                    j3 = -1;
-                textview12.setTextColor(j3);
-                if(data.Data_RLWheelPressure != 0.0D || data.Data_RLWheelTemperature != 0.0D)
-                    k3 = 0;
-                else
-                    k3 = 4;
-                textview12.setVisibility(k3);
-                aobj6 = new Object[2];
-                aobj6[0] = Double.valueOf(data.Data_RLWheelPressure);
-                aobj6[1] = Double.valueOf(data.Data_RLWheelTemperature);
-                textview12.setText(String.format("%.1fpsi\n%.0f\260C", aobj6));
-                textview13 = (TextView)findViewById(0x7f09002a);
-                if(data.Data_TPMSDataStale)
-                    l3 = 0xff444444;
-                else
-                    l3 = -1;
-                textview13.setTextColor(l3);
-                if(data.Data_RRWheelPressure != 0.0D || data.Data_RRWheelTemperature != 0.0D)
-                    i4 = 0;
-                else
-                    i4 = 4;
-                textview13.setVisibility(i4);
-                aobj7 = new Object[2];
-                aobj7[0] = Double.valueOf(data.Data_RRWheelPressure);
-                aobj7[1] = Double.valueOf(data.Data_RRWheelTemperature);
-                textview13.setText(String.format("%.1fpsi\n%.0f\260C", aobj7));
-                imageview = (ImageView)findViewById(0x7f09001e);
-                stringbuilder = new StringBuilder(String.valueOf(getCacheDir().getAbsolutePath()));
-                aobj8 = new Object[1];
-                aobj8[0] = data.VehicleImageDrawable;
-                bitmap = BitmapFactory.decodeFile(stringbuilder.append(String.format("/ol_%s.png", aobj8)).toString());
-                if(bitmap != null)
-                {
-                    imageview.setImageBitmap(bitmap);
-                } else
-                {
-                    StringBuilder stringbuilder1 = (new StringBuilder("** File Not Found: ")).append(getCacheDir().getAbsolutePath());
-                    Object aobj9[] = new Object[1];
-                    aobj9[0] = data.VehicleImageDrawable;
-                    Log.d("OVMS", stringbuilder1.append(String.format("/ol_%s.png", aobj9)).toString());
-                    if(!data.DontAskLayoutDownload && (lastUpdatedDialog == null || !lastUpdatedDialog.isShowing()))
-                    {
-                        data.DontAskLayoutDownload = true;
-                        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(TabCar.this);
-                        builder.setMessage("Would you like to download a set of high resolution car images specifically drawn for your car?\n\nThe download is approx. 300KB.\n\nNote: a manual download button is available in the car commands and settings tab.").setTitle("Download Graphics").setCancelable(true).setPositiveButton("Download Now", new android.content.DialogInterface.OnClickListener() {
+	public void Refresh(CarData paramCarData, boolean paramBoolean)
+	{
+		Log.d("Tab", "TabCar Refresh");
+		this.data = paramCarData;
+		this.isLoggedIn = paramBoolean;
+		this.handler.sendEmptyMessage(0);
+	}
 
-                            public void onClick(DialogInterface dialoginterface, int l6)
-                            {
-                                downloadLayout();
-                                dialoginterface.dismiss();
-                            }
+	public void onCreate(Bundle paramBundle)
+	{
+		super.onCreate(paramBundle);
+		setContentView(2130903050);
+		initUI();
+	}
 
-                            final _cls2 this$1;
+	protected void onPause()
+	{
+		super.onPause();
+		try
+		{
+			if ((this.lastUpdatedDialog != null) && (this.lastUpdatedDialog.isShowing()))
+				this.lastUpdatedDialog.dismiss();
+			label28: this.lastUpdateTimerHandler.removeCallbacks(this.lastUpdateTimer);
+			return;
+		}
+		catch (Exception localException)
+		{
+			break label28;
+		}
+	}
 
-                    
-                    {
-                        this$1 = _cls2.this;
-                        super();
-                    }
-                        }
-).setNegativeButton("Later", new android.content.DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialoginterface, int l6)
-                            {
-                                dialoginterface.dismiss();
-                            }
-
-                            final _cls2 this$1;
-
-                    
-                    {
-                        this$1 = _cls2.this;
-                        super();
-                    }
-                        }
-);
-                        lastUpdatedDialog = builder.create();
-                        lastUpdatedDialog.show();
-                    }
-                }
-                imageview1 = (ImageView)findViewById(0x7f09001f);
-                if(data.Data_ChargePortOpen)
-                    j4 = 0;
-                else
-                    j4 = 8;
-                imageview1.setVisibility(j4);
-                imageview2 = (ImageView)findViewById(0x7f090022);
-                if(data.Data_BonnetOpen)
-                    k4 = 0;
-                else
-                    k4 = 8;
-                imageview2.setVisibility(k4);
-                imageview3 = (ImageView)findViewById(0x7f090023);
-                if(data.Data_LeftDoorOpen)
-                    l4 = 0;
-                else
-                    l4 = 8;
-                imageview3.setVisibility(l4);
-                imageview4 = (ImageView)findViewById(0x7f090021);
-                if(data.Data_RightDoorOpen)
-                    i5 = 0;
-                else
-                    i5 = 8;
-                imageview4.setVisibility(i5);
-                imageview5 = (ImageView)findViewById(0x7f090020);
-                if(data.Data_TrunkOpen)
-                    j5 = 0;
-                else
-                    j5 = 8;
-                imageview5.setVisibility(j5);
-                imageview6 = (ImageView)findViewById(0x7f090024);
-                if(data.Data_CarLocked)
-                    k5 = 0x7f02003b;
-                else
-                    k5 = 0x7f02003c;
-                imageview6.setImageResource(k5);
-                imageview7 = (ImageView)findViewById(0x7f090025);
-                if(data.Data_ValetON)
-                    l5 = 0x7f02003e;
-                else
-                    l5 = 0x7f02003d;
-                imageview7.setImageResource(l5);
-                imageview8 = (ImageView)findViewById(0x7f090026);
-                if(data.Data_HeadlightsON)
-                    i6 = 0;
-                else
-                    i6 = 8;
-                imageview8.setVisibility(i6);
-                imageview9 = (ImageView)findViewById(0x7f09001b);
-                if(data.ParanoidMode)
-                    j6 = 0;
-                else
-                    j6 = 8;
-                imageview9.setVisibility(j6);
-                imageview10 = (ImageView)findViewById(0x7f09001d);
-                k6 = Integer.parseInt(data.Data_CarModuleGSMSignalLevel);
-                if(k6 >= 1) goto _L2; else goto _L1
-_L1:
-                imageview10.setImageResource(0x7f020068);
-_L4:
-                imageview11 = (ImageView)findViewById(0x7f09001a);
-                byte byte0;
-                if(isLoggedIn)
-                    byte0 = 8;
-                else
-                    byte0 = 0;
-                imageview11.setVisibility(byte0);
-                return;
-_L2:
-                if(k6 >= 7)
-                    break MISSING_BLOCK_LABEL_2099;
-                imageview10.setImageResource(0x7f020069);
-                continue; /* Loop/switch isn't completed */
-                if(k6 < 14)
-                    imageview10.setImageResource(0x7f02006a);
-                else
-                if(k6 < 21)
-                    imageview10.setImageResource(0x7f02006b);
-                else
-                if(k6 < 28)
-                    imageview10.setImageResource(0x7f02006c);
-                else
-                    imageview10.setImageResource(0x7f02006d);
-                continue; /* Loop/switch isn't completed */
-                Exception exception;
-                exception;
-                if(true) goto _L4; else goto _L3
-_L3:
-            }
-
-            final TabCar this$0;
-
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-;
-        orientationChangedHandler = new Handler() {
-
-            public void handleMessage(Message message)
-            {
-                setContentView(0x7f03000a);
-                CurrentScreenOrientation = getResources().getConfiguration().orientation;
-                initUI();
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-;
-    }
-
-    private void downloadLayout()
-    {
-        downloadProgress = new ProgressDialog(this);
-        downloadProgress.setMessage("Downloading Hi-Res Graphics");
-        downloadProgress.setIndeterminate(true);
-        downloadProgress.setMax(100);
-        downloadProgress.setCancelable(true);
-        downloadProgress.setProgressStyle(1);
-        downloadProgress.show();
-        downloadProgress.setOnDismissListener(new android.content.DialogInterface.OnDismissListener() {
-
-            public void onDismiss(DialogInterface dialoginterface)
-            {
-                StringBuilder stringbuilder = new StringBuilder(String.valueOf(getCacheDir().getAbsolutePath()));
-                Object aobj[] = new Object[1];
-                aobj[0] = data.VehicleImageDrawable;
-                android.graphics.Bitmap bitmap = BitmapFactory.decodeFile(stringbuilder.append(String.format("/ol_%s.png", aobj)).toString());
-                if(bitmap != null)
-                {
-                    ((ImageView)findViewById(0x7f09001e)).setImageBitmap(bitmap);
-                    Toast.makeText(TabCar.this, "Graphics Downloaded", 0).show();
-                } else
-                {
-                    Toast.makeText(TabCar.this, "Download Failed", 0).show();
-                }
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-);
-        downloadTask = new ServerCommands.CarLayoutDownloader(downloadProgress);
-        ServerCommands.CarLayoutDownloader carlayoutdownloader = downloadTask;
-        String as[] = new String[2];
-        as[0] = data.VehicleImageDrawable;
-        as[1] = getCacheDir().getAbsolutePath();
-        carlayoutdownloader.execute(as);
-    }
-
-    private void initUI()
-    {
-        ((TextView)findViewById(0x7f09001c)).setOnClickListener(new android.view.View.OnClickListener() {
-
-            public void onClick(View view)
-            {
-                String s = "-";
-                if(data != null && data.Data_LastCarUpdate != null)
-                    s = (new SimpleDateFormat("MMM d, K:mm:ss a")).format(data.Data_LastCarUpdate);
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(TabCar.this);
-                builder.setMessage((new StringBuilder("Last update: ")).append(s).toString()).setCancelable(true).setPositiveButton("Close", new android.content.DialogInterface.OnClickListener() {
-
-                    public void onClick(DialogInterface dialoginterface, int i)
-                    {
-                        dialoginterface.dismiss();
-                    }
-
-                    final _cls4 this$1;
-
-                    
-                    {
-                        this$1 = _cls4.this;
-                        super();
-                    }
-                }
-).setTitle(data.VehicleID);
-                lastUpdatedDialog = builder.create();
-                lastUpdatedDialog.show();
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-);
-        ((FrameLayout)findViewById(0x7f090031)).setOnClickListener(new android.view.View.OnClickListener() {
-
-            public void onClick(View view)
-            {
-                if(!isFinishing())
-                {
-                    TabCar tabcar = TabCar.this;
-                    OVMSActivity ovmsactivity = (OVMSActivity)getParent();
-                    boolean flag;
-                    if(data.Data_CarLocked)
-                        flag = false;
-                    else
-                        flag = true;
-                    ServerCommands.LockUnlockCar(tabcar, ovmsactivity, null, flag);
-                }
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-);
-        ((FrameLayout)findViewById(0x7f090032)).setOnClickListener(new android.view.View.OnClickListener() {
-
-            public void onClick(View view)
-            {
-                if(!isFinishing())
-                {
-                    TabCar tabcar = TabCar.this;
-                    OVMSActivity ovmsactivity = (OVMSActivity)getParent();
-                    boolean flag;
-                    if(data.Data_ValetON)
-                        flag = false;
-                    else
-                        flag = true;
-                    ServerCommands.ValetModeOnOff(tabcar, ovmsactivity, null, flag);
-                }
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-);
-        ((LinearLayout)findViewById(0x7f090033)).setOnClickListener(new android.view.View.OnClickListener() {
-
-            public void onClick(View view)
-            {
-                if(!isFinishing() && !data.Data_CoolingPumpON_DoorState3)
-                    ServerCommands.WakeUp(TabCar.this, (OVMSActivity)getParent(), null, true);
-            }
-
-            final TabCar this$0;
-
-            
-            {
-                this$0 = TabCar.this;
-                super();
-            }
-        }
-);
-    }
-
-    private void updateLastUpdatedView()
-    {
-        if(data != null && data.Data_LastCarUpdate != null)
-        {
-            TextView textview = (TextView)findViewById(0x7f09001c);
-            long l = ((new Date()).getTime() - data.Data_LastCarUpdate.getTime()) / 1000L;
-            if(l < 60L)
-                textview.setText("live");
-            else
-            if(l < 3600L)
-            {
-                int k = (int)Math.ceil(l / 60L);
-                Object aobj3[] = new Object[2];
-                aobj3[0] = Integer.valueOf(k);
-                String s3;
-                if(k > 1)
-                    s3 = "s";
-                else
-                    s3 = "";
-                aobj3[1] = s3;
-                textview.setText(String.format("Updated: %d min%s ago", aobj3));
-            } else
-            if(l < 0x15180L)
-            {
-                int j = (int)Math.ceil(l / 3600L);
-                Object aobj2[] = new Object[2];
-                aobj2[0] = Integer.valueOf(j);
-                String s2;
-                if(j > 1)
-                    s2 = "s";
-                else
-                    s2 = "";
-                aobj2[1] = s2;
-                textview.setText(String.format("Updated: %d hr%s ago", aobj2));
-            } else
-            if(l < 0xd2f00L)
-            {
-                int i = (int)Math.ceil(l / 0x15180L);
-                Object aobj1[] = new Object[2];
-                aobj1[0] = Integer.valueOf(i);
-                String s1;
-                if(i > 1)
-                    s1 = "s";
-                else
-                    s1 = "";
-                aobj1[1] = s1;
-                textview.setText(String.format("Updated: %d day%s ago", aobj1));
-            } else
-            {
-                String s = getString(0x7f060003);
-                Object aobj[] = new Object[1];
-                aobj[0] = data.Data_LastCarUpdate;
-                textview.setText(String.format(s, aobj));
-            }
-        }
-    }
-
-    public void OrientationChanged()
-    {
-        orientationChangedHandler.sendEmptyMessage(0);
-    }
-
-    public void Refresh(CarData cardata, boolean flag)
-    {
-        Log.d("Tab", "TabCar Refresh");
-        data = cardata;
-        isLoggedIn = flag;
-        handler.sendEmptyMessage(0);
-    }
-
-    public void onCreate(Bundle bundle)
-    {
-        super.onCreate(bundle);
-        setContentView(0x7f03000a);
-        initUI();
-    }
-
-    protected void onPause()
-    {
-        super.onPause();
-        try
-        {
-            if(lastUpdatedDialog != null && lastUpdatedDialog.isShowing())
-                lastUpdatedDialog.dismiss();
-        }
-        catch(Exception exception) { }
-        lastUpdateTimerHandler.removeCallbacks(lastUpdateTimer);
-    }
-
-    protected void onResume()
-    {
-        super.onResume();
-        lastUpdateTimerHandler.postDelayed(lastUpdateTimer, 5000L);
-    }
-
-    public int CurrentScreenOrientation;
-    private CarData data;
-    private ProgressDialog downloadProgress;
-    private ServerCommands.CarLayoutDownloader downloadTask;
-    private Handler handler;
-    private boolean isLoggedIn;
-    private Runnable lastUpdateTimer;
-    private Handler lastUpdateTimerHandler;
-    private AlertDialog lastUpdatedDialog;
-    private Handler orientationChangedHandler;
-
-
-
-
-
-
-
-
-
+	protected void onResume()
+	{
+		super.onResume();
+		this.lastUpdateTimerHandler.postDelayed(this.lastUpdateTimer, 5000L);
+	}
 }

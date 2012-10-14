@@ -1,249 +1,225 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-
 package com.openvehicles.OVMS;
 
-import android.content.Context;
-import android.graphics.*;
-import android.graphics.drawable.Drawable;
-import android.util.Log;
-import com.google.android.maps.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-// Referenced classes of package com.openvehicles.OVMS:
-//            CarData
+import android.app.AlertDialog;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
-public final class Utilities
-{
-    public static class CarMarker extends OverlayItem
-    {
+import com.google.android.maps.GeoPoint;
+import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
+import com.google.android.maps.OverlayItem;
 
-        public int Direction;
+public final class Utilities {
+	public static GeoPoint GetCarGeopoint(double paramDouble1,
+			double paramDouble2) {
+		return new GeoPoint((int) (paramDouble1 * 1000000.0D),
+				(int) (paramDouble2 * 1000000.0D));
+	}
 
-        public CarMarker(GeoPoint geopoint, String s, String s1, int i)
-        {
-            super(geopoint, s, s1);
-            Direction = i;
-        }
-    }
+	public static GeoPoint GetCarGeopoint(CarData paramCarData) {
+		return new GeoPoint((int) (1000000.0D * paramCarData.Data_Latitude),
+				(int) (1000000.0D * paramCarData.Data_Longitude));
+	}
 
-    public static class CarMarkerOverlay extends ItemizedOverlay
-    {
+	public static double GetDistanceBetweenCoordinatesKM(double paramDouble1,
+			double paramDouble2, double paramDouble3, double paramDouble4) {
+		double d1 = Math.toRadians(paramDouble3 - paramDouble1);
+		double d2 = Math.toRadians(paramDouble4 - paramDouble2);
+		double d3 = Math.toRadians(paramDouble1);
+		double d4 = Math.toRadians(paramDouble3);
+		double d5 = Math.sin(d1 / 2.0D) * Math.sin(d1 / 2.0D)
+				+ Math.sin(d2 / 2.0D) * Math.sin(d2 / 2.0D) * Math.cos(d3)
+				* Math.cos(d4);
+		return 2.0D * Math.atan2(Math.sqrt(d5), Math.sqrt(1.0D - d5)) * 6371;
+	}
 
-        /**
-         * @deprecated Method fireGroupCarTappedEvent is deprecated
-         */
+	public static Bitmap GetRotatedDirectionalMarker(Bitmap paramBitmap,
+			float paramFloat) {
+		Bitmap localBitmap = paramBitmap.copy(Bitmap.Config.ARGB_8888, true);
+		localBitmap.eraseColor(0);
+		Canvas localCanvas = new Canvas(localBitmap);
+		Matrix localMatrix = new Matrix();
+		localMatrix.setRotate(paramFloat, localCanvas.getWidth() / 2,
+				localCanvas.getHeight() / 2);
+		localCanvas.drawBitmap(paramBitmap, localMatrix, null);
+		return localBitmap;
+	}
 
-        private void fireGroupCarTappedEvent(String s)
-        {
-            this;
-            JVM INSTR monitorenter ;
-            Iterator iterator = _listeners.iterator();
-_L1:
-            boolean flag = iterator.hasNext();
-            if(flag)
-                break MISSING_BLOCK_LABEL_26;
-            this;
-            JVM INSTR monitorexit ;
-            return;
-            ((OnGroupCarTappedListener)iterator.next()).OnGroupCarTapped(s);
-              goto _L1
-            Exception exception;
-            exception;
-            throw exception;
-        }
+	public static Bitmap GetScaledBatteryOverlay(int paramInt,
+			Bitmap paramBitmap) {
+		Bitmap localBitmap = null;
+		if (paramBitmap == null)
+			Log.d("OVMS", "!!! Battery overlay resource not found !!!");
+		while (true) {
+			return localBitmap;
+			if (paramInt > 0) {
+				Matrix localMatrix = new Matrix();
+				localMatrix.postScale(paramInt / 100.0F, 1.0F);
+				localBitmap = Bitmap.createBitmap(paramBitmap, 0, 0,
+						paramBitmap.getWidth(), paramBitmap.getHeight(),
+						localMatrix, false);
+			}
+		}
+	}
 
-        /**
-         * @deprecated Method addOnGroupCarTappedListener is deprecated
-         */
+	public static class CarMarker extends OverlayItem {
+		public int Direction;
 
-        public void addOnGroupCarTappedListener(OnGroupCarTappedListener ongroupcartappedlistener)
-        {
-            this;
-            JVM INSTR monitorenter ;
-            _listeners.add(ongroupcartappedlistener);
-            this;
-            JVM INSTR monitorexit ;
-            return;
-            Exception exception;
-            exception;
-            throw exception;
-        }
+		public CarMarker(GeoPoint paramGeoPoint, String paramString1,
+				String paramString2, int paramInt) {
+			super(paramString1, paramString2);
+			this.Direction = paramInt;
+		}
+	}
 
-        public void addOverlay(OverlayItem overlayitem)
-        {
-            mOverlays.add(overlayitem);
-            populate();
-        }
+	public static class CarMarkerOverlay extends ItemizedOverlay<OverlayItem> {
+		private Bitmap DirectionalMarker;
+		private int LABEL_SHADOW_XY;
+		private ArrayList<Utilities.OnGroupCarTappedListener> _listeners = new ArrayList();
+		private Context mContext;
+		private int mLabelTextSize;
+		private ArrayList<OverlayItem> mOverlays = new ArrayList();
 
-        public void clearItems()
-        {
-            mOverlays.clear();
-        }
+		public CarMarkerOverlay(Drawable paramDrawable, int paramInt1,
+				Context paramContext, Bitmap paramBitmap, int paramInt2) {
+			super();
+			this.mContext = paramContext;
+			this.mLabelTextSize = paramInt1;
+			this.DirectionalMarker = paramBitmap;
+			this.LABEL_SHADOW_XY = paramInt2;
+		}
 
-        protected OverlayItem createItem(int i)
-        {
-            return (OverlayItem)mOverlays.get(i);
-        }
+		/** @deprecated */
+		private void fireGroupCarTappedEvent(String paramString) {
+			try {
+				Iterator localIterator = this._listeners.iterator();
+				while (true) {
+					boolean bool = localIterator.hasNext();
+					if (!bool)
+						return;
+					((Utilities.OnGroupCarTappedListener) localIterator.next())
+					.OnGroupCarTapped(paramString);
+				}
+			} finally {
+			}
+		}
 
-        public void draw(Canvas canvas, MapView mapview, boolean flag)
-        {
-            super.draw(canvas, mapview, flag);
-            int i = 0;
-            do
-            {
-                if(i >= mOverlays.size())
-                    return;
-                CarMarker carmarker = (CarMarker)mOverlays.get(i);
-                GeoPoint geopoint = carmarker.getPoint();
-                Point point = new Point();
-                mapview.getProjection().toPixels(geopoint, point);
-                Paint paint = new Paint();
-                paint.setAntiAlias(true);
-                paint.setTextAlign(android.graphics.Paint.Align.CENTER);
-                paint.setTextSize(mLabelTextSize);
-                if(flag)
-                {
-                    paint.setARGB(100, 0, 0, 0);
-                    canvas.drawText(carmarker.getTitle(), point.x + LABEL_SHADOW_XY, -32 + point.y + LABEL_SHADOW_XY, paint);
-                } else
-                {
-                    paint.setARGB(255, 0, 0, 0);
-                    canvas.drawText(carmarker.getTitle(), point.x, -32 + point.y, paint);
-                    canvas.drawBitmap(Utilities.GetRotatedDirectionalMarker(DirectionalMarker, carmarker.Direction), -55 + point.x, -75 + point.y, paint);
-                }
-                i++;
-            } while(true);
-        }
+		/** @deprecated */
+		public void addOnGroupCarTappedListener(Utilities.OnGroupCarTappedListener paramOnGroupCarTappedListener)
+		{
+			try
+			{
+				this._listeners.add(paramOnGroupCarTappedListener);
+				return;
+			}
+			finally
+			{
+				localObject = finally;
+				throw localObject;
+			}
+		}
 
-        protected boolean onTap(int i)
-        {
-            OverlayItem overlayitem = (OverlayItem)mOverlays.get(i);
-            if(overlayitem.getSnippet().length() > 0)
-            {
-                android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(mContext);
-                builder.setTitle(overlayitem.getTitle());
-                builder.setMessage(overlayitem.getSnippet());
-                builder.show();
-            } else
-            {
-                fireGroupCarTappedEvent(overlayitem.getTitle());
-            }
-            return true;
-        }
+		public void addOverlay(OverlayItem paramOverlayItem) {
+			this.mOverlays.add(paramOverlayItem);
+			populate();
+		}
 
-        /**
-         * @deprecated Method removeOnGroupCarTappedListener is deprecated
-         */
+		public void clearItems() {
+			this.mOverlays.clear();
+		}
 
-        public void removeOnGroupCarTappedListener(OnGroupCarTappedListener ongroupcartappedlistener)
-        {
-            this;
-            JVM INSTR monitorenter ;
-            _listeners.remove(ongroupcartappedlistener);
-            this;
-            JVM INSTR monitorexit ;
-            return;
-            Exception exception;
-            exception;
-            throw exception;
-        }
+		protected OverlayItem createItem(int paramInt) {
+			return (OverlayItem) this.mOverlays.get(paramInt);
+		}
 
-        public void removeOverlayAt(int i)
-        {
-            mOverlays.remove(i);
-        }
+		public void draw(Canvas paramCanvas, MapView paramMapView,
+				boolean paramBoolean) {
+			super.draw(paramCanvas, paramMapView, paramBoolean);
+			int i = 0;
+			if (i >= this.mOverlays.size())
+				return;
+			Utilities.CarMarker localCarMarker = (Utilities.CarMarker) this.mOverlays
+					.get(i);
+			GeoPoint localGeoPoint = localCarMarker.getPoint();
+			Point localPoint = new Point();
+			paramMapView.getProjection().toPixels(localGeoPoint, localPoint);
+			Paint localPaint = new Paint();
+			localPaint.setAntiAlias(true);
+			localPaint.setTextAlign(Paint.Align.CENTER);
+			localPaint.setTextSize(this.mLabelTextSize);
+			if (paramBoolean) {
+				localPaint.setARGB(100, 0, 0, 0);
+				paramCanvas.drawText(localCarMarker.getTitle(), localPoint.x
+						+ this.LABEL_SHADOW_XY, -32 + localPoint.y
+						+ this.LABEL_SHADOW_XY, localPaint);
+			}
+			while (true) {
+				i++;
+				break;
+				localPaint.setARGB(255, 0, 0, 0);
+				paramCanvas.drawText(localCarMarker.getTitle(), localPoint.x,
+						-32 + localPoint.y, localPaint);
+				paramCanvas.drawBitmap(Utilities.GetRotatedDirectionalMarker(
+						this.DirectionalMarker, localCarMarker.Direction), -55
+						+ localPoint.x, -75 + localPoint.y, localPaint);
+			}
+		}
 
-        public void setOverlay(int i, OverlayItem overlayitem)
-        {
-            mOverlays.set(i, overlayitem);
-            populate();
-        }
+		protected boolean onTap(int paramInt) {
+			OverlayItem localOverlayItem = (OverlayItem) this.mOverlays
+					.get(paramInt);
+			if (localOverlayItem.getSnippet().length() > 0) {
+				AlertDialog.Builder localBuilder = new AlertDialog.Builder(
+						this.mContext);
+				localBuilder.setTitle(localOverlayItem.getTitle());
+				localBuilder.setMessage(localOverlayItem.getSnippet());
+				localBuilder.show();
+			}
+			while (true) {
+				return true;
+				fireGroupCarTappedEvent(localOverlayItem.getTitle());
+			}
+		}
 
-        public int size()
-        {
-            return mOverlays.size();
-        }
+		/** @deprecated */
+		public void removeOnGroupCarTappedListener(Utilities.OnGroupCarTappedListener paramOnGroupCarTappedListener)
+		{
+			try
+			{
+				this._listeners.remove(paramOnGroupCarTappedListener);
+				return;
+			}
+			finally
+			{
+				localObject = finally;
+				throw localObject;
+			}
+		}
 
-        private Bitmap DirectionalMarker;
-        private int LABEL_SHADOW_XY;
-        private ArrayList _listeners;
-        private Context mContext;
-        private int mLabelTextSize;
-        private ArrayList mOverlays;
+		public void removeOverlayAt(int paramInt) {
+			this.mOverlays.remove(paramInt);
+		}
 
-        public CarMarkerOverlay(Drawable drawable, int i, Context context, Bitmap bitmap, int j)
-        {
-            super(boundCenterBottom(drawable));
-            mOverlays = new ArrayList();
-            _listeners = new ArrayList();
-            mContext = context;
-            mLabelTextSize = i;
-            DirectionalMarker = bitmap;
-            LABEL_SHADOW_XY = j;
-        }
-    }
+		public void setOverlay(int paramInt, OverlayItem paramOverlayItem) {
+			this.mOverlays.set(paramInt, paramOverlayItem);
+			populate();
+		}
 
-    public static interface OnGroupCarTappedListener
-    {
+		public int size() {
+			return this.mOverlays.size();
+		}
+	}
 
-        public abstract void OnGroupCarTapped(String s);
-    }
-
-
-    public Utilities()
-    {
-    }
-
-    public static GeoPoint GetCarGeopoint(double d, double d1)
-    {
-        return new GeoPoint((int)(d * 1000000D), (int)(d1 * 1000000D));
-    }
-
-    public static GeoPoint GetCarGeopoint(CarData cardata)
-    {
-        return new GeoPoint((int)(1000000D * cardata.Data_Latitude), (int)(1000000D * cardata.Data_Longitude));
-    }
-
-    public static double GetDistanceBetweenCoordinatesKM(double d, double d1, double d2, double d3)
-    {
-        double d4 = Math.toRadians(d2 - d);
-        double d5 = Math.toRadians(d3 - d1);
-        double d6 = Math.toRadians(d);
-        double d7 = Math.toRadians(d2);
-        double d8 = Math.sin(d4 / 2D) * Math.sin(d4 / 2D) + Math.sin(d5 / 2D) * Math.sin(d5 / 2D) * Math.cos(d6) * Math.cos(d7);
-        return 2D * Math.atan2(Math.sqrt(d8), Math.sqrt(1.0D - d8)) * (double)6371;
-    }
-
-    public static Bitmap GetRotatedDirectionalMarker(Bitmap bitmap, float f)
-    {
-        Bitmap bitmap1 = bitmap.copy(android.graphics.Bitmap.Config.ARGB_8888, true);
-        bitmap1.eraseColor(0);
-        Canvas canvas = new Canvas(bitmap1);
-        Matrix matrix = new Matrix();
-        matrix.setRotate(f, canvas.getWidth() / 2, canvas.getHeight() / 2);
-        canvas.drawBitmap(bitmap, matrix, null);
-        return bitmap1;
-    }
-
-    public static Bitmap GetScaledBatteryOverlay(int i, Bitmap bitmap)
-    {
-        Bitmap bitmap1 = null;
-        if(bitmap != null) goto _L2; else goto _L1
-_L1:
-        Log.d("OVMS", "!!! Battery overlay resource not found !!!");
-_L4:
-        return bitmap1;
-_L2:
-        if(i > 0)
-        {
-            Matrix matrix = new Matrix();
-            matrix.postScale((float)i / 100F, 1.0F);
-            bitmap1 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-        }
-        if(true) goto _L4; else goto _L3
-_L3:
-    }
+	public static abstract interface OnGroupCarTappedListener {
+		public abstract void OnGroupCarTapped(String paramString);
+	}
 }

@@ -1,60 +1,50 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-
 package com.openvehicles.OVMS;
 
 import android.content.Context;
-import android.graphics.*;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 
-public class TransparentPanel extends LinearLayout
-{
+public class TransparentPanel extends LinearLayout {
+	private Paint borderPaint;
+	private Paint innerPaint;
 
-    public TransparentPanel(Context context)
-    {
-        super(context);
-        init();
-    }
+	public TransparentPanel(Context paramContext) {
+		super(paramContext);
+		init();
+	}
 
-    public TransparentPanel(Context context, AttributeSet attributeset)
-    {
-        super(context, attributeset);
-        init();
-    }
+	public TransparentPanel(Context paramContext, AttributeSet paramAttributeSet) {
+		super(paramContext, paramAttributeSet);
+		init();
+	}
 
-    private void init()
-    {
-        innerPaint = new Paint();
-        innerPaint.setARGB(225, 75, 75, 75);
-        innerPaint.setAntiAlias(true);
-        borderPaint = new Paint();
-        borderPaint.setARGB(255, 255, 255, 255);
-        borderPaint.setAntiAlias(true);
-        borderPaint.setStyle(android.graphics.Paint.Style.STROKE);
-        borderPaint.setStrokeWidth(2.0F);
-    }
+	private void init() {
+		this.innerPaint = new Paint();
+		this.innerPaint.setARGB(225, 75, 75, 75);
+		this.innerPaint.setAntiAlias(true);
+		this.borderPaint = new Paint();
+		this.borderPaint.setARGB(255, 255, 255, 255);
+		this.borderPaint.setAntiAlias(true);
+		this.borderPaint.setStyle(Paint.Style.STROKE);
+		this.borderPaint.setStrokeWidth(2.0F);
+	}
 
-    protected void dispatchDraw(Canvas canvas)
-    {
-        RectF rectf = new RectF();
-        rectf.set(0.0F, 0.0F, getMeasuredWidth(), getMeasuredHeight());
-        canvas.drawRoundRect(rectf, 5F, 5F, innerPaint);
-        canvas.drawRoundRect(rectf, 5F, 5F, borderPaint);
-        super.dispatchDraw(canvas);
-    }
+	protected void dispatchDraw(Canvas paramCanvas) {
+		RectF localRectF = new RectF();
+		localRectF.set(0.0F, 0.0F, getMeasuredWidth(), getMeasuredHeight());
+		paramCanvas.drawRoundRect(localRectF, 5.0F, 5.0F, this.innerPaint);
+		paramCanvas.drawRoundRect(localRectF, 5.0F, 5.0F, this.borderPaint);
+		super.dispatchDraw(paramCanvas);
+	}
 
-    public void setBorderPaint(Paint paint)
-    {
-        borderPaint = paint;
-    }
+	public void setBorderPaint(Paint paramPaint) {
+		this.borderPaint = paramPaint;
+	}
 
-    public void setInnerPaint(Paint paint)
-    {
-        innerPaint = paint;
-    }
-
-    private Paint borderPaint;
-    private Paint innerPaint;
+	public void setInnerPaint(Paint paramPaint) {
+		this.innerPaint = paramPaint;
+	}
 }

@@ -1,1721 +1,1617 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-
 package com.openvehicles.OVMS;
 
-import android.app.*;
-import android.content.*;
-import android.content.res.Configuration;
-import android.content.res.Resources;
-import android.os.*;
-import android.util.Log;
-import android.view.*;
-import android.widget.TabHost;
-import android.widget.Toast;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.math.BigInteger;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
 
-// Referenced classes of package com.openvehicles.OVMS:
-//            CarData, ServerCommands, GPRSUtilization, TabInfo_xlarge, 
-//            TabMap, Tab_SubTabNotifications, Tab_SubTabDataUtilizations, Tab_SubTabCarSettings, 
-//            TabCars, TabInfo, TabCar, TabMiscFeatures, 
-//            OVMSNotifications, OVMSWidgets, HMAC, Base64, 
-//            RC4, DataLog, CarData_Group
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
+import android.app.TabActivity;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.Display;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.WindowManager;
+import android.widget.TabHost;
+import android.widget.Toast;
 
 public class OVMSActivity extends TabActivity
-    implements android.widget.TabHost.OnTabChangeListener
+implements TabHost.OnTabChangeListener
 {
-    private class ServerCommandResponseHandler
-        implements Runnable
-    {
-
-        public void run()
-        {
-            Toast.makeText(OVMSActivity.this, message, 0).show();
-        }
-
-        String message;
-        final OVMSActivity this$0;
-
-        ServerCommandResponseHandler(String s)
-        {
-            this$0 = OVMSActivity.this;
-            super();
-            message = s;
-        }
-    }
-
-    private class TCPTask extends AsyncTask
-    {
-
-        private void ConnInit()
-        {
-            String s;
-            String s1;
-            char ac[];
-            Random random;
-            String s2;
-            int i;
-            s = carData.NetPass;
-            s1 = carData.VehicleID;
-            ac = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
-            random = new Random();
-            s2 = "";
-            i = 0;
-_L7:
-            if(i < 22) goto _L2; else goto _L1
-_L1:
-            byte abyte0[] = s2.getBytes();
-            HMAC hmac;
-            hmac = new HMAC("MD5", s.getBytes());
-            hmac.update(abyte0);
-            String s3 = Base64.encodeBytes(hmac.sign());
-            Log.d("TCP", (new StringBuilder("Connecting ")).append(carData.ServerNameOrIP).toString());
-            Sock = new Socket();
-            Sock.setSoTimeout(10000);
-            Sock.connect(new InetSocketAddress(carData.ServerNameOrIP, 6867), 5000);
-            Outputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(Sock.getOutputStream())), true);
-            Object aobj[] = new Object[3];
-            aobj[0] = s2;
-            aobj[1] = s3;
-            aobj[2] = s1;
-            Log.d("OVMS", String.format("TX: MP-A 0 %s %s %s", aobj));
-            PrintWriter printwriter = Outputstream;
-            Object aobj1[] = new Object[3];
-            aobj1[0] = s2;
-            aobj1[1] = s3;
-            aobj1[2] = s1;
-            printwriter.println(String.format("MP-A 0 %s %s %s", aobj1));
-            Inputstream = new BufferedReader(new InputStreamReader(Sock.getInputStream()));
-            String as[] = Inputstream.readLine().trim().split("[ ]+");
-            String s4;
-            byte abyte2[];
-            Object aobj2[] = new Object[4];
-            aobj2[0] = as[0];
-            aobj2[1] = as[1];
-            aobj2[2] = as[2];
-            aobj2[3] = as[3];
-            Log.d("OVMS", String.format("RX: %s %s %s %s", aobj2));
-            s4 = as[2];
-            byte abyte1[] = s4.getBytes();
-            abyte2 = Base64.decode(as[3]);
-            hmac.clear();
-            hmac.update(abyte1);
-            if(Arrays.equals(hmac.sign(), abyte2)) goto _L4; else goto _L3
-_L3:
-            Object aobj5[] = new Object[2];
-            aobj5[0] = Base64.encodeBytes(hmac.sign());
-            aobj5[1] = as[3];
-            Log.d("OVMS", String.format("Server authentication failed. Expected %s Got %s", aobj5));
-_L9:
-            String s6;
-            int j;
-            hmac.clear();
-            String s5 = (new StringBuilder(String.valueOf(s4))).append(s2).toString();
-            hmac.update(s5.getBytes());
-            byte abyte3[] = hmac.sign();
-            Object aobj3[] = new Object[3];
-            aobj3[0] = s5;
-            aobj3[1] = toHex(abyte3).toLowerCase();
-            aobj3[2] = Base64.encodeBytes(abyte3);
-            Log.d("OVMS", String.format("Client version of the shared key is %s - (%s) %s", aobj3));
-            RC4 rc4 = new RC4(abyte3);
-            rxcipher = rc4;
-            RC4 rc4_1 = new RC4(abyte3);
-            txcipher = rc4_1;
-            s6 = "";
-            j = 0;
-_L10:
-            if(j < 1024) goto _L6; else goto _L5
-_L5:
-            rxcipher.rc4(s6.getBytes());
-            txcipher.rc4(s6.getBytes());
-            Object aobj4[] = new Object[1];
-            aobj4[0] = carData.ServerNameOrIP;
-            Log.d("OVMS", String.format("Connected to %s. Ciphers initialized. Listening...", aobj4));
-            loginComplete();
-_L8:
-            return;
-_L2:
-            s2 = (new StringBuilder(String.valueOf(s2))).append(ac[random.nextInt(-1 + ac.length)]).toString();
-            i++;
-              goto _L7
-            Exception exception1;
-            exception1;
-            String s7;
-            try
-            {
-                notifyServerSocketError(exception1);
-            }
-            catch(UnknownHostException unknownhostexception)
-            {
-                notifyServerSocketError(unknownhostexception);
-            }
-            catch(SocketTimeoutException sockettimeoutexception)
-            {
-                notifyServerSocketError(sockettimeoutexception);
-            }
-            catch(Exception exception)
-            {
-                notifyServerSocketError(exception);
-            }
-              goto _L8
-_L4:
-            Log.d("OVMS", "Server authentication OK.");
-              goto _L9
-_L6:
-            s7 = (new StringBuilder(String.valueOf(s6))).append("0").toString();
-            s6 = s7;
-            j++;
-              goto _L10
-        }
-
-        private void notifyCommandResponse(String s)
-        {
-            if(OVMSActivity.this != null)
-            {
-                mCommandResponse = new ServerCommandResponseHandler(s);
-                UIHandler.post(mCommandResponse);
-            }
-        }
-
-        private void processMessage(String s)
-        {
-            char c;
-            String s1;
-            c = s.charAt(0);
-            s1 = s.substring(1);
-            if(c != 'E') goto _L2; else goto _L1
-_L1:
-            char c1 = s.charAt(1);
-            if(c1 != 'T') goto _L4; else goto _L3
-_L3:
-            Log.d("TCP", (new StringBuilder("ET MSG Received: ")).append(s).toString());
-            try
-            {
-                String s11 = s.substring(2);
-                HMAC hmac = new HMAC("MD5", carData.RegPass.getBytes());
-                hmac.update(s11.getBytes());
-                pmDigest = hmac.sign();
-                Log.d("OVMS", (new StringBuilder("Paranoid Mode Token Accepted. Entering Privacy Mode. (pmDigest = ")).append(Base64.encodeBytes(pmDigest)).append(")").toString());
-            }
-            catch(Exception exception2)
-            {
-                Log.d("ERR", exception2.getMessage());
-                exception2.printStackTrace();
-            }
-_L2:
-            Log.d("TCP", (new StringBuilder(String.valueOf(c))).append(" MSG Received: ").append(s1).toString());
-            com.openvehicles.OVMS.DataLog.Log((new StringBuilder("[RX] ")).append(c).append(s1).toString());
-            c;
-            JVM INSTR lookupswitch 12: default 300
-        //                       67: 2370
-        //                       68: 1045
-        //                       70: 1755
-        //                       76: 909
-        //                       83: 542
-        //                       84: 787
-        //                       87: 1943
-        //                       90: 524
-        //                       97: 2358
-        //                       99: 2370
-        //                       102: 1897
-        //                       103: 2119;
-               goto _L5 _L6 _L7 _L8 _L9 _L10 _L11 _L12 _L13 _L14 _L6 _L15 _L16
-_L5:
-            return;
-_L4:
-            if(c1 != 'M') goto _L2; else goto _L17
-_L17:
-            Log.d("TCP", (new StringBuilder("EM MSG Received: ")).append(s).toString());
-            c = s.charAt(2);
-            s1 = s.substring(3);
-            byte abyte0[];
-            String s8;
-            int j2;
-            abyte0 = Base64.decode(s1);
-            pmcipher = new RC4(pmDigest);
-            s8 = "";
-            j2 = 0;
-_L20:
-            if(j2 < 1024) goto _L19; else goto _L18
-_L18:
-            String s10;
-            pmcipher.rc4(s8.getBytes());
-            s10 = new String(pmcipher.rc4(abyte0));
-            s1 = s10;
-_L21:
-            if(!carData.ParanoidMode)
-            {
-                Log.d("OVMS", "Paranoid Mode Detected");
-                carData.ParanoidMode = true;
-                refreshUI();
-            }
-              goto _L2
-_L19:
-            String s9 = (new StringBuilder(String.valueOf(s8))).append("0").toString();
-            s8 = s9;
-            j2++;
-              goto _L20
-            Exception exception1;
-            exception1;
-            Log.d("ERR", exception1.getMessage());
-            exception1.printStackTrace();
-              goto _L21
-_L13:
-            carData.Data_CarsConnected = Integer.parseInt(s1);
-            refreshUI();
-              goto _L5
-_L10:
-            String as10[] = s1.split(",\\s*");
-            if(as10.length >= 8)
-            {
-                Log.d("TCP", "S MSG Validated");
-                carData.Data_SOC = Integer.parseInt(as10[0]);
-                carData.Data_DistanceUnit = as10[1].toString();
-                carData.Data_LineVoltage = Integer.parseInt(as10[2]);
-                carData.Data_ChargeCurrent = Integer.parseInt(as10[3]);
-                carData.Data_ChargeState = as10[4].toString();
-                carData.Data_ChargeMode = as10[5].toString();
-                carData.Data_IdealRange = Integer.parseInt(as10[6]);
-                carData.Data_EstimatedRange = Integer.parseInt(as10[7]);
-            }
-            if(as10.length >= 14)
-            {
-                carData.Data_ChargeAmpsLimit = Integer.parseInt(as10[8]);
-                carData.Data_ChargerB4State = Integer.parseInt(as10[9]);
-                carData.Data_ChargerKWHConsumed = Double.parseDouble(as10[10]);
-                carData.Data_ChargeSubstate = Integer.parseInt(as10[11]);
-                carData.Data_ChargeState_raw = Integer.parseInt(as10[12]);
-                carData.Data_ChargeMode_raw = Integer.parseInt(as10[13]);
-            }
-            refreshUI();
-              goto _L5
-_L11:
-            if(s1.length() > 0)
-            {
-                carData.Data_LastCarUpdate_raw = Long.parseLong(s1);
-                carData.Data_LastCarUpdate = new Date((new Date()).getTime() - 1000L * carData.Data_LastCarUpdate_raw);
-                if(carData.Data_ParkedTime_raw > 0.0D)
-                    carData.Data_ParkedTime = new Date(carData.Data_LastCarUpdate.getTime() - 1000L * (long)carData.Data_ParkedTime_raw);
-                refreshUI();
-            } else
-            {
-                Log.d("TCP", "T MSG Invalid");
-            }
-              goto _L5
-_L9:
-            String as9[] = s1.split(",\\s*");
-            if(as9.length >= 2)
-            {
-                Log.d("TCP", "L MSG Validated");
-                carData.Data_Latitude = Double.parseDouble(as9[0]);
-                carData.Data_Longitude = Double.parseDouble(as9[1]);
-            }
-            if(as9.length >= 6)
-            {
-                carData.Data_Direction = Double.parseDouble(as9[2]);
-                carData.Data_Altitude = Double.parseDouble(as9[3]);
-                carData.Data_GPSLocked = as9[4].trim().equals("1");
-                carData.Data_GPSDataStale = as9[5].trim().equals("0");
-            }
-            refreshUI();
-              goto _L5
-_L7:
-            String as8[] = s1.split(",\\s*");
-            if(as8.length >= 9)
-            {
-                Log.d("TCP", "D MSG Validated");
-                int k1 = Integer.parseInt(as8[0]);
-                CarData cardata = carData;
-                boolean flag;
-                CarData cardata1;
-                boolean flag1;
-                CarData cardata2;
-                boolean flag2;
-                CarData cardata3;
-                boolean flag3;
-                CarData cardata4;
-                boolean flag4;
-                CarData cardata5;
-                boolean flag5;
-                CarData cardata6;
-                boolean flag6;
-                int l1;
-                CarData cardata7;
-                boolean flag7;
-                CarData cardata8;
-                boolean flag8;
-                CarData cardata9;
-                boolean flag9;
-                CarData cardata10;
-                boolean flag10;
-                CarData cardata11;
-                boolean flag11;
-                int i2;
-                CarData cardata12;
-                boolean flag12;
-                if((k1 & 1) > 0)
-                    flag = true;
-                else
-                    flag = false;
-                cardata.Data_LeftDoorOpen = flag;
-                cardata1 = carData;
-                if((k1 & 2) > 0)
-                    flag1 = true;
-                else
-                    flag1 = false;
-                cardata1.Data_RightDoorOpen = flag1;
-                cardata2 = carData;
-                if((k1 & 4) > 0)
-                    flag2 = true;
-                else
-                    flag2 = false;
-                cardata2.Data_ChargePortOpen = flag2;
-                cardata3 = carData;
-                if((k1 & 8) > 0)
-                    flag3 = true;
-                else
-                    flag3 = false;
-                cardata3.Data_PilotPresent = flag3;
-                cardata4 = carData;
-                if((k1 & 0x10) > 0)
-                    flag4 = true;
-                else
-                    flag4 = false;
-                cardata4.Data_Charging = flag4;
-                cardata5 = carData;
-                if((k1 & 0x40) > 0)
-                    flag5 = true;
-                else
-                    flag5 = false;
-                cardata5.Data_HandBrakeApplied = flag5;
-                cardata6 = carData;
-                if((k1 & 0x80) > 1)
-                    flag6 = true;
-                else
-                    flag6 = false;
-                cardata6.Data_CarPoweredON = flag6;
-                l1 = Integer.parseInt(as8[1]);
-                cardata7 = carData;
-                if((l1 & 8) > 0)
-                    flag7 = true;
-                else
-                    flag7 = false;
-                cardata7.Data_PINLocked = flag7;
-                cardata8 = carData;
-                if((l1 & 0x10) > 0)
-                    flag8 = true;
-                else
-                    flag8 = false;
-                cardata8.Data_ValetON = flag8;
-                cardata9 = carData;
-                if((l1 & 0x20) > 0)
-                    flag9 = true;
-                else
-                    flag9 = false;
-                cardata9.Data_HeadlightsON = flag9;
-                cardata10 = carData;
-                if((l1 & 0x40) > 0)
-                    flag10 = true;
-                else
-                    flag10 = false;
-                cardata10.Data_BonnetOpen = flag10;
-                cardata11 = carData;
-                if((l1 & 0x80) > 0)
-                    flag11 = true;
-                else
-                    flag11 = false;
-                cardata11.Data_TrunkOpen = flag11;
-                i2 = Integer.parseInt(as8[2]);
-                cardata12 = carData;
-                if(i2 == 4)
-                    flag12 = true;
-                else
-                    flag12 = false;
-                cardata12.Data_CarLocked = flag12;
-                carData.Data_TemperaturePEM = Double.parseDouble(as8[3]);
-                carData.Data_TemperatureMotor = Double.parseDouble(as8[4]);
-                carData.Data_TemperatureBattery = Double.parseDouble(as8[5]);
-                carData.Data_TripMeter = Double.parseDouble(as8[6]);
-                carData.Data_Odometer = Double.parseDouble(as8[7]);
-                carData.Data_Speed = Double.parseDouble(as8[8]);
-                if(as8.length >= 10)
-                {
-                    carData.Data_ParkedTime_raw = Double.parseDouble(as8[9]);
-                    if(carData.Data_LastCarUpdate == null)
-                        carData.Data_ParkedTime = null;
-                    else
-                        carData.Data_ParkedTime = new Date(carData.Data_LastCarUpdate.getTime() - 1000L * (long)carData.Data_ParkedTime_raw);
-                }
-                if(as8.length >= 11)
-                    carData.Data_TemperatureAmbient = Double.parseDouble(as8[10]);
-                if(as8.length >= 14)
-                {
-                    carData.Data_CoolingPumpON_DoorState3 = as8[11].trim().equals("1");
-                    carData.Data_PEM_Motor_Battery_TemperaturesDataStale = as8[12].trim().equals("0");
-                    carData.Data_AmbientTemperatureDataStale = as8[13].trim().equals("0");
-                }
-                refreshUI();
-            }
-              goto _L5
-_L8:
-            String as7[] = s1.split(",\\s*");
-            if(as7.length >= 3)
-            {
-                Log.d("TCP", "F MSG Validated");
-                carData.Data_CarModuleFirmwareVersion = as7[0].toString();
-                carData.Data_VIN = as7[1].toString();
-                carData.Data_CarModuleGSMSignalLevel = as7[2].toString();
-                if(as7.length >= 4)
-                {
-                    carData.Data_Features.put(Integer.valueOf(15), as7[3].toString());
-                    carData.Data_CANWriteEnabled = as7[3].trim().equals("1");
-                }
-                if(as7.length >= 5)
-                    carData.Data_CarType = as7[4].toString();
-                refreshUI();
-            }
-_L15:
-            String as6[] = s1.split(",\\s*");
-            if(as6.length >= 1)
-            {
-                Log.d("TCP", "f MSG Validated");
-                carData.Data_OVMSServerFirmwareVersion = as6[0].toString();
-                refreshUI();
-            }
-              goto _L5
-_L12:
-            String as5[] = s1.split(",\\s*");
-            if(as5.length >= 8)
-            {
-                Log.d("TCP", "W MSG Validated");
-                carData.Data_FRWheelPressure = Double.parseDouble(as5[0]);
-                carData.Data_FRWheelTemperature = Double.parseDouble(as5[1]);
-                carData.Data_RRWheelPressure = Double.parseDouble(as5[2]);
-                carData.Data_RRWheelTemperature = Double.parseDouble(as5[3]);
-                carData.Data_FLWheelPressure = Double.parseDouble(as5[4]);
-                carData.Data_FLWheelTemperature = Double.parseDouble(as5[5]);
-                carData.Data_RLWheelPressure = Double.parseDouble(as5[6]);
-                carData.Data_RLWheelTemperature = Double.parseDouble(as5[7]);
-                if(as5.length >= 9)
-                    carData.Data_TPMSDataStale = as5[8].trim().equals("0");
-                refreshUI();
-            }
-              goto _L5
-_L16:
-            String as4[] = s1.split(",\\s*");
-            if(as4.length >= 9)
-            {
-                Log.d("TCP", "g MSG Validated");
-                CarData_Group cardata_group = new CarData_Group();
-                cardata_group.VehicleID = as4[0];
-                cardata_group.SOC = Double.parseDouble(as4[2]);
-                cardata_group.Speed = Double.parseDouble(as4[3]);
-                cardata_group.Direction = Double.parseDouble(as4[4]);
-                cardata_group.Altitude = Double.parseDouble(as4[5]);
-                cardata_group.GPSLocked = as4[6].trim().equals("1");
-                cardata_group.GPSDataStale = as4[7].trim().equals("0");
-                cardata_group.Latitude = Double.parseDouble(as4[8]);
-                cardata_group.Longitude = Double.parseDouble(as4[9]);
-                if(carData.Group == null)
-                    carData.Group = new HashMap();
-                CarData_Group cardata_group1 = (CarData_Group)carData.Group.get(cardata_group.VehicleID);
-                if(cardata_group1 != null)
-                    cardata_group.VehicleImageDrawable = cardata_group1.VehicleImageDrawable;
-                carData.Group.put(as4[0], cardata_group);
-                refreshUI();
-            }
-              goto _L5
-_L14:
-            Log.d("TCP", "Server acknowleged ping");
-              goto _L5
-_L6:
-label0:
-            {
-                if(s1.length() != 0)
-                    break label0;
-                Log.d("TCP", (new StringBuilder(String.valueOf(c))).append(" MSG Code Invalid").toString());
-            }
-              goto _L5
-            String s2 = "";
-            if(s1.indexOf(',') <= 0) goto _L23; else goto _L22
-_L22:
-            int j;
-            String s7;
-            j = Integer.parseInt(s1.substring(0, s1.indexOf(',')));
-            s7 = s1.substring(1 + s1.indexOf(','));
-            s2 = s7;
-_L28:
-            j;
-            JVM INSTR lookupswitch 3: default 2488
-        //                       1: 2588
-        //                       3: 2914
-        //                       30: 3240;
-               goto _L24 _L25 _L26 _L27
-_L24:
-            String as3[] = s2.split(",\\s*");
-            Exception exception;
-            int i;
-            String as[];
-            SimpleDateFormat simpledateformat;
-            ParseException parseexception;
-            NumberFormatException numberformatexception;
-            Object aobj[];
-            String as1[];
-            Object aobj1[];
-            Object aobj2[];
-            String s3;
-            int k;
-            int l;
-            StringBuilder stringbuilder;
-            String s4;
-            Object aobj3[];
-            String as2[];
-            Object aobj4[];
-            Object aobj5[];
-            String s5;
-            int i1;
-            int j1;
-            StringBuilder stringbuilder1;
-            String s6;
-            Object aobj6[];
-            if(as3[0].equals("0"))
-            {
-                Object aobj9[] = new Object[1];
-                aobj9[0] = ServerCommands.toString(j);
-                notifyCommandResponse(String.format("Server Acknowledged %s", aobj9));
-            } else
-            if(as3[0].equals("1"))
-                if(as3.length > 1)
-                {
-                    Object aobj8[] = new Object[2];
-                    aobj8[0] = ServerCommands.toString(j);
-                    aobj8[1] = as3[1];
-                    notifyCommandResponse(String.format("[ERROR] %s\n%s\nTry turning on CAN_WRITE in the settings tab.", aobj8));
-                } else
-                {
-                    Object aobj7[] = new Object[1];
-                    aobj7[0] = ServerCommands.toString(j);
-                    notifyCommandResponse(String.format("[ERROR] %s\nTry turning on CAN_WRITE in the settings tab.", aobj7));
-                }
-              goto _L5
-_L23:
-            i = Integer.parseInt(s1);
-            j = i;
-              goto _L28
-            exception;
-            Log.d("TCP", (new StringBuilder("!!! ")).append(c).append(" message is invalid.").toString());
-              goto _L5
-_L25:
-            as2 = s2.split(",");
-            if(as2.length <= 4) goto _L30; else goto _L29
-_L29:
-            s5 = "";
-            i1 = 3;
-_L33:
-            j1 = as2.length;
-            if(i1 < j1) goto _L32; else goto _L31
-_L31:
-            aobj6 = new Object[2];
-            aobj6[0] = as2[1];
-            aobj6[1] = s5;
-            Log.d("TCP", String.format("FEATURE %s = %s", aobj6));
-            carData.Data_Features.put(Integer.valueOf(Integer.parseInt(as2[1])), s5);
-_L34:
-            if(Integer.parseInt(as2[1]) == -1 + Integer.parseInt(as2[2]))
-            {
-                carData.Data_Features_LastRefreshed = new Date();
-                refreshUI();
-            }
-              goto _L5
-_L32:
-            stringbuilder1 = new StringBuilder(String.valueOf(s5));
-            if(s5.length() > 0)
-                s6 = ",";
-            else
-                s6 = "";
-            s5 = stringbuilder1.append(s6).append(as2[i1]).toString();
-            i1++;
-              goto _L33
-_L30:
-            if(as2.length == 4)
-            {
-                aobj5 = new Object[2];
-                aobj5[0] = as2[1];
-                aobj5[1] = as2[3];
-                Log.d("TCP", String.format("FEATURE %s = %s", aobj5));
-                carData.Data_Features.put(Integer.valueOf(Integer.parseInt(as2[1])), as2[3]);
-            } else
-            if(as2.length >= 2)
-            {
-                aobj4 = new Object[1];
-                aobj4[0] = as2[1];
-                Log.d("TCP", String.format("FEATURE %s = EMPTY", aobj4));
-                carData.Data_Features.put(Integer.valueOf(Integer.parseInt(as2[1])), "");
-            }
-              goto _L34
-_L26:
-            as1 = s2.split(",");
-            if(as1.length <= 4) goto _L36; else goto _L35
-_L35:
-            s3 = "";
-            k = 3;
-_L39:
-            l = as1.length;
-            if(k < l) goto _L38; else goto _L37
-_L37:
-            aobj3 = new Object[2];
-            aobj3[0] = as1[1];
-            aobj3[1] = s3;
-            Log.d("TCP", String.format("PARAMETER %s = %s", aobj3));
-            carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(as1[1])), s3);
-_L40:
-            if(Integer.parseInt(as1[1]) == -1 + Integer.parseInt(as1[2]))
-            {
-                carData.Data_Parameters_LastRefreshed = new Date();
-                refreshUI();
-            }
-              goto _L5
-_L38:
-            stringbuilder = new StringBuilder(String.valueOf(s3));
-            if(s3.length() > 0)
-                s4 = ",";
-            else
-                s4 = "";
-            s3 = stringbuilder.append(s4).append(as1[k]).toString();
-            k++;
-              goto _L39
-_L36:
-            if(as1.length == 4)
-            {
-                aobj2 = new Object[2];
-                aobj2[0] = as1[1];
-                aobj2[1] = as1[3];
-                Log.d("TCP", String.format("PARAMETER %s = %s", aobj2));
-                carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(as1[1])), as1[3]);
-            } else
-            if(as1.length >= 2)
-            {
-                aobj1 = new Object[1];
-                aobj1[0] = as1[1];
-                Log.d("TCP", String.format("PARAMETER %s = EMPTY", aobj1));
-                carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(as1[1])), "");
-            }
-              goto _L40
-_L27:
-            as = s2.split(",\\s*");
-            if(as.length >= 3)
-            {
-                if(carData.Data_GPRSUtilization == null)
-                    carData.Data_GPRSUtilization = new GPRSUtilization(OVMSActivity.this);
-                if(as[1].equals("1"))
-                    carData.Data_GPRSUtilization.Clear();
-                simpledateformat = new SimpleDateFormat("yyyy-MM-dd");
-                try
-                {
-                    carData.Data_GPRSUtilization.AddData(simpledateformat.parse(as[3]), Long.parseLong(as[4]), Long.parseLong(as[5]), Long.parseLong(as[6]), Long.parseLong(as[7]));
-                    aobj = new Object[7];
-                    aobj[0] = as[1];
-                    aobj[1] = as[2];
-                    aobj[2] = simpledateformat.parse(as[3]).toLocaleString();
-                    aobj[3] = as[4];
-                    aobj[4] = as[5];
-                    aobj[5] = as[6];
-                    aobj[6] = as[7];
-                    Log.d("TCP", String.format("GPRS UTIL [%s/%s] %s: car_rx %s car_tx %s app_rx %s app_tx %s", aobj));
-                }
-                // Misplaced declaration of an exception variable
-                catch(NumberFormatException numberformatexception)
-                {
-                    numberformatexception.printStackTrace();
-                }
-                // Misplaced declaration of an exception variable
-                catch(ParseException parseexception)
-                {
-                    parseexception.printStackTrace();
-                }
-                if(as[1].equals(as[2]))
-                {
-                    carData.Data_GPRSUtilization.LastDataRefresh = new Date();
-                    carData.Data_GPRSUtilization.Save(OVMSActivity.this);
-                    refreshUI();
-                }
-            }
-              goto _L5
-        }
-
-        private void refreshUI()
-        {
-            if(OVMSActivity.this != null)
-                UIHandler.post(mRefresh);
-        }
-
-        private String toHex(byte abyte0[])
-        {
-            BigInteger biginteger = new BigInteger(1, abyte0);
-            String s = (new StringBuilder("%0")).append(abyte0.length << 1).append("X").toString();
-            Object aobj[] = new Object[1];
-            aobj[0] = biginteger;
-            return String.format(s, aobj);
-        }
-
-        public void ConnClose()
-        {
-            socketMarkedClosed = true;
-            SuppressServerErrorDialog = true;
-            isLoggedIn = false;
-            if(Sock != null)
-                Sock.close();
-            IOException ioexception;
-            try
-            {
-                Thread.sleep(200L);
-            }
-            catch(InterruptedException interruptedexception) { }
-            Sock = null;
-            SuppressServerErrorDialog = false;
-_L1:
-            return;
-            ioexception;
-            ioexception.printStackTrace();
-              goto _L1
-        }
-
-        public void Ping()
-        {
-            SendCommand("A");
-        }
-
-        public boolean SendCommand(String s)
-        {
-            if(isLoggedIn) goto _L2; else goto _L1
-_L1:
-            boolean flag;
-            Log.d("TCP", "Server not ready. TX aborted.");
-            flag = false;
-_L10:
-            return flag;
-_L2:
-            com.openvehicles.OVMS.DataLog.Log((new StringBuilder("[TX] ")).append(s).toString());
-            if(!carData.ParanoidMode || s.startsWith("A") || s.startsWith("C") || s.startsWith("C30") || s.startsWith("p")) goto _L4; else goto _L3
-_L3:
-            String s3;
-            int i;
-            pmcipher = new RC4(pmDigest);
-            s3 = "";
-            i = 0;
-_L7:
-            if(i < 1024) goto _L6; else goto _L5
-_L5:
-            String s2;
-            pmcipher.rc4(s3.getBytes());
-            String s4 = Base64.encodeBytes(pmcipher.rc4(s.getBytes()));
-            s2 = (new StringBuilder("MP-0 EM")).append(s4).toString();
-            Log.d("TCP", (new StringBuilder("TX (Paranoid-Mode Command): ")).append(s2).append(" (using pmDigest: ").append(Base64.encodeBytes(pmDigest)).append(")").toString());
-_L8:
-            byte abyte0[] = txcipher.rc4(s2.getBytes());
-            Log.d("TCP", (new StringBuilder("TX (Encrypted): ")).append(Base64.encodeBytes(abyte0)).toString());
-            Outputstream.println(Base64.encodeBytes(abyte0));
-            break MISSING_BLOCK_LABEL_342;
-_L6:
-            s3 = (new StringBuilder(String.valueOf(s3))).append("0").toString();
-            i++;
-              goto _L7
-_L4:
-            String s1 = (new StringBuilder("MP-0 ")).append(s).toString();
-            s2 = s1;
-              goto _L8
-            Exception exception;
-            exception;
-            exception.printStackTrace();
-            notifyServerSocketError(exception);
-            flag = true;
-            if(true) goto _L10; else goto _L9
-_L9:
-        }
-
-        protected volatile transient Object doInBackground(Object aobj[])
-        {
-            return doInBackground((Void[])aobj);
-        }
-
-        protected transient Void doInBackground(Void avoid[])
-        {
-            Log.d("TCP", "Starting background TCP thread");
-            SuppressServerErrorDialog = false;
-            socketMarkedClosed = false;
-            ConnInit();
-            if(!isLoggedIn) goto _L2; else goto _L1
-_L1:
-            Log.d("TCP", "Background TCP ready");
-            Sock.setSoTimeout(5000);
-_L7:
-            boolean flag = Sock.isConnected();
-            if(flag) goto _L3; else goto _L2
-_L2:
-            if(Outputstream != null)
-                Outputstream.close();
-            Exception exception;
-            String s;
-            IOException ioexception;
-            String s1;
-            String s2;
-            String s3;
-            Object aobj[];
-            boolean flag1;
-            Exception exception3;
-            String s4;
-            try
-            {
-                if(Inputstream != null)
-                    Inputstream.close();
-            }
-            catch(Exception exception1) { }
-            try
-            {
-                if(Sock != null)
-                    Sock.close();
-            }
-            catch(Exception exception2) { }
-            Sock = null;
-            Log.d("TCP", "TCP thread ending");
-            return null;
-_L3:
-            s = "";
-_L10:
-            s4 = Inputstream.readLine();
-            s = s4;
-            if(s == null) goto _L5; else goto _L4
-_L4:
-            if(s == null) goto _L7; else goto _L6
-_L6:
-            if(s.length() <= 5) goto _L7; else goto _L8
-_L8:
-            s1 = s.trim();
-            s2 = new String(rxcipher.rc4(Base64.decode(s1)));
-            if(s2 == null || s2.length() <= 5) goto _L7; else goto _L9
-_L9:
-            s3 = s2.trim();
-            aobj = new Object[2];
-            aobj[0] = s3;
-            aobj[1] = s1;
-            Log.d("OVMS", String.format("RX: %s (%s)", aobj));
-            flag1 = s3.substring(0, 5).equals("MP-0 ");
-            if(!flag1)
-                break MISSING_BLOCK_LABEL_355;
-            processMessage(s3.substring(5));
-              goto _L7
-            exception3;
-            com.openvehicles.OVMS.DataLog.Log((new StringBuilder("##ERROR## ")).append(exception3.getMessage()).append(" - ").append(s3).toString());
-            exception3.printStackTrace();
-              goto _L7
-            exception;
-            if(!socketMarkedClosed)
-                notifyServerSocketError(exception);
-              goto _L2
-_L5:
-            Thread.sleep(100L);
-              goto _L10
-            ioexception;
-              goto _L4
-            Log.d("OVMS", "Unknown protection scheme");
-              goto _L7
-        }
-
-        protected transient void onProgressUpdate(Integer ainteger[])
-        {
-        }
-
-        protected volatile transient void onProgressUpdate(Object aobj[])
-        {
-            onProgressUpdate((Integer[])aobj);
-        }
-
-        private BufferedReader Inputstream;
-        private PrintWriter Outputstream;
-        public Socket Sock;
-        private CarData carData;
-        private byte pmDigest[];
-        private RC4 pmcipher;
-        private RC4 rxcipher;
-        private boolean socketMarkedClosed;
-        final OVMSActivity this$0;
-        private RC4 txcipher;
-
-        public TCPTask(CarData cardata)
-        {
-            this$0 = OVMSActivity.this;
-            super();
-            carData = OVMSActivity.this.carData;
-        }
-    }
-
-
-    public OVMSActivity()
-    {
-        c2dmReportTimerHandler = new Handler();
-        pingServerTimerHandler = new Handler();
-        UIHandler = new Handler();
-        delayedRequest = new Handler();
-        SuppressServerErrorDialog = false;
-        progressLogin = null;
-        mRecreateChildTabLayout = new Runnable() {
-
-            public void run()
-            {
-                String s;
-                s = getLocalActivityManager().getCurrentId().trim();
-                Log.d("Tab", (new StringBuilder("Tab recreate: ")).append(s).toString());
-                if(s != null && getLocalActivityManager().getActivity(s) != null) goto _L2; else goto _L1
-_L1:
-                return;
-_L2:
-                if(s.equals("tabInfo_xlarge"))
-                {
-                    TabInfo_xlarge tabinfo_xlarge = (TabInfo_xlarge)getLocalActivityManager().getActivity(s);
-                    tabinfo_xlarge.OrientationChanged();
-                    tabinfo_xlarge.Refresh(carData, isLoggedIn);
-                } else
-                if(s.equals("tabInfo"))
-                {
-                    TabInfo tabinfo = (TabInfo)getLocalActivityManager().getActivity(s);
-                    tabinfo.OrientationChanged();
-                    tabinfo.Refresh(carData, isLoggedIn);
-                } else
-                if(s.equals("tabCar"))
-                {
-                    TabCar tabcar = (TabCar)getLocalActivityManager().getActivity(s);
-                    tabcar.OrientationChanged();
-                    tabcar.Refresh(carData, isLoggedIn);
-                }
-                if(true) goto _L1; else goto _L3
-_L3:
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        mRefresh = new Runnable() {
-
-            private void notifyTabRefresh(String s)
-            {
-                Log.d("Tab", (new StringBuilder("Tab refresh: ")).append(s).toString());
-                if(s != null && getLocalActivityManager().getActivity(s) != null)
-                {
-                    if(DeviceScreenSize == 4)
-                    {
-                        if(s.equals("tabInfo_xlarge"))
-                        {
-                            TabInfo_xlarge tabinfo_xlarge = (TabInfo_xlarge)getLocalActivityManager().getActivity(s);
-                            if(tabinfo_xlarge.CurrentScreenOrientation != getResources().getConfiguration().orientation)
-                                tabinfo_xlarge.OrientationChanged();
-                            tabinfo_xlarge.Refresh(carData, isLoggedIn);
-                        } else
-                        if(s.equals("tabMap"))
-                            ((TabMap)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                        else
-                        if(s.equals("tabNotifications"))
-                            ((Tab_SubTabNotifications)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                        else
-                        if(s.equals("tabDataUtilizations"))
-                            ((Tab_SubTabDataUtilizations)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                        else
-                        if(s.equals("tabCarSettings"))
-                            ((Tab_SubTabCarSettings)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                        else
-                        if(s.equals("tabCars"))
-                            ((TabCars)getLocalActivityManager().getActivity(s)).LoadCars(allSavedCars);
-                    } else
-                    if(s.equals("tabInfo"))
-                    {
-                        TabInfo tabinfo = (TabInfo)getLocalActivityManager().getActivity(s);
-                        if(tabinfo.CurrentScreenOrientation != getResources().getConfiguration().orientation)
-                            tabinfo.OrientationChanged();
-                        tabinfo.Refresh(carData, isLoggedIn);
-                    } else
-                    if(s.equals("tabCar"))
-                    {
-                        TabCar tabcar = (TabCar)getLocalActivityManager().getActivity(s);
-                        if(tabcar.CurrentScreenOrientation != getResources().getConfiguration().orientation)
-                            tabcar.OrientationChanged();
-                        tabcar.Refresh(carData, isLoggedIn);
-                    } else
-                    if(s.equals("tabMap"))
-                        ((TabMap)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                    else
-                    if(s.equals("tabMiscFeatures"))
-                        ((TabMiscFeatures)getLocalActivityManager().getActivity(s)).Refresh(carData, isLoggedIn);
-                    else
-                    if(s.equals("tabCars"))
-                        ((TabCars)getLocalActivityManager().getActivity(s)).LoadCars(allSavedCars);
-                    else
-                        getTabHost().setCurrentTab(0);
-                    getTabHost().invalidate();
-                }
-            }
-
-            public void run()
-            {
-                if(isLoggedIn)
-                {
-                    if(progressLogin != null && progressLogin.isShowing())
-                        progressLogin.dismiss();
-                    if(alertDialog != null && alertDialog.isShowing())
-                        alertDialog.dismiss();
-                }
-                notifyTabRefresh(getLocalActivityManager().getCurrentId().trim());
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        progressLoginCloseDialog = new Runnable() {
-
-            public void run()
-            {
-                if(progressLogin != null)
-                    progressLogin.dismiss();
-_L2:
-                return;
-                Exception exception;
-                exception;
-                if(true) goto _L2; else goto _L1
-_L1:
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        progressLoginShowDialog = new Runnable() {
-
-            public void run()
-            {
-                Exception exception2;
-                try
-                {
-                    if(progressLogin != null)
-                        progressLogin.dismiss();
-                }
-                catch(Exception exception) { }
-                try
-                {
-                    if(alertDialog != null)
-                        alertDialog.dismiss();
-                }
-                catch(Exception exception1) { }
-                progressLogin = new ProgressDialog(OVMSActivity.this);
-                progressLogin.setIndeterminate(true);
-                progressLogin.setMessage("Connecting to OVMS Server...");
-                progressLogin.getWindow().clearFlags(2);
-                progressLogin.show();
-_L2:
-                return;
-                exception2;
-                if(true) goto _L2; else goto _L1
-_L1:
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        serverSocketErrorDialog = new Runnable() {
-
-            public void run()
-            {
-                if(!SuppressServerErrorDialog && (alertDialog == null || !alertDialog.isShowing()))
-                {
-                    android.app.AlertDialog.Builder builder;
-                    String s;
-                    try
-                    {
-                        if(progressLogin != null)
-                            progressLogin.dismiss();
-                    }
-                    catch(Exception exception) { }
-                    builder = new android.app.AlertDialog.Builder(OVMSActivity.this);
-                    if(isLoggedIn)
-                        s = String.format("OVMS Server Connection Lost", new Object[0]);
-                    else
-                        s = String.format("Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords", new Object[0]);
-                    builder.setMessage(s).setTitle("Connection Problem").setCancelable(false).setPositiveButton("Retry", new android.content.DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialoginterface, int i)
-                        {
-                            ChangeCar(carData);
-                            dialoginterface.dismiss();
-                        }
-
-                        final _cls5 this$1;
-
-                    
-                    {
-                        this$1 = _cls5.this;
-                        super();
-                    }
-                    }
-).setNegativeButton("Open Settings", new android.content.DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialoginterface, int i)
-                        {
-                            getTabHost().setCurrentTabByTag("tabCars");
-                            dialoginterface.dismiss();
-                        }
-
-                        final _cls5 this$1;
-
-                    
-                    {
-                        this$1 = _cls5.this;
-                        super();
-                    }
-                    }
-);
-                    alertDialog = builder.create();
-                    try
-                    {
-                        alertDialog.show();
-                    }
-                    catch(Exception exception1) { }
-                }
-            }
-
-            final OVMSActivity this$0;
-
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        pingServer = new Runnable() {
-
-            public void run()
-            {
-                if(isLoggedIn)
-                {
-                    Log.d("OVMS", "Pinging server...");
-                    tcpTask.Ping();
-                }
-                pingServerTimerHandler.postDelayed(pingServer, 60000L);
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-        reportC2DMRegistrationID = new Runnable() {
-
-            public void run()
-            {
-                if(tcpTask != null) goto _L2; else goto _L1
-_L1:
-                return;
-_L2:
-                SharedPreferences sharedpreferences = getSharedPreferences("C2DM", 0);
-                String s = sharedpreferences.getString("RegID", "");
-                String s1;
-                if(!sharedpreferences.contains("UUID"))
-                {
-                    s1 = UUID.randomUUID().toString();
-                    android.content.SharedPreferences.Editor editor = getSharedPreferences("C2DM", 0).edit();
-                    editor.putString("UUID", s1);
-                    editor.commit();
-                    Log.d("OVMS", (new StringBuilder("Generated New App ID: ")).append(s1).toString());
-                } else
-                {
-                    s1 = sharedpreferences.getString("UUID", "");
-                    Log.d("OVMS", (new StringBuilder("Loaded Saved App ID: ")).append(s1).toString());
-                }
-                if(s.length() == 0)
-                {
-                    Log.d("C2DM", "C2DM registration ID not found. Rescheduling.");
-                    c2dmReportTimerHandler.postDelayed(reportC2DMRegistrationID, 15000L);
-                } else
-                if(!SendServerCommand(ServerCommands.SUBSCRIBE_PUSH_NOTIFICATIONS(s1, carData.VehicleID, carData.NetPass, s.trim())))
-                {
-                    Log.d("OVMS", "Reporting C2DM ID failed. Rescheduling.");
-                    c2dmReportTimerHandler.postDelayed(reportC2DMRegistrationID, 5000L);
-                }
-                if(true) goto _L1; else goto _L3
-_L3:
-            }
-
-            final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-        }
-;
-    }
-
-    private void initializeSavedCars()
-    {
-        Log.d("OVMS", "Invalid save file. Initializing with demo car.");
-        allSavedCars = new ArrayList();
-        CarData cardata = new CarData();
-        cardata.VehicleID = "DEMO";
-        cardata.RegPass = "DEMO";
-        cardata.NetPass = "DEMO";
-        cardata.ServerNameOrIP = "tmc.openvehicles.com";
-        cardata.VehicleImageDrawable = "car_models_signaturered";
-        cardata.lastResetVersion = 1;
-        allSavedCars.add(cardata);
-        carData = cardata;
-        saveCars();
-    }
-
-    private void loadCars()
-    {
-        Iterator iterator;
-        Log.d("OVMS", "Loading saved cars from internal storage file: OVMSSavedCars.obj");
-        ObjectInputStream objectinputstream = new ObjectInputStream(openFileInput("OVMSSavedCars.obj"));
-        allSavedCars = (ArrayList)objectinputstream.readObject();
-        objectinputstream.close();
-        iterator = allSavedCars.iterator();
-_L3:
-        CarData cardata;
-        String s;
-        if(!iterator.hasNext())
-        {
-            s = getSharedPreferences("OVMS", 0).getString("LastVehicleID", "").trim();
-            if(s.length() == 0)
-            {
-                carData = (CarData)allSavedCars.get(0);
-                break MISSING_BLOCK_LABEL_399;
-            }
-            break MISSING_BLOCK_LABEL_271;
-        }
-        cardata = (CarData)iterator.next();
-        if(cardata.VehicleID != null && cardata.RegPass != null && cardata.NetPass != null && cardata.ServerNameOrIP != null && cardata.VehicleImageDrawable != null) goto _L2; else goto _L1
-_L1:
-        initializeSavedCars();
-          goto _L3
-        Exception exception;
-        exception;
-        exception.printStackTrace();
-        initializeSavedCars();
-        break MISSING_BLOCK_LABEL_399;
-_L2:
-        if(cardata.lastResetVersion == 1) goto _L3; else goto _L4
-_L4:
-        CarData cardata1 = new CarData();
-        cardata1.VehicleID = cardata.VehicleID;
-        cardata1.RegPass = cardata.RegPass;
-        cardata1.NetPass = cardata.NetPass;
-        cardata1.ServerNameOrIP = cardata.ServerNameOrIP;
-        cardata1.VehicleImageDrawable = cardata.VehicleImageDrawable;
-        cardata1.lastResetVersion = 1;
-        allSavedCars.set(allSavedCars.indexOf(cardata), cardata1);
-          goto _L3
-        int i;
-        Object aobj[] = new Object[2];
-        aobj[0] = Integer.valueOf(allSavedCars.size());
-        aobj[1] = s;
-        Log.d("OVMS", String.format("Loaded %s cars. Last used car is %s", aobj));
-        i = 0;
-_L8:
-        if(i < allSavedCars.size()) goto _L6; else goto _L5
-_L5:
-        if(carData == null)
-            carData = (CarData)allSavedCars.get(0);
-        break MISSING_BLOCK_LABEL_399;
-_L6:
-        if(!((CarData)allSavedCars.get(i)).VehicleID.equals(s))
-            break; /* Loop/switch isn't completed */
-        carData = (CarData)allSavedCars.get(i);
-        if(true) goto _L5; else goto _L7
-_L7:
-        i++;
-          goto _L8
-    }
-
-    private void loginComplete()
-    {
-        isLoggedIn = true;
-        UIHandler.post(progressLoginCloseDialog);
-        ReportC2DMRegistrationID();
-        if(((String)carData.Data_Parameters.get(Integer.valueOf(11))).length() > 0)
-        {
-            SendServerCommand(ServerCommands.SUBSCRIBE_GROUP((String)carData.Data_Parameters.get(Integer.valueOf(11))));
-        } else
-        {
-            SendServerCommand("C3");
-            Runnable runnable = new Runnable() {
-
-                public void run()
-                {
-                    SendServerCommand("C1");
-                }
-
-                final OVMSActivity this$0;
-
-            
-            {
-                this$0 = OVMSActivity.this;
-                super();
-            }
-            }
-;
-            delayedRequest.postDelayed(runnable, 200L);
-        }
-    }
-
-    private void notifyServerSocketError(Exception exception)
-    {
-        lastServerException = exception;
-        if(exception != null)
-            exception.printStackTrace();
-        if(!SuppressServerErrorDialog)
-            UIHandler.post(serverSocketErrorDialog);
-    }
-
-    private void notifyTabRefresh()
-    {
-        UIHandler.post(mRefresh);
-    }
-
-    public void ChangeCar(CarData cardata)
-    {
-        ChangeCar(cardata, "tabInfo");
-    }
-
-    public void ChangeCar(CarData cardata, String s)
-    {
-        UIHandler.post(progressLoginShowDialog);
-        Log.d("OVMS", (new StringBuilder("Changed car to: ")).append(cardata.VehicleID).toString());
-        isLoggedIn = false;
-        if(tcpTask != null)
-        {
-            Log.d("TCP", "Shutting down pervious TCP connection (ChangeCar())");
-            tcpTask.ConnClose();
-            tcpTask.cancel(true);
-            tcpTask = null;
-        }
-        carData = cardata;
-        if(carData.Data_GPRSUtilization == null)
-            carData.Data_GPRSUtilization = new GPRSUtilization(this);
-        notifyTabRefresh();
-        cardata.ParanoidMode = false;
-        tcpTask = new TCPTask(carData);
-        Log.d("TCP", "Starting TCP Connection (ChangeCar())");
-        tcpTask.execute(new Void[0]);
-        getTabHost().setCurrentTabByTag(s);
-    }
-
-    public void ReportC2DMRegistrationID()
-    {
-        c2dmReportTimerHandler.postDelayed(reportC2DMRegistrationID, 500L);
-    }
-
-    public boolean SendServerCommand(String s)
-    {
-        return tcpTask.SendCommand(s);
-    }
-
-    public void onConfigurationChanged(Configuration configuration)
-    {
-        super.onConfigurationChanged(configuration);
-        UIHandler.post(mRecreateChildTabLayout);
-    }
-
-    public void onCreate(Bundle bundle)
-    {
-        super.onCreate(bundle);
-        setContentView(0x7f030002);
-        loadCars();
-        String s = getSharedPreferences("C2DM", 0).getString("RegID", "");
-        Display display;
-        Object aobj[];
-        TabHost tabhost;
-        if(s.length() == 0)
-        {
-            Log.d("C2DM", "Doing first time registration.");
-            ServerCommands.RequestC2DMRegistrationID(this);
-        } else
-        {
-            Log.d("C2DM", (new StringBuilder("Loaded Saved C2DM registration ID: ")).append(s).toString());
-        }
-        DeviceScreenSize = 0xf & getResources().getConfiguration().screenLayout;
-        display = ((WindowManager)getSystemService("window")).getDefaultDisplay();
-        aobj = new Object[2];
-        aobj[0] = Integer.valueOf(display.getWidth());
-        aobj[1] = Integer.valueOf(display.getHeight());
-        Log.d("INIT", String.format("Screen size: %d x %d", aobj));
-        if(display.getWidth() >= 976 || display.getHeight() >= 976)
-            DeviceScreenSize = 4;
-        tabhost = getTabHost();
-        if(DeviceScreenSize == 4)
-        {
-            Intent intent5 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabInfo_xlarge);
-            android.widget.TabHost.TabSpec tabspec5 = tabhost.newTabSpec("tabInfo_xlarge");
-            tabspec5.setContent(intent5);
-            tabspec5.setIndicator("", getResources().getDrawable(0x7f020045));
-            tabhost.addTab(tabspec5);
-            Intent intent6 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabMap);
-            android.widget.TabHost.TabSpec tabspec6 = tabhost.newTabSpec("tabMap");
-            tabspec6.setContent(intent6);
-            tabspec6.setIndicator("", getResources().getDrawable(0x7f02004b));
-            tabhost.addTab(tabspec6);
-            Intent intent7 = (new Intent()).setClass(this, com/openvehicles/OVMS/Tab_SubTabNotifications);
-            android.widget.TabHost.TabSpec tabspec7 = tabhost.newTabSpec("tabNotifications");
-            tabspec7.setContent(intent7);
-            tabspec7.setIndicator("", getResources().getDrawable(0x7f020055));
-            tabhost.addTab(tabspec7);
-            Intent intent8 = (new Intent()).setClass(this, com/openvehicles/OVMS/Tab_SubTabDataUtilizations);
-            android.widget.TabHost.TabSpec tabspec8 = tabhost.newTabSpec("tabDataUtilizations");
-            tabspec8.setContent(intent8);
-            tabspec8.setIndicator("", getResources().getDrawable(0x7f020049));
-            tabhost.addTab(tabspec8);
-            Intent intent9 = (new Intent()).setClass(this, com/openvehicles/OVMS/Tab_SubTabCarSettings);
-            android.widget.TabHost.TabSpec tabspec9 = tabhost.newTabSpec("tabCarSettings");
-            tabspec9.setContent(intent9);
-            tabspec9.setIndicator("", getResources().getDrawable(0x7f02004e));
-            tabhost.addTab(tabspec9);
-            Intent intent10 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabCars);
-            android.widget.TabHost.TabSpec tabspec10 = tabhost.newTabSpec("tabCars");
-            tabspec10.setContent(intent10);
-            tabspec10.setIndicator("", getResources().getDrawable(0x7f02005a));
-            tabhost.addTab(tabspec10);
-        } else
-        {
-            Intent intent = (new Intent()).setClass(this, com/openvehicles/OVMS/TabInfo);
-            android.widget.TabHost.TabSpec tabspec = tabhost.newTabSpec("tabInfo");
-            tabspec.setContent(intent);
-            tabspec.setIndicator("", getResources().getDrawable(0x7f020045));
-            tabhost.addTab(tabspec);
-            Intent intent1 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabCar);
-            android.widget.TabHost.TabSpec tabspec1 = tabhost.newTabSpec("tabCar");
-            tabspec1.setContent(intent1);
-            tabspec1.setIndicator("", getResources().getDrawable(0x7f020046));
-            tabhost.addTab(tabspec1);
-            Intent intent2 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabMap);
-            android.widget.TabHost.TabSpec tabspec2 = tabhost.newTabSpec("tabMap");
-            tabspec2.setContent(intent2);
-            tabspec2.setIndicator("", getResources().getDrawable(0x7f02004b));
-            tabhost.addTab(tabspec2);
-            Intent intent3 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabMiscFeatures);
-            android.widget.TabHost.TabSpec tabspec3 = tabhost.newTabSpec("tabMiscFeatures");
-            tabspec3.setContent(intent3);
-            tabspec3.setIndicator("", getResources().getDrawable(0x7f020054));
-            tabhost.addTab(tabspec3);
-            Intent intent4 = (new Intent()).setClass(this, com/openvehicles/OVMS/TabCars);
-            android.widget.TabHost.TabSpec tabspec4 = tabhost.newTabSpec("tabCars");
-            tabspec4.setContent(intent4);
-            tabspec4.setIndicator("", getResources().getDrawable(0x7f02005a));
-            tabhost.addTab(tabspec4);
-        }
-        getTabHost().setOnTabChangedListener(this);
-    }
-
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(0x7f030003, menu);
-        return true;
-    }
-
-    protected void onDestory()
-    {
-        if(tcpTask != null)
-        {
-            Log.d("TCP", "Shutting down TCP connection (OnDestroy())");
-            tcpTask.ConnClose();
-            tcpTask = null;
-        }
-    }
-
-    public void onNewIntent(Intent intent)
-    {
-        TabHost tabhost;
-        Log.d("EVENT", "onNewIntent");
-        tabhost = getTabHost();
-        if(intent == null) goto _L2; else goto _L1
-_L1:
-        CarData cardata;
-        Iterator iterator;
-        if(!intent.hasExtra("VehicleID"))
-            break MISSING_BLOCK_LABEL_154;
-        cardata = null;
-        iterator = allSavedCars.iterator();
-_L6:
-        if(iterator.hasNext()) goto _L4; else goto _L3
-_L3:
-        if(cardata != null)
-        {
-            Log.d("EVENT", (new StringBuilder("Launching with default car set to: ")).append(cardata.VehicleID).toString());
-            CarData cardata1;
-            if(intent.hasExtra("SetTab"))
-                ChangeCar(cardata, intent.getStringExtra("SetTab"));
-            else
-                ChangeCar(cardata);
-        }
-_L2:
-        return;
-_L4:
-        cardata1 = (CarData)iterator.next();
-        if(!cardata1.VehicleID.equals(intent.getStringExtra("VehicleID"))) goto _L6; else goto _L5
-_L5:
-        cardata = cardata1;
-          goto _L3
-        if(intent.hasExtra("SetTab"))
-            tabhost.setCurrentTabByTag(intent.getStringExtra("SetTab"));
-        else
-            tabhost.setCurrentTabByTag("tabInfo");
-          goto _L2
-    }
-
-    public boolean onOptionsItemSelected(MenuItem menuitem)
-    {
-        boolean flag = true;
-        menuitem.getItemId();
-        JVM INSTR tableswitch 2131296266 2131296267: default 32
-    //                   2131296266 40
-    //                   2131296267 47;
-           goto _L1 _L2 _L3
-_L1:
-        flag = super.onOptionsItemSelected(menuitem);
-_L5:
-        return flag;
-_L2:
-        finish();
-        continue; /* Loop/switch isn't completed */
-_L3:
-        OVMSNotifications ovmsnotifications = new OVMSNotifications(this);
-        ovmsnotifications.Clear();
-        ovmsnotifications.Save();
-        notifyTabRefresh();
-        if(true) goto _L5; else goto _L4
-_L4:
-    }
-
-    protected void onPause()
-    {
-        super.onPause();
-        if(tcpTask != null)
-        {
-            Log.d("TCP", "Shutting down TCP connection (OnPause())");
-            tcpTask.ConnClose();
-            tcpTask.cancel(true);
-            tcpTask = null;
-        }
-        saveCars();
-        OVMSWidgets.UpdateWidgets(this);
-    }
-
-    protected void onResume()
-    {
-        super.onResume();
-        if(tcpTask == null)
-        {
-            UIHandler.post(progressLoginCloseDialog);
-            String s = getTabHost().getCurrentTabTag();
-            ChangeCar(carData, s);
-        }
-    }
-
-    public void onTabChanged(String s)
-    {
-        UIHandler.post(mRefresh);
-    }
-
-    public void saveCars()
-    {
-        Log.d("OVMS", "Saving cars to interal storage...");
-        android.content.SharedPreferences.Editor editor = getSharedPreferences("OVMS", 0).edit();
-        editor.putString("LastVehicleID", carData.VehicleID);
-        editor.commit();
-        ObjectOutputStream objectoutputstream = new ObjectOutputStream(openFileOutput("OVMSSavedCars.obj", 0));
-        objectoutputstream.writeObject(allSavedCars);
-        objectoutputstream.close();
-_L1:
-        return;
-        Exception exception;
-        exception;
-        exception.printStackTrace();
-          goto _L1
-    }
-
-    public int DeviceScreenSize;
-    public final int OVMS_CONFIG_FILE_VERSION = 1;
-    public final int SCREENLAYOUT_SIZE_LARGE = 3;
-    public final int SCREENLAYOUT_SIZE_XLARGE = 4;
-    public boolean SuppressServerErrorDialog;
-    private Handler UIHandler;
-    private AlertDialog alertDialog;
-    private ArrayList allSavedCars;
-    private Handler c2dmReportTimerHandler;
-    private CarData carData;
-    private Handler delayedRequest;
-    private boolean isLoggedIn;
-    private Exception lastServerException;
-    private ServerCommandResponseHandler mCommandResponse;
-    private Runnable mRecreateChildTabLayout;
-    private Runnable mRefresh;
-    private Runnable pingServer;
-    private Handler pingServerTimerHandler;
-    private ProgressDialog progressLogin;
-    private Runnable progressLoginCloseDialog;
-    private Runnable progressLoginShowDialog;
-    private Runnable reportC2DMRegistrationID;
-    private Runnable serverSocketErrorDialog;
-    private final String settingsFileName = "OVMSSavedCars.obj";
-    private TCPTask tcpTask;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	public int DeviceScreenSize;
+	public final int OVMS_CONFIG_FILE_VERSION = 1;
+	public final int SCREENLAYOUT_SIZE_LARGE = 3;
+	public final int SCREENLAYOUT_SIZE_XLARGE = 4;
+	public boolean SuppressServerErrorDialog = false;
+	private Handler UIHandler = new Handler();
+	private AlertDialog alertDialog;
+	private ArrayList<CarData> allSavedCars;
+	private Handler c2dmReportTimerHandler = new Handler();
+	private CarData carData;
+	private Handler delayedRequest = new Handler();
+	private boolean isLoggedIn;
+	private Exception lastServerException;
+	private ServerCommandResponseHandler mCommandResponse;
+	private Runnable mRecreateChildTabLayout = new Runnable()
+	{
+		public void run()
+		{
+			String str = OVMSActivity.this.getLocalActivityManager().getCurrentId().trim();
+			Log.d("Tab", "Tab recreate: " + str);
+			if ((str == null) || (OVMSActivity.this.getLocalActivityManager().getActivity(str) == null));
+			while (true)
+			{
+				return;
+				if (str.equals("tabInfo_xlarge"))
+				{
+					TabInfo_xlarge localTabInfo_xlarge = (TabInfo_xlarge)OVMSActivity.this.getLocalActivityManager().getActivity(str);
+					localTabInfo_xlarge.OrientationChanged();
+					localTabInfo_xlarge.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (str.equals("tabInfo"))
+				{
+					TabInfo localTabInfo = (TabInfo)OVMSActivity.this.getLocalActivityManager().getActivity(str);
+					localTabInfo.OrientationChanged();
+					localTabInfo.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (str.equals("tabCar"))
+				{
+					TabCar localTabCar = (TabCar)OVMSActivity.this.getLocalActivityManager().getActivity(str);
+					localTabCar.OrientationChanged();
+					localTabCar.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+			}
+		}
+	};
+	private Runnable mRefresh = new Runnable()
+	{
+		private void notifyTabRefresh(String paramAnonymousString)
+		{
+			Log.d("Tab", "Tab refresh: " + paramAnonymousString);
+			if ((paramAnonymousString == null) || (OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString) == null))
+				return;
+			if (OVMSActivity.this.DeviceScreenSize == 4)
+				if (paramAnonymousString.equals("tabInfo_xlarge"))
+				{
+					TabInfo_xlarge localTabInfo_xlarge = (TabInfo_xlarge)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString);
+					if (localTabInfo_xlarge.CurrentScreenOrientation != OVMSActivity.this.getResources().getConfiguration().orientation)
+						localTabInfo_xlarge.OrientationChanged();
+					localTabInfo_xlarge.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+			while (true)
+			{
+				OVMSActivity.this.getTabHost().invalidate();
+				break;
+				if (paramAnonymousString.equals("tabMap"))
+				{
+					((TabMap)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (paramAnonymousString.equals("tabNotifications"))
+				{
+					((Tab_SubTabNotifications)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (paramAnonymousString.equals("tabDataUtilizations"))
+				{
+					((Tab_SubTabDataUtilizations)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (paramAnonymousString.equals("tabCarSettings"))
+				{
+					((Tab_SubTabCarSettings)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+				}
+				else if (paramAnonymousString.equals("tabCars"))
+				{
+					((TabCars)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).LoadCars(OVMSActivity.this.allSavedCars);
+					continue;
+					if (paramAnonymousString.equals("tabInfo"))
+					{
+						TabInfo localTabInfo = (TabInfo)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString);
+						if (localTabInfo.CurrentScreenOrientation != OVMSActivity.this.getResources().getConfiguration().orientation)
+							localTabInfo.OrientationChanged();
+						localTabInfo.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+					}
+					else if (paramAnonymousString.equals("tabCar"))
+					{
+						TabCar localTabCar = (TabCar)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString);
+						if (localTabCar.CurrentScreenOrientation != OVMSActivity.this.getResources().getConfiguration().orientation)
+							localTabCar.OrientationChanged();
+						localTabCar.Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+					}
+					else if (paramAnonymousString.equals("tabMap"))
+					{
+						((TabMap)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+					}
+					else if (paramAnonymousString.equals("tabMiscFeatures"))
+					{
+						((TabMiscFeatures)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).Refresh(OVMSActivity.this.carData, OVMSActivity.this.isLoggedIn);
+					}
+					else if (paramAnonymousString.equals("tabCars"))
+					{
+						((TabCars)OVMSActivity.this.getLocalActivityManager().getActivity(paramAnonymousString)).LoadCars(OVMSActivity.this.allSavedCars);
+					}
+					else
+					{
+						OVMSActivity.this.getTabHost().setCurrentTab(0);
+					}
+				}
+			}
+		}
+
+		public void run()
+		{
+			if (OVMSActivity.this.isLoggedIn)
+			{
+				if ((OVMSActivity.this.progressLogin != null) && (OVMSActivity.this.progressLogin.isShowing()))
+					OVMSActivity.this.progressLogin.dismiss();
+				if ((OVMSActivity.this.alertDialog != null) && (OVMSActivity.this.alertDialog.isShowing()))
+					OVMSActivity.this.alertDialog.dismiss();
+			}
+			notifyTabRefresh(OVMSActivity.this.getLocalActivityManager().getCurrentId().trim());
+		}
+	};
+	private Runnable pingServer = new Runnable()
+	{
+		public void run()
+		{
+			if (OVMSActivity.this.isLoggedIn)
+			{
+				Log.d("OVMS", "Pinging server...");
+				OVMSActivity.this.tcpTask.Ping();
+			}
+			OVMSActivity.this.pingServerTimerHandler.postDelayed(OVMSActivity.this.pingServer, 60000L);
+		}
+	};
+	private Handler pingServerTimerHandler = new Handler();
+	private ProgressDialog progressLogin = null;
+	private Runnable progressLoginCloseDialog = new Runnable()
+	{
+		public void run()
+		{
+			try
+			{
+				if (OVMSActivity.this.progressLogin != null)
+					OVMSActivity.this.progressLogin.dismiss();
+				label20: return;
+			}
+			catch (Exception localException)
+			{
+				break label20;
+			}
+		}
+	};
+	private Runnable progressLoginShowDialog = new Runnable()
+	{
+		public void run()
+		{
+			try
+			{
+				if (OVMSActivity.this.progressLogin != null)
+					OVMSActivity.this.progressLogin.dismiss();
+				try
+				{
+					label20: if (OVMSActivity.this.alertDialog != null)
+						OVMSActivity.this.alertDialog.dismiss();
+				try
+				{
+					label40: OVMSActivity.this.progressLogin = new ProgressDialog(OVMSActivity.this);
+				OVMSActivity.this.progressLogin.setIndeterminate(true);
+				OVMSActivity.this.progressLogin.setMessage("Connecting to OVMS Server...");
+				OVMSActivity.this.progressLogin.getWindow().clearFlags(2);
+				OVMSActivity.this.progressLogin.show();
+				label105: return;
+				}
+				catch (Exception localException3)
+				{
+					break label105;
+				}
+				}
+				catch (Exception localException2)
+				{
+					break label40;
+				}
+			}
+			catch (Exception localException1)
+			{
+				break label20;
+			}
+		}
+	};
+	private Runnable reportC2DMRegistrationID = new Runnable()
+	{
+		public void run()
+		{
+			if (OVMSActivity.this.tcpTask == null);
+			while (true)
+			{
+				return;
+				SharedPreferences localSharedPreferences = OVMSActivity.this.getSharedPreferences("C2DM", 0);
+				String str1 = localSharedPreferences.getString("RegID", "");
+				String str2;
+				if (!localSharedPreferences.contains("UUID"))
+				{
+					str2 = UUID.randomUUID().toString();
+					SharedPreferences.Editor localEditor = OVMSActivity.this.getSharedPreferences("C2DM", 0).edit();
+					localEditor.putString("UUID", str2);
+					localEditor.commit();
+					Log.d("OVMS", "Generated New App ID: " + str2);
+				}
+				while (true)
+				{
+					if (str1.length() != 0)
+						break label184;
+					Log.d("C2DM", "C2DM registration ID not found. Rescheduling.");
+					OVMSActivity.this.c2dmReportTimerHandler.postDelayed(OVMSActivity.this.reportC2DMRegistrationID, 15000L);
+					break;
+					str2 = localSharedPreferences.getString("UUID", "");
+					Log.d("OVMS", "Loaded Saved App ID: " + str2);
+				}
+				label184: if (!OVMSActivity.this.SendServerCommand(ServerCommands.SUBSCRIBE_PUSH_NOTIFICATIONS(str2, OVMSActivity.this.carData.VehicleID, OVMSActivity.this.carData.NetPass, str1.trim())))
+				{
+					Log.d("OVMS", "Reporting C2DM ID failed. Rescheduling.");
+					OVMSActivity.this.c2dmReportTimerHandler.postDelayed(OVMSActivity.this.reportC2DMRegistrationID, 5000L);
+				}
+			}
+		}
+	};
+	private Runnable serverSocketErrorDialog = new Runnable()
+	{
+		public void run()
+		{
+			if (OVMSActivity.this.SuppressServerErrorDialog);
+			while (true)
+			{
+				return;
+				if ((OVMSActivity.this.alertDialog != null) && (OVMSActivity.this.alertDialog.isShowing()))
+					continue;
+				try
+				{
+					if (OVMSActivity.this.progressLogin != null)
+						OVMSActivity.this.progressLogin.dismiss();
+					label54: AlertDialog.Builder localBuilder = new AlertDialog.Builder(OVMSActivity.this);
+					if (OVMSActivity.this.isLoggedIn);
+					for (String str = String.format("OVMS Server Connection Lost", new Object[0]); ; str = String.format("Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords", new Object[0]))
+					{
+						while (true)
+						{
+							localBuilder.setMessage(str).setTitle("Connection Problem").setCancelable(false).setPositiveButton("Retry", new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int)
+								{
+									OVMSActivity.this.ChangeCar(OVMSActivity.this.carData);
+									paramAnonymous2DialogInterface.dismiss();
+								}
+							}).setNegativeButton("Open Settings", new DialogInterface.OnClickListener()
+							{
+								public void onClick(DialogInterface paramAnonymous2DialogInterface, int paramAnonymous2Int)
+								{
+									OVMSActivity.this.getTabHost().setCurrentTabByTag("tabCars");
+									paramAnonymous2DialogInterface.dismiss();
+								}
+							});
+							OVMSActivity.this.alertDialog = localBuilder.create();
+							try
+							{
+								OVMSActivity.this.alertDialog.show();
+							}
+							catch (Exception localException2)
+							{
+							}
+						}
+						break;
+					}
+				}
+				catch (Exception localException1)
+				{
+					break label54;
+				}
+			}
+		}
+	};
+	private final String settingsFileName = "OVMSSavedCars.obj";
+	private TCPTask tcpTask;
+
+	private void initializeSavedCars()
+	{
+		Log.d("OVMS", "Invalid save file. Initializing with demo car.");
+		this.allSavedCars = new ArrayList();
+		CarData localCarData = new CarData();
+		localCarData.VehicleID = "DEMO";
+		localCarData.RegPass = "DEMO";
+		localCarData.NetPass = "DEMO";
+		localCarData.ServerNameOrIP = "tmc.openvehicles.com";
+		localCarData.VehicleImageDrawable = "car_models_signaturered";
+		localCarData.lastResetVersion = 1;
+		this.allSavedCars.add(localCarData);
+		this.carData = localCarData;
+		saveCars();
+	}
+
+	private void loadCars()
+	{
+		try
+		{
+			Log.d("OVMS", "Loading saved cars from internal storage file: OVMSSavedCars.obj");
+			ObjectInputStream localObjectInputStream = new ObjectInputStream(openFileInput("OVMSSavedCars.obj"));
+			this.allSavedCars = ((ArrayList)localObjectInputStream.readObject());
+			localObjectInputStream.close();
+			Iterator localIterator = this.allSavedCars.iterator();
+			while (true)
+			{
+				if (!localIterator.hasNext())
+				{
+					str = getSharedPreferences("OVMS", 0).getString("LastVehicleID", "").trim();
+					if (str.length() != 0)
+						break label271;
+					this.carData = ((CarData)this.allSavedCars.get(0));
+					return;
+				}
+				localCarData1 = (CarData)localIterator.next();
+				if ((localCarData1.VehicleID != null) && (localCarData1.RegPass != null) && (localCarData1.NetPass != null) && (localCarData1.ServerNameOrIP != null) && (localCarData1.VehicleImageDrawable != null))
+					break;
+				initializeSavedCars();
+			}
+		}
+		catch (Exception localException)
+		{
+			String str;
+			while (true)
+			{
+				CarData localCarData1;
+				localException.printStackTrace();
+				initializeSavedCars();
+				break;
+				if (localCarData1.lastResetVersion != 1)
+				{
+					CarData localCarData2 = new CarData();
+					localCarData2.VehicleID = localCarData1.VehicleID;
+					localCarData2.RegPass = localCarData1.RegPass;
+					localCarData2.NetPass = localCarData1.NetPass;
+					localCarData2.ServerNameOrIP = localCarData1.ServerNameOrIP;
+					localCarData2.VehicleImageDrawable = localCarData1.VehicleImageDrawable;
+					localCarData2.lastResetVersion = 1;
+					this.allSavedCars.set(this.allSavedCars.indexOf(localCarData1), localCarData2);
+				}
+			}
+			label271: Object[] arrayOfObject = new Object[2];
+			arrayOfObject[0] = Integer.valueOf(this.allSavedCars.size());
+			arrayOfObject[1] = str;
+			Log.d("OVMS", String.format("Loaded %s cars. Last used car is %s", arrayOfObject));
+			for (int i = 0; ; i++)
+			{
+				if (i >= this.allSavedCars.size());
+				while (true)
+				{
+					if (this.carData != null)
+						return;
+					this.carData = ((CarData)this.allSavedCars.get(0));
+					return;
+					if (!((CarData)this.allSavedCars.get(i)).VehicleID.equals(str))
+						break;
+					this.carData = ((CarData)this.allSavedCars.get(i));
+				}
+			}
+		}
+	}
+
+	private void loginComplete()
+	{
+		this.isLoggedIn = true;
+		this.UIHandler.post(this.progressLoginCloseDialog);
+		ReportC2DMRegistrationID();
+		if (((String)this.carData.Data_Parameters.get(Integer.valueOf(11))).length() > 0)
+			SendServerCommand(ServerCommands.SUBSCRIBE_GROUP((String)this.carData.Data_Parameters.get(Integer.valueOf(11))));
+		while (true)
+		{
+			return;
+			SendServerCommand("C3");
+			Runnable local8 = new Runnable()
+			{
+				public void run()
+				{
+					OVMSActivity.this.SendServerCommand("C1");
+				}
+			};
+			this.delayedRequest.postDelayed(local8, 200L);
+		}
+	}
+
+	private void notifyServerSocketError(Exception paramException)
+	{
+		this.lastServerException = paramException;
+		if (paramException != null)
+			paramException.printStackTrace();
+		if (!this.SuppressServerErrorDialog)
+			this.UIHandler.post(this.serverSocketErrorDialog);
+	}
+
+	private void notifyTabRefresh()
+	{
+		this.UIHandler.post(this.mRefresh);
+	}
+
+	public void ChangeCar(CarData paramCarData)
+	{
+		ChangeCar(paramCarData, "tabInfo");
+	}
+
+	public void ChangeCar(CarData paramCarData, String paramString)
+	{
+		this.UIHandler.post(this.progressLoginShowDialog);
+		Log.d("OVMS", "Changed car to: " + paramCarData.VehicleID);
+		this.isLoggedIn = false;
+		if (this.tcpTask != null)
+		{
+			Log.d("TCP", "Shutting down pervious TCP connection (ChangeCar())");
+			this.tcpTask.ConnClose();
+			this.tcpTask.cancel(true);
+			this.tcpTask = null;
+		}
+		this.carData = paramCarData;
+		if (this.carData.Data_GPRSUtilization == null)
+			this.carData.Data_GPRSUtilization = new GPRSUtilization(this);
+		notifyTabRefresh();
+		paramCarData.ParanoidMode = false;
+		this.tcpTask = new TCPTask(this.carData);
+		Log.d("TCP", "Starting TCP Connection (ChangeCar())");
+		this.tcpTask.execute(new Void[0]);
+		getTabHost().setCurrentTabByTag(paramString);
+	}
+
+	public void ReportC2DMRegistrationID()
+	{
+		this.c2dmReportTimerHandler.postDelayed(this.reportC2DMRegistrationID, 500L);
+	}
+
+	public boolean SendServerCommand(String paramString)
+	{
+		return this.tcpTask.SendCommand(paramString);
+	}
+
+	public void onConfigurationChanged(Configuration paramConfiguration)
+	{
+		super.onConfigurationChanged(paramConfiguration);
+		this.UIHandler.post(this.mRecreateChildTabLayout);
+	}
+
+	public void onCreate(Bundle paramBundle)
+	{
+		super.onCreate(paramBundle);
+		setContentView(2130903042);
+		loadCars();
+		String str = getSharedPreferences("C2DM", 0).getString("RegID", "");
+		TabHost localTabHost;
+		if (str.length() == 0)
+		{
+			Log.d("C2DM", "Doing first time registration.");
+			ServerCommands.RequestC2DMRegistrationID(this);
+			this.DeviceScreenSize = (0xF & getResources().getConfiguration().screenLayout);
+			Display localDisplay = ((WindowManager)getSystemService("window")).getDefaultDisplay();
+			Object[] arrayOfObject = new Object[2];
+			arrayOfObject[0] = Integer.valueOf(localDisplay.getWidth());
+			arrayOfObject[1] = Integer.valueOf(localDisplay.getHeight());
+			Log.d("INIT", String.format("Screen size: %d x %d", arrayOfObject));
+			if ((localDisplay.getWidth() >= 976) || (localDisplay.getHeight() >= 976))
+				this.DeviceScreenSize = 4;
+			localTabHost = getTabHost();
+			if (this.DeviceScreenSize != 4)
+				break label573;
+			Intent localIntent6 = new Intent().setClass(this, TabInfo_xlarge.class);
+			TabHost.TabSpec localTabSpec6 = localTabHost.newTabSpec("tabInfo_xlarge");
+			localTabSpec6.setContent(localIntent6);
+			localTabSpec6.setIndicator("", getResources().getDrawable(2130837573));
+			localTabHost.addTab(localTabSpec6);
+			Intent localIntent7 = new Intent().setClass(this, TabMap.class);
+			TabHost.TabSpec localTabSpec7 = localTabHost.newTabSpec("tabMap");
+			localTabSpec7.setContent(localIntent7);
+			localTabSpec7.setIndicator("", getResources().getDrawable(2130837579));
+			localTabHost.addTab(localTabSpec7);
+			Intent localIntent8 = new Intent().setClass(this, Tab_SubTabNotifications.class);
+			TabHost.TabSpec localTabSpec8 = localTabHost.newTabSpec("tabNotifications");
+			localTabSpec8.setContent(localIntent8);
+			localTabSpec8.setIndicator("", getResources().getDrawable(2130837589));
+			localTabHost.addTab(localTabSpec8);
+			Intent localIntent9 = new Intent().setClass(this, Tab_SubTabDataUtilizations.class);
+			TabHost.TabSpec localTabSpec9 = localTabHost.newTabSpec("tabDataUtilizations");
+			localTabSpec9.setContent(localIntent9);
+			localTabSpec9.setIndicator("", getResources().getDrawable(2130837577));
+			localTabHost.addTab(localTabSpec9);
+			Intent localIntent10 = new Intent().setClass(this, Tab_SubTabCarSettings.class);
+			TabHost.TabSpec localTabSpec10 = localTabHost.newTabSpec("tabCarSettings");
+			localTabSpec10.setContent(localIntent10);
+			localTabSpec10.setIndicator("", getResources().getDrawable(2130837582));
+			localTabHost.addTab(localTabSpec10);
+			Intent localIntent11 = new Intent().setClass(this, TabCars.class);
+			TabHost.TabSpec localTabSpec11 = localTabHost.newTabSpec("tabCars");
+			localTabSpec11.setContent(localIntent11);
+			localTabSpec11.setIndicator("", getResources().getDrawable(2130837594));
+			localTabHost.addTab(localTabSpec11);
+		}
+		while (true)
+		{
+			getTabHost().setOnTabChangedListener(this);
+			return;
+			Log.d("C2DM", "Loaded Saved C2DM registration ID: " + str);
+			break;
+			label573: Intent localIntent1 = new Intent().setClass(this, TabInfo.class);
+			TabHost.TabSpec localTabSpec1 = localTabHost.newTabSpec("tabInfo");
+			localTabSpec1.setContent(localIntent1);
+			localTabSpec1.setIndicator("", getResources().getDrawable(2130837573));
+			localTabHost.addTab(localTabSpec1);
+			Intent localIntent2 = new Intent().setClass(this, TabCar.class);
+			TabHost.TabSpec localTabSpec2 = localTabHost.newTabSpec("tabCar");
+			localTabSpec2.setContent(localIntent2);
+			localTabSpec2.setIndicator("", getResources().getDrawable(2130837574));
+			localTabHost.addTab(localTabSpec2);
+			Intent localIntent3 = new Intent().setClass(this, TabMap.class);
+			TabHost.TabSpec localTabSpec3 = localTabHost.newTabSpec("tabMap");
+			localTabSpec3.setContent(localIntent3);
+			localTabSpec3.setIndicator("", getResources().getDrawable(2130837579));
+			localTabHost.addTab(localTabSpec3);
+			Intent localIntent4 = new Intent().setClass(this, TabMiscFeatures.class);
+			TabHost.TabSpec localTabSpec4 = localTabHost.newTabSpec("tabMiscFeatures");
+			localTabSpec4.setContent(localIntent4);
+			localTabSpec4.setIndicator("", getResources().getDrawable(2130837588));
+			localTabHost.addTab(localTabSpec4);
+			Intent localIntent5 = new Intent().setClass(this, TabCars.class);
+			TabHost.TabSpec localTabSpec5 = localTabHost.newTabSpec("tabCars");
+			localTabSpec5.setContent(localIntent5);
+			localTabSpec5.setIndicator("", getResources().getDrawable(2130837594));
+			localTabHost.addTab(localTabSpec5);
+		}
+	}
+
+	public boolean onCreateOptionsMenu(Menu paramMenu)
+	{
+		getMenuInflater().inflate(2130903043, paramMenu);
+		return true;
+	}
+
+	protected void onDestory()
+	{
+		if (this.tcpTask != null)
+		{
+			Log.d("TCP", "Shutting down TCP connection (OnDestroy())");
+			this.tcpTask.ConnClose();
+			this.tcpTask = null;
+		}
+	}
+
+	public void onNewIntent(Intent paramIntent)
+	{
+		Log.d("EVENT", "onNewIntent");
+		TabHost localTabHost = getTabHost();
+		Object localObject;
+		Iterator localIterator;
+		if (paramIntent != null)
+		{
+			if (!paramIntent.hasExtra("VehicleID"))
+				break label154;
+			localObject = null;
+			localIterator = this.allSavedCars.iterator();
+			if (localIterator.hasNext())
+				break label108;
+			label51: if (localObject != null)
+			{
+				Log.d("EVENT", "Launching with default car set to: " + ((CarData)localObject).VehicleID);
+				if (!paramIntent.hasExtra("SetTab"))
+					break label145;
+				ChangeCar((CarData)localObject, paramIntent.getStringExtra("SetTab"));
+			}
+		}
+		while (true)
+		{
+			return;
+			label108: CarData localCarData = (CarData)localIterator.next();
+			if (!localCarData.VehicleID.equals(paramIntent.getStringExtra("VehicleID")))
+				break;
+			localObject = localCarData;
+			break label51;
+			label145: ChangeCar((CarData)localObject);
+			continue;
+			label154: if (paramIntent.hasExtra("SetTab"))
+				localTabHost.setCurrentTabByTag(paramIntent.getStringExtra("SetTab"));
+			else
+				localTabHost.setCurrentTabByTag("tabInfo");
+		}
+	}
+
+	public boolean onOptionsItemSelected(MenuItem paramMenuItem)
+	{
+		boolean bool = true;
+		switch (paramMenuItem.getItemId())
+		{
+		default:
+			bool = super.onOptionsItemSelected(paramMenuItem);
+		case 2131296266:
+		case 2131296267:
+		}
+		while (true)
+		{
+			return bool;
+			finish();
+			continue;
+			OVMSNotifications localOVMSNotifications = new OVMSNotifications(this);
+			localOVMSNotifications.Clear();
+			localOVMSNotifications.Save();
+			notifyTabRefresh();
+		}
+	}
+
+	protected void onPause()
+	{
+		super.onPause();
+		if (this.tcpTask != null)
+		{
+			Log.d("TCP", "Shutting down TCP connection (OnPause())");
+			this.tcpTask.ConnClose();
+			this.tcpTask.cancel(true);
+			this.tcpTask = null;
+		}
+		saveCars();
+		OVMSWidgets.UpdateWidgets(this);
+	}
+
+	protected void onResume()
+	{
+		super.onResume();
+		if (this.tcpTask == null)
+		{
+			this.UIHandler.post(this.progressLoginCloseDialog);
+			String str = getTabHost().getCurrentTabTag();
+			ChangeCar(this.carData, str);
+		}
+	}
+
+	public void onTabChanged(String paramString)
+	{
+		this.UIHandler.post(this.mRefresh);
+	}
+
+	public void saveCars()
+	{
+		try
+		{
+			Log.d("OVMS", "Saving cars to interal storage...");
+			SharedPreferences.Editor localEditor = getSharedPreferences("OVMS", 0).edit();
+			localEditor.putString("LastVehicleID", this.carData.VehicleID);
+			localEditor.commit();
+			ObjectOutputStream localObjectOutputStream = new ObjectOutputStream(openFileOutput("OVMSSavedCars.obj", 0));
+			localObjectOutputStream.writeObject(this.allSavedCars);
+			localObjectOutputStream.close();
+			return;
+		}
+		catch (Exception localException)
+		{
+			while (true)
+				localException.printStackTrace();
+		}
+	}
+
+	private class ServerCommandResponseHandler
+	implements Runnable
+	{
+		String message;
+
+		ServerCommandResponseHandler(String arg2)
+		{
+			Object localObject;
+			this.message = localObject;
+		}
+
+		public void run()
+		{
+			Toast.makeText(OVMSActivity.this, this.message, 0).show();
+		}
+	}
+
+	private class TCPTask extends AsyncTask<Void, Integer, Void>
+	{
+		private BufferedReader Inputstream;
+		private PrintWriter Outputstream;
+		public Socket Sock;
+		private CarData carData = OVMSActivity.this.carData;
+		private byte[] pmDigest;
+		private RC4 pmcipher;
+		private RC4 rxcipher;
+		private boolean socketMarkedClosed;
+		private RC4 txcipher;
+
+		public TCPTask(CarData arg2)
+		{
+		}
+
+		private void ConnInit()
+		{
+			String str1 = this.carData.NetPass;
+			String str2 = this.carData.VehicleID;
+			char[] arrayOfChar = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
+			Random localRandom = new Random();
+			String str3 = "";
+			int i = 0;
+			while (true)
+			{
+				byte[] arrayOfByte1;
+				if (i >= 22)
+					arrayOfByte1 = str3.getBytes();
+				try
+				{
+					HMAC localHMAC = new HMAC("MD5", str1.getBytes());
+					localHMAC.update(arrayOfByte1);
+					String str4 = Base64.encodeBytes(localHMAC.sign());
+					Log.d("TCP", "Connecting " + this.carData.ServerNameOrIP);
+					this.Sock = new Socket();
+					this.Sock.setSoTimeout(10000);
+					this.Sock.connect(new InetSocketAddress(this.carData.ServerNameOrIP, 6867), 5000);
+					this.Outputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(this.Sock.getOutputStream())), true);
+					Object[] arrayOfObject1 = new Object[3];
+					arrayOfObject1[0] = str3;
+					arrayOfObject1[1] = str4;
+					arrayOfObject1[2] = str2;
+					Log.d("OVMS", String.format("TX: MP-A 0 %s %s %s", arrayOfObject1));
+					PrintWriter localPrintWriter = this.Outputstream;
+					Object[] arrayOfObject2 = new Object[3];
+					arrayOfObject2[0] = str3;
+					arrayOfObject2[1] = str4;
+					arrayOfObject2[2] = str2;
+					localPrintWriter.println(String.format("MP-A 0 %s %s %s", arrayOfObject2));
+					this.Inputstream = new BufferedReader(new InputStreamReader(this.Sock.getInputStream()));
+					try
+					{
+						String[] arrayOfString = this.Inputstream.readLine().trim().split("[ ]+");
+						Object[] arrayOfObject3 = new Object[4];
+						arrayOfObject3[0] = arrayOfString[0];
+						arrayOfObject3[1] = arrayOfString[1];
+						arrayOfObject3[2] = arrayOfString[2];
+						arrayOfObject3[3] = arrayOfString[3];
+						Log.d("OVMS", String.format("RX: %s %s %s %s", arrayOfObject3));
+						String str5 = arrayOfString[2];
+						byte[] arrayOfByte2 = str5.getBytes();
+						byte[] arrayOfByte3 = Base64.decode(arrayOfString[3]);
+						localHMAC.clear();
+						localHMAC.update(arrayOfByte2);
+						if (!Arrays.equals(localHMAC.sign(), arrayOfByte3))
+						{
+							Object[] arrayOfObject6 = new Object[2];
+							arrayOfObject6[0] = Base64.encodeBytes(localHMAC.sign());
+							arrayOfObject6[1] = arrayOfString[3];
+							Log.d("OVMS", String.format("Server authentication failed. Expected %s Got %s", arrayOfObject6));
+							localHMAC.clear();
+							String str6 = str5 + str3;
+							localHMAC.update(str6.getBytes());
+							byte[] arrayOfByte4 = localHMAC.sign();
+							Object[] arrayOfObject4 = new Object[3];
+							arrayOfObject4[0] = str6;
+							arrayOfObject4[1] = toHex(arrayOfByte4).toLowerCase();
+							arrayOfObject4[2] = Base64.encodeBytes(arrayOfByte4);
+							Log.d("OVMS", String.format("Client version of the shared key is %s - (%s) %s", arrayOfObject4));
+							RC4 localRC41 = new RC4(arrayOfByte4);
+							this.rxcipher = localRC41;
+							RC4 localRC42 = new RC4(arrayOfByte4);
+							this.txcipher = localRC42;
+							localObject = "";
+							j = 0;
+							if (j < 1024)
+								break label745;
+							this.rxcipher.rc4(((String)localObject).getBytes());
+							this.txcipher.rc4(((String)localObject).getBytes());
+							Object[] arrayOfObject5 = new Object[1];
+							arrayOfObject5[0] = this.carData.ServerNameOrIP;
+							Log.d("OVMS", String.format("Connected to %s. Ciphers initialized. Listening...", arrayOfObject5));
+							OVMSActivity.this.loginComplete();
+							return;
+							str3 = str3 + arrayOfChar[localRandom.nextInt(-1 + arrayOfChar.length)];
+							i++;
+						}
+					}
+					catch (Exception localException2)
+					{
+						while (true)
+							OVMSActivity.this.notifyServerSocketError(localException2);
+					}
+				}
+				catch (UnknownHostException localUnknownHostException)
+				{
+					while (true)
+					{
+						OVMSActivity.this.notifyServerSocketError(localUnknownHostException);
+						continue;
+						Log.d("OVMS", "Server authentication OK.");
+					}
+				}
+				catch (SocketTimeoutException localSocketTimeoutException)
+				{
+					while (true)
+					{
+						int j;
+						OVMSActivity.this.notifyServerSocketError(localSocketTimeoutException);
+						continue;
+						String str7 = localObject + "0";
+						Object localObject = str7;
+						j++;
+					}
+				}
+				catch (Exception localException1)
+				{
+					while (true)
+						label745: OVMSActivity.this.notifyServerSocketError(localException1);
+				}
+			}
+		}
+
+		private void notifyCommandResponse(String paramString)
+		{
+			if (OVMSActivity.this != null)
+			{
+				OVMSActivity.this.mCommandResponse = new OVMSActivity.ServerCommandResponseHandler(OVMSActivity.this, paramString);
+				OVMSActivity.this.UIHandler.post(OVMSActivity.this.mCommandResponse);
+			}
+		}
+
+		private void processMessage(String paramString)
+		{
+			char c = paramString.charAt(0);
+			Object localObject1 = paramString.substring(1);
+			int i5;
+			if (c == 'E')
+			{
+				i5 = paramString.charAt(1);
+				if (i5 != 84)
+					break label323;
+				Log.d("TCP", "ET MSG Received: " + paramString);
+			}
+			label300: label1214: label1345: 
+				while (true)
+				{
+					try
+					{
+						String str8 = paramString.substring(2);
+						HMAC localHMAC = new HMAC("MD5", this.carData.RegPass.getBytes());
+						localHMAC.update(str8.getBytes());
+						this.pmDigest = localHMAC.sign();
+						Log.d("OVMS", "Paranoid Mode Token Accepted. Entering Privacy Mode. (pmDigest = " + Base64.encodeBytes(this.pmDigest) + ")");
+						Log.d("TCP", c + " MSG Received: " + (String)localObject1);
+						DataLog.Log("[RX] " + c + (String)localObject1);
+						switch (c)
+						{
+						default:
+							return;
+						case 'Z':
+						case 'S':
+						case 'T':
+						case 'L':
+						case 'D':
+						case 'F':
+						case 'f':
+						case 'W':
+						case 'g':
+						case 'a':
+						case 'C':
+						case 'c':
+						}
+					}
+					catch (Exception localException3)
+					{
+						Log.d("ERR", localException3.getMessage());
+						localException3.printStackTrace();
+						continue;
+					}
+					label323: if (i5 == 77)
+					{
+						Log.d("TCP", "EM MSG Received: " + paramString);
+						c = paramString.charAt(2);
+						localObject1 = paramString.substring(3);
+						try
+						{
+							byte[] arrayOfByte = Base64.decode((String)localObject1);
+							this.pmcipher = new RC4(this.pmDigest);
+							Object localObject3 = "";
+							for (int i6 = 0; ; i6++)
+							{
+								if (i6 >= 1024)
+								{
+									this.pmcipher.rc4(((String)localObject3).getBytes());
+									String str7 = new String(this.pmcipher.rc4(arrayOfByte));
+									localObject1 = str7;
+									if (this.carData.ParanoidMode)
+										break;
+									Log.d("OVMS", "Paranoid Mode Detected");
+									this.carData.ParanoidMode = true;
+									refreshUI();
+									break;
+								}
+								String str6 = localObject3 + "0";
+								localObject3 = str6;
+							}
+						}
+						catch (Exception localException2)
+						{
+							while (true)
+							{
+								Log.d("ERR", localException2.getMessage());
+								localException2.printStackTrace();
+							}
+						}
+						this.carData.Data_CarsConnected = Integer.parseInt((String)localObject1);
+						refreshUI();
+						continue;
+						String[] arrayOfString11 = ((String)localObject1).split(",\\s*");
+						if (arrayOfString11.length >= 8)
+						{
+							Log.d("TCP", "S MSG Validated");
+							this.carData.Data_SOC = Integer.parseInt(arrayOfString11[0]);
+							this.carData.Data_DistanceUnit = arrayOfString11[1].toString();
+							this.carData.Data_LineVoltage = Integer.parseInt(arrayOfString11[2]);
+							this.carData.Data_ChargeCurrent = Integer.parseInt(arrayOfString11[3]);
+							this.carData.Data_ChargeState = arrayOfString11[4].toString();
+							this.carData.Data_ChargeMode = arrayOfString11[5].toString();
+							this.carData.Data_IdealRange = Integer.parseInt(arrayOfString11[6]);
+							this.carData.Data_EstimatedRange = Integer.parseInt(arrayOfString11[7]);
+						}
+						if (arrayOfString11.length >= 14)
+						{
+							this.carData.Data_ChargeAmpsLimit = Integer.parseInt(arrayOfString11[8]);
+							this.carData.Data_ChargerB4State = Integer.parseInt(arrayOfString11[9]);
+							this.carData.Data_ChargerKWHConsumed = Double.parseDouble(arrayOfString11[10]);
+							this.carData.Data_ChargeSubstate = Integer.parseInt(arrayOfString11[11]);
+							this.carData.Data_ChargeState_raw = Integer.parseInt(arrayOfString11[12]);
+							this.carData.Data_ChargeMode_raw = Integer.parseInt(arrayOfString11[13]);
+						}
+						refreshUI();
+						continue;
+						if (((String)localObject1).length() > 0)
+						{
+							this.carData.Data_LastCarUpdate_raw = Long.parseLong((String)localObject1);
+							this.carData.Data_LastCarUpdate = new Date(new Date().getTime() - 1000L * this.carData.Data_LastCarUpdate_raw);
+							if (this.carData.Data_ParkedTime_raw > 0.0D)
+								this.carData.Data_ParkedTime = new Date(this.carData.Data_LastCarUpdate.getTime() - 1000L * ()this.carData.Data_ParkedTime_raw);
+							refreshUI();
+						}
+						else
+						{
+							Log.d("TCP", "T MSG Invalid");
+							continue;
+							String[] arrayOfString10 = ((String)localObject1).split(",\\s*");
+							if (arrayOfString10.length >= 2)
+							{
+								Log.d("TCP", "L MSG Validated");
+								this.carData.Data_Latitude = Double.parseDouble(arrayOfString10[0]);
+								this.carData.Data_Longitude = Double.parseDouble(arrayOfString10[1]);
+							}
+							if (arrayOfString10.length >= 6)
+							{
+								this.carData.Data_Direction = Double.parseDouble(arrayOfString10[2]);
+								this.carData.Data_Altitude = Double.parseDouble(arrayOfString10[3]);
+								this.carData.Data_GPSLocked = arrayOfString10[4].trim().equals("1");
+								this.carData.Data_GPSDataStale = arrayOfString10[5].trim().equals("0");
+							}
+							refreshUI();
+							continue;
+							String[] arrayOfString9 = ((String)localObject1).split(",\\s*");
+							if (arrayOfString9.length >= 9)
+							{
+								Log.d("TCP", "D MSG Validated");
+								int i2 = Integer.parseInt(arrayOfString9[0]);
+								CarData localCarData1 = this.carData;
+								boolean bool1;
+								label1096: boolean bool2;
+								label1119: boolean bool3;
+								label1142: boolean bool4;
+								boolean bool5;
+								boolean bool6;
+								boolean bool7;
+								label1240: boolean bool8;
+								label1273: boolean bool9;
+								boolean bool10;
+								boolean bool11;
+								boolean bool12;
+								label1370: boolean bool13;
+								if ((i2 & 0x1) > 0)
+								{
+									bool1 = true;
+									localCarData1.Data_LeftDoorOpen = bool1;
+									CarData localCarData2 = this.carData;
+									if ((i2 & 0x2) <= 0)
+										break label1643;
+									bool2 = true;
+									localCarData2.Data_RightDoorOpen = bool2;
+									CarData localCarData3 = this.carData;
+									if ((i2 & 0x4) <= 0)
+										break label1649;
+									bool3 = true;
+									localCarData3.Data_ChargePortOpen = bool3;
+									CarData localCarData4 = this.carData;
+									if ((i2 & 0x8) <= 0)
+										break label1655;
+									bool4 = true;
+									localCarData4.Data_PilotPresent = bool4;
+									CarData localCarData5 = this.carData;
+									if ((i2 & 0x10) <= 0)
+										break label1661;
+									bool5 = true;
+									localCarData5.Data_Charging = bool5;
+									CarData localCarData6 = this.carData;
+									if ((i2 & 0x40) <= 0)
+										break label1667;
+									bool6 = true;
+									localCarData6.Data_HandBrakeApplied = bool6;
+									CarData localCarData7 = this.carData;
+									if ((i2 & 0x80) <= 1)
+										break label1673;
+									bool7 = true;
+									localCarData7.Data_CarPoweredON = bool7;
+									int i3 = Integer.parseInt(arrayOfString9[1]);
+									CarData localCarData8 = this.carData;
+									if ((i3 & 0x8) <= 0)
+										break label1679;
+									bool8 = true;
+									localCarData8.Data_PINLocked = bool8;
+									CarData localCarData9 = this.carData;
+									if ((i3 & 0x10) <= 0)
+										break label1685;
+									bool9 = true;
+									localCarData9.Data_ValetON = bool9;
+									CarData localCarData10 = this.carData;
+									if ((i3 & 0x20) <= 0)
+										break label1691;
+									bool10 = true;
+									localCarData10.Data_HeadlightsON = bool10;
+									CarData localCarData11 = this.carData;
+									if ((i3 & 0x40) <= 0)
+										break label1697;
+									bool11 = true;
+									localCarData11.Data_BonnetOpen = bool11;
+									CarData localCarData12 = this.carData;
+									if ((i3 & 0x80) <= 0)
+										break label1703;
+									bool12 = true;
+									localCarData12.Data_TrunkOpen = bool12;
+									int i4 = Integer.parseInt(arrayOfString9[2]);
+									CarData localCarData13 = this.carData;
+									if (i4 != 4)
+										break label1709;
+									bool13 = true;
+									label1401: localCarData13.Data_CarLocked = bool13;
+									this.carData.Data_TemperaturePEM = Double.parseDouble(arrayOfString9[3]);
+									this.carData.Data_TemperatureMotor = Double.parseDouble(arrayOfString9[4]);
+									this.carData.Data_TemperatureBattery = Double.parseDouble(arrayOfString9[5]);
+									this.carData.Data_TripMeter = Double.parseDouble(arrayOfString9[6]);
+									this.carData.Data_Odometer = Double.parseDouble(arrayOfString9[7]);
+									this.carData.Data_Speed = Double.parseDouble(arrayOfString9[8]);
+									if (arrayOfString9.length >= 10)
+									{
+										this.carData.Data_ParkedTime_raw = Double.parseDouble(arrayOfString9[9]);
+										if (this.carData.Data_LastCarUpdate != null)
+											break label1715;
+									}
+								}
+								for (this.carData.Data_ParkedTime = null; ; this.carData.Data_ParkedTime = new Date(this.carData.Data_LastCarUpdate.getTime() - 1000L * ()this.carData.Data_ParkedTime_raw))
+								{
+									if (arrayOfString9.length >= 11)
+										this.carData.Data_TemperatureAmbient = Double.parseDouble(arrayOfString9[10]);
+									if (arrayOfString9.length >= 14)
+									{
+										this.carData.Data_CoolingPumpON_DoorState3 = arrayOfString9[11].trim().equals("1");
+										this.carData.Data_PEM_Motor_Battery_TemperaturesDataStale = arrayOfString9[12].trim().equals("0");
+										this.carData.Data_AmbientTemperatureDataStale = arrayOfString9[13].trim().equals("0");
+									}
+									refreshUI();
+									break;
+									bool1 = false;
+									break label1096;
+									label1643: bool2 = false;
+									break label1119;
+									label1649: bool3 = false;
+									break label1142;
+									label1655: bool4 = false;
+									break label1166;
+									label1661: bool5 = false;
+									break label1190;
+									bool6 = false;
+									break label1214;
+									bool7 = false;
+									break label1240;
+									bool8 = false;
+									break label1273;
+									bool9 = false;
+									break label1297;
+									bool10 = false;
+									break label1321;
+									bool11 = false;
+									break label1345;
+									bool12 = false;
+									break label1370;
+									bool13 = false;
+									break label1401;
+								}
+								String[] arrayOfString8 = ((String)localObject1).split(",\\s*");
+								if (arrayOfString8.length >= 3)
+								{
+									Log.d("TCP", "F MSG Validated");
+									this.carData.Data_CarModuleFirmwareVersion = arrayOfString8[0].toString();
+									this.carData.Data_VIN = arrayOfString8[1].toString();
+									this.carData.Data_CarModuleGSMSignalLevel = arrayOfString8[2].toString();
+									if (arrayOfString8.length >= 4)
+									{
+										this.carData.Data_Features.put(Integer.valueOf(15), arrayOfString8[3].toString());
+										this.carData.Data_CANWriteEnabled = arrayOfString8[3].trim().equals("1");
+									}
+									if (arrayOfString8.length >= 5)
+										this.carData.Data_CarType = arrayOfString8[4].toString();
+									refreshUI();
+								}
+								String[] arrayOfString7 = ((String)localObject1).split(",\\s*");
+								if (arrayOfString7.length >= 1)
+								{
+									Log.d("TCP", "f MSG Validated");
+									this.carData.Data_OVMSServerFirmwareVersion = arrayOfString7[0].toString();
+									refreshUI();
+									continue;
+									String[] arrayOfString6 = ((String)localObject1).split(",\\s*");
+									if (arrayOfString6.length >= 8)
+									{
+										Log.d("TCP", "W MSG Validated");
+										this.carData.Data_FRWheelPressure = Double.parseDouble(arrayOfString6[0]);
+										this.carData.Data_FRWheelTemperature = Double.parseDouble(arrayOfString6[1]);
+										this.carData.Data_RRWheelPressure = Double.parseDouble(arrayOfString6[2]);
+										this.carData.Data_RRWheelTemperature = Double.parseDouble(arrayOfString6[3]);
+										this.carData.Data_FLWheelPressure = Double.parseDouble(arrayOfString6[4]);
+										this.carData.Data_FLWheelTemperature = Double.parseDouble(arrayOfString6[5]);
+										this.carData.Data_RLWheelPressure = Double.parseDouble(arrayOfString6[6]);
+										this.carData.Data_RLWheelTemperature = Double.parseDouble(arrayOfString6[7]);
+										if (arrayOfString6.length >= 9)
+											this.carData.Data_TPMSDataStale = arrayOfString6[8].trim().equals("0");
+										refreshUI();
+										continue;
+										String[] arrayOfString5 = ((String)localObject1).split(",\\s*");
+										if (arrayOfString5.length >= 9)
+										{
+											Log.d("TCP", "g MSG Validated");
+											CarData_Group localCarData_Group1 = new CarData_Group();
+											localCarData_Group1.VehicleID = arrayOfString5[0];
+											localCarData_Group1.SOC = Double.parseDouble(arrayOfString5[2]);
+											localCarData_Group1.Speed = Double.parseDouble(arrayOfString5[3]);
+											localCarData_Group1.Direction = Double.parseDouble(arrayOfString5[4]);
+											localCarData_Group1.Altitude = Double.parseDouble(arrayOfString5[5]);
+											localCarData_Group1.GPSLocked = arrayOfString5[6].trim().equals("1");
+											localCarData_Group1.GPSDataStale = arrayOfString5[7].trim().equals("0");
+											localCarData_Group1.Latitude = Double.parseDouble(arrayOfString5[8]);
+											localCarData_Group1.Longitude = Double.parseDouble(arrayOfString5[9]);
+											if (this.carData.Group == null)
+												this.carData.Group = new HashMap();
+											CarData_Group localCarData_Group2 = (CarData_Group)this.carData.Group.get(localCarData_Group1.VehicleID);
+											if (localCarData_Group2 != null)
+												localCarData_Group1.VehicleImageDrawable = localCarData_Group2.VehicleImageDrawable;
+											this.carData.Group.put(arrayOfString5[0], localCarData_Group1);
+											refreshUI();
+											continue;
+											Log.d("TCP", "Server acknowleged ping");
+											continue;
+											if (((String)localObject1).length() == 0)
+											{
+												Log.d("TCP", c + " MSG Code Invalid");
+											}
+											else
+											{
+												Object localObject2 = "";
+												int j;
+												String[] arrayOfString4;
+												try
+												{
+													if (((String)localObject1).indexOf(',') > 0)
+													{
+														j = Integer.parseInt(((String)localObject1).substring(0, ((String)localObject1).indexOf(',')));
+														String str5 = ((String)localObject1).substring(1 + ((String)localObject1).indexOf(','));
+														localObject2 = str5;
+													}
+													while (true)
+														switch (j)
+														{
+														default:
+															arrayOfString4 = ((String)localObject2).split(",\\s*");
+															if (!arrayOfString4[0].equals("0"))
+																break label3529;
+															Object[] arrayOfObject10 = new Object[1];
+															arrayOfObject10[0] = ServerCommands.toString(j);
+															notifyCommandResponse(String.format("Server Acknowledged %s", arrayOfObject10));
+															break label300;
+															int i = Integer.parseInt((String)localObject1);
+															j = i;
+														case 1:
+														case 3:
+														case 30:
+														}
+												}
+												catch (Exception localException1)
+												{
+													Log.d("TCP", "!!! " + c + " message is invalid.");
+												}
+												continue;
+												String[] arrayOfString3 = ((String)localObject2).split(",");
+												String str3;
+												int n;
+												if (arrayOfString3.length > 4)
+												{
+													str3 = "";
+													n = 3;
+													int i1 = arrayOfString3.length;
+													if (n >= i1)
+													{
+														Object[] arrayOfObject7 = new Object[2];
+														arrayOfObject7[0] = arrayOfString3[1];
+														arrayOfObject7[1] = str3;
+														Log.d("TCP", String.format("FEATURE %s = %s", arrayOfObject7));
+														this.carData.Data_Features.put(Integer.valueOf(Integer.parseInt(arrayOfString3[1])), str3);
+													}
+												}
+												while (true)
+												{
+													if (Integer.parseInt(arrayOfString3[1]) != -1 + Integer.parseInt(arrayOfString3[2]))
+														break label2912;
+													this.carData.Data_Features_LastRefreshed = new Date();
+													refreshUI();
+													break;
+													StringBuilder localStringBuilder2 = new StringBuilder(String.valueOf(str3));
+													if (str3.length() > 0);
+													for (String str4 = ","; ; str4 = "")
+													{
+														str3 = str4 + arrayOfString3[n];
+														n++;
+														break;
+													}
+													if (arrayOfString3.length == 4)
+													{
+														Object[] arrayOfObject6 = new Object[2];
+														arrayOfObject6[0] = arrayOfString3[1];
+														arrayOfObject6[1] = arrayOfString3[3];
+														Log.d("TCP", String.format("FEATURE %s = %s", arrayOfObject6));
+														this.carData.Data_Features.put(Integer.valueOf(Integer.parseInt(arrayOfString3[1])), arrayOfString3[3]);
+													}
+													else if (arrayOfString3.length >= 2)
+													{
+														Object[] arrayOfObject5 = new Object[1];
+														arrayOfObject5[0] = arrayOfString3[1];
+														Log.d("TCP", String.format("FEATURE %s = EMPTY", arrayOfObject5));
+														this.carData.Data_Features.put(Integer.valueOf(Integer.parseInt(arrayOfString3[1])), "");
+													}
+												}
+												label2912: continue;
+												String[] arrayOfString2 = ((String)localObject2).split(",");
+												String str1;
+												int k;
+												if (arrayOfString2.length > 4)
+												{
+													str1 = "";
+													k = 3;
+													int m = arrayOfString2.length;
+													if (k >= m)
+													{
+														Object[] arrayOfObject4 = new Object[2];
+														arrayOfObject4[0] = arrayOfString2[1];
+														arrayOfObject4[1] = str1;
+														Log.d("TCP", String.format("PARAMETER %s = %s", arrayOfObject4));
+														this.carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(arrayOfString2[1])), str1);
+													}
+												}
+												while (true)
+												{
+													if (Integer.parseInt(arrayOfString2[1]) != -1 + Integer.parseInt(arrayOfString2[2]))
+														break label3238;
+													this.carData.Data_Parameters_LastRefreshed = new Date();
+													refreshUI();
+													break;
+													StringBuilder localStringBuilder1 = new StringBuilder(String.valueOf(str1));
+													if (str1.length() > 0);
+													for (String str2 = ","; ; str2 = "")
+													{
+														str1 = str2 + arrayOfString2[k];
+														k++;
+														break;
+													}
+													if (arrayOfString2.length == 4)
+													{
+														Object[] arrayOfObject3 = new Object[2];
+														arrayOfObject3[0] = arrayOfString2[1];
+														arrayOfObject3[1] = arrayOfString2[3];
+														Log.d("TCP", String.format("PARAMETER %s = %s", arrayOfObject3));
+														this.carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(arrayOfString2[1])), arrayOfString2[3]);
+													}
+													else if (arrayOfString2.length >= 2)
+													{
+														Object[] arrayOfObject2 = new Object[1];
+														arrayOfObject2[0] = arrayOfString2[1];
+														Log.d("TCP", String.format("PARAMETER %s = EMPTY", arrayOfObject2));
+														this.carData.Data_Parameters.put(Integer.valueOf(Integer.parseInt(arrayOfString2[1])), "");
+													}
+												}
+												continue;
+												String[] arrayOfString1 = ((String)localObject2).split(",\\s*");
+												if (arrayOfString1.length >= 3)
+												{
+													if (this.carData.Data_GPRSUtilization == null)
+														this.carData.Data_GPRSUtilization = new GPRSUtilization(OVMSActivity.this);
+													if (arrayOfString1[1].equals("1"))
+														this.carData.Data_GPRSUtilization.Clear();
+													SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+													try
+													{
+														this.carData.Data_GPRSUtilization.AddData(localSimpleDateFormat.parse(arrayOfString1[3]), Long.parseLong(arrayOfString1[4]), Long.parseLong(arrayOfString1[5]), Long.parseLong(arrayOfString1[6]), Long.parseLong(arrayOfString1[7]));
+														Object[] arrayOfObject1 = new Object[7];
+														arrayOfObject1[0] = arrayOfString1[1];
+														arrayOfObject1[1] = arrayOfString1[2];
+														arrayOfObject1[2] = localSimpleDateFormat.parse(arrayOfString1[3]).toLocaleString();
+														arrayOfObject1[3] = arrayOfString1[4];
+														arrayOfObject1[4] = arrayOfString1[5];
+														arrayOfObject1[5] = arrayOfString1[6];
+														arrayOfObject1[6] = arrayOfString1[7];
+														Log.d("TCP", String.format("GPRS UTIL [%s/%s] %s: car_rx %s car_tx %s app_rx %s app_tx %s", arrayOfObject1));
+														if (!arrayOfString1[1].equals(arrayOfString1[2]))
+															continue;
+														this.carData.Data_GPRSUtilization.LastDataRefresh = new Date();
+														this.carData.Data_GPRSUtilization.Save(OVMSActivity.this);
+														refreshUI();
+													}
+													catch (NumberFormatException localNumberFormatException)
+													{
+														while (true)
+															localNumberFormatException.printStackTrace();
+													}
+													catch (ParseException localParseException)
+													{
+														while (true)
+															localParseException.printStackTrace();
+													}
+													label3529: if (arrayOfString4[0].equals("1"))
+														if (arrayOfString4.length > 1)
+														{
+															Object[] arrayOfObject9 = new Object[2];
+															arrayOfObject9[0] = ServerCommands.toString(j);
+															arrayOfObject9[1] = arrayOfString4[1];
+															notifyCommandResponse(String.format("[ERROR] %s\n%s\nTry turning on CAN_WRITE in the settings tab.", arrayOfObject9));
+														}
+														else
+														{
+															Object[] arrayOfObject8 = new Object[1];
+															arrayOfObject8[0] = ServerCommands.toString(j);
+															notifyCommandResponse(String.format("[ERROR] %s\nTry turning on CAN_WRITE in the settings tab.", arrayOfObject8));
+														}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+		}
+
+		private void refreshUI()
+		{
+			if (OVMSActivity.this != null)
+				OVMSActivity.this.UIHandler.post(OVMSActivity.this.mRefresh);
+		}
+
+		private String toHex(byte[] paramArrayOfByte)
+		{
+			BigInteger localBigInteger = new BigInteger(1, paramArrayOfByte);
+			String str = "%0" + (paramArrayOfByte.length << 1) + "X";
+			Object[] arrayOfObject = new Object[1];
+			arrayOfObject[0] = localBigInteger;
+			return String.format(str, arrayOfObject);
+		}
+
+		public void ConnClose()
+		{
+			try
+			{
+				this.socketMarkedClosed = true;
+				OVMSActivity.this.SuppressServerErrorDialog = true;
+				OVMSActivity.this.isLoggedIn = false;
+				if (this.Sock != null)
+					this.Sock.close();
+			}
+			catch (IOException localIOException)
+			{
+				try
+				{
+					Thread.sleep(200L);
+					label41: this.Sock = null;
+					OVMSActivity.this.SuppressServerErrorDialog = false;
+					while (true)
+					{
+						return;
+						localIOException = localIOException;
+						localIOException.printStackTrace();
+					}
+				}
+				catch (InterruptedException localInterruptedException)
+				{
+					break label41;
+				}
+			}
+		}
+
+		public void Ping()
+		{
+			SendCommand("A");
+		}
+
+		public boolean SendCommand(String paramString)
+		{
+			boolean bool;
+			if (!OVMSActivity.this.isLoggedIn)
+			{
+				Log.d("TCP", "Server not ready. TX aborted.");
+				bool = false;
+			}
+			while (true)
+			{
+				return bool;
+				DataLog.Log("[TX] " + paramString);
+				try
+				{
+					String str2;
+					int i;
+					Object localObject;
+					if ((this.carData.ParanoidMode) && (!paramString.startsWith("A")) && (!paramString.startsWith("C")) && (!paramString.startsWith("C30")) && (!paramString.startsWith("p")))
+					{
+						this.pmcipher = new RC4(this.pmDigest);
+						str2 = "";
+						i = 0;
+						if (i >= 1024)
+						{
+							this.pmcipher.rc4(str2.getBytes());
+							String str3 = Base64.encodeBytes(this.pmcipher.rc4(paramString.getBytes()));
+							localObject = "MP-0 EM" + str3;
+							Log.d("TCP", "TX (Paranoid-Mode Command): " + (String)localObject + " (using pmDigest: " + Base64.encodeBytes(this.pmDigest) + ")");
+						}
+					}
+					while (true)
+					{
+						byte[] arrayOfByte = this.txcipher.rc4(((String)localObject).getBytes());
+						Log.d("TCP", "TX (Encrypted): " + Base64.encodeBytes(arrayOfByte));
+						this.Outputstream.println(Base64.encodeBytes(arrayOfByte));
+						break label342;
+						str2 = str2 + "0";
+						i++;
+						break;
+						String str1 = "MP-0 " + paramString;
+						localObject = str1;
+					}
+				}
+				catch (Exception localException)
+				{
+					localException.printStackTrace();
+					OVMSActivity.this.notifyServerSocketError(localException);
+					label342: bool = true;
+				}
+			}
+		}
+
+		protected Void doInBackground(Void[] paramArrayOfVoid)
+		{
+			Log.d("TCP", "Starting background TCP thread");
+			OVMSActivity.this.SuppressServerErrorDialog = false;
+			this.socketMarkedClosed = false;
+			try
+			{
+				ConnInit();
+				if (OVMSActivity.this.isLoggedIn)
+				{
+					Log.d("TCP", "Background TCP ready");
+					this.Sock.setSoTimeout(5000);
+					boolean bool1 = this.Sock.isConnected();
+					if (bool1);
+				}
+				else
+				{
+					label69: if (this.Outputstream != null)
+						this.Outputstream.close();
+				}
+			}
+			catch (Exception localException1)
+			{
+				try
+				{
+					while (true)
+					{
+						if (this.Inputstream != null)
+							this.Inputstream.close();
+						try
+						{
+							label97: if (this.Sock != null)
+								this.Sock.close();
+						label111: this.Sock = null;
+						Log.d("TCP", "TCP thread ending");
+						return null;
+						Object localObject = "";
+						try
+						{
+							while (true)
+							{
+								while (true)
+								{
+									String str4 = this.Inputstream.readLine();
+									localObject = str4;
+									if (localObject == null)
+										break label341;
+									label149: if ((localObject == null) || (((String)localObject).length() <= 5))
+										break;
+									String str1 = ((String)localObject).trim();
+									String str2 = new String(this.rxcipher.rc4(Base64.decode(str1)));
+									if ((str2 == null) || (str2.length() <= 5))
+										break;
+									String str3 = str2.trim();
+									Object[] arrayOfObject = new Object[2];
+									arrayOfObject[0] = str3;
+									arrayOfObject[1] = str1;
+									Log.d("OVMS", String.format("RX: %s (%s)", arrayOfObject));
+									boolean bool2 = str3.substring(0, 5).equals("MP-0 ");
+									if (!bool2)
+										break label355;
+									try
+									{
+										processMessage(str3.substring(5));
+									}
+									catch (Exception localException4)
+									{
+										DataLog.Log("##ERROR## " + localException4.getMessage() + " - " + str3);
+										localException4.printStackTrace();
+									}
+								}
+								break;
+								localException1 = localException1;
+								if (this.socketMarkedClosed)
+									break label69;
+								OVMSActivity.this.notifyServerSocketError(localException1);
+								break label69;
+								label341: Thread.sleep(100L);
+							}
+						}
+						catch (IOException localIOException)
+						{
+							break label149;
+							label355: Log.d("OVMS", "Unknown protection scheme");
+						}
+						}
+						catch (Exception localException3)
+						{
+							break label111;
+						}
+					}
+				}
+				catch (Exception localException2)
+				{
+					break label97;
+				}
+			}
+		}
+
+		protected void onProgressUpdate(Integer[] paramArrayOfInteger)
+		{
+		}
+	}
 }

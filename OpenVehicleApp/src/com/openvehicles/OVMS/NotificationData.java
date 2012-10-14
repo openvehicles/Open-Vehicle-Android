@@ -1,32 +1,28 @@
-// Decompiled by Jad v1.5.8g. Copyright 2001 Pavel Kouznetsov.
-// Jad home page: http://www.kpdus.com/jad.html
-// Decompiler options: packimports(3) 
-
 package com.openvehicles.OVMS;
 
 import java.io.Serializable;
 import java.util.Date;
 
-public class NotificationData
-    implements Serializable
-{
+/**
+ * @author mark
+ * 
+ */
+public class NotificationData implements Serializable {
+	private static final long serialVersionUID = -3173247800500433809L;
+	public String Message;
+	public Date Timestamp;
+	public String Title;
 
-    public NotificationData()
-    {
-        Timestamp = new Date();
-        Title = "";
-        Message = "";
-    }
+	public NotificationData() {
+		this.Timestamp = new Date();
+		this.Title = "";
+		this.Message = "";
+	}
 
-    public NotificationData(Date date, String s, String s1)
-    {
-        Timestamp = date;
-        Title = s;
-        Message = s1;
-    }
-
-    private static final long serialVersionUID = 0x22e1cc6fL;
-    public String Message;
-    public Date Timestamp;
-    public String Title;
+	public NotificationData(Date paramDate, String paramString1,
+			String paramString2) {
+		this.Timestamp = paramDate;
+		this.Title = paramString1;
+		this.Message = paramString2;
+	}
 }
