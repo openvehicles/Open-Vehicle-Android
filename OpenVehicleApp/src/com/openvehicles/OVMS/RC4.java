@@ -32,7 +32,7 @@ public class RC4 {
 					+ ((0xFF & paramArrayOfByte[j]) + (0xFF & this.state[m]));
 			int n = this.state[m];
 			this.state[m] = this.state[k];
-			this.state[k] = n;
+			this.state[k] = (byte)n;
 			j = (j + 1) % paramArrayOfByte.length;
 		}
 	}
@@ -41,30 +41,31 @@ public class RC4 {
 		byte[] arrayOfByte;
 		if (paramString == null)
 			arrayOfByte = null;
-		while (true) {
-			return arrayOfByte;
+		else {
 			arrayOfByte = paramString.getBytes();
 			rc4(arrayOfByte);
 		}
+		return arrayOfByte;
 	}
 
 	public byte[] rc4(byte[] paramArrayOfByte) {
 		byte[] arrayOfByte;
 		if (paramArrayOfByte == null)
 			arrayOfByte = null;
-		while (true) {
-			return arrayOfByte;
+		else {
 			arrayOfByte = new byte[paramArrayOfByte.length];
 			for (int i = 0; i < paramArrayOfByte.length; i++) {
 				this.x = (0xFF & 1 + this.x);
 				this.y = (0xFF & (0xFF & this.state[this.x]) + this.y);
 				int j = this.state[this.x];
 				this.state[this.x] = this.state[this.y];
-				this.state[this.y] = j;
+				this.state[this.y] = (byte)j;
 				int k = 0xFF & (0xFF & this.state[this.x])
 						+ (0xFF & this.state[this.y]);
 				arrayOfByte[i] = (byte) (paramArrayOfByte[i] ^ this.state[k]);
 			}
 		}
+		return arrayOfByte;
 	}
+
 }

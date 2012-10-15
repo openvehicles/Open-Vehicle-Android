@@ -59,7 +59,7 @@ public class CarEditor extends Activity {
 		setContentView(2130903040);
 		this.existingVehicleIDs = ((ArrayList)getIntent().getExtras().getSerializable("ExistingVehicleIDs"));
 		Button localButton;
-		label198: String[] arrayOfString1;
+		String[] arrayOfString1;
 		int i;
 		if (getIntent().getExtras().containsKey("Car"))
 		{
@@ -97,9 +97,8 @@ public class CarEditor extends Activity {
 						arrayOfObject2[0] = str;
 						Toast.makeText(localContext, String.format("Vehicle ID %s is already registered - Cancelling Save", arrayOfObject2), 1000).show();
 					}
-					while (true)
+					else
 					{
-						return;
 						CarEditor.this.closeEditor("SAVE");
 					}
 				}
@@ -210,12 +209,12 @@ public class CarEditor extends Activity {
 					"/%s.png", arrayOfObject));
 			if (localBitmap != null)
 				localImageView.setImageBitmap(localBitmap);
-			while (true) {
-				return paramView;
+			else {
 				localImageView.setImageBitmap(null);
 				localImageView.setBackgroundResource(((Integer) localHashMap
 						.get("Icon")).intValue());
 			}
+			return paramView;
 		}
 	}
 }

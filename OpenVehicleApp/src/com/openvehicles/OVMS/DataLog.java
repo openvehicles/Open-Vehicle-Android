@@ -9,9 +9,8 @@ public final class DataLog {
 	public static void Log(String paramString) {
 		if (log == null)
 			log = new LinkedList();
-		while (true) {
+		else {
 			log.add(paramString);
-			return;
 			if (log.size() > 100)
 				log.remove();
 		}

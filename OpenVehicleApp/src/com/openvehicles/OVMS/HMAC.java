@@ -30,27 +30,27 @@ public class HMAC {
 	}
 
 	private void init(byte[] paramArrayOfByte) {
-		if (paramArrayOfByte.length > 64) {
+		if (paramArrayOfByte.length > PADLEN) {
 			paramArrayOfByte = this.digest.digest(paramArrayOfByte);
 			this.digest.reset();
 		}
-		this.ipad = new byte[64];
-		this.opad = new byte[64];
+		this.ipad = new byte[PADLEN];
+		this.opad = new byte[PADLEN];
 		int i = 0;
 		if (i >= paramArrayOfByte.length)
 			;
-		while (true) {
+		else {
 			if (i >= 64) {
 				this.digest.update(this.ipad);
-				return;
 				this.ipad[i] = (byte) (0x36 ^ paramArrayOfByte[i]);
 				this.opad[i] = (byte) (0x5C ^ paramArrayOfByte[i]);
 				i++;
-				break;
 			}
-			this.ipad[i] = 54;
-			this.opad[i] = 92;
-			i++;
+			else {
+				this.ipad[i] = IPAD;
+				this.opad[i] = OPAD;
+				i++;
+			}
 		}
 	}
 
