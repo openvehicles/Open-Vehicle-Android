@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:stretchColumns="0" >
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+
+            <LinearLayout
+                android:id="@+id/tabInfoLayoutParking"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:gravity="left" >
+
+                <ImageView
+                    android:id="@+id/tabInfoImageParking"
+                    android:layout_width="20.0dip"
+                    android:layout_height="20.0dip"
+                    android:layout_marginLeft="1.0dip"
+                    android:layout_marginRight="5.0dip"
+                    android:layout_marginTop="1.0dip"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/parking"
+                    android:contentDescription="@string/ImageParking"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tabInfoTextParkedTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="1.0dip"
+                    android:gravity="center"
+                    android:text=""
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#ffffffff" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="right" >
+
+                <ImageView
+                    android:id="@+id/tabInfoImageError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="-6.0dip"
+                    android:src="@android:drawable/stat_sys_warning"
+                    android:contentDescription="@string/SysWarning"
+                    android:visibility="visible" />
+
+                <ImageView
+                    android:id="@+id/tabInfoImageLock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="-5.0dip"
+                    android:src="@android:drawable/ic_lock_idle_lock"
+                    android:contentDescription="@string/LockIdle"
+                    android:visibility="gone" />
+
+                <TextView
+                    android:id="@+id/tabInfoTextLastUpdated"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:gravity="right"
+                    android:text=""
+                    android:textAppearance="?android:textAppearanceSmall" />
+
+                <ImageView
+                    android:id="@+id/tabInfoImageSignalRSSI"
+                    android:layout_width="25.0dip"
+                    android:layout_height="25.0dip"
+                    android:layout_gravity="bottom"
+                    android:layout_marginBottom="-5.0dip"
+                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginRight="2.0dip"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/signal_strength_0"
+                    android:contentDescription="@string/SignalStrength"
+                    android:visibility="visible" />
+            </LinearLayout>
+        </RelativeLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.4"
+        android:gravity="bottom|center" >
+
+        <TextView
+            android:id="@+id/textVehicleID"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/Loading"
+            android:textAppearance="?android:textAppearanceLarge" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal" >
+
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/imgCarLeft"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:gravity="left"
+                android:minWidth="50dp"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/tabInfoImageCar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="4"
+                android:scaleType="fitCenter"
+                android:contentDescription="@string/VehicleImage"
+                android:src="@drawable/car_default" />
+
+            <TextView
+                android:id="@+id/imgCarRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:minWidth="50dp"
+                android:text="" />
+        </LinearLayout>
+    </TableRow>
+
+    <TableRow
+        android:id="@+id/tabInfoRowCharger"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+
+            <ImageView
+                android:id="@+id/tabInfoImageCharger"
+                android:layout_width="300.0dip"
+                android:layout_height="55.0dip"
+                android:scaleType="fitXY"
+                android:contentDescription="@string/ChargerPlug"
+                android:src="@drawable/charger_plug" />
+
+            <TextView
+                android:id="@+id/tabInfoTextChargeStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@id/tabInfoImageCharger"
+                android:layout_alignTop="@id/tabInfoImageCharger"
+                android:layout_marginLeft="150.0dip"
+                android:layout_marginTop="19.0dip"
+                android:text="@string/DefaultCharging"
+                android:textColor="#ffffffff"
+                android:textSize="10.0dip" />
+
+            <TextView
+                android:id="@+id/tabInfoTextChargeMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="60.0dip"
+                android:text="@string/DefaultMode"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="#ffffffff" />
+
+            <com.openvehicles.OVMS.ReversedSeekBar
+                android:id="@+id/tabInfoSliderChargerControl"
+                android:layout_width="96.0dip"
+                android:layout_height="16.0dip"
+                android:layout_alignLeft="@id/tabInfoImageCharger"
+                android:layout_alignTop="@id/tabInfoImageCharger"
+                android:layout_marginLeft="148.0dip"
+                android:layout_marginTop="18.0dip"
+                android:indeterminate="false"
+                android:indeterminateOnly="false"
+                android:max="100"
+                android:progress="30"
+                android:progressDrawable="@drawable/ui_charger_bg"
+                android:thumb="@drawable/charger_button"
+                android:thumbOffset="-8.0dip" />
+        </RelativeLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="bottom|center" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" >
+
+            <ImageView
+                android:id="@+id/tabInfoImageBattery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/BatteryImage"
+                android:src="@drawable/battery_000" />
+
+            <ImageView
+                android:id="@+id/tabInfoImageBatteryChargingOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:contentDescription="@string/ChargingOverlay"
+                android:src="@drawable/battery_coppertops" />
+
+            <ImageView
+                android:id="@+id/tabInfoImageBatteryOverlay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:background="@drawable/battery_100"
+                android:contentDescription="@string/BatteryOverlay"
+                android:scaleType="fitStart" />
+
+            <TextView
+                android:id="@+id/tabInfoTextSOC"
+                style="@style/SOCOverlayText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text=""
+                android:textAppearance="?android:textAppearanceMedium" />
+        </RelativeLayout>
+    </TableRow>
+
+    <TableRow
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.0"
+        android:gravity="center" >
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="right|center"
+                android:orientation="vertical"
+                android:paddingRight="10.0dip" >
+
+                <TextView
+                    android:id="@+id/tabInfoTextEstimatedRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center"
+                    android:text=""
+                    android:textAppearance="?android:textAppearanceMedium" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center"
+                    android:text="@string/EstimatedShort"
+                    android:textAppearance="?android:textAppearanceSmall" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="1.0dip"
+                android:layout_height="50.0dip"
+                android:background="#40ffffff" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.0"
+                android:gravity="left|center"
+                android:orientation="vertical"
+                android:paddingLeft="10.0dip" >
+
+                <TextView
+                    android:id="@+id/tabInfoTextIdealRange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center"
+                    android:text=""
+                    android:textAppearance="?android:textAppearanceMedium"
+                    android:textColor="#ff91b5ff" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="top|center"
+                    android:text="@string/IdealShort"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#ff91b5ff" />
+            </LinearLayout>
+        </LinearLayout>
+    </TableRow>
+
+</TableLayout>
