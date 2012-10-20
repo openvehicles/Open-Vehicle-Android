@@ -6,6 +6,8 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -131,14 +133,13 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 
 		// add markers overlay
 		mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(this.getResources().getIdentifier(data.sel_vehicle_image + "32x32", "drawable", "com.openvehicles.OVMS"));
-
-		carMarkers = new CarMarkerOverlay(drawable, this);
+		Drawable drawable = this.getResources().getDrawable(this.getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS"));
+		Bitmap bm = ((BitmapDrawable)drawable).getBitmap();
+		Bitmap bitmapOrig = Bitmap.createScaledBitmap(bm, 96, 44, false);
+		carMarkers = new CarMarkerOverlay(new BitmapDrawable(bitmapOrig), this);
 		mapOverlays.clear();
 		mapOverlays.add(carMarkers);
-
 		handler.sendEmptyMessage(0);
-
 	}
 
 }
