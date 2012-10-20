@@ -161,7 +161,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="0.0dip"
+                    android:layout_marginTop="-17.0dip"
                     android:src="@drawable/carlights" />
 
                 <TextView
@@ -170,7 +170,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignRight="@id/tabCarImageCarOutline"
                     android:layout_alignTop="@id/tabCarImageCarOutline"
-                    android:layout_marginRight="112.0dip"
+                    android:layout_marginRight="132.0dip"
                     android:layout_marginTop="54.0dip"
                     android:gravity="right"
                     android:singleLine="false"
@@ -193,7 +193,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@id/tabCarImageCarOutline"
-                    android:layout_alignRight="@id/textFLWheel"
+                    android:layout_alignRight="@id/tabCarImageCarOutline"
+                    android:layout_marginRight="132.0dip"
                     android:layout_marginBottom="66.0dip"
                     android:gravity="right"
                     android:singleLine="false"
