@@ -30,6 +30,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,46 +94,37 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("tabInfo");
 		spec.setContent(intent);
-		spec.setIndicator("",
-				getResources().getDrawable(android.R.drawable.ic_menu_info_details));
+		spec.setIndicator("Battery",getResources().getDrawable(getResources().getIdentifier("ic_battery", "drawable", "com.openvehicles.OVMS")));
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, TabCar.class);
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("tabCar");
 		spec.setContent(intent);
-		spec.setIndicator("",
-				getResources().getDrawable(android.R.drawable.ic_menu_preferences));// ic_menu_zoom
+		spec.setIndicator("Vehicle",getResources().getDrawable(getResources().getIdentifier("ic_lock", "drawable", "com.openvehicles.OVMS")));
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, TabMap.class);
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("tabMap");
 		spec.setContent(intent);
-		spec.setIndicator("",
- 				getResources().getDrawable(android.R.drawable.ic_menu_compass));// ic_menu_mapmode
+		spec.setIndicator("Location",getResources().getDrawable(getResources().getIdentifier("ic_location", "drawable", "com.openvehicles.OVMS")));
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, TabNotifications.class);
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("tabNotifications");
 		spec.setContent(intent);
-		spec.setIndicator("",
- 				getResources().getDrawable(android.R.drawable.ic_menu_agenda));
+		spec.setIndicator("Messages",getResources().getDrawable(getResources().getIdentifier("ic_envelope", "drawable", "com.openvehicles.OVMS")));
 		tabHost.addTab(spec);
 
 		intent = new Intent().setClass(this, TabCars.class);
 		// Initialize a TabSpec for each tab and add it to the TabHost
 		spec = tabHost.newTabSpec("tabCars");
 		spec.setContent(intent);
-		spec.setIndicator("",
-				getResources().getDrawable(android.R.drawable.ic_menu_manage));// ic_menu_preferences
+		spec.setIndicator("Settings",getResources().getDrawable(getResources().getIdentifier("ic_gear", "drawable", "com.openvehicles.OVMS")));
 		tabHost.addTab(spec);
 
-		// tcp task isnow started in the onResume method
-		//tcpTask = new TCPTask(carData);
-		//tcpTask.execute();
-		
 		getTabHost().setOnTabChangedListener(this);
 		
 		if (tabHost.getCurrentTabTag() == "")
