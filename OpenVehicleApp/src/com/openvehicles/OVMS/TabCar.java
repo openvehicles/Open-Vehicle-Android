@@ -104,14 +104,6 @@ public class TabCar extends Activity {
 			tv.setVisibility(data.car_trunk_open ? View.VISIBLE
 					: View.INVISIBLE);
 
-			tv = (TextView) findViewById(R.id.tabCarTextCarStats);
-			tv.setText(String.format(
-					"PEM: %s\nMotor: %s\nBatt: %s\nSpeed: %s",
-					data.car_temp_pem,
-					data.car_temp_motor,
-					data.car_temp_battery,
-					data.car_speed));
-
 			String tirePressureDisplayFormat = "%s\n%s";
 
 			tv = (TextView) findViewById(R.id.textFLWheel);
@@ -143,7 +135,7 @@ public class TabCar extends Activity {
 			iv.setVisibility(data.car_trunk_open ? View.VISIBLE
 					: View.INVISIBLE);
 
-			iv = (ImageView) findViewById(R.id.imageCarLocked);
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
 			iv.setImageResource(data.car_locked ? R.drawable.carlock
 					: R.drawable.carunlock);
 
