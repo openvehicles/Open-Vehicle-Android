@@ -746,14 +746,14 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
 					carData.car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
 					carData.car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
-					carData.car_tpms_fl_p = String.format("%0.1f%s",carData.car_tpms_fl_p_raw,"psi"); 
-					carData.car_tpms_fr_p = String.format("%0.1f%s",carData.car_tpms_fr_p_raw,"psi"); 
-					carData.car_tpms_rl_p = String.format("%0.1f%s",carData.car_tpms_rl_p_raw,"psi"); 
-					carData.car_tpms_rr_p = String.format("%0.1f%s",carData.car_tpms_rr_p_raw,"psi"); 
-					carData.car_tpms_fl_t = String.format("%0.1f%s",carData.car_tpms_fl_t_raw,"C"); 
-					carData.car_tpms_fr_t = String.format("%0.1f%s",carData.car_tpms_fr_t_raw,"C"); 
-					carData.car_tpms_rl_t = String.format("%0.1f%s",carData.car_tpms_rl_t_raw,"C"); 
-					carData.car_tpms_rr_t = String.format("%0.1f%s",carData.car_tpms_rr_t_raw,"C"); 
+					carData.car_tpms_fl_p = String.format("%.1f%s",carData.car_tpms_fl_p_raw,"psi"); 
+					carData.car_tpms_fr_p = String.format("%.1f%s",carData.car_tpms_fr_p_raw,"psi"); 
+					carData.car_tpms_rl_p = String.format("%.1f%s",carData.car_tpms_rl_p_raw,"psi"); 
+					carData.car_tpms_rr_p = String.format("%.1f%s",carData.car_tpms_rr_p_raw,"psi"); 
+					carData.car_tpms_fl_t = String.format("%.1f%s",carData.car_tpms_fl_t_raw,"C"); 
+					carData.car_tpms_fr_t = String.format("%.1f%s",carData.car_tpms_fr_t_raw,"C"); 
+					carData.car_tpms_rl_t = String.format("%.1f%s",carData.car_tpms_rl_t_raw,"C"); 
+					carData.car_tpms_rr_t = String.format("%.1f%s",carData.car_tpms_rr_t_raw,"C"); 
 					// Update the displayed tab
 					OVMSActivity.this.UpdateStatus();
 				}

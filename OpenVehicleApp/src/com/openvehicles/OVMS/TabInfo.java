@@ -145,7 +145,7 @@ public class TabInfo extends Activity {
 
 			tv = (TextView)findViewById(R.id.tabInfoTextChargeStatus);
 			if (data.car_charge_state.equals("charging"))
-				tv.setText(String.format("Charging - %s (%sV %sA)", data.car_charge_mode, data.car_charge_linevoltage, data.car_charge_current)); 
+				tv.setText(String.format("Charging - %s (%s %s)", data.car_charge_mode, data.car_charge_linevoltage, data.car_charge_current)); 
 			else
 				tv.setText("");
 
