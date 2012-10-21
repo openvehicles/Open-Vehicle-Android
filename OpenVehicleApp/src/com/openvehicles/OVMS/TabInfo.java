@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class TabInfo extends Activity {
@@ -86,49 +87,69 @@ public class TabInfo extends Activity {
 		// First the last updated section...
 		TextView tv = (TextView)findViewById(R.id.tabInfoTextLastUpdated);
 		Date now = new Date();
-		long lastUpdateSecondsAgo = (now.getDate() - data.car_lastupdated.getDate()) / 1000;
-		Log.d("OVMS", "Last updated: " + lastUpdateSecondsAgo + " secs ago");
+		long seconds = (now.getTime() - data.car_lastupdated.getTime()) / 1000;
+		long minutes = (seconds)/60;
+		long hours = minutes/60;
+		long days = minutes/(60*24);
+		Log.d("OVMS", "Last updated: " + seconds + " secs ago");
 
-		if (lastUpdateSecondsAgo < 60)
-		{
+		if (data.car_lastupdated == null) {
+			tv.setText("");
+			tv.setTextColor(0xFFFFFFFF);
+		}
+		else if (minutes == 0) {
 			tv.setText("live");
+			tv.setTextColor(0xFFFFFFFF);
 		}
-		else if (lastUpdateSecondsAgo < 3600)
-		{
-			int displayValue = (int)Math.ceil(lastUpdateSecondsAgo / 60);
-			tv.setText(String.format("Updated: %d minute%s ago", displayValue, (displayValue > 1) ? "s" : ""));
+		else if (minutes == 1) {
+			tv.setText("1 min");
+			tv.setTextColor(0xFFFFFFFF);
 		}
-		else if (lastUpdateSecondsAgo < 86400)
-		{
-			int displayValue = (int)Math.ceil(lastUpdateSecondsAgo / 3600);
-			tv.setText(String.format("Updated: %d hour%s ago", displayValue, (displayValue > 1) ? "s" : ""));
+		else if (days > 1) {
+			tv.setText(String.format("%d days",days));
+			tv.setTextColor(0xFFFF0000);
 		}
-		else if (lastUpdateSecondsAgo < 864000)
-		{
-			int displayValue = (int)Math.ceil(lastUpdateSecondsAgo / 86400);
-			tv.setText(String.format("Updated: %d day%s ago", displayValue, (displayValue > 1) ? "s" : ""));
+		else if (hours > 1) {
+			tv.setText(String.format("%d hours",hours));
+			tv.setTextColor(0xFFFF0000);
 		}
-		else
-			tv.setText(String.format(getString(R.string.LastUpdated), data.car_lastupdated));
+		else if (minutes > 60) {
+			tv.setText(String.format("%d mins",minutes));
+			tv.setTextColor(0xFFFF0000);			
+		}
+		else {
+			tv.setText(String.format("%d mins",minutes));
+			tv.setTextColor(0xFFFFFFFF);
+		}
 
 		// Then the parking timer...
 		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabInfoLayoutParking);
 		if ((!this.data.car_started) && (this.data.car_parked_time != null))
 		{
 			// Car is parked
-			parkinglayoutv.setVisibility(8);
-			TextView parkedtimev = (TextView)findViewById(R.id.tabInfoTextParkedTime);
-			long parktime = (now.getDate() - data.car_parked_time.getDate()) / 1000;
-			if (parktime < 60)
-				parkedtimev.setText("just now");
+			parkinglayoutv.setVisibility(View.VISIBLE);
+			tv = (TextView)findViewById(R.id.tabInfoTextParkedTime);
+			seconds = (now.getTime() - data.car_parked_time.getTime()) / 1000;
+			minutes = (seconds)/60;
+			hours = minutes/60;
+			days = minutes/(60*24);
+
+			if (minutes == 0)
+				tv.setText("just now");
+			else if (minutes == 1)
+				tv.setText("1 min");
+			else if (days > 1)
+				tv.setText(String.format("%d days",days));
+			else if (hours > 1)
+				tv.setText(String.format("%d hours",hours));
+			else if (minutes > 60)
+				tv.setText(String.format("%d mins",minutes));
 			else
-			{
-				parkedtimev.setText(String.format("%1$tD %1$tT", this.data.car_parked_time));
-			}
+				tv.setText(String.format("%d mins",minutes));
 		}
 		else
 		{
-			parkinglayoutv.setVisibility(0);
+			parkinglayoutv.setVisibility(View.INVISIBLE);
 		}
 	}
 
@@ -143,24 +164,43 @@ public class TabInfo extends Activity {
 			tv = (TextView)findViewById(R.id.tabInfoTextSOC);
 			tv.setText(data.car_soc);
 
+			RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
+			if ((!data.car_chargeport_open)||(data.car_charge_substate_i_raw==0x07)) {
+				// Charge port is closed or car is not plugged in
+				pluglayoutv.setVisibility(View.INVISIBLE);
+			}
+			else {
+				// Car is plugged in
+				pluglayoutv.setVisibility(View.VISIBLE);
+			}
+			
+			ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
 			tv = (TextView)findViewById(R.id.tabInfoTextChargeStatus);
-			if (data.car_charge_state.equals("charging"))
-				tv.setText(String.format("Charging - %s (%s %s)", data.car_charge_mode, data.car_charge_linevoltage, data.car_charge_current)); 
-			else
-				tv.setText("");
+			if (data.car_charging) {
+				tv.setText(String.format("Charging - %s (%s %s)", data.car_charge_mode, data.car_charge_linevoltage, data.car_charge_current));
+				iv.setVisibility(View.VISIBLE);
+			}
+			else {
+				tv.setText("");				
+				iv.setVisibility(View.INVISIBLE);
+			}
 
 			tv = (TextView)findViewById(R.id.tabInfoTextIdealRange);
 			tv.setText(data.car_range_ideal);
 			tv = (TextView)findViewById(R.id.tabInfoTextEstimatedRange);
 			tv.setText(data.car_range_estimated);
 			
-			ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
+			iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
 			iv.getLayoutParams().width = 268 * data.car_soc_raw / 100;
 
 			iv = (ImageView)findViewById(R.id.tabInfoImageCar);
 			int resId = getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
 			iv.setImageResource(resId);
 
+			iv = (ImageView)findViewById(R.id.tabInfoImageSignalRSSI);
+			resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
+			iv.setImageResource(resId);
+			
 			iv.setOnClickListener(new OnClickListener() {
 
 				public void onClick(View v) {

@@ -34,21 +34,22 @@ public class CarData implements Serializable {
   public boolean   car_started = false;
   public boolean   car_locked = false;
   public boolean   car_valetmode = false;                                // Data_ValetON
-  public boolean   car_headlights_on = false;                            // Data_HeadlightsON
+  public boolean   car_headlights_on = false;
   public boolean   car_bonnet_open = false;
   public boolean   car_trunk_open = false;
-  public boolean   car_coolingpump_on = false;                           // Data_CoolingPumpON_DoorState3
-  public boolean   car_alarm_sounding = false;							 // ??
+  public boolean   car_coolingpump_on = false;
+  public boolean   car_alarm_sounding = false;
   public boolean   car_charge_timer = false;							// ??
-  public Date      car_parked_time = null;                                  // Data_ParkedTime
+  public Date      car_parked_time = null;
   public DataStale stale_environment = DataStale.NoValue;					// ??
 
   // Temperatures
   public String    car_temp_pem = "";
   public String    car_temp_motor = "";
   public String    car_temp_battery = "";
-  public String    car_temp_ambient = "";								// ??
-  public DataStale stale_temps = DataStale.NoValue;                                // Data_AmbientTemperatureDataStale, Data_PEM_Motor_Battery_TemperaturesDataStale
+  public String    car_temp_ambient = "";
+  public DataStale stale_car_temps = DataStale.NoValue;
+  public DataStale stale_ambient_temp = DataStale.NoValue;
 
   // Firmware
   public String    car_firmware = "";
@@ -56,10 +57,10 @@ public class CarData implements Serializable {
   public String    car_type = "";                                        // Data_CarType
   public boolean   car_canwrite = false;                                 // Data_CANWriteEnabled
   public String    car_gsmlock = "";									// ??
-  public String    car_gsm_signal = "";									// ??
+  public String    car_gsm_signal = "";
   public int       car_gsm_bars = 0;
   public String    server_firmware = "";
-  public double    car_12vline_voltage;									// ??
+  public double    car_12vline_voltage;
   public DataStale stale_firmware = DataStale.NoValue;					// ??
 
   // Status
@@ -73,8 +74,8 @@ public class CarData implements Serializable {
   public String    car_range_ideal = "";
   public String    car_range_estimated = "";
   public String    car_charge_time = "";								// ??
-  public String    car_distance_units = "";								// ??
-  public String    car_speed_units = "";								// ??
+  public String    car_distance_units = "";
+  public String    car_speed_units = "";
 
   public DataStale stale_chargetimer = DataStale.NoValue;				// ??
   public DataStale stale_status = DataStale.NoValue;					// ??
@@ -108,17 +109,18 @@ public class CarData implements Serializable {
   public int car_doors1_raw = 0;
   public int car_doors2_raw = 0;
   public int car_doors3_raw = 0;
-  public int car_doors4_raw = 0;					// ??
-  public int car_lockunlock_raw = 0;				// ??
+  public int car_doors4_raw = 0;
+  public int car_lockunlock_raw = 0;
   public int car_temp_pem_raw = 0;
   public int car_temp_motor_raw = 0;
   public int car_temp_battery_raw = 0;
-  public int car_temp_ambient_raw = 0;					// Data_TemperatureAmbient
+  public int car_temp_ambient_raw = 0;
   public int car_tripmeter_raw = 0;
   public int car_odometer_raw = 0;
   public int car_speed_raw = 0;
-  public int car_parking_timer_raw = 0;					// Data_ParkedTime_raw
-  public int car_state_temps_raw = -1;				// ??
+  public long car_parking_timer_raw = 0;
+  public int car_stale_car_temps_raw = -1;
+  public int car_stale_ambient_temp_raw = -1;
 
   // Car Firmware Message "F"
   public int car_gps_signal_raw = 0;

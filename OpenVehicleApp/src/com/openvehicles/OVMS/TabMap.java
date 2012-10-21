@@ -133,10 +133,11 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 
 		// add markers overlay
 		mapOverlays = mapView.getOverlays();
-		Drawable drawable = this.getResources().getDrawable(this.getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS"));
-		Bitmap bm = ((BitmapDrawable)drawable).getBitmap();
-		Bitmap bitmapOrig = Bitmap.createScaledBitmap(bm, 96, 44, false);
-		carMarkers = new CarMarkerOverlay(new BitmapDrawable(bitmapOrig), this);
+		Drawable drawable = this.getResources().getDrawable(this.getResources().getIdentifier("map_"+data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS"));
+//		Bitmap bm = ((BitmapDrawable)drawable).getBitmap();
+//		Bitmap bitmapOrig = Bitmap.createScaledBitmap(bm, 64, 64, false);
+//		carMarkers = new CarMarkerOverlay(new BitmapDrawable(bitmapOrig), this);
+		carMarkers = new CarMarkerOverlay(drawable, this);
 		mapOverlays.clear();
 		mapOverlays.add(carMarkers);
 		handler.sendEmptyMessage(0);

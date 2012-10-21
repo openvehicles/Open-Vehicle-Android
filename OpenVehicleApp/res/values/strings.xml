@@ -30,6 +30,8 @@
     <string name="BatteryImage">Battery</string>
     <string name="ChargingOverlay">Charging</string>
     <string name="BatteryOverlay">Battery</string>
-    <string name="EstimatedShort">Est.</string>
-    <string name="IdealShort">Ideal</string>
+    <string name="EstimatedShort">ESTIMATED RANGE</string>
+    <string name="IdealShort">IDEAL RANGE</string>
+    <string name="BatteryText">Battery</string>
+    <string name="Homelink">Homelink</string>
 </resources>

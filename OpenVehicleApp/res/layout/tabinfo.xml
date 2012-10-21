@@ -48,43 +48,35 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:gravity="right" >
-
+                
                 <ImageView
-                    android:id="@+id/tabInfoImageError"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="-6.0dip"
-                    android:src="@android:drawable/stat_sys_warning"
-                    android:contentDescription="@string/SysWarning"
-                    android:visibility="visible" />
-
-                <ImageView
-                    android:id="@+id/tabInfoImageLock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="bottom"
-                    android:layout_marginBottom="-5.0dip"
-                    android:src="@android:drawable/ic_lock_idle_lock"
+                    android:id="@+id/tabInfoIConnectionImage"
+                    android:layout_width="20.0dip"
+                    android:layout_height="20.0dip"
+                    android:layout_marginLeft="1.0dip"
+                    android:layout_marginRight="1.0dip"
+                    android:layout_marginTop="1.0dip"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/connection_unknown"
                     android:contentDescription="@string/LockIdle"
-                    android:visibility="gone" />
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/tabInfoTextLastUpdated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginRight="1.0dip"
                     android:layout_gravity="bottom"
-                    android:gravity="right"
                     android:text=""
                     android:textAppearance="?android:textAppearanceSmall" />
-
+                
                 <ImageView
                     android:id="@+id/tabInfoImageSignalRSSI"
-                    android:layout_width="25.0dip"
-                    android:layout_height="25.0dip"
+                    android:layout_width="20.0dip"
+                    android:layout_height="20.0dip"
                     android:layout_gravity="bottom"
                     android:layout_marginBottom="-5.0dip"
-                    android:layout_marginLeft="5.0dip"
+                    android:layout_marginLeft="1.0dip"
                     android:layout_marginRight="2.0dip"
                     android:scaleType="fitCenter"
                     android:src="@drawable/signal_strength_0"
@@ -135,7 +127,7 @@
             <ImageView
                 android:id="@+id/tabInfoImageCar"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="151dip"
                 android:layout_gravity="center"
                 android:layout_weight="4"
                 android:scaleType="fitCenter"
@@ -162,6 +154,7 @@
         android:gravity="center" >
 
         <RelativeLayout
+            android:id="@+id/tabInfoCharger"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center" >
@@ -207,7 +200,7 @@
                 android:indeterminate="false"
                 android:indeterminateOnly="false"
                 android:max="100"
-                android:progress="30"
+                android:progress="0"
                 android:progressDrawable="@drawable/ui_charger_bg"
                 android:thumb="@drawable/charger_button"
                 android:thumbOffset="-8.0dip" />
@@ -263,75 +256,76 @@
                 android:text=""
                 android:textAppearance="?android:textAppearanceMedium" />
         </RelativeLayout>
-    </TableRow>
-
-    <TableRow
+        
+    </TableRow><TableRow
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1.0"
         android:gravity="center" >
 
-        <LinearLayout
-            android:layout_width="fill_parent"
+        <RelativeLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="horizontal" >
+            android:gravity="center"  >
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/tabInfoImageBatteryText"
+                android:layout_width="233dip"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:gravity="right|center"
-                android:orientation="vertical"
-                android:paddingRight="10.0dip" >
+                android:layout_gravity="center_horizontal"
+                android:contentDescription="@string/BatteryText"
+                android:src="@drawable/battery_textbox" />
 
-                <TextView
-                    android:id="@+id/tabInfoTextEstimatedRange"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|center"
-                    android:text=""
-                    android:textAppearance="?android:textAppearanceMedium" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|center"
-                    android:text="@string/EstimatedShort"
-                    android:textAppearance="?android:textAppearanceSmall" />
-            </LinearLayout>
-
-            <View
-                android:layout_width="1.0dip"
-                android:layout_height="50.0dip"
-                android:background="#40ffffff" />
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1.0"
-                android:gravity="left|center"
-                android:orientation="vertical"
-                android:paddingLeft="10.0dip" >
-
-                <TextView
+             <TextView
+                 android:layout_width="100dip"
+                 android:layout_height="wrap_content"
+                 android:layout_alignLeft="@id/tabInfoImageBatteryText"
+                 android:layout_alignTop="@id/tabInfoImageBatteryText"
+                 android:layout_marginLeft="3dip"
+                 android:layout_marginTop="9dip"
+                 android:gravity="center"
+                 android:text="@string/IdealShort"
+                 android:textAppearance="?android:textAppearanceSmall"
+                 android:textSize="10sp" />
+             
+              <TextView
                     android:id="@+id/tabInfoTextIdealRange"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dip"
                     android:layout_height="wrap_content"
-                    android:gravity="top|center"
-                    android:text=""
-                    android:textAppearance="?android:textAppearanceMedium"
-                    android:textColor="#ff91b5ff" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="top|center"
-                    android:text="@string/IdealShort"
+                    android:layout_alignLeft="@id/tabInfoImageBatteryText"
+                    android:layout_alignBottom="@id/tabInfoImageBatteryText"
+                    android:layout_marginLeft="3dip"
+                    android:layout_marginBottom="8dip"
+                    android:text="999 km"
+                    android:gravity="center"
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="#ff91b5ff" />
-            </LinearLayout>
-        </LinearLayout>
+             
+            <TextView
+                    android:layout_width="100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/tabInfoImageBatteryText"
+                    android:layout_alignTop="@id/tabInfoImageBatteryText"
+                    android:layout_marginRight="3dip"
+                    android:layout_marginTop="9dip"
+                    android:gravity="center"
+                    android:text="@string/EstimatedShort"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textSize="10sp" />
+            
+                            <TextView
+                    android:id="@+id/tabInfoTextEstimatedRange"
+                    android:layout_width="100dip"
+                    android:layout_height="wrap_content"
+                    android:layout_alignRight="@id/tabInfoImageBatteryText"
+                    android:layout_alignBottom="@id/tabInfoImageBatteryText"
+                    android:layout_marginRight="3dip"
+                    android:layout_marginBottom="8dip"
+                    android:text="999 km"
+                    android:gravity="center"
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textColor="#ff91b5ff" />            
+        </RelativeLayout>
     </TableRow>
 
 </TableLayout>
