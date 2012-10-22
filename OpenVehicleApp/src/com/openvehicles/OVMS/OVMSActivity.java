@@ -607,6 +607,9 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_charge_linevoltage = String.format("%d%s", carData.car_charge_linevoltage_raw,"V");
 					carData.car_charge_current_raw = Integer.parseInt(dataParts[3]);
 					carData.car_charge_current = String.format("%d%s",carData.car_charge_current_raw,"A");
+					carData.car_charge_voltagecurrent = String.format("%d%s %d%s",
+							carData.car_charge_linevoltage_raw,"V",
+							carData.car_charge_current_raw,"A");
 					carData.car_charge_state_s_raw = dataParts[4].toString();
 					carData.car_charge_state = carData.car_charge_state_s_raw;
 					carData.car_mode_s_raw = dataParts[5].toString();
@@ -615,6 +618,31 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_range_ideal = String.format("%d%s",carData.car_range_ideal_raw,carData.car_distance_units);
 					carData.car_range_estimated_raw = Integer.parseInt(dataParts[7]);
 					carData.car_range_estimated = String.format("%d%s",carData.car_range_estimated_raw,carData.car_distance_units);
+					carData.stale_status = DataStale.Good;
+				}
+				if (dataParts.length >= 15) {
+					carData.car_charge_currentlimit_raw = Integer.parseInt(dataParts[8]);
+					carData.car_charge_currentlimit = String.format("%d%s",carData.car_charge_currentlimit_raw,"A");
+					carData.car_charge_duration_raw = Integer.parseInt(dataParts[9]);
+					carData.car_charge_b4byte_raw = Integer.parseInt(dataParts[10]);
+					carData.car_charge_kwhconsumed = Integer.parseInt(dataParts[11]);
+					carData.car_charge_substate_i_raw = Integer.parseInt(dataParts[12]);
+					carData.car_charge_state_i_raw = Integer.parseInt(dataParts[13]);
+					carData.car_mode_i_raw = Integer.parseInt(dataParts[14]);
+				}				
+				if (dataParts.length >= 18) {
+					carData.car_charge_timermode_raw = Integer.parseInt(dataParts[15]);
+					carData.car_charge_timer = (carData.car_charge_timermode_raw > 0);
+					carData.car_charge_timerstart_raw = Integer.parseInt(dataParts[16]);
+					carData.car_charge_time = ""; // TODO: Implement later
+					carData.car_stale_chargetimer_raw = Integer.parseInt(dataParts[17]);
+					if (carData.car_stale_chargetimer_raw < 0)
+						carData.stale_chargetimer = DataStale.NoValue;
+					else if (carData.car_stale_chargetimer_raw == 0)
+						carData.stale_chargetimer = DataStale.Stale;
+					else
+						carData.stale_chargetimer = DataStale.Good;
+
 				}
 
 				Log.d("TCP", "Notify Vehicle Status Update: " + carData.sel_vehicleid);
@@ -639,9 +667,24 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					Log.d("TCP", "L MSG Validated");
 					carData.car_latitude = Double.parseDouble(dataParts[0]);
 					carData.car_longitude = Double.parseDouble(dataParts[1]);
-					// Update the visible location
-					OVMSActivity.this.UpdateStatus();
 				}
+				if (dataParts.length >= 6) {
+					carData.car_direction = Integer.parseInt(dataParts[2]);
+					carData.car_altitude = Integer.parseInt(dataParts[3]);
+					carData.car_gpslock_raw = Integer.parseInt(dataParts[4]);
+					carData.car_gpslock = (carData.car_gpslock_raw > 0);
+					carData.car_stale_gps_raw = Integer.parseInt(dataParts[5]);
+					if (carData.car_stale_gps_raw < 0)
+						carData.stale_gps = DataStale.NoValue;
+					else if (carData.car_stale_gps_raw == 0)
+						carData.stale_gps = DataStale.Stale;
+					else
+						carData.stale_gps = DataStale.Good;
+				}
+
+				// Update the visible location
+				OVMSActivity.this.UpdateStatus();
+				
 				break;
 			}
 			case 'D': // Doors and switches
@@ -665,9 +708,10 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_bonnet_open = ((dataField & 0x40) == 0x40);
 					carData.car_trunk_open = ((dataField & 0x80) == 0x80);
 					carData.car_headlights_on = ((dataField & 0x20) == 0x20);
+					carData.car_valetmode = ((dataField & 0x10) == 0x10);
+					carData.car_locked = ((dataField & 0x08) == 0x08);
 
 					carData.car_lockunlock_raw = Integer.parseInt(dataParts[2]);
-					carData.car_locked = (carData.car_lockunlock_raw == 4); // 4=locked, 5=unlocked
 
 					carData.car_temp_pem_raw = Integer.parseInt(dataParts[3]);
 					carData.car_temp_pem = String.format("%d¼C",carData.car_temp_pem_raw);
@@ -681,6 +725,8 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_odometer = String.format("%d%s",carData.car_odometer_raw,carData.car_distance_units);
 					carData.car_speed_raw = Integer.parseInt(dataParts[8]);
 					carData.car_speed = String.format("%d%s", carData.car_speed_raw,carData.car_speed_units);
+					
+					carData.stale_environment = DataStale.Good;
 
 					if (dataParts.length >= 14) {
 						carData.car_parking_timer_raw = Long.parseLong(dataParts[9]);
@@ -688,11 +734,11 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 
 						carData.car_temp_ambient_raw = Integer.parseInt(dataParts[10]);
 						carData.car_temp_ambient = String.format("%d¼C",carData.car_temp_ambient_raw);
-						
+
 						dataField = Integer.parseInt(dataParts[11]);
 						carData.car_doors3_raw =  dataField;
 						carData.car_coolingpump_on =  ((dataField & 0x01) == 0x01);
-						
+
 						carData.car_stale_car_temps_raw = Integer.parseInt(dataParts[12]);
 						if (carData.car_stale_car_temps_raw < 0)
 							carData.stale_car_temps = DataStale.NoValue;
@@ -747,9 +793,19 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					else
 						carData.car_gsm_bars = 5;
 
-					// Update the displayed tab
-					OVMSActivity.this.UpdateStatus();
+					carData.stale_firmware = DataStale.Good;
 				}
+				if (dataParts.length >= 5) {
+					carData.car_canwrite = (Integer.parseInt(dataParts[3])>0);
+					carData.car_type = dataParts[4].toString();
+				}
+				if (dataParts.length >= 6) {
+					carData.car_gsmlock = dataParts[5].toString();
+				}
+
+				// Update the displayed tab
+				OVMSActivity.this.UpdateStatus();
+
 			}
 			case 'f': // OVMS Server Firmware
 			{
@@ -766,7 +822,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 			case 'W': // TPMS
 			{
 				String[] dataParts = cmd.split(",\\s*");
-				if (dataParts.length >= 8) {
+				if (dataParts.length >= 9) {
 					Log.d("TCP", "W MSG Validated");
 					carData.car_tpms_fr_p_raw = Double.parseDouble(dataParts[0]);
 					carData.car_tpms_fr_t_raw = Double.parseDouble(dataParts[1]);
@@ -784,6 +840,15 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_tpms_fr_t = String.format("%.1f%s",carData.car_tpms_fr_t_raw,"¼C"); 
 					carData.car_tpms_rl_t = String.format("%.1f%s",carData.car_tpms_rl_t_raw,"¼C"); 
 					carData.car_tpms_rr_t = String.format("%.1f%s",carData.car_tpms_rr_t_raw,"¼C"); 
+					
+					carData.car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
+					if (carData.car_stale_tpms_raw < 0)
+						carData.stale_tpms = DataStale.NoValue;
+					else if (carData.car_stale_tpms_raw == 0)
+						carData.stale_tpms = DataStale.Stale;
+					else
+						carData.stale_tpms = DataStale.Good;
+
 					// Update the displayed tab
 					OVMSActivity.this.UpdateStatus();
 				}
