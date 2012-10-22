@@ -148,9 +148,9 @@
                     android:layout_marginBottom="14.0dip"
                     android:layout_marginLeft="2dip"
                     android:gravity="center"
-                    android:text="00°C"
+                    android:text="0°C"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="50dip"
@@ -173,9 +173,9 @@
                     android:layout_marginBottom="14.0dip"
                     android:layout_marginLeft="108dip"
                     android:gravity="center"
-                    android:text="00°C"
+                    android:text="0°C"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="50dip"
@@ -198,9 +198,9 @@
                     android:layout_marginBottom="14.0dip"
                     android:layout_marginRight="2dip"
                     android:gravity="center"
-                    android:text="00°C"
+                    android:text="0°C"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tabCarTextAmbient"
@@ -209,11 +209,11 @@
                     android:layout_alignLeft="@id/tabCarImageCarTempsBoxes"
                     android:layout_alignTop="@id/tabCarImageCarTempsBoxes"
                     android:layout_marginLeft="2dip"
-                    android:layout_marginTop="127.0dip"
+                    android:layout_marginTop="126.0dip"
                     android:gravity="center"
                     android:text="0°C"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />
+                    android:textStyle="bold" />
 
                <ImageView
                     android:id="@+id/tabCarImageHomelink"
@@ -317,7 +317,8 @@
                     android:singleLine="false"
                     android:text="FL"
                     android:lineSpacingExtra="2.0dip"
-                    android:textAppearance="?android:textAppearanceSmall" />
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textRLWheel"
@@ -331,7 +332,8 @@
                     android:singleLine="false"
                     android:text="RL"
                     android:lineSpacingExtra="2.0dip"
-                    android:textAppearance="?android:textAppearanceSmall" />
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textFRWheel"
@@ -345,7 +347,8 @@
                     android:singleLine="false"
                     android:text="FR"
                     android:lineSpacingExtra="2.0dip"
-                    android:textAppearance="?android:textAppearanceSmall" />
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textRRWheel"
@@ -359,7 +362,8 @@
                     android:singleLine="false"
                     android:text="RR"
                     android:lineSpacingExtra="2.0dip"
-                    android:textAppearance="?android:textAppearanceSmall" />
+                    android:textAppearance="?android:textAppearanceSmall"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tabCarTextSpeed"

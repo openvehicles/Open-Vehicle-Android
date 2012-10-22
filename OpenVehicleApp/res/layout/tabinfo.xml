@@ -295,11 +295,11 @@
                     android:layout_alignLeft="@id/tabInfoImageBatteryText"
                     android:layout_alignBottom="@id/tabInfoImageBatteryText"
                     android:layout_marginLeft="3dip"
-                    android:layout_marginBottom="8dip"
+                    android:layout_marginBottom="7dip"
                     android:text="999 km"
                     android:gravity="center"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />
+                    android:textStyle="bold" />
              
             <TextView
                     android:layout_width="100dip"
@@ -320,11 +320,11 @@
                     android:layout_alignRight="@id/tabInfoImageBatteryText"
                     android:layout_alignBottom="@id/tabInfoImageBatteryText"
                     android:layout_marginRight="3dip"
-                    android:layout_marginBottom="8dip"
+                    android:layout_marginBottom="7dip"
                     android:text="999 km"
                     android:gravity="center"
                     android:textAppearance="?android:textAppearanceSmall"
-                    android:textColor="#ff91b5ff" />            
+                    android:textStyle="bold" />            
         </RelativeLayout>
     </TableRow>
 
