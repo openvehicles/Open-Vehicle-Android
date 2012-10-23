@@ -737,7 +737,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 
 						dataField = Integer.parseInt(dataParts[11]);
 						carData.car_doors3_raw =  dataField;
-						carData.car_coolingpump_on =  ((dataField & 0x01) == 0x01);
+						carData.car_coolingpump_on =  ((dataField & 0x02) == 0x02);
 
 						carData.car_stale_car_temps_raw = Integer.parseInt(dataParts[12]);
 						if (carData.car_stale_car_temps_raw < 0)
@@ -836,10 +836,10 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_tpms_fr_p = String.format("%.1f%s",carData.car_tpms_fr_p_raw,"psi"); 
 					carData.car_tpms_rl_p = String.format("%.1f%s",carData.car_tpms_rl_p_raw,"psi"); 
 					carData.car_tpms_rr_p = String.format("%.1f%s",carData.car_tpms_rr_p_raw,"psi"); 
-					carData.car_tpms_fl_t = String.format("%.1f%s",carData.car_tpms_fl_t_raw,"¼C"); 
-					carData.car_tpms_fr_t = String.format("%.1f%s",carData.car_tpms_fr_t_raw,"¼C"); 
-					carData.car_tpms_rl_t = String.format("%.1f%s",carData.car_tpms_rl_t_raw,"¼C"); 
-					carData.car_tpms_rr_t = String.format("%.1f%s",carData.car_tpms_rr_t_raw,"¼C"); 
+					carData.car_tpms_fl_t = String.format("%.0f%s",carData.car_tpms_fl_t_raw,"¼C"); 
+					carData.car_tpms_fr_t = String.format("%.0f%s",carData.car_tpms_fr_t_raw,"¼C"); 
+					carData.car_tpms_rl_t = String.format("%.0f%s",carData.car_tpms_rl_t_raw,"¼C"); 
+					carData.car_tpms_rr_t = String.format("%.0f%s",carData.car_tpms_rr_t_raw,"¼C"); 
 					
 					carData.car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
 					if (carData.car_stale_tpms_raw < 0)

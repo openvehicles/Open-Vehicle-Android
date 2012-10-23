@@ -91,19 +91,23 @@ public final class R {
         public static final int ol_car_roadster_twilightblue=0x7f020048;
         public static final int ol_car_roadster_veryorange=0x7f020049;
         public static final int parking=0x7f02004a;
-        public static final int roadster_outline_cp=0x7f02004b;
-        public static final int roadster_outline_hd=0x7f02004c;
-        public static final int roadster_outline_ld=0x7f02004d;
-        public static final int roadster_outline_rd=0x7f02004e;
-        public static final int roadster_outline_tr=0x7f02004f;
-        public static final int signal_strength_0=0x7f020050;
-        public static final int signal_strength_1=0x7f020051;
-        public static final int signal_strength_2=0x7f020052;
-        public static final int signal_strength_3=0x7f020053;
-        public static final int signal_strength_4=0x7f020054;
-        public static final int signal_strength_5=0x7f020055;
-        public static final int tirepress_letterbox=0x7f020056;
-        public static final int ui_charger_bg=0x7f020057;
+        public static final int roadster_outline_cd=0x7f02004b;
+        public static final int roadster_outline_ce=0x7f02004c;
+        public static final int roadster_outline_cp=0x7f02004d;
+        public static final int roadster_outline_cs=0x7f02004e;
+        public static final int roadster_outline_cu=0x7f02004f;
+        public static final int roadster_outline_hd=0x7f020050;
+        public static final int roadster_outline_ld=0x7f020051;
+        public static final int roadster_outline_rd=0x7f020052;
+        public static final int roadster_outline_tr=0x7f020053;
+        public static final int signal_strength_0=0x7f020054;
+        public static final int signal_strength_1=0x7f020055;
+        public static final int signal_strength_2=0x7f020056;
+        public static final int signal_strength_3=0x7f020057;
+        public static final int signal_strength_4=0x7f020058;
+        public static final int signal_strength_5=0x7f020059;
+        public static final int tirepress_letterbox=0x7f02005a;
+        public static final int ui_charger_bg=0x7f02005b;
     }
     public static final class id {
         public static final int btnAddCar=0x7f070029;
