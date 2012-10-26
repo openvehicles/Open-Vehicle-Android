@@ -168,42 +168,46 @@
                 android:src="@drawable/charger_plug" />
 
             <TextView
-                android:id="@+id/tabInfoTextChargeStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/tabInfoTextChargeStatusLeft"
+                android:layout_width="48dip"
+                android:layout_height="18dip"
                 android:layout_alignLeft="@id/tabInfoImageCharger"
                 android:layout_alignTop="@id/tabInfoImageCharger"
-                android:layout_marginLeft="150.0dip"
-                android:layout_marginTop="19.0dip"
+                android:layout_marginLeft="146.0dip"
+                android:layout_marginTop="16.0dip"
+                android:gravity="center"
                 android:text="@string/DefaultCharging"
                 android:textColor="#ffffffff"
-                android:textSize="10.0dip" />
+                android:textSize="7.0dip" />
 
             <TextView
-                android:id="@+id/tabInfoTextChargeMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="60.0dip"
-                android:text="@string/DefaultMode"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="#ffffffff" />
+                android:id="@+id/tabInfoTextChargeStatusRight"
+                android:layout_width="48dip"
+                android:layout_height="18dip"
+                android:layout_alignLeft="@id/tabInfoImageCharger"
+                android:layout_alignTop="@id/tabInfoImageCharger"
+                android:layout_marginLeft="196.0dip"
+                android:layout_marginTop="16.0dip"
+                android:gravity="center_vertical|center_horizontal|center"
+                android:text="@string/DefaultSlidetoCharge"
+                android:textColor="#ffffffff"
+                android:textSize="7.0dip" />
 
             <com.openvehicles.OVMS.ReversedSeekBar
                 android:id="@+id/tabInfoSliderChargerControl"
-                android:layout_width="96.0dip"
-                android:layout_height="16.0dip"
+                android:layout_width="104.0dip"
+                android:layout_height="20.0dip"
                 android:layout_alignLeft="@id/tabInfoImageCharger"
                 android:layout_alignTop="@id/tabInfoImageCharger"
-                android:layout_marginLeft="148.0dip"
-                android:layout_marginTop="18.0dip"
+                android:layout_marginLeft="144.0dip"
+                android:layout_marginTop="16.0dip"
                 android:indeterminate="false"
                 android:indeterminateOnly="false"
                 android:max="100"
                 android:progress="0"
                 android:progressDrawable="@drawable/ui_charger_bg"
                 android:thumb="@drawable/charger_button"
-                android:thumbOffset="-8.0dip" />
+                android:thumbOffset="-4.0dip" />
         </RelativeLayout>
     </TableRow>
 
@@ -255,6 +259,21 @@
                 android:layout_centerVertical="true"
                 android:text=""
                 android:textAppearance="?android:textAppearanceMedium" />
+            
+            <TextView
+                android:id="@+id/tabInfoTextChargeMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@id/tabInfoImageBattery"
+                android:layout_alignRight="@id/tabInfoImageBattery"
+                android:layout_marginBottom="-3.0dip"
+                android:layout_marginRight="20.0dip"
+                android:gravity="right"
+                android:text=""
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="#fff07d00"
+                android:textStyle="bold" />
+
         </RelativeLayout>
         
     </TableRow><TableRow

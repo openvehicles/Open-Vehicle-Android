@@ -165,32 +165,73 @@ public class TabInfo extends Activity {
 			tv.setText(data.car_soc);
 
 			RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
+			TextView cmtv = (TextView)findViewById(R.id.tabInfoTextChargeMode);
 			if ((!data.car_chargeport_open)||(data.car_charge_substate_i_raw==0x07)) {
 				// Charge port is closed or car is not plugged in
 				pluglayoutv.setVisibility(View.INVISIBLE);
+				cmtv.setVisibility(View.INVISIBLE);
 			}
 			else {
 				// Car is plugged in
 				pluglayoutv.setVisibility(View.VISIBLE);
+
+				ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
+				ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
+				TextView tvl = (TextView)findViewById(R.id.tabInfoTextChargeStatusLeft);
+				TextView tvr = (TextView)findViewById(R.id.tabInfoTextChargeStatusRight);
+				switch (data.car_charge_state_i_raw) {
+				case 0x04:    // Done
+				case 0x115:   // Stopping
+				case 0x15:    // Stopped
+				case 0x16:    // Stopped
+				case 0x17:    // Stopped
+				case 0x18:    // Stopped
+				case 0x19:    // Stopped
+					// Slider on the left, message is "Slide to charge"
+					bar.setProgress(100);
+					tvl.setText("");
+					tvr.setText("SLIDE TO\nCHARGE");
+					iv.setVisibility(View.VISIBLE);
+					cmtv.setVisibility(View.INVISIBLE);
+					break;
+				case 0x0e:    // Wait for schedule charge
+					// Slider on the left, message is "Timed Charge"
+					bar.setProgress(100);
+					tvl.setText("");
+					tvr.setText("TIMED CHARGE");
+					iv.setVisibility(View.VISIBLE);
+					cmtv.setVisibility(View.INVISIBLE);
+					break;				
+				case 0x01:    // Charging
+				case 0x101:   // Starting
+				case 0x02:    // Top-off
+				case 0x0d:    // Preparing to charge
+				case 0x0f:    // Heating
+					// Slider on the right, message blank
+					bar.setProgress(0);
+					tvl.setText(String.format("CHARGING\n%s %s", data.car_charge_linevoltage, data.car_charge_current));
+					tvr.setText("");
+					cmtv.setText(String.format("%s %s", data.car_charge_mode, data.car_charge_currentlimit).toUpperCase());
+					iv.setVisibility(View.VISIBLE);
+					cmtv.setVisibility(View.VISIBLE);
+					break;
+				default:
+					// Slider on the right, message blank
+					bar.setProgress(100);
+					tvl.setText("");
+					tvr.setText("");
+					cmtv.setVisibility(View.INVISIBLE);
+					iv.setVisibility(View.INVISIBLE);
+					break;				
+				}
 			}
 			
-			ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
-			tv = (TextView)findViewById(R.id.tabInfoTextChargeStatus);
-			if (data.car_charging) {
-				tv.setText(String.format("Charging - %s (%s %s)", data.car_charge_mode, data.car_charge_linevoltage, data.car_charge_current));
-				iv.setVisibility(View.VISIBLE);
-			}
-			else {
-				tv.setText("");				
-				iv.setVisibility(View.INVISIBLE);
-			}
-
 			tv = (TextView)findViewById(R.id.tabInfoTextIdealRange);
 			tv.setText(data.car_range_ideal);
 			tv = (TextView)findViewById(R.id.tabInfoTextEstimatedRange);
 			tv.setText(data.car_range_estimated);
 			
-			iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
+			ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
 			iv.getLayoutParams().width = 268 * data.car_soc_raw / 100;
 
 			iv = (ImageView)findViewById(R.id.tabInfoImageCar);

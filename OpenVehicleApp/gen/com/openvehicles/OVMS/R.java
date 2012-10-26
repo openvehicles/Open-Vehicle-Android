@@ -115,18 +115,18 @@ public final class R {
         public static final int btnCarEditorDelete=0x7f070007;
         public static final int btnCarEditorSave=0x7f070008;
         public static final int btnCatListEditCar=0x7f07002c;
-        public static final int btnCenterMap=0x7f070046;
+        public static final int btnCenterMap=0x7f070047;
         public static final int imgCarEditorCarImage=0x7f070028;
         public static final int imgCarLeft=0x7f070034;
         public static final int imgCarListCarImage=0x7f07002a;
         public static final int imgCarRight=0x7f070036;
         public static final int linearLayout1=0x7f070005;
-        public static final int mapview=0x7f070045;
+        public static final int mapview=0x7f070046;
         public static final int menuCarListDelete=0x7f07000a;
         public static final int menuCarListEdit=0x7f070009;
         public static final int menuDeleteSavedNotifications=0x7f07000c;
         public static final int menuQuit=0x7f07000b;
-        public static final int relativeLayout1=0x7f070044;
+        public static final int relativeLayout1=0x7f070045;
         public static final int spinnerCarEditorColor=0x7f070004;
         public static final int tabCarConnectionImage=0x7f070010;
         public static final int tabCarImageCarChargePortOpen=0x7f07001b;
@@ -156,7 +156,7 @@ public final class R {
         public static final int tabInfoImageBattery=0x7f07003d;
         public static final int tabInfoImageBatteryChargingOverlay=0x7f07003e;
         public static final int tabInfoImageBatteryOverlay=0x7f07003f;
-        public static final int tabInfoImageBatteryText=0x7f070041;
+        public static final int tabInfoImageBatteryText=0x7f070042;
         public static final int tabInfoImageCar=0x7f070035;
         public static final int tabInfoImageCharger=0x7f070039;
         public static final int tabInfoImageParking=0x7f07002e;
@@ -164,10 +164,11 @@ public final class R {
         public static final int tabInfoLayoutParking=0x7f07002d;
         public static final int tabInfoRowCharger=0x7f070037;
         public static final int tabInfoSliderChargerControl=0x7f07003c;
-        public static final int tabInfoTextChargeMode=0x7f07003b;
-        public static final int tabInfoTextChargeStatus=0x7f07003a;
-        public static final int tabInfoTextEstimatedRange=0x7f070043;
-        public static final int tabInfoTextIdealRange=0x7f070042;
+        public static final int tabInfoTextChargeMode=0x7f070041;
+        public static final int tabInfoTextChargeStatusLeft=0x7f07003a;
+        public static final int tabInfoTextChargeStatusRight=0x7f07003b;
+        public static final int tabInfoTextEstimatedRange=0x7f070044;
+        public static final int tabInfoTextIdealRange=0x7f070043;
         public static final int tabInfoTextLastUpdated=0x7f070031;
         public static final int tabInfoTextParkedTime=0x7f07002f;
         public static final int tabInfoTextSOC=0x7f070040;
@@ -178,13 +179,13 @@ public final class R {
         public static final int textCarListVehicleID=0x7f07002b;
         public static final int textFLWheel=0x7f070023;
         public static final int textFRWheel=0x7f070025;
-        public static final int textNotificationsListMessage=0x7f070049;
-        public static final int textNotificationsListTimestamp=0x7f070048;
-        public static final int textNotificationsListTitle=0x7f070047;
+        public static final int textNotificationsListMessage=0x7f07004a;
+        public static final int textNotificationsListTimestamp=0x7f070049;
+        public static final int textNotificationsListTitle=0x7f070048;
         public static final int textRLWheel=0x7f070024;
         public static final int textRRWheel=0x7f070026;
         public static final int textVehicleID=0x7f070033;
-        public static final int textView1=0x7f07004a;
+        public static final int textView1=0x7f07004b;
     }
     public static final class layout {
         public static final int careditor=0x7f030000;
@@ -203,20 +204,21 @@ public final class R {
     }
     public static final class string {
         public static final int AddCar=0x7f050006;
-        public static final int BatteryImage=0x7f05001b;
-        public static final int BatteryOverlay=0x7f05001d;
-        public static final int BatteryText=0x7f050020;
+        public static final int BatteryImage=0x7f05001c;
+        public static final int BatteryOverlay=0x7f05001e;
+        public static final int BatteryText=0x7f050021;
         public static final int Cancel=0x7f050007;
         public static final int ChargerPlug=0x7f050018;
-        public static final int ChargingOverlay=0x7f05001c;
+        public static final int ChargingOverlay=0x7f05001d;
         public static final int ClearNotifications=0x7f050010;
         public static final int DefaultCharging=0x7f050019;
-        public static final int DefaultMode=0x7f05001a;
+        public static final int DefaultMode=0x7f05001b;
+        public static final int DefaultSlidetoCharge=0x7f05001a;
         public static final int Delete=0x7f050008;
         public static final int Edit=0x7f05000f;
-        public static final int EstimatedShort=0x7f05001e;
-        public static final int Homelink=0x7f050021;
-        public static final int IdealShort=0x7f05001f;
+        public static final int EstimatedShort=0x7f05001f;
+        public static final int Homelink=0x7f050022;
+        public static final int IdealShort=0x7f050020;
         public static final int ImageParking=0x7f050014;
         public static final int LastUpdated=0x7f050004;
         public static final int Loading=0x7f050001;
