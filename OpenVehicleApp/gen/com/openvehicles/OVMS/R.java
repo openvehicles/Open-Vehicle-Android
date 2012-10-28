@@ -197,10 +197,11 @@ public final class R {
         public static final int tabcars=0x7f030006;
         public static final int tabcars_listitem=0x7f030007;
         public static final int tabinfo=0x7f030008;
-        public static final int tabmap=0x7f030009;
-        public static final int tabnotifications=0x7f03000a;
-        public static final int tabnotifications_listitem=0x7f03000b;
-        public static final int tabsettings=0x7f03000c;
+        public static final int tabmap_debug=0x7f030009;
+        public static final int tabmap_release=0x7f03000a;
+        public static final int tabnotifications=0x7f03000b;
+        public static final int tabnotifications_listitem=0x7f03000c;
+        public static final int tabsettings=0x7f03000d;
     }
     public static final class string {
         public static final int AddCar=0x7f050006;

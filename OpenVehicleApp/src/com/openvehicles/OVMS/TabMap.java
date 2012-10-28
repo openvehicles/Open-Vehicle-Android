@@ -6,8 +6,9 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -27,12 +28,42 @@ import com.google.android.maps.OverlayItem;
 
 public class TabMap extends MapActivity implements RefreshStatusCallBack {
 
+	// Define the debug signature hash (Android default debug cert). Code from sigs[i].hashCode()
+	protected final static int DEBUG_SIGNATURE_HASH = -1119983641;
+	private Boolean _isDebugBuild = null;
+	
+	// Checks if this apk was built using the debug certificate
+	// Used e.g. for Google Maps API key determination (from: http://whereblogger.klaki.net/2009/10/choosing-android-maps-api-key-at-run.html)
+	public Boolean isDebugBuild(Context context) {
+	    if (_isDebugBuild == null) {
+	        try {
+	            _isDebugBuild = false;
+	            Signature [] sigs = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+	            for (int i = 0; i < sigs.length; i++) {
+	                if (sigs[i].hashCode() == DEBUG_SIGNATURE_HASH) {
+	                    Log.d("OVMS", "This is a debug build!");
+	                    _isDebugBuild = true;
+	                    break;
+	                }
+	            }
+	        } catch (NameNotFoundException e) {
+	            e.printStackTrace();
+	        }      
+	    }
+	    return _isDebugBuild;
+	}
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.tabmap);
+		if (isDebugBuild(this)) {
+			setContentView(R.layout.tabmap_debug);
+		}
+		else {
+			setContentView(R.layout.tabmap_release);			
+		}
 
 		ImageButton btn = (ImageButton) findViewById(R.id.btnCenterMap);
 		btn.setOnClickListener(new OnClickListener() {
