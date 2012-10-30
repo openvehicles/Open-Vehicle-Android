@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -82,6 +83,7 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 	private MapView mapView;
 	private MapController mc;
 	private CarData data;
+	private Handler handler = new TabMapHandler(this);
 
 	private class CarMarkerOverlay extends ItemizedOverlay {
 		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
@@ -131,16 +133,8 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 		return false;
 	}
 
-	private Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			// TODO Auto-generated method stub
-			// MyLocationOverlay myLocationOverlay = new MyLocationOverlay(this,
-			// mapView);
-			// mapView.getOverlays().add(myLocationOverlay);
-			// myLocationOverlay.enableCompass(); // if you want to display a
-			// compass also
-			// myLocationOverlay.enableMyLocation();
-
+	// Called from HandleMessage() when we need to be displayed
+	public void CentreMap() {
 			Log.d("OVMS", "Centering Map");
 			int lat = (int) (data.car_latitude * 1E6);
 			int lng = (int) (data.car_longitude * 1E6);
@@ -157,8 +151,9 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 			mc.setZoom(18);
 			mapView.invalidate();
 		}
-	};
 
+	// New car data has been received from the server
+	// We store our local copy, the refresh the display
 	public void RefreshStatus(CarData carData) {
 		data = carData;
 
@@ -174,4 +169,18 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 		handler.sendEmptyMessage(0);
 	}
 
+}
+
+class TabMapHandler extends Handler {
+	private final WeakReference<TabMap> m_tabMap; 
+
+	TabMapHandler(TabMap tabMap) {
+		m_tabMap = new WeakReference<TabMap>(tabMap);
+	}
+	@Override
+	public void handleMessage(Message msg) {
+		TabMap tabMap = m_tabMap.get();
+
+		tabMap.CentreMap();
+	}
 }

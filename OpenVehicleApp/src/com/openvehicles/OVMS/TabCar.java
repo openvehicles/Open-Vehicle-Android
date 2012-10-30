@@ -1,23 +1,25 @@
 package com.openvehicles.OVMS;
 
+import java.lang.ref.WeakReference;
 import java.util.Date;
 
-import com.openvehicles.OVMS.CarData.DataStale;
-
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.openvehicles.OVMS.CarData.DataStale;
+
 public class TabCar extends Activity {
+
+	private CarData data;
+	private Handler handler = new TabCarHandler(this);
+	private Handler lastUpdateTimerHandler = new Handler();
 
 	/** Called when the activity is first created. */
 	@Override
@@ -26,9 +28,6 @@ public class TabCar extends Activity {
 		setContentView(R.layout.tabcar);
 
 	}
-
-	private CarData data;
-	private Handler lastUpdateTimerHandler = new Handler();
 
 	private Runnable lastUpdateTimer = new Runnable() {
 		public void run() {
@@ -56,7 +55,16 @@ public class TabCar extends Activity {
 		lastUpdateTimerHandler.removeCallbacks(lastUpdateTimer);
 	}
 
-	private void updateLastUpdatedView() {
+	// New car data has been received from the server
+	// We store our local copy, the refresh the display
+	public void RefreshStatus(CarData carData) {
+		data = carData;
+		handler.sendEmptyMessage(0);
+	}
+
+	// This updates the part of the view with times shown.
+	// It is called by a periodic timer so it gets updated every few seconds.
+	public void updateLastUpdatedView() {
 		if ((data == null) || (data.car_lastupdated == null))
 			return;
 
@@ -132,14 +140,22 @@ public class TabCar extends Activity {
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageSignalRSSI);
 		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
 		iv.setImageResource(resId);
+	}
+	
+	// This updates the main informational part of the view.
+	// It is called when the server gets new data.
+	public void updateCarBodyView() {
+
+		if ((data == null) || (data.car_lastupdated == null))
+			return;
 
 		// Now, the car background image	
-		iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
-		resId = getResources().getIdentifier("ol_"+data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
+		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
+		int resId = getResources().getIdentifier("ol_"+data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
 		iv.setImageResource(resId);
 
 		// Ambient weather
-		tv = (TextView) findViewById(R.id.tabCarTextAmbient);
+		TextView tv = (TextView) findViewById(R.id.tabCarTextAmbient);
 		if (data.stale_ambient_temp == DataStale.NoValue) {
 			tv.setText("");
 			tv.setTextColor(0xFF808080);
@@ -285,17 +301,19 @@ public class TabCar extends Activity {
 	    }
 	}
 
-	private Handler handler = new Handler() {
-		public void handleMessage(Message msg) {
-			updateLastUpdatedView();
-		}
-	};
+}
 
-	public void RefreshStatus(CarData carData) {
-		Log.d("Tab", "TabCar Refresh");
-		data = carData;
-		handler.sendEmptyMessage(0);
+class TabCarHandler extends Handler {
+	private final WeakReference<TabCar> m_tabCar; 
 
+	TabCarHandler(TabCar tabCar) {
+		m_tabCar = new WeakReference<TabCar>(tabCar);
 	}
+	@Override
+	public void handleMessage(Message msg) {
+		TabCar tabCar = m_tabCar.get();
 
+		tabCar.updateLastUpdatedView();
+		tabCar.updateCarBodyView();
+	}
 }
