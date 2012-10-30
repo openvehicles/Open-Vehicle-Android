@@ -166,16 +166,17 @@ public class TabInfo extends Activity {
 
 			RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
 			TextView cmtv = (TextView)findViewById(R.id.tabInfoTextChargeMode);
+			ImageView coiv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
 			if ((!data.car_chargeport_open)||(data.car_charge_substate_i_raw==0x07)) {
 				// Charge port is closed or car is not plugged in
 				pluglayoutv.setVisibility(View.INVISIBLE);
 				cmtv.setVisibility(View.INVISIBLE);
+				coiv.setVisibility(View.INVISIBLE);
 			}
 			else {
 				// Car is plugged in
 				pluglayoutv.setVisibility(View.VISIBLE);
 
-				ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
 				ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
 				TextView tvl = (TextView)findViewById(R.id.tabInfoTextChargeStatusLeft);
 				TextView tvr = (TextView)findViewById(R.id.tabInfoTextChargeStatusRight);
@@ -191,7 +192,7 @@ public class TabInfo extends Activity {
 					bar.setProgress(100);
 					tvl.setText("");
 					tvr.setText("SLIDE TO\nCHARGE");
-					iv.setVisibility(View.VISIBLE);
+					coiv.setVisibility(View.VISIBLE);
 					cmtv.setVisibility(View.INVISIBLE);
 					break;
 				case 0x0e:    // Wait for schedule charge
@@ -199,7 +200,7 @@ public class TabInfo extends Activity {
 					bar.setProgress(100);
 					tvl.setText("");
 					tvr.setText("TIMED CHARGE");
-					iv.setVisibility(View.VISIBLE);
+					coiv.setVisibility(View.VISIBLE);
 					cmtv.setVisibility(View.INVISIBLE);
 					break;				
 				case 0x01:    // Charging
@@ -212,7 +213,7 @@ public class TabInfo extends Activity {
 					tvl.setText(String.format("CHARGING\n%s %s", data.car_charge_linevoltage, data.car_charge_current));
 					tvr.setText("");
 					cmtv.setText(String.format("%s %s", data.car_charge_mode, data.car_charge_currentlimit).toUpperCase());
-					iv.setVisibility(View.VISIBLE);
+					coiv.setVisibility(View.VISIBLE);
 					cmtv.setVisibility(View.VISIBLE);
 					break;
 				default:
@@ -221,7 +222,7 @@ public class TabInfo extends Activity {
 					tvl.setText("");
 					tvr.setText("");
 					cmtv.setVisibility(View.INVISIBLE);
-					iv.setVisibility(View.INVISIBLE);
+					coiv.setVisibility(View.INVISIBLE);
 					break;				
 				}
 			}
@@ -234,12 +235,12 @@ public class TabInfo extends Activity {
 			ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
 			iv.getLayoutParams().width = 268 * data.car_soc_raw / 100;
 
-			iv = (ImageView)findViewById(R.id.tabInfoImageCar);
-			int resId = getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
+			iv = (ImageView)findViewById(R.id.tabInfoImageSignalRSSI);
+			int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
 			iv.setImageResource(resId);
 
-			iv = (ImageView)findViewById(R.id.tabInfoImageSignalRSSI);
-			resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
+			iv = (ImageView)findViewById(R.id.tabInfoImageCar);
+			resId = getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
 			iv.setImageResource(resId);
 			
 			iv.setOnClickListener(new OnClickListener() {
