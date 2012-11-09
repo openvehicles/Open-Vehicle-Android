@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui.witdet;
 
 import android.content.Context;
 import android.graphics.Canvas;

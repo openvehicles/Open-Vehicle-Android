@@ -193,7 +193,7 @@
                 android:textColor="#ffffffff"
                 android:textSize="7.0dip" />
 
-            <com.openvehicles.OVMS.ReversedSeekBar
+            <com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
                 android:id="@+id/tabInfoSliderChargerControl"
                 android:layout_width="104.0dip"
                 android:layout_height="20.0dip"

@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.utils;
 
 /*
  * Copyright (C) 2003 Clarence Ho (clarence@clarenceho.net)

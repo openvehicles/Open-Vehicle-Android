@@ -1,70 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.openvehicles.OVMS"
-    android:versionCode="1"
-    android:versionName="2.99.1" >
+	package="com.openvehicles.OVMS"
+	android:versionCode="1"
+	android:versionName="2.99.1" >
 
-    <uses-sdk android:minSdkVersion="10" />
+	<uses-sdk
+		android:minSdkVersion="9"
+		android:targetSdkVersion="15" />
 
-    <!-- Only this application can receive the messages and registration result -->
-    <permission
-        android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
-        android:protectionLevel="signature" />
+	<!-- Only this application can receive the messages and registration result -->
+	<permission
+		android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
+		android:protectionLevel="signature" />
 
-    <uses-permission android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE" />
+	<uses-permission android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE" />
 
-    <!-- This app has permission to register and receive message -->
-    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.VIBRATE" />
-    
-    <application
-        android:icon="@drawable/icon72x72"
-        android:label="@string/app_name"
-        android:theme="@android:style/Theme.NoTitleBar" >
-        <uses-library android:name="com.google.android.maps" />
+	<!-- This app has permission to register and receive message -->
+	<uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+	<uses-permission android:name="android.permission.INTERNET" />
+	<uses-permission android:name="android.permission.VIBRATE" />
 
-        <activity
-            android:label="@string/app_name"
-            android:name=".OVMSActivity"
-            android:launchMode="singleTop" >
-            <intent-filter >
-                <action android:name="android.intent.action.MAIN" />
+	<application
+		android:icon="@drawable/icon72x72"
+		android:label="@string/app_name"
+		android:theme="@android:style/Theme.NoTitleBar" >
+		<uses-library android:name="com.google.android.maps" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".TabInfo" >
-        </activity>
-        <activity android:name=".TabMap" >
-        </activity>
-        <activity android:name=".TabCars" >
-        </activity>
-        <activity android:name=".TabCar" >
-        </activity>
-        <activity android:name=".CarEditor" >
-        </activity>
-        <activity android:name=".TabNotifications" >
-        </activity>
-            
-        <!-- Only C2DM servers can send messages for the app. If permission is not set - any other app can generate it -->
-        <receiver
-            android:name=".C2DMReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+		<activity android:name=".ui.MainActivity"
+			android:label="@string/app_name"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"			
+			android:launchMode="singleTop" >
+			<intent-filter>
+				<action android:name="android.intent.action.MAIN" />
+				<category android:name="android.intent.category.LAUNCHER" />
+			</intent-filter>
+		</activity>
+		<activity android:name=".ui.TabInfo" />
+		<activity android:name=".ui.TabMap" />
+		<activity android:name=".ui.TabCars" />
+		<activity android:name=".ui.TabCar" />
+		<activity android:name=".ui.CarEditorActivity" />
+		<activity android:name=".ui.TabNotifications" />
 
-            <!-- Receive the actual message -->
-            <intent-filter >
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+		<!-- Only C2DM servers can send messages for the app. If permission is not set - any other app can generate it -->
+		<receiver
+			android:name=".receiver.C2DMReceiver"
+			android:permission="com.google.android.c2dm.permission.SEND" >
 
-                <category android:name="com.openvehicles.OVMS" />
-            </intent-filter>
-            <!-- Receive the registration id -->
-            <intent-filter >
-                <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+			<!-- Receive the actual message -->
+			<intent-filter>
+				<action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="com.openvehicles.OVMS" />
-            </intent-filter>
-        </receiver>
-    </application>
+				<category android:name="com.openvehicles.OVMS" />
+			</intent-filter>
+			<!-- Receive the registration id -->
+			<intent-filter>
+				<action android:name="com.google.android.c2dm.intent.REGISTRATION" />
+
+				<category android:name="com.openvehicles.OVMS" />
+			</intent-filter>
+		</receiver>
+	</application>
 
 </manifest>

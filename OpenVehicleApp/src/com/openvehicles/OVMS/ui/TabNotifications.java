@@ -1,6 +1,12 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.text.SimpleDateFormat;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.utils.NotificationData;
+import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;

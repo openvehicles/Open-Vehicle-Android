@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.utils;
 
 //Copyright (c) 1999-2004 Brian Wellington (bwelling@xbill.org)
 

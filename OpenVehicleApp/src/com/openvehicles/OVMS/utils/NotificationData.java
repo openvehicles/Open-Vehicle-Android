@@ -1,9 +1,10 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.utils;
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class NotificationData implements Serializable {
+	private static final long serialVersionUID = -3173247800500433809L;
 	public Date Timestamp;
 	public String Title;
 	public String Message;

@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -26,6 +26,11 @@ import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
 import com.google.android.maps.Overlay;
 import com.google.android.maps.OverlayItem;
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.utils.RefreshStatusCallBack;
 
 public class TabMap extends MapActivity implements RefreshStatusCallBack {
 
@@ -85,7 +90,7 @@ public class TabMap extends MapActivity implements RefreshStatusCallBack {
 	private CarData data;
 	private Handler handler = new TabMapHandler(this);
 
-	private class CarMarkerOverlay extends ItemizedOverlay {
+	private class CarMarkerOverlay extends ItemizedOverlay<OverlayItem> {
 		private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 		private Context mContext;
 

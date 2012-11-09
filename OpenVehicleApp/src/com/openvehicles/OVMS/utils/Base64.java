@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.utils;
 
 /**
  * <p>Encodes and decodes to and from Base64 notation.</p>

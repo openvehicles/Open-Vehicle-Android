@@ -1,10 +1,9 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.entities;
 
 import java.io.Serializable;
 import java.util.Date;
 
 public class CarData implements Serializable {
-
   private static final long serialVersionUID = 9069218298370983442L;
 
   public enum DataStale { NoValue, Stale, Good }

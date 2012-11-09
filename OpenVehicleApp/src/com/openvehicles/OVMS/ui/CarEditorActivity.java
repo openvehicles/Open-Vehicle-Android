@@ -1,9 +1,14 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.entities.CarData;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -23,7 +28,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class CarEditor extends Activity {
+public class CarEditorActivity extends Activity {
 
 	/** Called when the activity is first created. */
 	@Override
@@ -68,7 +73,7 @@ public class CarEditor extends Activity {
 		} else {
 			btn.setOnClickListener(new OnClickListener() {
 				public void onClick(View arg0) {
-					AlertDialog.Builder builder = new AlertDialog.Builder(CarEditor.this);
+					AlertDialog.Builder builder = new AlertDialog.Builder(CarEditorActivity.this);
 					builder.setMessage("Delete this car?")
 					       .setCancelable(false)
 					       .setPositiveButton("Yes", new DialogInterface.OnClickListener() {

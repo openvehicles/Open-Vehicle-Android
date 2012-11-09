@@ -1,7 +1,6 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.Date;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -13,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.openvehicles.OVMS.CarData.DataStale;
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.entities.CarData.DataStale;
 
 public class TabCar extends Activity {
 
@@ -25,7 +26,7 @@ public class TabCar extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tabcar);
+		setContentView(R.layout.tab_car);
 
 	}
 
@@ -65,13 +66,12 @@ public class TabCar extends Activity {
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.
 	public void updateLastUpdatedView() {
-		if ((data == null) || (data.car_lastupdated == null))
-			return;
+		if ((data == null) || (data.car_lastupdated == null)) return;
 
 		// First the last updated section...
 		TextView tv = (TextView)findViewById(R.id.tabCarTextLastUpdated);
-		Date now = new Date();
-		long seconds = (now.getTime() - data.car_lastupdated.getTime()) / 1000;
+		long now = System.currentTimeMillis();
+		long seconds = (now - data.car_lastupdated.getTime()) / 1000;
 		long minutes = (seconds)/60;
 		long hours = minutes/60;
 		long days = minutes/(60*24);
@@ -107,13 +107,14 @@ public class TabCar extends Activity {
 		}
 
 		// Then the parking timer...
-		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabCarLayoutParking);
-		if ((!this.data.car_started) && (this.data.car_parked_time != null))
-		{
+//		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabCarLayoutParking);
+		if ((!this.data.car_started) && (this.data.car_parked_time != null)) {
 			// Car is parked
-			parkinglayoutv.setVisibility(View.VISIBLE);
+//			parkinglayoutv.setVisibility(View.VISIBLE);
+			findViewById(R.id.tabCarTextParkedTime).setVisibility(View.VISIBLE);
+			
 			tv = (TextView)findViewById(R.id.tabCarTextParkedTime);
-			seconds = (now.getTime() - data.car_parked_time.getTime()) / 1000;
+			seconds = (now - data.car_parked_time.getTime()) / 1000;
 			minutes = (seconds)/60;
 			hours = minutes/60;
 			days = minutes/(60*24);
@@ -130,28 +131,27 @@ public class TabCar extends Activity {
 				tv.setText(String.format("%d mins",minutes));
 			else
 				tv.setText(String.format("%d mins",minutes));
-		}
-		else
-		{
-			parkinglayoutv.setVisibility(View.INVISIBLE);
+		} else {
+//			parkinglayoutv.setVisibility(View.INVISIBLE);
+			findViewById(R.id.tabCarTextParkedTime).setVisibility(View.INVISIBLE);			
 		}
 
 		// The signal strength indicator
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageSignalRSSI);
-		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
+		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars,
+				"drawable", getPackageName());
 		iv.setImageResource(resId);
 	}
 	
 	// This updates the main informational part of the view.
 	// It is called when the server gets new data.
 	public void updateCarBodyView() {
-
-		if ((data == null) || (data.car_lastupdated == null))
-			return;
+		if ((data == null) || (data.car_lastupdated == null)) return;
 
 		// Now, the car background image	
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
-		int resId = getResources().getIdentifier("ol_"+data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
+		int resId = getResources().getIdentifier("ol_"+data.sel_vehicle_image,
+				"drawable", getPackageName());
 		iv.setImageResource(resId);
 
 		// Ambient weather
@@ -170,36 +170,66 @@ public class TabCar extends Activity {
 		}
 
 		// TPMS
-		String tirePressureDisplayFormat = "%s\n%s";
+//		String tirePressureDisplayFormat = "%s\n%s";
         TextView fltv = (TextView) findViewById(R.id.textFLWheel);
+        TextView fltvv = (TextView) findViewById(R.id.textFLWheelVal);
+
         TextView frtv = (TextView) findViewById(R.id.textFRWheel);
+        TextView frtvv = (TextView) findViewById(R.id.textFRWheelVal);
+        
         TextView rltv = (TextView) findViewById(R.id.textRLWheel);
+        TextView rltvv = (TextView) findViewById(R.id.textRLWheelVal);
+        
         TextView rrtv = (TextView) findViewById(R.id.textRRWheel);
+        TextView rrtvv = (TextView) findViewById(R.id.textRRWheelVal);
+        
     	iv = (ImageView)findViewById(R.id.tabCarImageCarTPMSBoxes);
         if (data.stale_tpms == DataStale.NoValue) {
         	iv.setVisibility(View.INVISIBLE);
-    		fltv.setText("");
-    		frtv.setText("");
-    		rltv.setText("");
-    		rrtv.setText("");
-        }
-        else {
+    		fltv.setText(null);
+    		frtv.setText(null);
+    		rltv.setText(null);
+    		rrtv.setText(null);
+    		
+    		fltvv.setText(null);
+    		frtvv.setText(null);
+    		rltvv.setText(null);
+    		rrtvv.setText(null);
+    		
+        } else {
         	iv.setVisibility(View.VISIBLE);
-    		fltv.setText(String.format(tirePressureDisplayFormat,data.car_tpms_fl_p, data.car_tpms_fl_t));
-    		frtv.setText(String.format(tirePressureDisplayFormat,data.car_tpms_fr_p, data.car_tpms_fr_t));
-    		rltv.setText(String.format(tirePressureDisplayFormat,data.car_tpms_rl_p, data.car_tpms_rl_t));
-    		rrtv.setText(String.format(tirePressureDisplayFormat,data.car_tpms_rr_p, data.car_tpms_rr_t));
+
+        	fltv.setText(data.car_tpms_fl_p);
+    		frtv.setText(data.car_tpms_fr_p);
+    		rltv.setText(data.car_tpms_rl_p);
+    		rrtv.setText(data.car_tpms_rr_p);
+    		
+        	fltvv.setText(data.car_tpms_fl_t);
+    		frtvv.setText(data.car_tpms_fr_t);
+    		rltvv.setText(data.car_tpms_rl_t);
+    		rrtvv.setText(data.car_tpms_rr_t);
+    		
     		if (data.stale_tpms == DataStale.Stale) {
     			fltv.setTextColor(0xFF808080);
     			frtv.setTextColor(0xFF808080);
     			rltv.setTextColor(0xFF808080);
     			rrtv.setTextColor(0xFF808080);
-    		}
-    		else {
+
+    			fltvv.setTextColor(0xFF808080);
+    			frtvv.setTextColor(0xFF808080);
+    			rltvv.setTextColor(0xFF808080);
+    			rrtvv.setTextColor(0xFF808080);
+    			
+    		} else {
     			fltv.setTextColor(0xFFFFFFFF);
     			frtv.setTextColor(0xFFFFFFFF);
     			rltv.setTextColor(0xFFFFFFFF);
     			rrtv.setTextColor(0xFFFFFFFF);
+
+    			fltvv.setTextColor(0xFFFFFFFF);
+    			frtvv.setTextColor(0xFFFFFFFF);
+    			rltvv.setTextColor(0xFFFFFFFF);
+    			rrtvv.setTextColor(0xFFFFFFFF);
     		}
         }
 
@@ -211,8 +241,7 @@ public class TabCar extends Activity {
 			pemtv.setText("");
 			motortv.setText("");
 			batterytv.setText("");
-		}
-		else {
+		} else {
 			pemtv.setText(data.car_temp_pem);
 			motortv.setText(data.car_temp_motor);
 			batterytv.setText(data.car_temp_battery);
@@ -220,8 +249,7 @@ public class TabCar extends Activity {
 				pemtv.setTextColor(0xFF808080);
 				motortv.setTextColor(0xFF808080);
 				batterytv.setTextColor(0xFF808080);
-			}
-			else {
+			} else {
 				pemtv.setTextColor(0xFFFFFFFF);
 				motortv.setTextColor(0xFFFFFFFF);
 				batterytv.setTextColor(0xFFFFFFFF);
@@ -230,10 +258,8 @@ public class TabCar extends Activity {
 
 		// Speed
 		tv = (TextView) findViewById(R.id.tabCarTextSpeed);
-		if (!data.car_started) 
-			tv.setText("");
-		else
-			tv.setText(data.car_speed);
+		if (!data.car_started) tv.setText("");
+		else tv.setText(data.car_speed);
 				
 		// Car Hood
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
@@ -267,8 +293,7 @@ public class TabCar extends Activity {
 	    iv = (ImageView) findViewById(R.id.tabCarImageCarChargePortOpen);
 	    if (!data.car_chargeport_open) {
 			iv.setVisibility(View.INVISIBLE);
-	    }
-	    else {
+	    } else {
 			iv.setVisibility(View.VISIBLE);
 			
 			if (data.car_charge_substate_i_raw == 0x07) {

@@ -37,7 +37,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1.0dip"
                     android:gravity="center"
-                    android:text=""
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textColor="#ffffffff" />
             </LinearLayout>
@@ -66,7 +65,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="1.0dip"
                     android:layout_gravity="bottom"
-                    android:text=""
                     android:textAppearance="?android:textAppearanceSmall" />
                 
                 <ImageView
@@ -108,15 +106,15 @@
                     android:src="@drawable/ol_car_default" />
 
                 <ImageView
-                    android:id="@+id/tabCarImageCarTPMSBoxes"
-                    android:layout_width="267dip"
-                    android:layout_height="400dip"
-                    android:layout_alignParentTop="true"
-                    android:layout_alignTop="@id/tabCarImageCarOutline"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="50.0dip"
-                    android:scaleType="fitXY"
-                    android:src="@drawable/tirepress_letterbox" />
+                	android:id="@+id/tabCarImageCarTPMSBoxes"
+                	android:layout_width="267dip"
+                	android:layout_height="400dip"
+                	android:layout_alignParentTop="true"
+                	android:layout_alignTop="@id/tabCarImageCarOutline"
+                	android:layout_centerHorizontal="true"
+                	android:layout_marginTop="50.0dip"
+                	android:scaleType="fitXY"
+                	android:src="@drawable/tirepress_letterbox" />
 
                 <ImageView
                     android:id="@+id/tabCarImageCarTempsBoxes"

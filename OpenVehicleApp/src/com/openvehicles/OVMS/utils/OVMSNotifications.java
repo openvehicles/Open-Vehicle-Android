@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.utils;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

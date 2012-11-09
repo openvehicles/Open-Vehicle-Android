@@ -1,7 +1,13 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
 import java.util.Date;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
 
 import android.app.Activity;
 import android.os.Bundle;

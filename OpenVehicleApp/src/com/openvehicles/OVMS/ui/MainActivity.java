@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -21,8 +21,6 @@ import java.util.UUID;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
-import com.openvehicles.OVMS.CarData.DataStale;
-
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
@@ -32,7 +30,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,7 +41,15 @@ import android.view.MenuItem;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 
-public class OVMSActivity extends TabActivity implements OnTabChangeListener {
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.entities.CarData.DataStale;
+import com.openvehicles.OVMS.utils.NotificationData;
+import com.openvehicles.OVMS.utils.OVMSNotifications;
+
+public class MainActivity extends TabActivity implements OnTabChangeListener {
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -134,8 +139,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 	}
 
 	@Override
-	public void onNewIntent(Intent launchingIntent)
-	{
+	public void onNewIntent(Intent launchingIntent) {
 		TabHost tabHost = getTabHost();
 		if ((launchingIntent != null) && launchingIntent.hasExtra("SetTab"))
 			tabHost.setCurrentTabByTag(launchingIntent.getStringExtra("SetTab"));
@@ -190,8 +194,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 	};
 	private Runnable progressLoginShowDialog = new Runnable() {
 		public void run() {
-			progressLogin = ProgressDialog.show(OVMSActivity.this, "",
-					"Connecting to OVMS Server...");
+			progressLogin = ProgressDialog.show(MainActivity.this, "", "Connecting to OVMS Server...");
 		}
 	};
 
@@ -207,7 +210,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				progressLogin.hide();
 
 			AlertDialog.Builder builder = new AlertDialog.Builder(
-					OVMSActivity.this);
+					MainActivity.this);
 			builder.setMessage(
 					(isLoggedIn) ? String.format("OVMS Server Connection Lost")
 							: String.format("Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords"))
@@ -217,7 +220,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 									new DialogInterface.OnClickListener() {
 								public void onClick(DialogInterface dialog,
 										int id) {
-									OVMSActivity.this.getTabHost()
+									MainActivity.this.getTabHost()
 									.setCurrentTabByTag("tabCars");
 								}
 							});
@@ -284,11 +287,11 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 
 	private void loginComplete() {
 		isLoggedIn = true;
-		this.runOnUiThread(progressLoginCloseDialog);
+		runOnUiThread(progressLoginCloseDialog);
 	}
 
 	public void ChangeCar(CarData car) {
-		this.runOnUiThread(progressLoginShowDialog);
+		runOnUiThread(progressLoginShowDialog);
 
 		Log.d("OVMS", "Changed car to: " + car.sel_vehicleid);
 
@@ -353,7 +356,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 	private void notifyServerSocketError(Exception e) {
 		// only show alerts for specific errors
 		lastServerException = e;
-		OVMSActivity.this.runOnUiThread(serverSocketErrorDialog);
+		MainActivity.this.runOnUiThread(serverSocketErrorDialog);
 	}
 
 	@Override
@@ -474,7 +477,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 		private BufferedReader Inputstream;
 
 		public TCPTask(CarData car) {
-			carData = OVMSActivity.this.carData;
+			carData = MainActivity.this.carData;
 		}
 
 		@Override
@@ -483,7 +486,6 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-
 			try {
 				ConnInit();
 
@@ -491,15 +493,16 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				while (Sock.isConnected()) {
 					// if (Inputstream.ready()) {
 					rx = Inputstream.readLine().trim();
-					msg = new String(rxcipher.update(Base64.decode(rx, 0)))
-					.trim();
+					msg = new String(rxcipher.update(Base64.decode(rx, 0))).trim();
 					Log.d("OVMS", String.format("RX: %s (%s)", msg, rx));
-					if (msg.substring(0, 5).equals("MP-0 "))
+
+					if (msg.substring(0, 5).equals("MP-0 ")) {
 						HandleMessage(msg.substring(5));
-					else
+					} else {
 						Log.d("OVMS", "Unknown protection scheme");
-					// }
-					// short pause after receiving message
+						// short pause after receiving message
+					}
+					
 					try {
 						Thread.sleep(100, 0);
 					} catch (InterruptedException e) {
@@ -580,7 +583,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					if (!carData.sel_paranoid) {
 						Log.d("OVMS", "Paranoid Mode Detected");
 						carData.sel_paranoid = true;
-						OVMSActivity.this.UpdateStatus();
+						MainActivity.this.UpdateStatus();
 					}
 				}
 			}
@@ -590,7 +593,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 			case 'Z': // Number of connected cars
 			{
 				carData.server_carsconnected = Integer.parseInt(cmd);
-				OVMSActivity.this.UpdateStatus();
+				MainActivity.this.UpdateStatus();
 				break;
 			}
 			case 'S': // STATUS
@@ -646,8 +649,8 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				}
 
 				Log.d("TCP", "Notify Vehicle Status Update: " + carData.sel_vehicleid);
-				if (OVMSActivity.this != null) // OVMSActivity may be null if it is not in foreground
-					OVMSActivity.this.UpdateStatus();
+				if (MainActivity.this != null) // OVMSActivity may be null if it is not in foreground
+					MainActivity.this.UpdateStatus();
 				break;
 			}
 			case 'T': // TIME
@@ -655,7 +658,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				if (cmd.length() > 0) {
 					carData.car_lastupdate_raw = Long.parseLong(cmd);
 					carData.car_lastupdated = new Date((new Date()).getTime() - carData.car_lastupdate_raw * 1000);
-					OVMSActivity.this.UpdateStatus();
+					MainActivity.this.UpdateStatus();
 				} else
 					Log.d("TCP", "T MSG Invalid");
 				break;
@@ -683,7 +686,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				}
 
 				// Update the visible location
-				OVMSActivity.this.UpdateStatus();
+				MainActivity.this.UpdateStatus();
 				
 				break;
 			}
@@ -714,11 +717,11 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_lockunlock_raw = Integer.parseInt(dataParts[2]);
 
 					carData.car_temp_pem_raw = Integer.parseInt(dataParts[3]);
-					carData.car_temp_pem = String.format("%d¼C",carData.car_temp_pem_raw);
+					carData.car_temp_pem = String.format("%d\u00B0C",carData.car_temp_pem_raw);
 					carData.car_temp_motor_raw = Integer.parseInt(dataParts[4]);
-					carData.car_temp_motor = String.format("%d¼C",carData.car_temp_motor_raw);
+					carData.car_temp_motor = String.format("%d\u00B0C",carData.car_temp_motor_raw);
 					carData.car_temp_battery_raw = Integer.parseInt(dataParts[5]);
-					carData.car_temp_battery = String.format("%d¼C",carData.car_temp_battery_raw);
+					carData.car_temp_battery = String.format("%d\u00B0C",carData.car_temp_battery_raw);
 					carData.car_tripmeter_raw = Integer.parseInt(dataParts[6]);
 					carData.car_tripmeter = String.format("%d%s",carData.car_tripmeter_raw,carData.car_distance_units);
 					carData.car_odometer_raw = Integer.parseInt(dataParts[7]);
@@ -733,7 +736,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 						carData.car_parked_time = new Date((new Date()).getTime() - carData.car_parking_timer_raw * 1000);
 
 						carData.car_temp_ambient_raw = Integer.parseInt(dataParts[10]);
-						carData.car_temp_ambient = String.format("%d¼C",carData.car_temp_ambient_raw);
+						carData.car_temp_ambient = String.format("%d\u00B0C",carData.car_temp_ambient_raw);
 
 						dataField = Integer.parseInt(dataParts[11]);
 						carData.car_doors3_raw =  dataField;
@@ -763,7 +766,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					}
 
 					// Update the displayed tab
-					OVMSActivity.this.UpdateStatus();
+					MainActivity.this.UpdateStatus();
 				}
 				break;
 			}
@@ -804,7 +807,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 				}
 
 				// Update the displayed tab
-				OVMSActivity.this.UpdateStatus();
+				MainActivity.this.UpdateStatus();
 
 			}
 			case 'f': // OVMS Server Firmware
@@ -815,7 +818,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.server_firmware = dataParts[0].toString();
 
 					// Update the displayed tab
-					OVMSActivity.this.UpdateStatus();
+					MainActivity.this.UpdateStatus();
 				}
 				break;
 			}
@@ -832,14 +835,14 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 					carData.car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
 					carData.car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
 					carData.car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
-					carData.car_tpms_fl_p = String.format("%.1f%s",carData.car_tpms_fl_p_raw,"psi"); 
-					carData.car_tpms_fr_p = String.format("%.1f%s",carData.car_tpms_fr_p_raw,"psi"); 
-					carData.car_tpms_rl_p = String.format("%.1f%s",carData.car_tpms_rl_p_raw,"psi"); 
-					carData.car_tpms_rr_p = String.format("%.1f%s",carData.car_tpms_rr_p_raw,"psi"); 
-					carData.car_tpms_fl_t = String.format("%.0f%s",carData.car_tpms_fl_t_raw,"¼C"); 
-					carData.car_tpms_fr_t = String.format("%.0f%s",carData.car_tpms_fr_t_raw,"¼C"); 
-					carData.car_tpms_rl_t = String.format("%.0f%s",carData.car_tpms_rl_t_raw,"¼C"); 
-					carData.car_tpms_rr_t = String.format("%.0f%s",carData.car_tpms_rr_t_raw,"¼C"); 
+					carData.car_tpms_fl_p = String.format("%.1f%s",carData.car_tpms_fl_p_raw, "psi"); 
+					carData.car_tpms_fr_p = String.format("%.1f%s",carData.car_tpms_fr_p_raw, "psi"); 
+					carData.car_tpms_rl_p = String.format("%.1f%s",carData.car_tpms_rl_p_raw, "psi"); 
+					carData.car_tpms_rr_p = String.format("%.1f%s",carData.car_tpms_rr_p_raw, "psi"); 
+					carData.car_tpms_fl_t = String.format("%.0f%s",carData.car_tpms_fl_t_raw, "\u00B0C"); 
+					carData.car_tpms_fr_t = String.format("%.0f%s",carData.car_tpms_fr_t_raw, "\u00B0C"); 
+					carData.car_tpms_rl_t = String.format("%.0f%s",carData.car_tpms_rl_t_raw, "\u00B0C"); 
+					carData.car_tpms_rr_t = String.format("%.0f%s",carData.car_tpms_rr_t_raw, "\u00B0C"); 
 					
 					carData.car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
 					if (carData.car_stale_tpms_raw < 0)
@@ -850,7 +853,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 						carData.stale_tpms = DataStale.Good;
 
 					// Update the displayed tab
-					OVMSActivity.this.UpdateStatus();
+					MainActivity.this.UpdateStatus();
 				}
 				break;
 			}
@@ -879,7 +882,7 @@ public class OVMSActivity extends TabActivity implements OnTabChangeListener {
 
 		public boolean SendCommand(String command) {
 			Log.d("OVMS", "TX: " + command);
-			if (!OVMSActivity.this.isLoggedIn) {
+			if (!MainActivity.this.isLoggedIn) {
 				Log.d("OVMS", "Server not ready. TX aborted.");
 				return false;
 			}

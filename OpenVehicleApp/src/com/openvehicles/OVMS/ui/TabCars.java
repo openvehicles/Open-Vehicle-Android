@@ -1,6 +1,11 @@
-package com.openvehicles.OVMS;
+package com.openvehicles.OVMS.ui;
 
 import java.util.ArrayList;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.R.id;
+import com.openvehicles.OVMS.R.layout;
+import com.openvehicles.OVMS.entities.CarData;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -17,7 +22,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -45,8 +49,7 @@ public class TabCars extends ListActivity {
 	}
 	
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	                                ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 	  super.onCreateContextMenu(menu, v, menuInfo);
 	  MenuInflater inflater = getMenuInflater();
 	  inflater.inflate(R.layout.carlist_menu, menu);
@@ -54,7 +57,7 @@ public class TabCars extends ListActivity {
 	
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	  AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+//	  AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	  switch (item.getItemId()) {
 	  case R.id.menuCarListEdit:
 	    return true;
@@ -70,13 +73,11 @@ public class TabCars extends ListActivity {
 	private CarData[] carsList;
 	private Context mContext;
 	
-	private void carClicked(CarData carSelected)
-	{
-		((OVMSActivity)this.getParent()).ChangeCar(carSelected);
+	private void carClicked(CarData carSelected) {
+		((MainActivity)this.getParent()).ChangeCar(carSelected);
 	}
 	
-	private void editCar(CarData car)
-	{
+	private void editCar(CarData car) {
 		// Build a list of existing vehicle IDs so the editor can check for duplication upon exit
 		ArrayList<String> existingVehicleIDs = new ArrayList<String>();		
 		for (int idx=0;idx<_allSavedCars.size();idx++)
@@ -84,7 +85,7 @@ public class TabCars extends ListActivity {
 
 		Log.d("OVMS", String.format("Starting car editor (%s in existing cars list)", existingVehicleIDs.size()));
 
-		Intent intent = new Intent(mContext, CarEditor.class);
+		Intent intent = new Intent(mContext, CarEditorActivity.class);
 		intent.putExtra("ExistingVehicleIDs", existingVehicleIDs);
 		if (car != null)
 		{
@@ -98,11 +99,11 @@ public class TabCars extends ListActivity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    super.onActivityResult(requestCode, resultCode, data);
-	    if (data == null) // user pressed cancel or the back button
-	    	{
+	    if (data == null) {
+	    	// user pressed cancel or the back button
 		    Log.d("OVMS", "Editor cancelled.");
 	    	return;	    	
-	    	}
+	    }
 	    
 		CarData editedCar = (CarData)data.getExtras().getSerializable("Car");
 		String actionCode = data.getExtras().getString("ActionCode");
@@ -111,64 +112,56 @@ public class TabCars extends ListActivity {
 	    Log.d("OVMS", String.format("Editor closed with result action: %s %s", actionCode, originalVehicleID));
 	    
 
-	    if (actionCode.equals("CANCEL"))
-	    {
-	    	Toast.makeText(getBaseContext(), "Cancelled", 1000).show();
+	    if (actionCode.equals("CANCEL")) {
+	    	Toast.makeText(getBaseContext(), "Cancelled", Toast.LENGTH_LONG).show();
 	    	return;
-	    }
-	    else if (actionCode.equals("SAVE"))
-	    {
+	    } else if (actionCode.equals("SAVE")) {
 			// check vehicle ID for duplicates (only if ID is changed)
-	    	if (!editedCar.sel_vehicleid.equals(editedCar.sel_vehicleid))
-	    	{
-				for (int idx=0; idx<_allSavedCars.size(); idx++)
-			    {
-			    	if ((_allSavedCars.get(idx)).sel_vehicleid.equals(editedCar.sel_vehicleid))
-			    	{
+	    	if (!editedCar.sel_vehicleid.equals(editedCar.sel_vehicleid)) {
+				for (int idx=0; idx<_allSavedCars.size(); idx++) {
+			    	if ((_allSavedCars.get(idx)).sel_vehicleid.equals(editedCar.sel_vehicleid)) {
 			    		Log.d("OVMS", String.format("Vehicle ID duplicated. Aborting save."));
-				    	Toast.makeText(getBaseContext(), "Duplicated vehicle ID - Changes not saved", 1000).show();
+				    	Toast.makeText(getBaseContext(), "Duplicated vehicle ID - Changes not saved", 
+				    			Toast.LENGTH_LONG).show();
 				    	return;
 			    	}
 		    	}
 		    }
 			
-			if (originalVehicleID.length() > 0)
-			{
-				for (int idx=0; idx<_allSavedCars.size(); idx++)
-			    {
+			if (originalVehicleID.length() > 0) {
+				for (int idx=0; idx<_allSavedCars.size(); idx++) {
 			    	// save vehicle
-			    	if ((_allSavedCars.get(idx)).sel_vehicleid.equals(originalVehicleID))
-			    	{
+			    	if ((_allSavedCars.get(idx)).sel_vehicleid.equals(originalVehicleID)) {
 			    		Log.d("OVMS", String.format("Saved: %s", originalVehicleID));
 			    		_allSavedCars.set(idx, editedCar);
-				    	Toast.makeText(getBaseContext(), String.format("%s saved", editedCar.sel_vehicleid), 1000).show();
+				    	Toast.makeText(getBaseContext(), String.format("%s saved", editedCar.sel_vehicleid), 
+				    			Toast.LENGTH_LONG).show();
 			    		break;
 			    	}
 			    }
-	    	} else
-	    	{
+	    	} else {
 	    		// add vehicle
 	    		Log.d("OVMS", String.format("Added: %s", editedCar.sel_vehicleid));
 	    		_allSavedCars.add(editedCar);
-		    	Toast.makeText(getBaseContext(), String.format("%s added", editedCar.sel_vehicleid), 1000).show();
+		    	Toast.makeText(getBaseContext(), String.format("%s added", editedCar.sel_vehicleid), 
+		    			Toast.LENGTH_LONG).show();
 	    	}
 	    }
-	    else if (actionCode.equals("DELETE"))
-	    {
-			for (int idx=0; idx<_allSavedCars.size(); idx++)
-		    {
+	    else if (actionCode.equals("DELETE")) {
+			for (int idx=0; idx<_allSavedCars.size(); idx++) {
 		    	if ((_allSavedCars.get(idx)).sel_vehicleid.equals(originalVehicleID))
 		    	{
 		    		Log.d("OVMS", String.format("Deleted: %s", originalVehicleID));
 		    		_allSavedCars.remove(idx);
-			    	Toast.makeText(getBaseContext(), String.format("%s deleted", editedCar.sel_vehicleid), 1000).show();
+			    	Toast.makeText(getBaseContext(), String.format("%s deleted", editedCar.sel_vehicleid), 
+			    			Toast.LENGTH_LONG).show();
 		    		break;
 		    	}
 		    }
 	    }
 	    
 	    //save cars to file
-	    ((OVMSActivity)this.getParent()).saveCars();
+	    ((MainActivity)this.getParent()).saveCars();
 	    
 	    //refresh cars listview
 	    //handler.sendEmptyMessage(0);
@@ -185,8 +178,7 @@ public class TabCars extends ListActivity {
 
 		private CarData[] items;
 
-		public ItemsAdapter(Context context, int textViewResourceId,
-				CarData[] items) {
+		public ItemsAdapter(Context context, int textViewResourceId, CarData[] items) {
 			super(context, textViewResourceId, items);
 			this.items = items;
 		}
@@ -236,10 +228,9 @@ public class TabCars extends ListActivity {
 		carClicked(carsList[position]);
 	}
 	
-	private Handler handler = new Handler() {
+	private final Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
-			adapter = new ItemsAdapter(mContext, R.layout.tabcars_listitem,
-					carsList);
+			adapter = new ItemsAdapter(mContext, R.layout.tabcars_listitem, carsList);
 			setListAdapter(adapter);
 		}
 	};
@@ -253,5 +244,4 @@ public class TabCars extends ListActivity {
 		handler.sendEmptyMessage(0);
 
 	}
-
 }

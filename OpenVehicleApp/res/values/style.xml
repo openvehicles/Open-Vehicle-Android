@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
 
-    <style name="SOCOverlayText">
+	<style name="SOCOverlayText">
         <item name="android:paddingLeft">4px</item>
         <item name="android:paddingBottom">4px</item>
         <item name="android:textColor">#ffffffff</item>
@@ -10,6 +10,27 @@
         <item name="android:shadowDx">1</item>
         <item name="android:shadowDy">1</item>
         <item name="android:shadowRadius">1</item>
+    </style>
+    
+    <style name="TabCarImgCar">
+        <item name="android:layout_width">304px</item>
+        <item name="android:layout_height">606px</item>
+        <item name="android:layout_x">114px</item>
+        <item name="android:layout_y">0px</item>
+    </style>
+    
+    <style name="TabCarImgLetterBox">
+        <item name="android:layout_width">534px</item>
+        <item name="android:layout_height">610px</item>
+        <item name="android:layout_x">0px</item>
+        <item name="android:layout_y">75px</item>
+    </style>
+    
+    <style name="TabCarTextBox" parent="@android:style/Widget.TextView">
+        <item name="android:layout_width">104px</item>
+        <item name="android:layout_height">34px</item>
+        <item name="android:textSize">20px</item>
+        <item name="android:gravity">center</item>
     </style>
 
 </resources>
