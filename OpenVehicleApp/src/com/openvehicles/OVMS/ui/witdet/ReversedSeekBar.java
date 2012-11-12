@@ -14,16 +14,17 @@ public class ReversedSeekBar extends SeekBar {
 	}
 
 	protected void onDraw(Canvas paramCanvas) {
-		if (this.isReversed)
-			paramCanvas.scale(-1.0F, 1.0F, getWidth() / 2.0F,
-					getHeight() / 2.0F);
+		if (this.isReversed) {
+			paramCanvas.scale(-1.0F, 1.0F, getWidth() / 2.0F, getHeight() / 2.0F);
+		}
 		super.onDraw(paramCanvas);
 	}
 
 	public boolean onTouchEvent(MotionEvent paramMotionEvent) {
-		if (this.isReversed)
+		if (this.isReversed) {
 			paramMotionEvent.setLocation(getWidth() - paramMotionEvent.getX(),
 					paramMotionEvent.getY());
+		}
 		return super.onTouchEvent(paramMotionEvent);
 	}
 }

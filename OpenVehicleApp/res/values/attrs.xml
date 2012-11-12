@@ -1,0 +1,8 @@
+<resources>
+
+	<declare-styleable name="ScaleLayout">
+        <attr name="content_width" format="integer" />
+        <attr name="content_height" format="integer" />
+    </declare-styleable>
+    
+</resources>

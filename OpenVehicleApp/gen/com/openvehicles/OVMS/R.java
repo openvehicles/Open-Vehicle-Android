@@ -9,6 +9,22 @@ package com.openvehicles.OVMS;
 
 public final class R {
     public static final class attr {
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int content_height=0x7f010001;
+        /** <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+         */
+        public static final int content_width=0x7f010000;
     }
     public static final class dimen {
         public static final int carimage_left=0x7f040000;
@@ -21,107 +37,109 @@ public final class R {
         public static final int battery_coppertops=0x7f020002;
         public static final int battery_coppertops_widget=0x7f020003;
         public static final int battery_textbox=0x7f020004;
-        public static final int car_default=0x7f020005;
-        public static final int car_roadster_arcticwhite=0x7f020006;
-        public static final int car_roadster_brilliantyellow=0x7f020007;
-        public static final int car_roadster_electricblue=0x7f020008;
-        public static final int car_roadster_fushionred=0x7f020009;
-        public static final int car_roadster_glacierblue=0x7f02000a;
-        public static final int car_roadster_jetblack=0x7f02000b;
-        public static final int car_roadster_lightninggreen=0x7f02000c;
-        public static final int car_roadster_obsidianblack=0x7f02000d;
-        public static final int car_roadster_racinggreen=0x7f02000e;
-        public static final int car_roadster_radiantred=0x7f02000f;
-        public static final int car_roadster_sterlingsilver=0x7f020010;
-        public static final int car_roadster_thundergray=0x7f020011;
-        public static final int car_roadster_twilightblue=0x7f020012;
-        public static final int car_roadster_veryorange=0x7f020013;
-        public static final int carlights=0x7f020014;
-        public static final int carlock=0x7f020015;
-        public static final int carunlock=0x7f020016;
-        public static final int carvaletoff=0x7f020017;
-        public static final int carvaleton=0x7f020018;
-        public static final int charger_bg=0x7f020019;
-        public static final int charger_bg_label=0x7f02001a;
-        public static final int charger_button=0x7f02001b;
-        public static final int charger_plug=0x7f02001c;
-        public static final int connection_bad=0x7f02001d;
-        public static final int connection_bad_paranoid=0x7f02001e;
-        public static final int connection_good=0x7f02001f;
-        public static final int connection_good_paranoid=0x7f020020;
-        public static final int connection_unknown=0x7f020021;
-        public static final int connection_unknown_paranoid=0x7f020022;
-        public static final int homelinklogo=0x7f020023;
-        public static final int ic_battery=0x7f020024;
-        public static final int ic_envelope=0x7f020025;
-        public static final int ic_gear=0x7f020026;
-        public static final int ic_home_link=0x7f020027;
-        public static final int ic_launcher=0x7f020028;
-        public static final int ic_location=0x7f020029;
-        public static final int ic_lock=0x7f02002a;
-        public static final int ic_parking=0x7f02002b;
-        public static final int icon72x72=0x7f02002c;
-        public static final int map_car_default=0x7f02002d;
-        public static final int map_car_roadster_arcticwhite=0x7f02002e;
-        public static final int map_car_roadster_brilliantyellow=0x7f02002f;
-        public static final int map_car_roadster_electricblue=0x7f020030;
-        public static final int map_car_roadster_fushionred=0x7f020031;
-        public static final int map_car_roadster_glacierblue=0x7f020032;
-        public static final int map_car_roadster_jetblack=0x7f020033;
-        public static final int map_car_roadster_lightninggreen=0x7f020034;
-        public static final int map_car_roadster_obsidianblack=0x7f020035;
-        public static final int map_car_roadster_racinggreen=0x7f020036;
-        public static final int map_car_roadster_radiantred=0x7f020037;
-        public static final int map_car_roadster_sterlingsilver=0x7f020038;
-        public static final int map_car_roadster_thundergray=0x7f020039;
-        public static final int map_car_roadster_twilightblue=0x7f02003a;
-        public static final int map_car_roadster_veryorange=0x7f02003b;
-        public static final int motortemp_letterbox=0x7f02003c;
-        public static final int ol_car_default=0x7f02003d;
-        public static final int ol_car_roadster_arcticwhite=0x7f02003e;
-        public static final int ol_car_roadster_brilliantyellow=0x7f02003f;
-        public static final int ol_car_roadster_electricblue=0x7f020040;
-        public static final int ol_car_roadster_fushionred=0x7f020041;
-        public static final int ol_car_roadster_glacierblue=0x7f020042;
-        public static final int ol_car_roadster_jetblack=0x7f020043;
-        public static final int ol_car_roadster_lightninggreen=0x7f020044;
-        public static final int ol_car_roadster_obsidianblack=0x7f020045;
-        public static final int ol_car_roadster_racinggreen=0x7f020046;
-        public static final int ol_car_roadster_radiantred=0x7f020047;
-        public static final int ol_car_roadster_sterlingsilver=0x7f020048;
-        public static final int ol_car_roadster_thundergray=0x7f020049;
-        public static final int ol_car_roadster_twilightblue=0x7f02004a;
-        public static final int ol_car_roadster_veryorange=0x7f02004b;
-        public static final int parking=0x7f02004c;
-        public static final int roadster_outline_cd=0x7f02004d;
-        public static final int roadster_outline_ce=0x7f02004e;
-        public static final int roadster_outline_cp=0x7f02004f;
-        public static final int roadster_outline_cs=0x7f020050;
-        public static final int roadster_outline_cu=0x7f020051;
-        public static final int roadster_outline_hd=0x7f020052;
-        public static final int roadster_outline_ld=0x7f020053;
-        public static final int roadster_outline_rd=0x7f020054;
-        public static final int roadster_outline_tr=0x7f020055;
-        public static final int signal_strength_0=0x7f020056;
-        public static final int signal_strength_1=0x7f020057;
-        public static final int signal_strength_2=0x7f020058;
-        public static final int signal_strength_3=0x7f020059;
-        public static final int signal_strength_4=0x7f02005a;
-        public static final int signal_strength_5=0x7f02005b;
-        public static final int tirepress_letterbox=0x7f02005c;
-        public static final int ui_charger_bg=0x7f02005d;
+        public static final int bg_charger_button=0x7f020005;
+        public static final int car_default=0x7f020006;
+        public static final int car_roadster_arcticwhite=0x7f020007;
+        public static final int car_roadster_brilliantyellow=0x7f020008;
+        public static final int car_roadster_electricblue=0x7f020009;
+        public static final int car_roadster_fushionred=0x7f02000a;
+        public static final int car_roadster_glacierblue=0x7f02000b;
+        public static final int car_roadster_jetblack=0x7f02000c;
+        public static final int car_roadster_lightninggreen=0x7f02000d;
+        public static final int car_roadster_obsidianblack=0x7f02000e;
+        public static final int car_roadster_racinggreen=0x7f02000f;
+        public static final int car_roadster_radiantred=0x7f020010;
+        public static final int car_roadster_sterlingsilver=0x7f020011;
+        public static final int car_roadster_thundergray=0x7f020012;
+        public static final int car_roadster_twilightblue=0x7f020013;
+        public static final int car_roadster_veryorange=0x7f020014;
+        public static final int carlights=0x7f020015;
+        public static final int carlock=0x7f020016;
+        public static final int carunlock=0x7f020017;
+        public static final int carvaletoff=0x7f020018;
+        public static final int carvaleton=0x7f020019;
+        public static final int charger_bg=0x7f02001a;
+        public static final int charger_bg_label=0x7f02001b;
+        public static final int charger_button=0x7f02001c;
+        public static final int charger_plug=0x7f02001d;
+        public static final int connection_bad=0x7f02001e;
+        public static final int connection_bad_paranoid=0x7f02001f;
+        public static final int connection_good=0x7f020020;
+        public static final int connection_good_paranoid=0x7f020021;
+        public static final int connection_unknown=0x7f020022;
+        public static final int connection_unknown_paranoid=0x7f020023;
+        public static final int homelinklogo=0x7f020024;
+        public static final int ic_battery=0x7f020025;
+        public static final int ic_envelope=0x7f020026;
+        public static final int ic_gear=0x7f020027;
+        public static final int ic_home_link=0x7f020028;
+        public static final int ic_launcher=0x7f020029;
+        public static final int ic_location=0x7f02002a;
+        public static final int ic_lock=0x7f02002b;
+        public static final int ic_parking=0x7f02002c;
+        public static final int icon72x72=0x7f02002d;
+        public static final int map_car_default=0x7f02002e;
+        public static final int map_car_roadster_arcticwhite=0x7f02002f;
+        public static final int map_car_roadster_brilliantyellow=0x7f020030;
+        public static final int map_car_roadster_electricblue=0x7f020031;
+        public static final int map_car_roadster_fushionred=0x7f020032;
+        public static final int map_car_roadster_glacierblue=0x7f020033;
+        public static final int map_car_roadster_jetblack=0x7f020034;
+        public static final int map_car_roadster_lightninggreen=0x7f020035;
+        public static final int map_car_roadster_obsidianblack=0x7f020036;
+        public static final int map_car_roadster_racinggreen=0x7f020037;
+        public static final int map_car_roadster_radiantred=0x7f020038;
+        public static final int map_car_roadster_sterlingsilver=0x7f020039;
+        public static final int map_car_roadster_thundergray=0x7f02003a;
+        public static final int map_car_roadster_twilightblue=0x7f02003b;
+        public static final int map_car_roadster_veryorange=0x7f02003c;
+        public static final int motortemp_letterbox=0x7f02003d;
+        public static final int ol_car_default=0x7f02003e;
+        public static final int ol_car_roadster_arcticwhite=0x7f02003f;
+        public static final int ol_car_roadster_brilliantyellow=0x7f020040;
+        public static final int ol_car_roadster_electricblue=0x7f020041;
+        public static final int ol_car_roadster_fushionred=0x7f020042;
+        public static final int ol_car_roadster_glacierblue=0x7f020043;
+        public static final int ol_car_roadster_jetblack=0x7f020044;
+        public static final int ol_car_roadster_lightninggreen=0x7f020045;
+        public static final int ol_car_roadster_obsidianblack=0x7f020046;
+        public static final int ol_car_roadster_racinggreen=0x7f020047;
+        public static final int ol_car_roadster_radiantred=0x7f020048;
+        public static final int ol_car_roadster_sterlingsilver=0x7f020049;
+        public static final int ol_car_roadster_thundergray=0x7f02004a;
+        public static final int ol_car_roadster_twilightblue=0x7f02004b;
+        public static final int ol_car_roadster_veryorange=0x7f02004c;
+        public static final int parking=0x7f02004d;
+        public static final int roadster_outline_cd=0x7f02004e;
+        public static final int roadster_outline_ce=0x7f02004f;
+        public static final int roadster_outline_cp=0x7f020050;
+        public static final int roadster_outline_cs=0x7f020051;
+        public static final int roadster_outline_cu=0x7f020052;
+        public static final int roadster_outline_hd=0x7f020053;
+        public static final int roadster_outline_ld=0x7f020054;
+        public static final int roadster_outline_rd=0x7f020055;
+        public static final int roadster_outline_tr=0x7f020056;
+        public static final int signal_strength_0=0x7f020057;
+        public static final int signal_strength_1=0x7f020058;
+        public static final int signal_strength_2=0x7f020059;
+        public static final int signal_strength_3=0x7f02005a;
+        public static final int signal_strength_4=0x7f02005b;
+        public static final int signal_strength_5=0x7f02005c;
+        public static final int tirepress_letterbox=0x7f02005d;
+        public static final int ui_charger_bg=0x7f02005e;
     }
     public static final class id {
-        public static final int btnAddCar=0x7f07002d;
+        public static final int btnAddCar=0x7f07003b;
         public static final int btnCarEditorCancel=0x7f070006;
         public static final int btnCarEditorDelete=0x7f070007;
         public static final int btnCarEditorSave=0x7f070008;
-        public static final int btnCatListEditCar=0x7f070030;
+        public static final int btnCatListEditCar=0x7f07003e;
         public static final int btnCenterMap=0x7f07004b;
-        public static final int imgCarEditorCarImage=0x7f07002c;
-        public static final int imgCarLeft=0x7f070038;
-        public static final int imgCarListCarImage=0x7f07002e;
-        public static final int imgCarRight=0x7f07003a;
+        public static final int imgCarEditorCarImage=0x7f07003a;
+        public static final int imgCarLeft=0x7f070045;
+        public static final int imgCarListCarImage=0x7f07003c;
+        public static final int imgCarRight=0x7f070046;
+        public static final int img_signal_rssi=0x7f070052;
         public static final int linearLayout1=0x7f070005;
         public static final int mapview=0x7f07004a;
         public static final int menuCarListDelete=0x7f07000a;
@@ -130,7 +148,7 @@ public final class R {
         public static final int menuQuit=0x7f07000b;
         public static final int relativeLayout1=0x7f070049;
         public static final int spinnerCarEditorColor=0x7f070004;
-        public static final int tabCarConnectionImage=0x7f070028;
+        public static final int tabCarConnectionImage=0x7f070036;
         public static final int tabCarImageCarChargePortOpen=0x7f07000e;
         public static final int tabCarImageCarHeadlightsON=0x7f070015;
         public static final int tabCarImageCarHoodOpen=0x7f070011;
@@ -139,46 +157,46 @@ public final class R {
         public static final int tabCarImageCarOutline=0x7f07000d;
         public static final int tabCarImageCarRightDoorOpen=0x7f070010;
         public static final int tabCarImageCarTPMSBoxes=0x7f070016;
-        public static final int tabCarImageCarTempsBoxes=0x7f07002b;
+        public static final int tabCarImageCarTempsBoxes=0x7f070039;
         public static final int tabCarImageCarTrunkOpen=0x7f07000f;
         public static final int tabCarImageCarValetMode=0x7f070014;
         public static final int tabCarImageHomelink=0x7f070017;
-        public static final int tabCarImageParking=0x7f070026;
-        public static final int tabCarImageSignalRSSI=0x7f07002a;
-        public static final int tabCarLayoutParking=0x7f070025;
+        public static final int tabCarImageParking=0x7f070034;
+        public static final int tabCarImageSignalRSSI=0x7f070038;
+        public static final int tabCarLayoutParking=0x7f070033;
         public static final int tabCarTextAmbient=0x7f070023;
         public static final int tabCarTextBattery=0x7f070021;
-        public static final int tabCarTextLastUpdated=0x7f070029;
+        public static final int tabCarTextLastUpdated=0x7f070037;
         public static final int tabCarTextMotor=0x7f070022;
         public static final int tabCarTextPEM=0x7f070020;
-        public static final int tabCarTextParkedTime=0x7f070027;
+        public static final int tabCarTextParkedTime=0x7f070035;
         public static final int tabCarTextSpeed=0x7f070024;
-        public static final int tabInfoCharger=0x7f07003c;
-        public static final int tabInfoIConnectionImage=0x7f070034;
-        public static final int tabInfoImageBattery=0x7f070041;
-        public static final int tabInfoImageBatteryChargingOverlay=0x7f070042;
-        public static final int tabInfoImageBatteryOverlay=0x7f070043;
-        public static final int tabInfoImageBatteryText=0x7f070046;
-        public static final int tabInfoImageCar=0x7f070039;
-        public static final int tabInfoImageCharger=0x7f07003d;
-        public static final int tabInfoImageParking=0x7f070032;
-        public static final int tabInfoImageSignalRSSI=0x7f070036;
-        public static final int tabInfoLayoutParking=0x7f070031;
-        public static final int tabInfoRowCharger=0x7f07003b;
-        public static final int tabInfoSliderChargerControl=0x7f070040;
-        public static final int tabInfoTextChargeMode=0x7f070045;
-        public static final int tabInfoTextChargeStatusLeft=0x7f07003e;
-        public static final int tabInfoTextChargeStatusRight=0x7f07003f;
-        public static final int tabInfoTextEstimatedRange=0x7f070048;
-        public static final int tabInfoTextIdealRange=0x7f070047;
-        public static final int tabInfoTextLastUpdated=0x7f070035;
-        public static final int tabInfoTextParkedTime=0x7f070033;
-        public static final int tabInfoTextSOC=0x7f070044;
+        public static final int tabInfoCharger=0x7f070048;
+        public static final int tabInfoIConnectionImage=0x7f070042;
+        public static final int tabInfoImageBattery=0x7f070028;
+        public static final int tabInfoImageBatteryChargingOverlay=0x7f070029;
+        public static final int tabInfoImageBatteryOverlay=0x7f07002a;
+        public static final int tabInfoImageBatteryText=0x7f07002d;
+        public static final int tabInfoImageCar=0x7f070026;
+        public static final int tabInfoImageCharger=0x7f070027;
+        public static final int tabInfoImageParking=0x7f070040;
+        public static final int tabInfoImageSignalRSSI=0x7f070044;
+        public static final int tabInfoLayoutParking=0x7f07003f;
+        public static final int tabInfoRowCharger=0x7f070047;
+        public static final int tabInfoSliderChargerControl=0x7f070032;
+        public static final int tabInfoTextChargeMode=0x7f07002c;
+        public static final int tabInfoTextChargeStatusLeft=0x7f070030;
+        public static final int tabInfoTextChargeStatusRight=0x7f070031;
+        public static final int tabInfoTextEstimatedRange=0x7f07002f;
+        public static final int tabInfoTextIdealRange=0x7f07002e;
+        public static final int tabInfoTextLastUpdated=0x7f070043;
+        public static final int tabInfoTextParkedTime=0x7f070041;
+        public static final int tabInfoTextSOC=0x7f07002b;
         public static final int textCarEditorNetPass=0x7f070002;
         public static final int textCarEditorServerNameOrIP=0x7f070001;
         public static final int textCarEditorUserPass=0x7f070003;
         public static final int textCarEditorVehicleID=0x7f070000;
-        public static final int textCarListVehicleID=0x7f07002f;
+        public static final int textCarListVehicleID=0x7f07003d;
         public static final int textFLWheel=0x7f070018;
         public static final int textFLWheelVal=0x7f070019;
         public static final int textFRWheel=0x7f07001a;
@@ -190,8 +208,10 @@ public final class R {
         public static final int textRLWheelVal=0x7f07001d;
         public static final int textRRWheel=0x7f07001e;
         public static final int textRRWheelVal=0x7f07001f;
-        public static final int textVehicleID=0x7f070037;
+        public static final int textVehicleID=0x7f070025;
         public static final int textView1=0x7f07004f;
+        public static final int txt_last_updated=0x7f070051;
+        public static final int txt_parked_time=0x7f070050;
     }
     public static final class layout {
         public static final int careditor=0x7f030000;
@@ -199,17 +219,18 @@ public final class R {
         public static final int main=0x7f030002;
         public static final int main_menu=0x7f030003;
         public static final int tab_car=0x7f030004;
-        public static final int tabcar=0x7f030005;
-        public static final int tabcareditorcars_listitem=0x7f030006;
-        public static final int tabcars=0x7f030007;
-        public static final int tabcars_listitem=0x7f030008;
-        public static final int tabinfo=0x7f030009;
-        public static final int tabmap_debug=0x7f03000a;
-        public static final int tabmap_release=0x7f03000b;
-        public static final int tabnotifications=0x7f03000c;
-        public static final int tabnotifications_listitem=0x7f03000d;
-        public static final int tabsettings=0x7f03000e;
-        public static final int view_car_statusbar=0x7f03000f;
+        public static final int tab_info=0x7f030005;
+        public static final int tabcar=0x7f030006;
+        public static final int tabcareditorcars_listitem=0x7f030007;
+        public static final int tabcars=0x7f030008;
+        public static final int tabcars_listitem=0x7f030009;
+        public static final int tabinfo=0x7f03000a;
+        public static final int tabmap_debug=0x7f03000b;
+        public static final int tabmap_release=0x7f03000c;
+        public static final int tabnotifications=0x7f03000d;
+        public static final int tabnotifications_listitem=0x7f03000e;
+        public static final int tabsettings=0x7f03000f;
+        public static final int view_car_statusbar=0x7f030010;
     }
     public static final class string {
         public static final int AddCar=0x7f050006;
@@ -254,4 +275,49 @@ public final class R {
         public static final int TabCarImgLetterBox=0x7f060002;
         public static final int TabCarTextBox=0x7f060003;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a ScaleLayout.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #ScaleLayout_content_height com.openvehicles.OVMS:content_height}</code></td><td></td></tr>
+           <tr><td><code>{@link #ScaleLayout_content_width com.openvehicles.OVMS:content_width}</code></td><td></td></tr>
+           </table>
+           @see #ScaleLayout_content_height
+           @see #ScaleLayout_content_width
+         */
+        public static final int[] ScaleLayout = {
+            0x7f010000, 0x7f010001
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.openvehicles.OVMS.R.attr#content_height}
+          attribute's value can be found in the {@link #ScaleLayout} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:content_height
+        */
+        public static final int ScaleLayout_content_height = 1;
+        /**
+          <p>This symbol is the offset where the {@link com.openvehicles.OVMS.R.attr#content_width}
+          attribute's value can be found in the {@link #ScaleLayout} array.
+
+
+          <p>Must be an integer value, such as "<code>100</code>".
+<p>This may also be a reference to a resource (in the form
+"<code>@[<i>package</i>:]<i>type</i>:<i>name</i></code>") or
+theme attribute (in the form
+"<code>?[<i>package</i>:][<i>type</i>:]<i>name</i></code>")
+containing a value of this type.
+          @attr name android:content_width
+        */
+        public static final int ScaleLayout_content_width = 0;
+    };
 }

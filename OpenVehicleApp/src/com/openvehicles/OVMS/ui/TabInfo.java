@@ -31,7 +31,7 @@ public class TabInfo extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tabinfo);
+		setContentView(R.layout.tab_info);
 	}
 
 	// onResume: System event to tell us the App has resumed
@@ -81,9 +81,9 @@ public class TabInfo extends Activity {
 		// Let's update the Info tab view...
 
 		// First the last updated section...
-		TextView tv = (TextView)findViewById(R.id.tabInfoTextLastUpdated);
-		Date now = new Date();
-		long seconds = (now.getTime() - data.car_lastupdated.getTime()) / 1000;
+		TextView tv = (TextView)findViewById(R.id.txt_last_updated);
+		long now = System.currentTimeMillis();
+		long seconds = (now - data.car_lastupdated.getTime()) / 1000;
 		long minutes = (seconds)/60;
 		long hours = minutes/60;
 		long days = minutes/(60*24);
@@ -119,13 +119,13 @@ public class TabInfo extends Activity {
 		}
 
 		// Then the parking timer...
-		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabInfoLayoutParking);
-		if ((!this.data.car_started) && (this.data.car_parked_time != null))
-		{
+//		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabInfoLayoutParking);
+		tv = (TextView) findViewById(R.id.txt_parked_time);
+		if ((!this.data.car_started) && (this.data.car_parked_time != null)) {
 			// Car is parked
-			parkinglayoutv.setVisibility(View.VISIBLE);
-			tv = (TextView)findViewById(R.id.tabInfoTextParkedTime);
-			seconds = (now.getTime() - data.car_parked_time.getTime()) / 1000;
+//			parkinglayoutv.setVisibility(View.VISIBLE);
+			tv.setVisibility(View.VISIBLE);
+			seconds = (now - data.car_parked_time.getTime()) / 1000;
 			minutes = (seconds)/60;
 			hours = minutes/60;
 			days = minutes/(60*24);
@@ -142,39 +142,43 @@ public class TabInfo extends Activity {
 				tv.setText(String.format("%d mins",minutes));
 			else
 				tv.setText(String.format("%d mins",minutes));
-		}
-		else
-		{
-			parkinglayoutv.setVisibility(View.INVISIBLE);
+		} else {
+			tv.setVisibility(View.INVISIBLE);
 		}
 	}
 
 	// This updates the main informational part of the view.
 	// It is called when the server gets new data.
 	public void updateCarInfoView() {
-
 		TextView tv = (TextView)findViewById(R.id.textVehicleID);
 		tv.setText(data.sel_vehicleid);
 
 		tv = (TextView)findViewById(R.id.tabInfoTextSOC);
 		tv.setText(data.car_soc);
 
-		RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
+//		RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
 		TextView cmtv = (TextView)findViewById(R.id.tabInfoTextChargeMode);
 		ImageView coiv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
+		ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
+		TextView tvl = (TextView)findViewById(R.id.tabInfoTextChargeStatusLeft);
+		TextView tvr = (TextView)findViewById(R.id.tabInfoTextChargeStatusRight);
 		if ((!data.car_chargeport_open)||(data.car_charge_substate_i_raw==0x07)) {
 			// Charge port is closed or car is not plugged in
-			pluglayoutv.setVisibility(View.INVISIBLE);
+//			pluglayoutv.setVisibility(View.INVISIBLE);
+			findViewById(R.id.tabInfoImageCharger).setVisibility(View.INVISIBLE);
+			bar.setVisibility(View.INVISIBLE);
 			cmtv.setVisibility(View.INVISIBLE);
 			coiv.setVisibility(View.INVISIBLE);
-		}
-		else {
+			tvl.setVisibility(View.INVISIBLE);
+			tvr.setVisibility(View.INVISIBLE);
+		} else {
 			// Car is plugged in
-			pluglayoutv.setVisibility(View.VISIBLE);
-
-			ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
-			TextView tvl = (TextView)findViewById(R.id.tabInfoTextChargeStatusLeft);
-			TextView tvr = (TextView)findViewById(R.id.tabInfoTextChargeStatusRight);
+//			pluglayoutv.setVisibility(View.VISIBLE);
+			findViewById(R.id.tabInfoImageCharger).setVisibility(View.VISIBLE);
+			bar.setVisibility(View.VISIBLE);
+			tvl.setVisibility(View.VISIBLE);
+			tvr.setVisibility(View.VISIBLE);
+			
 			switch (data.car_charge_state_i_raw) {
 			case 0x04:    // Done
 			case 0x115:   // Stopping
@@ -185,7 +189,7 @@ public class TabInfo extends Activity {
 			case 0x19:    // Stopped
 				// Slider on the left, message is "Slide to charge"
 				bar.setProgress(100);
-				tvl.setText("");
+				tvl.setText(null);
 				tvr.setText("SLIDE TO\nCHARGE");
 				coiv.setVisibility(View.VISIBLE);
 				cmtv.setVisibility(View.INVISIBLE);
@@ -193,7 +197,7 @@ public class TabInfo extends Activity {
 			case 0x0e:    // Wait for schedule charge
 				// Slider on the left, message is "Timed Charge"
 				bar.setProgress(100);
-				tvl.setText("");
+				tvl.setText(null);
 				tvr.setText("TIMED CHARGE");
 				coiv.setVisibility(View.VISIBLE);
 				cmtv.setVisibility(View.INVISIBLE);
@@ -230,7 +234,7 @@ public class TabInfo extends Activity {
 		ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
 		iv.getLayoutParams().width = 268 * data.car_soc_raw / 100;
 
-		iv = (ImageView)findViewById(R.id.tabInfoImageSignalRSSI);
+		iv = (ImageView)findViewById(R.id.img_signal_rssi);
 		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
 		iv.setImageResource(resId);
 

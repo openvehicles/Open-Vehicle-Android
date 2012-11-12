@@ -204,7 +204,7 @@
                 android:indeterminate="false"
                 android:indeterminateOnly="false"
                 android:max="100"
-                android:progress="0"
+                android:progress="50"
                 android:progressDrawable="@drawable/ui_charger_bg"
                 android:thumb="@drawable/charger_button"
                 android:thumbOffset="-4.0dip" />
@@ -257,7 +257,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:text=""
+                android:text="ZZZ"
                 android:textAppearance="?android:textAppearanceMedium" />
             
             <TextView
@@ -269,7 +269,7 @@
                 android:layout_marginBottom="-3.0dip"
                 android:layout_marginRight="20.0dip"
                 android:gravity="right"
-                android:text=""
+                android:text="XXX"
                 android:textAppearance="?android:textAppearanceSmall"
                 android:textColor="#fff07d00"
                 android:textStyle="bold" />
@@ -332,7 +332,7 @@
                     android:textAppearance="?android:textAppearanceSmall"
                     android:textSize="10sp" />
             
-                            <TextView
+        <TextView
                     android:id="@+id/tabInfoTextEstimatedRange"
                     android:layout_width="100dip"
                     android:layout_height="wrap_content"

@@ -69,7 +69,7 @@ public class TabCar extends Activity {
 		if ((data == null) || (data.car_lastupdated == null)) return;
 
 		// First the last updated section...
-		TextView tv = (TextView)findViewById(R.id.tabCarTextLastUpdated);
+		TextView tv = (TextView)findViewById(R.id.txt_last_updated);
 		long now = System.currentTimeMillis();
 		long seconds = (now - data.car_lastupdated.getTime()) / 1000;
 		long minutes = (seconds)/60;
@@ -108,12 +108,12 @@ public class TabCar extends Activity {
 
 		// Then the parking timer...
 //		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabCarLayoutParking);
+		tv = (TextView)findViewById(R.id.txt_parked_time);
 		if ((!this.data.car_started) && (this.data.car_parked_time != null)) {
 			// Car is parked
 //			parkinglayoutv.setVisibility(View.VISIBLE);
-			findViewById(R.id.tabCarTextParkedTime).setVisibility(View.VISIBLE);
+			tv.setVisibility(View.VISIBLE);
 			
-			tv = (TextView)findViewById(R.id.tabCarTextParkedTime);
 			seconds = (now - data.car_parked_time.getTime()) / 1000;
 			minutes = (seconds)/60;
 			hours = minutes/60;
@@ -133,11 +133,11 @@ public class TabCar extends Activity {
 				tv.setText(String.format("%d mins",minutes));
 		} else {
 //			parkinglayoutv.setVisibility(View.INVISIBLE);
-			findViewById(R.id.tabCarTextParkedTime).setVisibility(View.INVISIBLE);			
+			tv.setVisibility(View.INVISIBLE);
 		}
 
 		// The signal strength indicator
-		ImageView iv = (ImageView)findViewById(R.id.tabCarImageSignalRSSI);
+		ImageView iv = (ImageView)findViewById(R.id.img_signal_rssi);
 		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars,
 				"drawable", getPackageName());
 		iv.setImageResource(resId);
