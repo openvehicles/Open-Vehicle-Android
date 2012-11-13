@@ -2,11 +2,16 @@ package com.openvehicles.OVMS.ui.witdet;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsoluteLayout;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
@@ -69,8 +74,6 @@ public class ScaleLayout extends AbsoluteLayout {
 		Log.i("DEBUG", "margin_l: " + margin_l);
 		Log.i("DEBUG", "margin_t: " + margin_t);
 		
-		
-		
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
@@ -83,7 +86,19 @@ public class ScaleLayout extends AbsoluteLayout {
 			if (child instanceof TextView) {
 				TextView tv = (TextView) child;
 				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (tv.getTextSize() * scale));
+			} else 
+			if (child.getId() == R.id.tabInfoSliderChargerControl) {
+				SeekBar sb = (SeekBar)child;
+				Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.charger_button);
+				int th = lp.height;
+				int tw = (int) (bmp.getWidth() * ((float)th / bmp.getHeight()));  
+				
+				BitmapDrawable drw = new BitmapDrawable(getContext().getResources(), 
+					Bitmap.createScaledBitmap(bmp, tw, th, true));
+				bmp.recycle();
+				sb.setThumb(drw);
 			}
+				
 		}
 	}
 }
