@@ -433,7 +433,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener {
 			demoCar.sel_server_password = "DEMO";
 			demoCar.sel_module_password = "DEMO";
 			demoCar.sel_server = "tmc.openvehicles.com";
-			demoCar.sel_vehicle_image = "car_default";
+			demoCar.sel_vehicle_image = "car_roadster_lightninggreen";
 			allSavedCars.add(demoCar);
 
 			carData = demoCar;
