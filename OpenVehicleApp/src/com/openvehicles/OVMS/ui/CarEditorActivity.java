@@ -124,7 +124,20 @@ public class CarEditorActivity extends Activity {
 "car_roadster_sterlingsilver",
 "car_roadster_thundergray",
 "car_roadster_twilightblue",
-"car_roadster_veryorange"
+"car_roadster_veryorange",
+"car_ampera_black",
+"car_ampera_crystalred",
+"car_ampera_cybergray",
+"car_ampera_lithiumwhite",
+"car_ampera_powerblue",
+"car_ampera_silvertopas",
+"car_ampera_sovereignsilver",
+"car_ampera_summitwhite",
+"car_holdenvolt_black",
+"car_holdenvolt_crystalclaret",
+"car_holdenvolt_silvernitrate",
+"car_holdenvolt_urbanfresh",
+"car_holdenvolt_whitediamond"
  };
         //get redId's
         // build HashMap
