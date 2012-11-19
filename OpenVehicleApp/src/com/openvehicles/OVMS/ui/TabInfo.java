@@ -1,13 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.Date;
-
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.R.id;
-import com.openvehicles.OVMS.R.layout;
-import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -15,13 +8,15 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
+import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-public class TabInfo extends Activity {
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
 
+public class TabInfo extends Activity {
 	// Private data
 	private CarData data;
 	private Handler handler = new TabInfoHandler(this);
@@ -156,7 +151,6 @@ public class TabInfo extends Activity {
 		tv = (TextView)findViewById(R.id.tabInfoTextSOC);
 		tv.setText(data.car_soc);
 
-//		RelativeLayout pluglayoutv = (RelativeLayout)findViewById(R.id.tabInfoCharger);
 		TextView cmtv = (TextView)findViewById(R.id.tabInfoTextChargeMode);
 		ImageView coiv = (ImageView)findViewById(R.id.tabInfoImageBatteryChargingOverlay);
 		ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
@@ -164,7 +158,6 @@ public class TabInfo extends Activity {
 		TextView tvr = (TextView)findViewById(R.id.tabInfoTextChargeStatusRight);
 		if ((!data.car_chargeport_open)||(data.car_charge_substate_i_raw==0x07)) {
 			// Charge port is closed or car is not plugged in
-//			pluglayoutv.setVisibility(View.INVISIBLE);
 			findViewById(R.id.tabInfoImageCharger).setVisibility(View.INVISIBLE);
 			bar.setVisibility(View.INVISIBLE);
 			cmtv.setVisibility(View.INVISIBLE);
@@ -173,7 +166,6 @@ public class TabInfo extends Activity {
 			tvr.setVisibility(View.INVISIBLE);
 		} else {
 			// Car is plugged in
-//			pluglayoutv.setVisibility(View.VISIBLE);
 			findViewById(R.id.tabInfoImageCharger).setVisibility(View.VISIBLE);
 			bar.setVisibility(View.VISIBLE);
 			tvl.setVisibility(View.VISIBLE);
@@ -231,10 +223,12 @@ public class TabInfo extends Activity {
 		tv = (TextView)findViewById(R.id.tabInfoTextEstimatedRange);
 		tv.setText(data.car_range_estimated);
 
-		ImageView iv = (ImageView)findViewById(R.id.tabInfoImageBatteryOverlay);
-		iv.getLayoutParams().width = 268 * data.car_soc_raw / 100;
-
-		iv = (ImageView)findViewById(R.id.img_signal_rssi);
+		int realWeight = findViewById(R.id.tabInfoTextSOC).getLayoutParams().width;
+		View v = findViewById(R.id.tabInfoImageBatteryOverlay);
+		v.getLayoutParams().width = Math.round((realWeight * data.car_soc_raw / 100) * 1.13f);
+		v.requestLayout();
+		
+		ImageView iv = (ImageView)findViewById(R.id.img_signal_rssi);
 		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
 		iv.setImageResource(resId);
 

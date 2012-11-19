@@ -51,6 +51,7 @@
         android:contentDescription="@string/ChargingOverlay"
         android:src="@drawable/battery_coppertops" />
 	
+    <!-- 
     <ImageView
 		android:id="@+id/tabInfoImageBatteryOverlay"
         android:layout_width="402px"
@@ -58,12 +59,21 @@
         android:layout_x="89px"
         android:layout_y="450px"
         android:contentDescription="@string/BatteryOverlay"
-		android:background="@drawable/battery_100" />
+		android:background="@drawable/battery_overlay_t" />
+		 -->
+    <View
+        android:id="@+id/tabInfoImageBatteryOverlay"
+        android:layout_width="330px"
+        android:layout_height="105px"
+        android:layout_x="110px"
+        android:layout_y="450px"
+        android:contentDescription="@string/BatteryOverlay"
+        android:background="@drawable/battery_overlay_t" />
     
     <TextView android:id="@+id/tabInfoTextSOC"
-        android:layout_width="402px"
+        android:layout_width="330px"
         android:layout_height="105px"
-        android:layout_x="89px"
+        android:layout_x="110px"
         android:layout_y="450px"
         android:gravity="center"
         android:textSize="40px"
@@ -74,7 +84,7 @@
         android:layout_width="340px"
         android:layout_height="40px"
         android:layout_x="89px"
-        android:layout_y="515px"
+        android:layout_y="510px"
         android:gravity="right"
         android:textSize="28px"
         android:text="XXX"
@@ -143,14 +153,13 @@
 		android:id="@+id/tabInfoSliderChargerControl"
 		android:layout_width="212px"
 		android:layout_height="42px"
-        android:layout_x="323px"
+        android:layout_x="320px"
         android:layout_y="324px"
 		android:indeterminate="false"
 		android:indeterminateOnly="false"
 		android:max="100"
 		android:progress="0"
 		android:progressDrawable="@android:color/transparent"
-		android:thumb="@drawable/charger_button"
-		android:thumbOffset="-2dp" />
+		android:thumb="@drawable/charger_button"/>
 </com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 </LinearLayout>

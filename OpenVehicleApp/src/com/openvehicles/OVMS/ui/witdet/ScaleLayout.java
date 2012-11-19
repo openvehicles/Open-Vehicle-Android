@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
@@ -48,31 +47,9 @@ public class ScaleLayout extends AbsoluteLayout {
 		float scale = Math.min(scale_w, scale_h);
 		int side = (int) (8 * scale);
 		
-		Log.i("DEBUG", "scale_w: " + scale_w);
-		Log.i("DEBUG", "scale_h: " + scale_h);
-		Log.i("DEBUG", "scale: " + scale);
-
-		Log.i("DEBUG", "W: " + w);
-		Log.i("DEBUG", "H: " + h);
-		
-		Log.i("DEBUG", "PAGE_W: " + mContentWidth);
-		Log.i("DEBUG", "PAGE_H: " + mContentHeigth);
-		
-		
-//		if (scale_w >= scale_h) {
-//			int margin = (int) ((w - PAGE_W * scale) * 0.5f);
-//			setPadding(margin, side, side, side);
-//		} else {
-//			int margin = (int) ((h - PAGE_H * scale) * 0.5f);
-//			setPadding(side, margin, side, side);
-//		}
-		
 		int margin_l = Math.round((w - Math.round(mContentWidth * scale)) * 0.5f);
 		int margin_t = Math.round((h - Math.round(mContentHeigth * scale)) * 0.5f);
 		setPadding(Math.max(side, margin_l), Math.max(side, margin_t), side, side);
-		
-		Log.i("DEBUG", "margin_l: " + margin_l);
-		Log.i("DEBUG", "margin_t: " + margin_t);
 		
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
@@ -89,14 +66,17 @@ public class ScaleLayout extends AbsoluteLayout {
 			} else 
 			if (child.getId() == R.id.tabInfoSliderChargerControl) {
 				SeekBar sb = (SeekBar)child;
-				Bitmap bmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.charger_button);
+				Bitmap srcBmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.charger_button);
 				int th = lp.height;
-				int tw = (int) (bmp.getWidth() * ((float)th / bmp.getHeight()));  
+				int tw = (int) (srcBmp.getWidth() * ((float)th / srcBmp.getHeight()));  
 				
-				BitmapDrawable drw = new BitmapDrawable(getContext().getResources(), 
-					Bitmap.createScaledBitmap(bmp, tw, th, true));
-				bmp.recycle();
+				Bitmap dstBmp = Bitmap.createScaledBitmap(srcBmp, tw, th, true);
+				srcBmp.recycle();
+
+				BitmapDrawable drw = new BitmapDrawable(getContext().getResources(), dstBmp);
+				
 				sb.setThumb(drw);
+				sb.setThumbOffset(dstBmp.getWidth() / 50);
 			}
 				
 		}
