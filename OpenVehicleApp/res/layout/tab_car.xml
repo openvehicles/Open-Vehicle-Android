@@ -20,31 +20,38 @@
 	
     <ImageView android:id="@+id/tabCarImageCarTrunkOpen"
         style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_tr" />
+        android:src="@drawable/roadster_outline_tr" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarRightDoorOpen"
         style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_rd" />
+        android:src="@drawable/roadster_outline_rd" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarHoodOpen"
         style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_hd" />
+        android:src="@drawable/roadster_outline_hd" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarLeftDoorOpen"
         style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_ld" />
+        android:src="@drawable/roadster_outline_ld" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarLocked"
         style="@style/TabCarImgCar"
-        android:src="@drawable/carunlock" />
+        android:src="@drawable/carunlock" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarValetMode"
         style="@style/TabCarImgCar"
-        android:src="@drawable/carvaleton" />
+        android:src="@drawable/carvaleton" 
+        android:visibility="invisible"/>
     
     <ImageView android:id="@+id/tabCarImageCarHeadlightsON"
         style="@style/TabCarImgCar"
-        android:src="@drawable/carlights" />
+        android:src="@drawable/carlights" 
+        android:visibility="invisible"/>
     
     
     <ImageView android:id="@+id/tabCarImageCarChargePortOpen"
