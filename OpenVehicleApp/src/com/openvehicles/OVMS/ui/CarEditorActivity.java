@@ -137,7 +137,11 @@ public class CarEditorActivity extends Activity {
 "car_holdenvolt_crystalclaret",
 "car_holdenvolt_silvernitrate",
 "car_holdenvolt_urbanfresh",
-"car_holdenvolt_whitediamond"
+"car_holdenvolt_whitediamond",
+"car_twizy_diamondblackwithivygreen",
+"car_twizy_snowwhiteandflameorange",
+"car_twizy_snowwhiteandurbanblue",
+"car_twizy_snowwhitewithblack"
  };
         //get redId's
         // build HashMap
