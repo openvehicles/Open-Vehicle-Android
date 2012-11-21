@@ -4,7 +4,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -41,24 +40,19 @@ public class OVMSNotifications {
 		}
 	}
 	
-	public void AddNotification(NotificationData notification)
-	{
+	public void AddNotification(NotificationData notification) {
 		Notifications.add(notification);
 	}
 	
-	public void AddNotification(String title, String message)
-	{
-		Date timestamp = new Date();
-		Notifications.add(new NotificationData(timestamp, title, message));
+	public void AddNotification(String title, String message) {
+		Notifications.add(new NotificationData(new Date(), title, message));
 	}
 	
-	public void Save()
-	{
+	public void Save() {
 		try {
 			Log.d("OVMS", "Saving notifications list to interal storage...");
 
-			FileOutputStream fos = mContext.openFileOutput(settingsFileName,
-					Context.MODE_PRIVATE);
+			FileOutputStream fos = mContext.openFileOutput(settingsFileName, Context.MODE_PRIVATE);
 			ObjectOutputStream os = new ObjectOutputStream(fos);
 			os.writeObject(this.Notifications);
 			os.close();

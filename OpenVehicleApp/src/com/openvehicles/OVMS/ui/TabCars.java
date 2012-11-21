@@ -2,11 +2,6 @@ package com.openvehicles.OVMS.ui;
 
 import java.util.ArrayList;
 
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.R.id;
-import com.openvehicles.OVMS.R.layout;
-import com.openvehicles.OVMS.entities.CarData;
-
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -28,6 +23,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.entities.CarData;
 
 public class TabCars extends ListActivity {
 
@@ -74,7 +72,7 @@ public class TabCars extends ListActivity {
 	private Context mContext;
 	
 	private void carClicked(CarData carSelected) {
-		((MainActivity)this.getParent()).ChangeCar(carSelected);
+		((MainActivity) getParent()).changeCar(carSelected);
 	}
 	
 	private void editCar(CarData car) {
@@ -175,7 +173,6 @@ public class TabCars extends ListActivity {
 	}
 
 	private class ItemsAdapter extends ArrayAdapter<CarData> {
-
 		private CarData[] items;
 
 		public ItemsAdapter(Context context, int textViewResourceId, CarData[] items) {
