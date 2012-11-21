@@ -5,11 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.R.id;
-import com.openvehicles.OVMS.R.layout;
-import com.openvehicles.OVMS.entities.CarData;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -27,6 +22,9 @@ import android.widget.SimpleAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.entities.CarData;
 
 public class CarEditorActivity extends Activity {
 

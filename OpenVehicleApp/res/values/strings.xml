@@ -35,4 +35,11 @@
     <string name="IdealShort">IDEAL RANGE</string>
     <string name="BatteryText">Battery</string>
     <string name="Homelink">Homelink</string>
+    <string name="Wakeup">Wakeup</string>
+    
+    <string name="lb_wakeup_car">Wakeup Car</string>
+    
+    <string name="msg_wakeup_car">Waking up Car&#8230;</string>
+    <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
+    
 </resources>

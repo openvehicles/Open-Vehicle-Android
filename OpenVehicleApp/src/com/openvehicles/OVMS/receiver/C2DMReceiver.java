@@ -22,11 +22,11 @@ public class C2DMReceiver extends BroadcastReceiver {
 	private static String KEY = "C2DM";
 	private static String REGISTRATION_KEY = "RegID";
 
-	private Context context = null;
+//	private Context context = null;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-	    this.context = context;
+//	    this.context = context;
 		if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {
 	        handleRegistration(context, intent);
 	    } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")) {
@@ -63,7 +63,7 @@ public class C2DMReceiver extends BroadcastReceiver {
             editor.putString(REGISTRATION_KEY, registration);
     		editor.commit();
     		
-    		Toast.makeText(context, "Push Notification Registered", 2000);
+    		Toast.makeText(context, "Push Notification Registered", Toast.LENGTH_SHORT).show();
     		
 	       // Send the registration ID to the 3rd party site that is sending the messages.
 	       // This should be done in a separate thread.
@@ -73,11 +73,9 @@ public class C2DMReceiver extends BroadcastReceiver {
 	    }
 	}
 
-	private void handleMessage(Context context, Intent intent)
-	{
+	private void handleMessage(Context context, Intent intent) {
 		// display message		
-		if (!intent.hasExtra("title") || !intent.hasExtra("message"))
-		{
+		if (!intent.hasExtra("title") || !intent.hasExtra("message")) {
 			Log.d("ERR", "An invalid C2DM message was received.");
 			return;
 		}
@@ -111,14 +109,11 @@ public class C2DMReceiver extends BroadcastReceiver {
 		savedList.Save();
 
 		// try to find the correct icon for this car
-		if (allSavedCars != null)
-		{
-			for (CarData car : allSavedCars)
-			{
+		if (allSavedCars != null) {
+			for (CarData car : allSavedCars) {
 				// OVMS server sends Vehicle ID in the title field
-				if (car.sel_vehicleid.equals(contentTitle))
-				{
-					icon = context.getResources().getIdentifier(car.sel_vehicle_image + "32x32", "drawable", "com.openvehicles.OVMS");
+				if (car.sel_vehicleid.equals(contentTitle)) {
+					icon = context.getResources().getIdentifier(car.sel_vehicle_image + "32x32", "drawable", context.getPackageName());
 					break;
 				}
 			}

@@ -67,6 +67,7 @@
     	android:layout_height="60px"
     	android:layout_x="451px"
     	android:layout_y="260px"
+    	android:clickable="true"
     	android:src="@drawable/ic_home_link" />
 
     <TextView android:id="@+id/textFLWheel"
@@ -166,11 +167,12 @@
     	android:text="0°C"
     	android:textStyle="bold" />
     
-    <TextView
+    <TextView android:id="@+id/txt_homelink"
         style="@style/TabCarTextBox"
         android:layout_x="427px"
         android:layout_y="308px"
         android:text="HOMELINK"
+        android:clickable="true"
         android:textSize="19px"/>
     
     <TextView android:id="@+id/tabCarTextAmbient"
@@ -188,6 +190,13 @@
         android:gravity="center"
         android:text="0kph"
         android:textSize="30px"/>
+    
+    
+    <!-- OnClick -->
+    <View android:id="@+id/btn_wakeup" 
+        android:layout_width="200px" android:layout_height="120px"
+        android:layout_x="166px" android:layout_y="400px"
+        android:clickable="true"/>
     
 </com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 </FrameLayout>

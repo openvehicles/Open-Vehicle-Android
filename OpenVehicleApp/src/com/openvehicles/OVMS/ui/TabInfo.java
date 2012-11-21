@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.View;
-import android.widget.AbsoluteLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -210,8 +209,8 @@ public class TabInfo extends Activity {
 			default:
 				// Slider on the right, message blank
 				bar.setProgress(100);
-				tvl.setText("");
-				tvr.setText("");
+				tvl.setText(null);
+				tvr.setText(null);
 				cmtv.setVisibility(View.INVISIBLE);
 				coiv.setVisibility(View.INVISIBLE);
 				break;				
@@ -223,17 +222,19 @@ public class TabInfo extends Activity {
 		tv = (TextView)findViewById(R.id.tabInfoTextEstimatedRange);
 		tv.setText(data.car_range_estimated);
 
-		int realWeight = findViewById(R.id.tabInfoTextSOC).getLayoutParams().width;
+		int maxWeight = findViewById(R.id.tabInfoTextSOC).getLayoutParams().width;
+		int realWeight = Math.round((maxWeight * data.car_soc_raw / 100) * 1.1f);
 		View v = findViewById(R.id.tabInfoImageBatteryOverlay);
-		v.getLayoutParams().width = Math.round((realWeight * data.car_soc_raw / 100) * 1.13f);
+		
+		v.getLayoutParams().width = Math.min(maxWeight, realWeight);
 		v.requestLayout();
 		
 		ImageView iv = (ImageView)findViewById(R.id.img_signal_rssi);
-		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", "com.openvehicles.OVMS");
+		int resId = getResources().getIdentifier("signal_strength_"+data.car_gsm_bars, "drawable", getPackageName());
 		iv.setImageResource(resId);
 
 		iv = (ImageView)findViewById(R.id.tabInfoImageCar);
-		resId = getResources().getIdentifier(data.sel_vehicle_image, "drawable", "com.openvehicles.OVMS");
+		resId = getResources().getIdentifier(data.sel_vehicle_image, "drawable", getPackageName());
 		iv.setImageResource(resId);
 	}
 }
@@ -244,6 +245,7 @@ class TabInfoHandler extends Handler {
 	TabInfoHandler(TabInfo tabInfo) {
 		m_tabInfo = new WeakReference<TabInfo>(tabInfo);
 	}
+	
 	@Override
 	public void handleMessage(Message msg) {
 		TabInfo tabInfo = m_tabInfo.get();

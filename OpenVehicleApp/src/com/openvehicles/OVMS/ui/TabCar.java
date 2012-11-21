@@ -1,34 +1,64 @@
 package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 
-public class TabCar extends Activity {
+public class TabCar extends Activity implements OnClickListener {
 
 	private CarData data;
 	private Handler handler = new TabCarHandler(this);
 	private Handler lastUpdateTimerHandler = new Handler();
+	
+	
+	private CommandReceiver mCommandReceiver = new CommandReceiver() {
+		@Override
+		public void onResult(String[] pData) {
+			Toast.makeText(mContext, Arrays.toString(pData), Toast.LENGTH_LONG).show();
+		}
+		
+		@Override
+		public void onCommand(String pCommand) {}
+	};
+	
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.tab_car);
-
+		
+		mCommandReceiver.registerAsReceiver(this);
+		
+		registerForContextMenu(findViewById(R.id.btn_wakeup));
+		registerForContextMenu(findViewById(R.id.txt_homelink));
+		registerForContextMenu(findViewById(R.id.tabCarImageHomelink));
 	}
+	
+	@Override
+	protected void onDestroy() {
+		mCommandReceiver.unregister(this);
+		super.onDestroy();
+	};
 
 	private Runnable lastUpdateTimer = new Runnable() {
 		public void run() {
@@ -55,13 +85,72 @@ public class TabCar extends Activity {
 		// remove update timer
 		lastUpdateTimerHandler.removeCallbacks(lastUpdateTimer);
 	}
+	
+	@Override
+	public void onClick(View v) {
+		v.performLongClick();
+	}
+	
+	
+	private static final int MI_WAKEUP	= Menu.FIRST;
+	private static final int MI_HL_01		= Menu.FIRST + 1;
+	private static final int MI_HL_02		= Menu.FIRST + 2;
+	private static final int MI_HL_03		= Menu.FIRST + 3;
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		switch (v.getId()) {
+		case R.id.btn_wakeup:
+			menu.setHeaderTitle(R.string.lb_wakeup_car);
+			menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
+			menu.add(R.string.Cancel);
+			break;
+		case R.id.tabCarImageHomelink:
+		case R.id.txt_homelink:
+			menu.setHeaderTitle("Homelink");
+			menu.add(0, MI_HL_01, 0, "1");
+			menu.add(0, MI_HL_02, 0, "2");
+			menu.add(0, MI_HL_03, 0, "3");
+			menu.add(R.string.Cancel);
+			break;
+		}
+	}
 
+	
+	ProgressDialog mDlg;
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MI_WAKEUP:
+			mCommandReceiver.sendCommand(R.string.msg_wakeup_car, "18");			
+			return true;
+		case MI_HL_01:
+			mCommandReceiver.sendCommand(R.string.msg_issuing_homelink, "24,0");			
+			return true;
+		case MI_HL_02:
+			mCommandReceiver.sendCommand(R.string.msg_issuing_homelink, "24,1");			
+			return true;
+		case MI_HL_03:
+			mCommandReceiver.sendCommand(R.string.msg_issuing_homelink, "24,2");			
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	@Override
+	public void registerForContextMenu(View view) {
+		super.registerForContextMenu(view);
+		view.setOnClickListener(this);
+	}
+	
 	// New car data has been received from the server
 	// We store our local copy, the refresh the display
 	public void RefreshStatus(CarData carData) {
 		data = carData;
 		handler.sendEmptyMessage(0);
 	}
+	
 
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.
@@ -325,7 +414,7 @@ public class TabCar extends Activity {
 			}
 	    }
 	}
-
+	
 }
 
 class TabCarHandler extends Handler {
