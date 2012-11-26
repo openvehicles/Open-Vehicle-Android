@@ -38,8 +38,32 @@
     <string name="Wakeup">Wakeup</string>
     
     <string name="lb_wakeup_car">Wakeup Car</string>
+    <string name="lb_unlock_car">Unlock Car</string>
+    <string name="lb_lock_car">Lock Car</string>
+    <string name="lb_valet_mode">Valet Mode</string>
+    <string name="lb_valet_mode_on">Valet On</string>
+    <string name="lb_valet_mode_off">Valet Off</string>
+    <string name="lb_enter_pin">Enter PIN</string>
+    <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
+    <string name="lb_amps">Amps</string>
+    <string name="lb_charger_setting">Charger Setting</string>
+
+    <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
+    <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
     
     <string name="msg_wakeup_car">Waking up Car&#8230;</string>
     <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
+    <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
+    <string name="msg_setting_charge_m">Setting Charge Mode&#8230;</string>
+    <string name="msg_setting_charge_c">Setting Charge Current&#8230;</string>
+    <string name="msg_starting_charge">Starting Charge&#8230;</string>
+    <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
+    
+    <string-array name="en_charger">
+    	<item>Standard</item>
+        <item>Storage</item>
+        <item>Range</item>
+        <item>Perform</item>
+    </string-array>
     
 </resources>

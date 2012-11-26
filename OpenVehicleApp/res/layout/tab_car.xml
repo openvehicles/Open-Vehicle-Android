@@ -40,13 +40,11 @@
     
     <ImageView android:id="@+id/tabCarImageCarLocked"
         style="@style/TabCarImgCar"
-        android:src="@drawable/carunlock" 
-        android:visibility="invisible"/>
+        android:src="@drawable/carlock"/>
     
     <ImageView android:id="@+id/tabCarImageCarValetMode"
         style="@style/TabCarImgCar"
-        android:src="@drawable/carvaleton" 
-        android:visibility="invisible"/>
+        android:src="@drawable/carvaleton"/>
     
     <ImageView android:id="@+id/tabCarImageCarHeadlightsON"
         style="@style/TabCarImgCar"
@@ -197,6 +195,18 @@
         android:layout_width="200px" android:layout_height="120px"
         android:layout_x="166px" android:layout_y="400px"
         android:clickable="true"/>
+    
+    <View android:id="@+id/btn_lock_car" 
+        android:layout_width="80px" android:layout_height="120px"
+        android:layout_x="188px" android:layout_y="260px"
+        android:clickable="true"/>
+    
+    <View android:id="@+id/btn_valet_maode" 
+        android:layout_width="80px" android:layout_height="120px"
+        android:layout_x="270px" android:layout_y="260px"
+        android:clickable="true"/>
+    
+    
     
 </com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 </FrameLayout>

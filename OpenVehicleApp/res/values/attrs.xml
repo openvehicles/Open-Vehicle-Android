@@ -1,8 +1,17 @@
 <resources>
 
+	<declare-styleable name="SwitcherView">
+		<attr name="android:entries" />
+	</declare-styleable>
+	
 	<declare-styleable name="ScaleLayout">
-        <attr name="content_width" format="integer" />
-        <attr name="content_height" format="integer" />
+		<attr name="content_width" format="integer" />
+		<attr name="content_height" format="integer" />
+	</declare-styleable>
+
+    <declare-styleable name="SlideNumericView">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
     </declare-styleable>
-    
+		
 </resources>

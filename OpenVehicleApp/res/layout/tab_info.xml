@@ -40,6 +40,7 @@
         android:layout_x="89px"
         android:layout_y="450px"
 		android:contentDescription="@string/BatteryImage"
+		android:clickable="true"
 		android:src="@drawable/battery_000" />
 	
     <ImageView
@@ -77,7 +78,6 @@
         android:layout_y="450px"
         android:gravity="center"
         android:textSize="40px"
-        android:text="ZZZ"
         android:textStyle="bold"/>
     
     <TextView android:id="@+id/tabInfoTextChargeMode"
@@ -87,7 +87,6 @@
         android:layout_y="510px"
         android:gravity="right"
         android:textSize="28px"
-        android:text="XXX"
         android:textColor="#fff07d00"
         android:textStyle="bold"/>
     

@@ -1,7 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
 import java.lang.ref.WeakReference;
-import java.util.Arrays;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -10,9 +9,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -29,18 +28,6 @@ public class TabCar extends Activity implements OnClickListener {
 	private Handler handler = new TabCarHandler(this);
 	private Handler lastUpdateTimerHandler = new Handler();
 	
-	
-	private CommandReceiver mCommandReceiver = new CommandReceiver() {
-		@Override
-		public void onResult(String[] pData) {
-			Toast.makeText(mContext, Arrays.toString(pData), Toast.LENGTH_LONG).show();
-		}
-		
-		@Override
-		public void onCommand(String pCommand) {}
-	};
-	
-
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -52,12 +39,28 @@ public class TabCar extends Activity implements OnClickListener {
 		registerForContextMenu(findViewById(R.id.btn_wakeup));
 		registerForContextMenu(findViewById(R.id.txt_homelink));
 		registerForContextMenu(findViewById(R.id.tabCarImageHomelink));
+		
+		findViewById(R.id.btn_lock_car).setOnClickListener(this);
+		findViewById(R.id.btn_valet_maode).setOnClickListener(this);
 	}
 	
 	@Override
 	protected void onDestroy() {
 		mCommandReceiver.unregister(this);
 		super.onDestroy();
+	};
+	
+	private CommandReceiver mCommandReceiver = new CommandReceiver() {
+
+		@Override
+		public void onResult(String[] pData) {
+			if (pData.length >= 3) {
+				Toast.makeText(mContext, pData[2], Toast.LENGTH_LONG).show();
+			}
+		}
+		
+		@Override
+		public void onCommand(String pCommand) {}
 	};
 
 	private Runnable lastUpdateTimer = new Runnable() {
@@ -88,9 +91,48 @@ public class TabCar extends Activity implements OnClickListener {
 	
 	@Override
 	public void onClick(View v) {
-		v.performLongClick();
+		switch (v.getId()) {
+		case R.id.btn_lock_car:
+			Ui.showPinDialog(this, data.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car,
+				new Ui.OnChangeListener<String>() {
+					@Override
+					public void onAction(String pData) {
+						String cmd;
+						int resId;
+						if (data.car_locked) {
+							resId = R.string.lb_unlock_car;
+							cmd = "22,"+pData;
+						} else {
+							resId = R.string.lb_lock_car;
+							cmd = "20,"+pData;
+						}
+						mCommandReceiver.sendCommand(resId, cmd);						
+					}
+				});
+			break;
+		case R.id.btn_valet_maode:
+			Ui.showPinDialog(this, R.string.lb_valet_mode,
+				data.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on,
+				new Ui.OnChangeListener<String>() {
+					@Override
+					public void onAction(String pData) {
+						String cmd;
+						int resId;
+						if (data.car_valetmode) {
+							resId = R.string.lb_valet_mode_off;
+							cmd = "23,"+pData;
+						} else {
+							resId = R.string.lb_valet_mode_on;
+							cmd = "21,"+pData;
+						}
+						mCommandReceiver.sendCommand(resId, cmd);						
+					}
+				});
+			break;
+		default:
+			v.performLongClick();
+		}
 	}
-	
 	
 	private static final int MI_WAKEUP	= Menu.FIRST;
 	private static final int MI_HL_01		= Menu.FIRST + 1;
@@ -115,7 +157,6 @@ public class TabCar extends Activity implements OnClickListener {
 			break;
 		}
 	}
-
 	
 	ProgressDialog mDlg;
 	@Override
@@ -150,7 +191,6 @@ public class TabCar extends Activity implements OnClickListener {
 		data = carData;
 		handler.sendEmptyMessage(0);
 	}
-	
 
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.
