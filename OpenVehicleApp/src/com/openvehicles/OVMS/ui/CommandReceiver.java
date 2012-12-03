@@ -16,9 +16,8 @@ public abstract class CommandReceiver extends BroadcastReceiver {
 	private static final String ACTION_RECEIVE	= "com.openvehicles.OVMS.Receive";
 	private static final String ACTION_SEND		= "com.openvehicles.OVMS.Send";
 	
-	private static final long TIMEOUT = 60 * 1000;
-	
-	private static final int MSG_DISMISS_DLG = 0xF0;
+	private static final long TIMEOUT				= 60 * 1000;
+	private static final int MSG_DISMISS_DLG		= 0xF0;
 	
 	protected Context mContext;
 	private final TimeOutHandler mHandler;
@@ -56,7 +55,7 @@ public abstract class CommandReceiver extends BroadcastReceiver {
 		} else
 		if (ACTION_RECEIVE.equals(action)) {
 			mHandler.removeMessages(MSG_DISMISS_DLG);
-			mHandler.sendEmptyMessageDelayed(MSG_DISMISS_DLG, 1500);
+			mHandler.sendEmptyMessageDelayed(MSG_DISMISS_DLG, 1300);
 			onResult(data.split(",\\s*"));
 		}
 	}
@@ -71,7 +70,7 @@ public abstract class CommandReceiver extends BroadcastReceiver {
 		
 		if (mDlg == null) {
 			mDlg = new ProgressDialog(mContext);
-			mDlg.setCancelable(false);
+//			mDlg.setCancelable(false);
 		}
 		mDlg.setMessage(pMessage);
 		mDlg.show();

@@ -39,7 +39,8 @@
 		<activity android:name=".ui.TabInfo" />
 		<activity android:name=".ui.TabMap" />
 		<activity android:name=".ui.TabCars" />
-		<activity android:name=".ui.TabCar" />
+		<activity android:name=".ui.TabCar" 
+			android:windowSoftInputMode="stateVisible" />
 		<activity android:name=".ui.CarEditorActivity" />
 		<activity android:name=".ui.TabNotifications" />
 

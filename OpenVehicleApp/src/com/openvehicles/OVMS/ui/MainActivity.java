@@ -672,7 +672,7 @@ public class MainActivity extends TabActivity implements OnTabChangeListener {
 					mCarData.car_charge_kwhconsumed = Integer.parseInt(dataParts[11]);
 					mCarData.car_charge_substate_i_raw = Integer.parseInt(dataParts[12]);
 					mCarData.car_charge_state_i_raw = Integer.parseInt(dataParts[13]);
-					mCarData.car_mode_i_raw = Integer.parseInt(dataParts[14]);
+					mCarData.car_charge_mode_i_raw = Integer.parseInt(dataParts[14]);
 				}				
 				if (dataParts.length >= 18) {
 					mCarData.car_charge_timermode_raw = Integer.parseInt(dataParts[15]);

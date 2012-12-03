@@ -135,7 +135,7 @@ public class CarData implements Serializable {
 	public int car_charge_state_i_raw = 0;
 	public int car_charge_substate_i_raw = 0;
 	public String car_mode_s_raw = "";
-	public int car_mode_i_raw = 0;
+	public int car_charge_mode_i_raw = 0;
 	public int car_range_ideal_raw = 0;
 	public int car_range_estimated_raw = 0;
 	public int car_charge_currentlimit_raw = 0;
