@@ -28,7 +28,6 @@
     <string name="DefaultCharging">70A/220V</string>
     <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
     <string name="DefaultMode">STANDARD</string>
-    <string name="BatteryImage">Battery</string>
     <string name="ChargingOverlay">Charging</string>
     <string name="BatteryOverlay">Battery</string>
     <string name="EstimatedShort">ESTIMATED RANGE</string>
@@ -36,6 +35,11 @@
     <string name="BatteryText">Battery</string>
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Wakeup</string>
+    <string name="Add">Add</string>
+    <string name="Battery">Battery</string>
+    <string name="Car">Car</string>
+    <string name="Location">Location</string>
+    <string name="Setings">Location</string>
     
     <string name="lb_wakeup_car">Wakeup Car</string>
     <string name="lb_unlock_car">Unlock Car</string>
@@ -47,7 +51,7 @@
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
     <string name="lb_amps">Amps</string>
     <string name="lb_charger_setting">Charger Setting</string>
-
+    
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
     
@@ -66,4 +70,5 @@
         <item>Perform</item>
     </string-array>
     
+    <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string>
 </resources>

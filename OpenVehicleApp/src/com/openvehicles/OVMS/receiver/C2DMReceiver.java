@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.MainActivity;
+import com.openvehicles.OVMS.ui.MainActivityOld;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import android.app.Notification;
@@ -124,7 +124,7 @@ public class C2DMReceiver extends BroadcastReceiver {
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
 		notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
 
-		Intent notificationIntent = new Intent(context, MainActivity.class);
+		Intent notificationIntent = new Intent(context, MainActivityOld.class);
 		notificationIntent.putExtra("SetTab", "tabNotifications");
 		PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);
