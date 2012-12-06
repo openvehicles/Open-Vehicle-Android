@@ -30,9 +30,10 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiStatusObservable;
+import com.openvehicles.OVMS.api.ApiTask;
+import com.openvehicles.OVMS.api.ApiTask.UpdateStatusListener;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.utils.APITask;
-import com.openvehicles.OVMS.utils.APITask.UpdateStatusListener;
 import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
@@ -41,14 +42,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private static final String SETTINGS_FILENAME = "OVMSSavedCars.obj";
 
 	public View mapview_container;
+	
 	private ViewPager mViewPager;
 	private ArrayList<CarData> mSavedCars;
 	private CarData mCarData;
 	private Handler mC2dmHandler = new Handler();
-	private APITask mAPITask;
+	private ApiTask mAPITask;
 	private AlertDialog mAlertDialog;
 	private boolean isLoggedIn = false;
 	private boolean isSuppressServerErrorDialog = false;
+	private ApiStatusObservable mObservable;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +59,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
-
+		
+		mObservable = ApiStatusObservable.get();
+		
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayShowTitleEnabled(false);
@@ -66,6 +71,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
 			new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
 			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class),
+			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
 			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
 		);
 		mViewPager.setAdapter(pagerAdapter);
@@ -79,8 +85,6 @@ public class MainActivity extends SherlockFragmentActivity implements
 		mapview_container = LayoutInflater.from(this).inflate(R.layout.fragment_map, null);
 		pagerAdapter.initTabUi();
 
-		loadCars();
-		
 		// restore saved cars
 		loadCars();
 
@@ -163,8 +167,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 			return true;
 		case R.id.menuDeleteSavedNotifications:
 			OVMSNotifications notifications = new OVMSNotifications(this);
-			notifications.Notifications = new ArrayList<NotificationData>();
-			notifications.Save();
+			notifications.notifications = new ArrayList<NotificationData>();
+			notifications.save();
 //			updateStatus();
 			return true;
 		default:
@@ -172,9 +176,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 	
-	public void changeCar(CarData car) {
+	public void changeCar(CarData pCarData) {
 		runOnUiThread(progressLoginShowDialog);
-		Log.d("OVMS", "Changed car to: " + car.sel_vehicleid);
+		Log.d("OVMS", "Changed car to: " + pCarData.sel_vehicleid);
 
 		isLoggedIn = false;
 
@@ -189,11 +193,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 
 		// start new connection
-		mCarData = car;
+		mCarData = pCarData;
 		// reset the paranoid mode flag in car data
 		// it will be set again when the TCP task detects paranoid mode messages
-		car.sel_paranoid = false;
-		mAPITask = new APITask(mCarData, this);
+		pCarData.sel_paranoid = false;
+		mAPITask = new ApiTask(mCarData, this);
 		Log.v("TCP", "Starting TCP Connection (ChangeCar())");
 		mAPITask.execute();
 //		getTabHost().setCurrentTabByTag("tabInfo");
@@ -202,6 +206,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	private void loadCars() {
 		try {
 			Log.d("OVMS", "Loading saved cars from internal storage file: " + SETTINGS_FILENAME);
@@ -272,9 +277,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private ProgressDialog mProgressLoginDialog = null;
 	private final Runnable progressLoginCloseDialog = new Runnable() {
 		public void run() {
-			try {
-				if (mProgressLoginDialog != null) mProgressLoginDialog.dismiss();
-			} catch (Exception e) {}
+			if (mProgressLoginDialog != null) {
+				mProgressLoginDialog.dismiss();
+			}
 		}
 	};
 	
@@ -320,35 +325,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	};
 	
-	private final Runnable serverSocketErrorDialog = new Runnable() {
-		public void run() {
-			if (isSuppressServerErrorDialog)
-				return;
-			else if ((mAlertDialog != null) && mAlertDialog.isShowing())
-				return; // do not show duplicated alert dialogs
-
-			if (mProgressLoginDialog != null)
-				mProgressLoginDialog.hide();
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-			builder.setMessage((isLoggedIn) ? String.format("OVMS Server Connection Lost")
-							: String.format("Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords"))
-							.setTitle("Communications Problem")
-							.setCancelable(false)
-							.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-//									MainActivity.this.getTabHost().setCurrentTabByTag("tabCars");
-								}
-							});
-			mAlertDialog = builder.create();
-			mAlertDialog.show();
-		}
-	};
-	
 	@Override
 	public void onUpdateStatus() {
-		// TODO Auto-generated method stub
-		
+		mObservable.notifyObservers(mCarData);
 	}
 
 	@Override
@@ -362,22 +341,37 @@ public class MainActivity extends SherlockFragmentActivity implements
 		isLoggedIn = true;
 		runOnUiThread(progressLoginCloseDialog);
 	}
-
+	
 	@Override
-	public void onServerSocketError(Exception e) {
-		runOnUiThread(serverSocketErrorDialog);
-	}
+	public void onServerSocketError(Throwable e) {
+		if (isSuppressServerErrorDialog) return;
+	
+		if (mAlertDialog != null && mAlertDialog.isShowing()){
+			return; // do not show duplicated alert dialogs
+		}
+		
+		if (mProgressLoginDialog != null) {
+			mProgressLoginDialog.hide();
+		}
 
-	@Override
-	public boolean isSuppressServerErrorDialog() {
-		return isSuppressServerErrorDialog;
+		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+		builder.setMessage(isLoggedIn ? R.string.err_connection_lost : R.string.err_connection_lost)
+			.setTitle(R.string.lb_communications_problem)
+			.setCancelable(false)
+			.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int id) {
+//								MainActivity.this.getTabHost().setCurrentTabByTag("tabCars");
+				}
+			});
+		mAlertDialog = builder.create();
+		mAlertDialog.show();
 	}
 
 	@Override
 	public boolean isLoggedIn() {
 		return isLoggedIn;
 	}
-
+	
 	private static class TabInfo {
 		public final int title_res_id, icon_res_id;
 		public final Class<? extends BaseFragment> fragment_class;

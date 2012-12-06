@@ -11,52 +11,51 @@ import android.content.Context;
 import android.util.Log;
 
 public class OVMSNotifications {
-	private final String settingsFileName = "OVMSSavedNotifications.obj";
+	private static final String SETTINGS_FILENAME = "OVMSSavedNotifications.obj";
 	
-	public ArrayList<NotificationData> Notifications;
+	public ArrayList<NotificationData> notifications;
 	private Context mContext;
 	
 	@SuppressWarnings("unchecked")
 	public OVMSNotifications(Context context) {
 		mContext = context;
 		try {
-			Log.d("OVMS", "Loading saved notifications list from internal storage file: "
-					+ settingsFileName);
-			FileInputStream fis = context.openFileInput(settingsFileName);
+			Log.d("OVMS", "Loading saved notifications list from internal storage file: " + SETTINGS_FILENAME);
+			FileInputStream fis = context.openFileInput(SETTINGS_FILENAME);
 			ObjectInputStream is = new ObjectInputStream(fis);
-			Notifications = (ArrayList<NotificationData>) is.readObject();
+			notifications = (ArrayList<NotificationData>) is.readObject();
 			is.close();
-			Log.d("OVMS", String.format("Loaded %s saved notifications.", Notifications.size()));
+			Log.d("OVMS", String.format("Loaded %s saved notifications.", notifications.size()));
 		} catch (Exception e) {
 			//e.printStackTrace();
 			Log.d("ERR", e.getMessage());
 
 			Log.d("OVMS", "Initializing with save notifications list.");
-			Notifications = new ArrayList<NotificationData>();
+			notifications = new ArrayList<NotificationData>();
 			
 			// load demos
-			this.AddNotification("Push Notifications", "Push notifications received for your registered vehicles are archived here.");
-			this.Save();
+			addNotification("Push Notifications", "Push notifications received for your registered vehicles are archived here.");
+			save();
 		}
 	}
 	
-	public void AddNotification(NotificationData notification) {
-		Notifications.add(notification);
+	public void addNotification(NotificationData notification) {
+		notifications.add(notification);
 	}
 	
-	public void AddNotification(String title, String message) {
-		Notifications.add(new NotificationData(new Date(), title, message));
+	public void addNotification(String title, String message) {
+		notifications.add(new NotificationData(new Date(), title, message));
 	}
 	
-	public void Save() {
+	public void save() {
 		try {
 			Log.d("OVMS", "Saving notifications list to interal storage...");
 
-			FileOutputStream fos = mContext.openFileOutput(settingsFileName, Context.MODE_PRIVATE);
+			FileOutputStream fos = mContext.openFileOutput(SETTINGS_FILENAME, Context.MODE_PRIVATE);
 			ObjectOutputStream os = new ObjectOutputStream(fos);
-			os.writeObject(this.Notifications);
+			os.writeObject(this.notifications);
 			os.close();
-			Log.d("OVMS", String.format("Saved %s notifications.", Notifications.size()));
+			Log.d("OVMS", String.format("Saved %s notifications.", notifications.size()));
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.d("ERR", e.getMessage());

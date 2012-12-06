@@ -39,7 +39,11 @@
     <string name="Battery">Battery</string>
     <string name="Car">Car</string>
     <string name="Location">Location</string>
-    <string name="Setings">Location</string>
+    <string name="Setings">Setings</string>
+    <string name="Messages">Messages</string>
+    <string name="Amps">Amps</string>
+    <string name="Close">Close</string>
+    
     
     <string name="lb_wakeup_car">Wakeup Car</string>
     <string name="lb_unlock_car">Unlock Car</string>
@@ -49,8 +53,9 @@
     <string name="lb_valet_mode_off">Valet Off</string>
     <string name="lb_enter_pin">Enter PIN</string>
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
-    <string name="lb_amps">Amps</string>
     <string name="lb_charger_setting">Charger Setting</string>
+    <string name="lb_communications_problem">Communications Problem</string>
+    
     
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
@@ -62,6 +67,9 @@
     <string name="msg_setting_charge_c">Setting Charge Current&#8230;</string>
     <string name="msg_starting_charge">Starting Charge&#8230;</string>
     <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
+    
+    <string name="err_connection_lost">OVMS Server Connection Lost</string>
+    <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
     
     <string-array name="en_charger">
     	<item>Standard</item>

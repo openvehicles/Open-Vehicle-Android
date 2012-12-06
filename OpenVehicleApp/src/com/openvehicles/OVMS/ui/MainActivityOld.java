@@ -182,8 +182,8 @@ public class MainActivityOld extends TabActivity implements OnTabChangeListener 
 			return true;
 		case R.id.menuDeleteSavedNotifications:
 			OVMSNotifications notifications = new OVMSNotifications(this);
-			notifications.Notifications = new ArrayList<NotificationData>();
-			notifications.Save();
+			notifications.notifications = new ArrayList<NotificationData>();
+			notifications.save();
 			this.updateStatus();
 			return true;
 		default:

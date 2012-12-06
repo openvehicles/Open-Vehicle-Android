@@ -42,7 +42,7 @@ public class TabMapActivity extends MapActivity implements RefreshStatusCallBack
 	    if (_isDebugBuild == null) {
 	        try {
 	            _isDebugBuild = false;
-	            Signature [] sigs = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
+	            Signature[] sigs = context.getPackageManager().getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES).signatures;
 	            for (int i = 0; i < sigs.length; i++) {
 	                if (sigs[i].hashCode() == DEBUG_SIGNATURE_HASH) {
 	                    Log.d("OVMS", "This is a debug build!");
@@ -183,7 +183,6 @@ class TabMapHandler extends Handler {
 	@Override
 	public void handleMessage(Message msg) {
 		TabMapActivity tabMap = m_tabMap.get();
-
 		tabMap.CentreMap();
 	}
 }

@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.utils;
+package com.openvehicles.OVMS.api;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,16 +15,14 @@ import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
-import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
-import com.openvehicles.OVMS.ui.MainActivityOld;
 
-public class APITask extends AsyncTask<Void, Integer, Void> {
+public class ApiTask extends AsyncTask<Void, Throwable, Void> {
 	private Socket mSocket;
 	private Cipher mTxCipher, mRxCipher, mPmCipher;
 	private byte[] mPmDigestBuf;
@@ -34,11 +32,17 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 	private final CarData mCarData;
 	private final UpdateStatusListener mListener;
 	
-	public APITask(CarData pCarData, UpdateStatusListener pListener) {
+	public ApiTask(CarData pCarData, UpdateStatusListener pListener) {
 //		mContext = pContext;
 		mCarData = pCarData;
 		mListener = pListener;
 		Log.v("OVMS", "Create TCPTask");
+	}
+	
+	@Override
+	protected void onProgressUpdate(Throwable... th) {
+		if (th == null || th.length == 0) mListener.onUpdateStatus();
+		else mListener.onServerSocketError(th[0]);
 	}
 
 	@Override
@@ -75,11 +79,8 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 			}
 			connInit();
 		} catch (IOException e) {
-			//OLD if (!isSuppressServerErrorDialog) notifyServerSocketError(e);
-			if (mListener.isSuppressServerErrorDialog()) {
-				mListener.onServerSocketError(e);
-			}
 			e.printStackTrace();
+			publishProgress(e);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -113,8 +114,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 		try {
 			mOutputstream.println(Base64.encodeToString(mTxCipher.update(command.getBytes()), Base64.NO_WRAP));
 		} catch (Exception e) {
-			//OLD notifyServerSocketError(e);
-			mListener.onServerSocketError(e);
+			publishProgress(e);
 		}
 		return true;
 	}
@@ -157,16 +157,10 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 			try {
 				serverWelcomeMsg = mInputstream.readLine().trim().split("[ ]+");
 			} catch (Exception e) {
-				// if server disconnects us here, our auth is probably wrong
-				//OLD if (!isSuppressServerErrorDialog) notifyServerSocketError(e);
-				if (mListener.isSuppressServerErrorDialog()) {
-					mListener.onServerSocketError(e);
-				}
-				
+				publishProgress(e);
 				return;
 			}
-			Log.d("OVMS", String.format("RX: %s %s %s %s",
-					serverWelcomeMsg[0], serverWelcomeMsg[1],
+			Log.d("OVMS", String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1],
 					serverWelcomeMsg[2], serverWelcomeMsg[3]));
 
 			String server_tokenString = serverWelcomeMsg[2];
@@ -188,8 +182,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 			String server_client_token = server_tokenString + client_tokenString;
 			byte[] client_key = client_hmac.doFinal(server_client_token.getBytes());
 
-			Log.d("OVMS", String.format(
-					"Client version of the shared key is %s - (%s) %s",
+			Log.d("OVMS", String.format("Client version of the shared key is %s - (%s) %s",
 					server_client_token, toHex(client_key).toLowerCase(),
 					Base64.encodeToString(client_key, Base64.NO_WRAP)));
 
@@ -214,13 +207,11 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 			mListener.onLoginComplete();
 
 		} catch (UnknownHostException e) {
-			//OLD notifyServerSocketError(e);
-			mListener.onServerSocketError(e);
 			e.printStackTrace();
+			publishProgress(e);
 		} catch (IOException e) {
-			//OLD notifyServerSocketError(e);
-			mListener.onServerSocketError(e);
 			e.printStackTrace();
+			publishProgress(e);
 		} catch (NullPointerException e) {
 			// notifyServerSocketError(e);
 			e.printStackTrace();
@@ -285,8 +276,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 				if (!mCarData.sel_paranoid) {
 					Log.d("OVMS", "Paranoid Mode Detected");
 					mCarData.sel_paranoid = true;
-					//OLD MainActivityOld.this.updateStatus();
-					mListener.onUpdateStatus();
+					publishProgress();
 				}
 			}
 		}
@@ -296,8 +286,8 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 		case 'Z': // Number of connected cars
 		{
 			mCarData.server_carsconnected = Integer.parseInt(cmd);
-			//OLD MainActivityOld.this.updateStatus();
-			mListener.onUpdateStatus();
+			
+			publishProgress();
 			break;
 		}
 		case 'S': // STATUS
@@ -351,13 +341,9 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 					mCarData.stale_chargetimer = DataStale.Good;
 
 			}
-
 			Log.v("TCP", "Notify Vehicle Status Update: " + mCarData.sel_vehicleid);
-//			OLD
-//			if (MainActivityOld.this != null) // OVMSActivity may be null if it is not in foreground
-//				MainActivityOld.this.updateStatus();
-			mListener.onUpdateStatus();
 			
+			publishProgress();
 			break;
 		}
 		case 'T': // TIME
@@ -365,8 +351,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 			if (cmd.length() > 0) {
 				mCarData.car_lastupdate_raw = Long.parseLong(cmd);
 				mCarData.car_lastupdated = new Date(System.currentTimeMillis() - mCarData.car_lastupdate_raw * 1000);
-				//OLD MainActivityOld.this.updateStatus();
-				mListener.onUpdateStatus();
+				publishProgress();
 			} else
 				Log.w("TCP", "T MSG Invalid");
 			break;
@@ -393,10 +378,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 					mCarData.stale_gps = DataStale.Good;
 			}
 
-			// Update the visible location
-			//OLD MainActivityOld.this.updateStatus();
-			mListener.onUpdateStatus();
-			
+			publishProgress();
 			break;
 		}
 		case 'D': // Doors and switches
@@ -474,9 +456,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 					mCarData.car_alarm_sounding = ((dataField & 0x02) == 0x02);
 				}
 
-				// Update the displayed tab
-				//OLD MainActivityOld.this.updateStatus();
-				mListener.onUpdateStatus();
+				publishProgress();
 			}
 			break;
 		}
@@ -516,9 +496,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 				mCarData.car_gsmlock = dataParts[5].toString();
 			}
 
-			// Update the displayed tab
-			//OLD MainActivityOld.this.updateStatus();
-			mListener.onUpdateStatus();
+			publishProgress();
 		}
 		case 'f': // OVMS Server Firmware
 		{
@@ -527,9 +505,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 				Log.v("TCP", "f MSG Validated");
 				mCarData.server_firmware = dataParts[0].toString();
 
-				// Update the displayed tab
-				//OLD MainActivityOld.this.updateStatus();
-				mListener.onUpdateStatus();
+				publishProgress();
 			}
 			break;
 		}
@@ -563,9 +539,7 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 				else
 					mCarData.stale_tpms = DataStale.Good;
 
-				// Update the displayed tab
-				//OLD MainActivityOld.this.updateStatus();
-				mListener.onUpdateStatus();
+				publishProgress();
 			}
 			break;
 		}
@@ -576,7 +550,6 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 		
 		case 'c': {
 			Log.i("TCP", "c MSG Validated");
-			//OLD mCommandReceiver.sendResult(cmd);
 			mListener.onResultCommand(cmd);
 			break;
 		}
@@ -593,10 +566,9 @@ public class APITask extends AsyncTask<Void, Integer, Void> {
 	
 	public interface UpdateStatusListener {
 		public void onUpdateStatus();
+		public void onServerSocketError(Throwable e);
 		public void onResultCommand(String pCmd);
 		public void onLoginComplete();
-		public void onServerSocketError(Exception e);
-		public boolean isSuppressServerErrorDialog();
 		public boolean isLoggedIn();
 	}
 

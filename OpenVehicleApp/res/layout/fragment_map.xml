@@ -6,5 +6,12 @@
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:apiKey="@string/map_api_key_debug"
         android:clickable="true" />
-
+    
+    <ImageButton android:id="@+id/btn_center_map"
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="left|bottom"
+        android:padding="10dp"
+        android:background="#7000"
+        android:src="@drawable/ic_action_location" />
+    
 </FrameLayout>

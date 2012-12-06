@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.receiver.CommandReceiver;
-import com.openvehicles.OVMS.ui.Ui.OnChangeListener;
+import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
 import com.openvehicles.OVMS.ui.witdet.SlideNumericView;
 import com.openvehicles.OVMS.ui.witdet.SwitcherView;

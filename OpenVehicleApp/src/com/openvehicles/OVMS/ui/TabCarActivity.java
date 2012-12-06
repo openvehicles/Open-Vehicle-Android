@@ -22,6 +22,7 @@ import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 import com.openvehicles.OVMS.receiver.CommandReceiver;
+import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class TabCarActivity extends Activity implements OnClickListener {
 

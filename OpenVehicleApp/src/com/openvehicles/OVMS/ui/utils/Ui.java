@@ -1,18 +1,25 @@
-package com.openvehicles.OVMS.ui;
+package com.openvehicles.OVMS.ui.utils;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.openvehicles.OVMS.R;
 
-public class Ui {
+public final class Ui {
+	private static final String TAG = "Ui"; 
+
+	public interface OnChangeListener<T> {
+		public void onAction(T pData);
+	}
 
 	public static void showPinDialog(Context pContext, int pMsgResId, OnChangeListener<String> pListene) {
 		showPinDialog(pContext, pMsgResId, pMsgResId, pListene);
@@ -44,7 +51,16 @@ public class Ui {
         dialog.show();
 	}
 	
-	public interface OnChangeListener<T> {
-		public void onAction(T pData);
+	public static int getDrawableIdentifier(Context pContext, String pName) {
+		return pContext.getResources().getIdentifier(pName, "drawable", pContext.getPackageName());
 	}
+	
+	public static void setOnClick(View pRootView, int pId, OnClickListener pListener) {
+		try {
+			pRootView.findViewById(pId).setOnClickListener(pListener);
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+	
 }

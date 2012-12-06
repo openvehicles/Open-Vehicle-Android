@@ -1,8 +1,30 @@
 package com.openvehicles.OVMS.ui;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import android.view.View;
 
-public class BaseFragment extends SherlockFragment {
+import com.actionbarsherlock.app.SherlockFragment;
+import com.openvehicles.OVMS.api.ApiStatusObservable;
+import com.openvehicles.OVMS.api.ApiStstusObserver;
+import com.openvehicles.OVMS.entities.CarData;
+
+public class BaseFragment extends SherlockFragment implements ApiStstusObserver {
+
+	public void registerForUpdate() {
+		ApiStatusObservable.get().addObserver(this);
+	}
+
+	public void unregisterForUpdate() {
+		ApiStatusObservable.get().deleteObserver(this);
+	}
+
+	@Override
+	public void update(CarData pCarData) {
+		// TODO Auto-generated method stub
+	}
+	
+	public View findViewById(int pResId) {
+		return getView().findViewById(pResId);
+	}
 	
 	
 //	private void destroyView(View pView) {
