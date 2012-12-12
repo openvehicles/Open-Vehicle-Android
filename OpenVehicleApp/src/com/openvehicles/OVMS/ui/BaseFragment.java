@@ -1,5 +1,8 @@
 package com.openvehicles.OVMS.ui;
 
+import java.util.ArrayList;
+
+import android.app.Activity;
 import android.view.View;
 
 import com.actionbarsherlock.app.SherlockFragment;
@@ -25,6 +28,29 @@ public class BaseFragment extends SherlockFragment implements ApiStstusObserver 
 	public View findViewById(int pResId) {
 		return getView().findViewById(pResId);
 	}
+	
+	public void sendCommand(int pResIdMessage, String pCommand) {
+		Activity activity = getActivity();
+		if (activity instanceof MainActivity) {
+			((MainActivity)activity).sendCommand(pResIdMessage, pCommand);
+		}
+	}
+	
+	public void sendCommand(String pMessage, String pCommand) {
+		Activity activity = getActivity();
+		if (activity instanceof MainActivity) {
+			((MainActivity)activity).sendCommand(pMessage, pCommand);
+		}
+	}
+	
+	public ArrayList<CarData> getSavedCarData() {
+		Activity activity = getActivity();
+		if (activity instanceof MainActivity) {
+			return ((MainActivity)activity).getSavedCarData();
+		}
+		return null;
+	}
+	
 	
 	
 //	private void destroyView(View pView) {

@@ -88,14 +88,12 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 	
 	
 	private static class ItemsAdapter extends ArrayAdapter<NotificationData> {
-		private final NotificationData[] mItems;
 		private final LayoutInflater mInflater;
 		private final SimpleDateFormat mDateFormat = new SimpleDateFormat("MMM d, k:mm");
 
 		public ItemsAdapter(Context context, int textViewResourceId, NotificationData[] items) {
 			super(context, textViewResourceId, items);
 			mInflater = LayoutInflater.from(context);
-			mItems = items;
 		}
 
 		@Override
@@ -105,7 +103,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 				v = mInflater.inflate(R.layout.tabnotifications_listitem, null);
 			}
 
-			NotificationData it = mItems[position];
+			NotificationData it = getItem(position);
 			if (it != null) {
 				TextView tv = (TextView) v.findViewById(R.id.textNotificationsListTitle);
 				tv.setText(it.Title);

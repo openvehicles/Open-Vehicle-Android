@@ -1,20 +1,30 @@
 package com.openvehicles.OVMS.ui;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
+import com.openvehicles.OVMS.ui.witdet.SlideNumericView;
+import com.openvehicles.OVMS.ui.witdet.SwitcherView;
 
-public class InfoFragment extends BaseFragment {
-
+public class InfoFragment extends BaseFragment implements OnClickListener  {
+	private CarData mCarData;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_info, null);
@@ -34,8 +44,122 @@ public class InfoFragment extends BaseFragment {
 	
 	@Override
 	public void update(CarData pCarData) {
+		mCarData = pCarData;
+		
 		updateLastUpdatedView(pCarData);
 		updateCarInfoView(pCarData);
+	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		
+		findViewById(R.id.tabInfoTextSOC).setOnClickListener(this);
+		findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this);
+		findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this);
+		findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this);
+		
+		ReversedSeekBar bar = (ReversedSeekBar)findViewById(R.id.tabInfoSliderChargerControl);
+		bar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			private int mStartProgress;
+			
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				int progress = seekBar.getProgress();
+				if (progress > 50) {
+					seekBar.setProgress(100);
+					progress = 100;
+				} else {
+					seekBar.setProgress(0);
+					progress = 0;
+				}
+				if (mStartProgress == progress) return;
+				
+				if (progress == 0) startCharge();
+				else stopCharge();
+			}
+			
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) {
+				mStartProgress = seekBar.getProgress();
+			}
+			
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+		});
+		
+	}
+	
+	@Override
+	public void onClick(View v) {
+		chargerSetting();
+	}
+	
+	private void startCharge() {
+		sendCommand(R.string.msg_starting_charge, "11");
+		mCarData.car_charge_linevoltage_raw = 0;
+		mCarData.car_charge_current_raw = 0;
+		mCarData.car_charge_state_s_raw = "starting";
+		mCarData.car_charge_state_i_raw = 0x101;
+		updateCarInfoView(mCarData);
+	}
+	
+	private void stopCharge() {
+		sendCommand(R.string.msg_stopping_charge, "12");
+		mCarData.car_charge_linevoltage_raw = 0;
+		mCarData.car_charge_current_raw = 0;
+		mCarData.car_charge_state_s_raw = "stopping";
+		mCarData.car_charge_state_i_raw = 0x115;
+		updateCarInfoView(mCarData);
+	}
+	
+	private void chargerSetting() {
+		View content = LayoutInflater.from(getActivity()).inflate(R.layout.dlg_charger, null);
+		SwitcherView sw = (SwitcherView) content.findViewById(R.id.sv_state);
+		sw.setOnChangeListener(new OnChangeListener<SwitcherView>() {
+			@Override
+			public void onAction(SwitcherView pData) {
+				TextView txtInfo = (TextView) ((View) pData.getParent()).findViewById(R.id.txt_info);
+				switch (pData.getSelected()) {
+				case 2:
+					txtInfo.setText(R.string.msg_charger_range);					
+					break;
+				case 3:
+					txtInfo.setText(R.string.msg_charger_perform);					
+					break;
+				default:
+					txtInfo.setText(null);					
+				}
+			}
+		});
+		
+		new AlertDialog.Builder(getActivity())
+		.setTitle(R.string.lb_charger_setting)
+		.setView(content)
+		.setNegativeButton(R.string.Cancel, null)
+		.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+			@Override
+			public void onClick(DialogInterface pDlg, int pWhich) {
+				Dialog dlg = (Dialog) pDlg;
+				SwitcherView sw = (SwitcherView) dlg.findViewById(R.id.sv_state);
+				SlideNumericView snv = (SlideNumericView) dlg.findViewById(R.id.snv_amps);
+				
+				 int ncm = sw.getSelected();
+				 if (ncm >= 2) ncm++;
+				 
+				 int ncl = snv.getValue();
+				 
+				 if (ncm != mCarData.car_charge_mode_i_raw && ncl != mCarData.car_charge_currentlimit_raw) {
+					 sendCommand(R.string.msg_setting_charge_mc, String.format("16,%d,%d", ncm, ncl));
+				 } else
+				 if (ncm != mCarData.car_charge_mode_i_raw) {
+					 sendCommand(R.string.msg_setting_charge_m, String.format("10,%d", ncm));
+				 } else
+				 if (ncl != mCarData.car_charge_currentlimit_raw) {
+					 sendCommand(R.string.msg_setting_charge_c, String.format("15,%d", ncl));
+				 }
+			}
+		}).show();
 	}
 	
 	// This updates the part of the view with times shown.

@@ -10,7 +10,6 @@
     <string name="Cancel">Cancel</string>
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
-    <string name="VehicleID">Vehicle ID</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
     <string name="NetPass">Server Password</string>
     <string name="UserPass">User Password (Paranoid Mode)</string>
@@ -55,7 +54,11 @@
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
     <string name="lb_charger_setting">Charger Setting</string>
     <string name="lb_communications_problem">Communications Problem</string>
-    
+    <string name="lb_vehicle_id">Vehicle ID</string>
+    <string name="lb_vehicle_label">Vehicle Label</string>
+    <string name="lb_server_passwd">OVMS Server Password</string>
+    <string name="lb_module_passwd">OVMS Module Password</string>
+    <string name="lb_slide_choice_vehicle">Slide for choice vehicle</string>
     
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>

@@ -52,6 +52,7 @@ public final class Ui {
 	}
 	
 	public static int getDrawableIdentifier(Context pContext, String pName) {
+		if (pName == null || pContext == null) return 0;
 		return pContext.getResources().getIdentifier(pName, "drawable", pContext.getPackageName());
 	}
 	

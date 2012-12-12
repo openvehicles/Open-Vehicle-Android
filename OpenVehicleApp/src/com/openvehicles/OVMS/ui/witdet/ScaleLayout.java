@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.AbsoluteLayout;
@@ -19,8 +18,9 @@ import com.openvehicles.OVMS.R;
 public class ScaleLayout extends AbsoluteLayout {
 	private float mContentWidth;
 	private float mContentHeigth;
-	private float mScale;
+//	private float mScale;
 	private int mSide;
+	private boolean isInit = false;
 	
 	public ScaleLayout(Context context, AttributeSet attrs) {
 		super(context, attrs);
@@ -50,8 +50,6 @@ public class ScaleLayout extends AbsoluteLayout {
 
 		int w = r-l;
 		int h = b-t;
-
-		Log.e("DEBUG", "onLayout: " + changed + " = " + w + 'x' + h);
 		
 		float scale_w = (w - mSide * 2) / mContentWidth;
 		float scale_h = (h - mSide * 2) / mContentHeigth;
@@ -93,30 +91,25 @@ public class ScaleLayout extends AbsoluteLayout {
 //				sb.setThumbOffset(dstBmp.getWidth() / 50);
 //			}
 		}
+		
+		init(scale);
 	}
 
-	@Override
-	protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-		super.onSizeChanged(w, h, oldw, oldh);
-		if (isInEditMode()) return;
-
-		Log.e("DEBUG", "onSizeChanged: " + w + 'x' + h);
-		
-		float scale_w = (w - mSide * 2) / mContentWidth;
-		float scale_h = (h - mSide * 2) / mContentHeigth;
-		mScale = Math.min(scale_w, scale_h);
+	private void init(float pScale) {
+		if (isInEditMode() || isInit) return;
+		isInit = true;
 		
 		int count = getChildCount();
 		for (int i = 0; i < count; i++) {
 			View child = getChildAt(i);
 			if (child instanceof TextView) {
 				TextView tv = (TextView) child;
-				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (tv.getTextSize() * mScale));
+				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (tv.getTextSize() * pScale));
 			} else
 			if (child.getId() == R.id.tabInfoSliderChargerControl) {
 				SeekBar sb = (SeekBar)child;
 				Bitmap srcBmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.charger_button);
-				int th = (int) (child.getMeasuredHeight() * mScale);
+				int th = (int) (child.getMeasuredHeight() * pScale);
 				int tw = (int) (srcBmp.getWidth() * ((float)th / srcBmp.getHeight()));  
 				
 				Bitmap dstBmp = Bitmap.createScaledBitmap(srcBmp, tw, th, true);
@@ -125,7 +118,7 @@ public class ScaleLayout extends AbsoluteLayout {
 				BitmapDrawable drw = new BitmapDrawable(getContext().getResources(), dstBmp);
 				
 				sb.setThumb(drw);
-				sb.setThumbOffset(dstBmp.getWidth() / 50);
+				sb.setThumbOffset(dstBmp.getWidth() / 4);
 			}
 		}
 	}

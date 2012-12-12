@@ -20,9 +20,11 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.app.ActionBar.Tab;
@@ -47,7 +49,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private ArrayList<CarData> mSavedCars;
 	private CarData mCarData;
 	private Handler mC2dmHandler = new Handler();
-	private ApiTask mAPITask;
+	private ApiTask mApiTask;
 	private AlertDialog mAlertDialog;
 	private boolean isLoggedIn = false;
 	private boolean isSuppressServerErrorDialog = false;
@@ -68,11 +70,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		actionBar.setDisplayShowHomeEnabled(false);
 
 		MainPagerAdapter pagerAdapter = new MainPagerAdapter(
+			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class),
 			new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
 			new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
-			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class),
-			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
-			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
+			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class)
+//			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class)
 		);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -125,11 +127,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 	protected void onPause() {
 		super.onPause();
 		try {
-			if (mAPITask != null) {
+			if (mApiTask != null) {
 				Log.v("TCP", "Shutting down TCP connection");
-				mAPITask.connClose();
-				mAPITask.cancel(true);
-				mAPITask = null;
+				mApiTask.connClose();
+				mApiTask.cancel(true);
+				mApiTask = null;
 			}
 		} catch (Exception e) {
 		}
@@ -176,6 +178,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 	}
 	
+	public void sendCommand(int pResIdMessage, String pCommand) {
+		sendCommand(getString(pResIdMessage), pCommand);
+	}
+	
+	public void sendCommand(String pMessage, String pCommand) {
+		if (mApiTask == null) return;
+		
+		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
+		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
+	}
+	
+	public ArrayList<CarData> getSavedCarData() {
+		return mSavedCars;
+	}
+	
 	public void changeCar(CarData pCarData) {
 		runOnUiThread(progressLoginShowDialog);
 		Log.d("OVMS", "Changed car to: " + pCarData.sel_vehicleid);
@@ -183,12 +200,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 		isLoggedIn = false;
 
 		// kill previous connection
-		if (mAPITask != null) {
+		if (mApiTask != null) {
 			Log.v("TCP", "Shutting down pervious TCP connection (ChangeCar())");
 			isSuppressServerErrorDialog = true;
-			mAPITask.connClose();
-			mAPITask.cancel(true);
-			mAPITask = null;
+			mApiTask.connClose();
+			mApiTask.cancel(true);
+			mApiTask = null;
 			isSuppressServerErrorDialog = false;
 		}
 
@@ -197,9 +214,9 @@ public class MainActivity extends SherlockFragmentActivity implements
 		// reset the paranoid mode flag in car data
 		// it will be set again when the TCP task detects paranoid mode messages
 		pCarData.sel_paranoid = false;
-		mAPITask = new ApiTask(mCarData, this);
+		mApiTask = new ApiTask(mCarData, this);
 		Log.v("TCP", "Starting TCP Connection (ChangeCar())");
-		mAPITask.execute();
+		mApiTask.execute();
 //		getTabHost().setCurrentTabByTag("tabInfo");
 //		updateStatus();
 		onUpdateStatus();
@@ -292,7 +309,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private final Runnable reportC2DMRegistrationID = new Runnable() {
 		public void run() {
 			// check if tcp connection is still active (it may be closed as the user leaves the program)
-			if (mAPITask == null) return;
+			if (mApiTask == null) return;
 
 			SharedPreferences settings = getSharedPreferences("C2DM", 0);
 			String registrationID = settings.getString("RegID", "");
@@ -314,7 +331,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 			// MP-0
 			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
 			if ((registrationID.length() == 0)
-					|| !mAPITask.sendCommand(String.format(
+					|| !mApiTask.sendCommand(String.format(
 							"MP-0 p%s,c2dm,production,%s,%s,%s", uuid,
 							mCarData.sel_vehicleid, mCarData.sel_server_password,
 							registrationID))) {
@@ -333,7 +350,12 @@ public class MainActivity extends SherlockFragmentActivity implements
 	@Override
 	public void onResultCommand(String pCmd) {
 		// TODO Auto-generated method stub
+		if (TextUtils.isEmpty(pCmd)) return;
+		String[] data = pCmd.split(",\\s*");
 		
+		if (data.length >= 3) {
+			Toast.makeText(this, data[2], Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override

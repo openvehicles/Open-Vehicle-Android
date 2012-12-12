@@ -2,9 +2,14 @@ package com.openvehicles.OVMS.ui;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,7 +18,8 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
-public class CarFragment extends BaseFragment {
+public class CarFragment extends BaseFragment implements OnClickListener {
+	private CarData mCarData;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,9 +40,123 @@ public class CarFragment extends BaseFragment {
 	
 	@Override
 	public void update(CarData pCarData) {
+		mCarData = pCarData;
+		
 		updateLastUpdatedView(pCarData);
 		updateCarBodyView(pCarData);
 	}
+	
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+
+		registerForContextMenu(findViewById(R.id.btn_wakeup));
+		registerForContextMenu(findViewById(R.id.txt_homelink));
+		registerForContextMenu(findViewById(R.id.tabCarImageHomelink));
+		
+		findViewById(R.id.btn_lock_car).setOnClickListener(this);
+		findViewById(R.id.btn_valet_maode).setOnClickListener(this);
+	}
+	
+	@Override
+	public void registerForContextMenu(View view) {
+		super.registerForContextMenu(view);
+		view.setOnClickListener(this);
+	}
+	
+	@Override
+	public void onClick(View v) {
+		if (mCarData == null) return;
+		Log.e("DEBUG", "onClick: " + v);
+			
+		switch (v.getId()) {
+		case R.id.btn_lock_car:
+			Ui.showPinDialog(getActivity(), mCarData.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car,
+				new Ui.OnChangeListener<String>() {
+					@Override
+					public void onAction(String pData) {
+						String cmd;
+						int resId;
+						if (mCarData.car_locked) {
+							resId = R.string.lb_unlock_car;
+							cmd = "22,"+pData;
+						} else {
+							resId = R.string.lb_lock_car;
+							cmd = "20,"+pData;
+						}
+						sendCommand(resId, cmd);						
+					}
+				});
+			break;
+		case R.id.btn_valet_maode:
+			Ui.showPinDialog(getActivity(), R.string.lb_valet_mode,
+					mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on,
+				new Ui.OnChangeListener<String>() {
+					@Override
+					public void onAction(String pData) {
+						String cmd;
+						int resId;
+						if (mCarData.car_valetmode) {
+							resId = R.string.lb_valet_mode_off;
+							cmd = "23,"+pData;
+						} else {
+							resId = R.string.lb_valet_mode_on;
+							cmd = "21,"+pData;
+						}
+						sendCommand(resId, cmd);						
+					}
+				});
+			break;
+		default:
+			v.performLongClick();
+		}
+	}
+
+	private static final int MI_WAKEUP	= Menu.FIRST;
+	private static final int MI_HL_01		= Menu.FIRST + 1;
+	private static final int MI_HL_02		= Menu.FIRST + 2;
+	private static final int MI_HL_03		= Menu.FIRST + 3;
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+		super.onCreateContextMenu(menu, v, menuInfo);
+		switch (v.getId()) {
+		case R.id.btn_wakeup:
+			menu.setHeaderTitle(R.string.lb_wakeup_car);
+			menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
+			menu.add(R.string.Cancel);
+			break;
+		case R.id.tabCarImageHomelink:
+		case R.id.txt_homelink:
+			menu.setHeaderTitle("Homelink");
+			menu.add(0, MI_HL_01, 0, "1");
+			menu.add(0, MI_HL_02, 0, "2");
+			menu.add(0, MI_HL_03, 0, "3");
+			menu.add(R.string.Cancel);
+			break;
+		}
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case MI_WAKEUP:
+			sendCommand(R.string.msg_wakeup_car, "18");			
+			return true;
+		case MI_HL_01:
+			sendCommand(R.string.msg_issuing_homelink, "24,0");			
+			return true;
+		case MI_HL_02:
+			sendCommand(R.string.msg_issuing_homelink, "24,1");			
+			return true;
+		case MI_HL_03:
+			sendCommand(R.string.msg_issuing_homelink, "24,2");			
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	
 	
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.
@@ -296,6 +416,4 @@ public class CarFragment extends BaseFragment {
 			}
 	    }
 	}
-	
-
 }

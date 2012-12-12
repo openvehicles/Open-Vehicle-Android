@@ -160,7 +160,6 @@ public class TabCarActivity extends Activity implements OnClickListener {
 		}
 	}
 	
-	ProgressDialog mDlg;
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
