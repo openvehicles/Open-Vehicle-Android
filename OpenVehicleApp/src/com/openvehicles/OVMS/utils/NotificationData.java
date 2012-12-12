@@ -9,10 +9,6 @@ public class NotificationData implements Serializable {
 	public String Title;
 	public String Message;
 	
-	public NotificationData() {
-		
-	}
-	
 	public NotificationData(Date timestamp, String title, String message) {
 		this.Timestamp = timestamp;
 		this.Title = title;

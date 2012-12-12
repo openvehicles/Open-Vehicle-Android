@@ -10,7 +10,7 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.ui.Ui.OnChangeListener;
+import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 
 public class SwitcherView extends LinearLayout implements OnClickListener  {
 	private int mSelected = -1;

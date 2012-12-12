@@ -6,7 +6,7 @@
 
 	<uses-sdk
 		android:minSdkVersion="9"
-		android:targetSdkVersion="15" />
+		android:targetSdkVersion="17" />
 
 	<!-- Only this application can receive the messages and registration result -->
 	<permission
@@ -21,26 +21,32 @@
 	<uses-permission android:name="android.permission.VIBRATE" />
 
 	<application
-		android:icon="@drawable/icon72x72"
+		android:icon="@drawable/ic_launcher"
 		android:label="@string/app_name"
-		android:theme="@android:style/Theme.NoTitleBar" >
-		<uses-library android:name="com.google.android.maps" />
+		android:allowBackup="false"
+		android:largeHeap="true"
+		android:theme="@style/Theme.App" >
 
 		<activity android:name=".ui.MainActivity"
 			android:label="@string/app_name"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"			
-			android:launchMode="singleTop" >
+			android:launchMode="singleTop"
+			android:uiOptions="splitActionBarWhenNarrow">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
 				<category android:name="android.intent.category.LAUNCHER" />
 			</intent-filter>
 		</activity>
-		<activity android:name=".ui.TabInfo" />
-		<activity android:name=".ui.TabMap" />
-		<activity android:name=".ui.TabCars" />
-		<activity android:name=".ui.TabCar" 
-			android:windowSoftInputMode="stateVisible" />
+		
+        <activity android:name=".ui.BaseFragmentActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+		
+		<activity android:name="com.openvehicles.OVMS.ui.TabInfoActivity" />
+		<activity android:name="com.openvehicles.OVMS.ui.TabMapActivity" />
+		<activity android:name="com.openvehicles.OVMS.ui.TabCarsActivity" />
+		<activity android:name="com.openvehicles.OVMS.ui.TabCarActivity" android:windowSoftInputMode="stateVisible" />
 		<activity android:name=".ui.CarEditorActivity" />
 		<activity android:name=".ui.TabNotifications" />
 
@@ -62,6 +68,8 @@
 				<category android:name="com.openvehicles.OVMS" />
 			</intent-filter>
 		</receiver>
+		
+        <uses-library android:name="com.google.android.maps" />
 	</application>
 
 </manifest>
