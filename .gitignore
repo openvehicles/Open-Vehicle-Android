@@ -1,4 +1,4 @@
-OpenVehicleApp/bin
-OpenVehicleApp/gen
-ActionBarSherlock/bin
-ActionBarSherlock/gen
+OpenVehicleApp/bin/*
+OpenVehicleApp/gen/*
+ActionBarSherlock/bin/*
+ActionBarSherlock/gen/*
