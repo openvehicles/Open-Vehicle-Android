@@ -70,11 +70,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 		actionBar.setDisplayShowHomeEnabled(false);
 
 		MainPagerAdapter pagerAdapter = new MainPagerAdapter(
-			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class),
 			new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
 			new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
-			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class)
-//			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class)
+			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class),
+			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
+			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
 		);
 		mViewPager.setAdapter(pagerAdapter);
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

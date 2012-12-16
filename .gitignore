@@ -1,6 +1,4 @@
-OpenVehicleApp/.classpath
-OpenVehicleApp/.project
-OpenVehicleApp/.settings
 OpenVehicleApp/bin/*
 OpenVehicleApp/gen/*
-OpenVehicleApp/project.properties
+ActionBarSherlock/bin/*
+ActionBarSherlock/gen/*
