@@ -5,7 +5,8 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.MainActivity;
+import com.openvehicles.OVMS.ui.MainActivityOld;
+import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import android.app.Notification;
@@ -21,12 +22,9 @@ import android.widget.Toast;
 public class C2DMReceiver extends BroadcastReceiver {
 	private static String KEY = "C2DM";
 	private static String REGISTRATION_KEY = "RegID";
-
-//	private Context context = null;
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-//	    this.context = context;
 		if (intent.getAction().equals("com.google.android.c2dm.intent.REGISTRATION")) {
 	        handleRegistration(context, intent);
 	    } else if (intent.getAction().equals("com.google.android.c2dm.intent.RECEIVE")) {
@@ -105,15 +103,15 @@ public class C2DMReceiver extends BroadcastReceiver {
 		
 		// save notification to file
 		OVMSNotifications savedList = new OVMSNotifications(context);
-		savedList.AddNotification(contentTitle.toString(), contentText.toString());
-		savedList.Save();
+		savedList.addNotification(contentTitle.toString(), contentText.toString());
+		savedList.save();
 
 		// try to find the correct icon for this car
 		if (allSavedCars != null) {
 			for (CarData car : allSavedCars) {
 				// OVMS server sends Vehicle ID in the title field
 				if (car.sel_vehicleid.equals(contentTitle)) {
-					icon = context.getResources().getIdentifier(car.sel_vehicle_image + "32x32", "drawable", context.getPackageName());
+					icon = Ui.getDrawableIdentifier(context, car.sel_vehicle_image + "32x32");
 					break;
 				}
 			}
@@ -124,7 +122,7 @@ public class C2DMReceiver extends BroadcastReceiver {
 		notification.flags = Notification.FLAG_AUTO_CANCEL;
 		notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
 
-		Intent notificationIntent = new Intent(context, MainActivity.class);
+		Intent notificationIntent = new Intent(context, MainActivityOld.class);
 		notificationIntent.putExtra("SetTab", "tabNotifications");
 		PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);

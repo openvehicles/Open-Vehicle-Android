@@ -2,12 +2,6 @@ package com.openvehicles.OVMS.ui;
 
 import java.text.SimpleDateFormat;
 
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.R.id;
-import com.openvehicles.OVMS.R.layout;
-import com.openvehicles.OVMS.utils.NotificationData;
-import com.openvehicles.OVMS.utils.OVMSNotifications;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
@@ -23,22 +17,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.utils.NotificationData;
+import com.openvehicles.OVMS.utils.OVMSNotifications;
+
 public class TabNotifications extends ListActivity {
+	private ItemsAdapter mAdapter;
+	private NotificationData[] mCachedData;
+	private OVMSNotifications mNotifications;
 
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tabnotifications);
-		
-		notifications = new OVMSNotifications(this);
-		mContext = this;
 	}
-	
-	private ItemsAdapter adapter;
-	private NotificationData[] cachedData;
-	private OVMSNotifications notifications;
-	private Context mContext;
 	
 	private class ItemsAdapter extends ArrayAdapter<NotificationData> {
 
@@ -79,39 +71,33 @@ public class TabNotifications extends ListActivity {
 	protected void onListItemClick(ListView l, View v, int position, long id) {
 		Log.d("OVMS", "Displaying notification: #" + position);
 		
-		AlertDialog.Builder builder = new AlertDialog.Builder(
-				TabNotifications.this);
-		builder.setMessage(cachedData[position].Message)
-				.setTitle(cachedData[position].Title)
-				.setCancelable(false)
-				.setPositiveButton("Close",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int id) {
-								dialog.dismiss();
-							}
-						});
-		builder.create().show();
+		new AlertDialog.Builder(TabNotifications.this)
+			.setTitle(mCachedData[position].Title)
+			.setMessage(mCachedData[position].Message)
+			.setCancelable(false)
+			.setPositiveButton(R.string.Close, null)
+			.show();
 	}
 	
 	private Handler handler = new Handler() {
 		public void handleMessage(Message msg) {
-			NotificationData[] data = new NotificationData[notifications.Notifications.size()];
-			notifications.Notifications.toArray(data);
+			NotificationData[] data = new NotificationData[mNotifications.notifications.size()];
+			mNotifications.notifications.toArray(data);
 			
 			// reverse the array so that the latest notification is displayed on top
-			cachedData = new NotificationData[data.length];
-			for (int idx=0; idx<cachedData.length; idx++)
-				cachedData[idx] = data[data.length - 1 - idx];
+			mCachedData = new NotificationData[data.length];
+			for (int i=0; i<mCachedData.length; i++) {
+				mCachedData[i] = data[data.length - 1 - i];
+			}
 			
-			adapter = new ItemsAdapter(mContext, R.layout.tabnotifications_listitem,
-					cachedData);
-			setListAdapter(adapter);
+			mAdapter = new ItemsAdapter(TabNotifications.this, 
+					R.layout.tabnotifications_listitem, mCachedData);
+			setListAdapter(mAdapter);
 		}
 	};
 
 	public void Refresh() {
-		notifications = new OVMSNotifications(this);
+		mNotifications = new OVMSNotifications(this);
 		handler.sendEmptyMessage(0);
 
 	}

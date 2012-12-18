@@ -10,7 +10,6 @@
     <string name="Cancel">Cancel</string>
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
-    <string name="VehicleID">Vehicle ID</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
     <string name="NetPass">Server Password</string>
     <string name="UserPass">User Password (Paranoid Mode)</string>
@@ -28,7 +27,6 @@
     <string name="DefaultCharging">70A/220V</string>
     <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
     <string name="DefaultMode">STANDARD</string>
-    <string name="BatteryImage">Battery</string>
     <string name="ChargingOverlay">Charging</string>
     <string name="BatteryOverlay">Battery</string>
     <string name="EstimatedShort">ESTIMATED RANGE</string>
@@ -36,6 +34,15 @@
     <string name="BatteryText">Battery</string>
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Wakeup</string>
+    <string name="Add">Add</string>
+    <string name="Battery">Battery</string>
+    <string name="Car">Car</string>
+    <string name="Location">Location</string>
+    <string name="Setings">Setings</string>
+    <string name="Messages">Messages</string>
+    <string name="Amps">Amps</string>
+    <string name="Close">Close</string>
+    
     
     <string name="lb_wakeup_car">Wakeup Car</string>
     <string name="lb_unlock_car">Unlock Car</string>
@@ -45,9 +52,14 @@
     <string name="lb_valet_mode_off">Valet Off</string>
     <string name="lb_enter_pin">Enter PIN</string>
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
-    <string name="lb_amps">Amps</string>
     <string name="lb_charger_setting">Charger Setting</string>
-
+    <string name="lb_communications_problem">Communications Problem</string>
+    <string name="lb_vehicle_id">Vehicle ID</string>
+    <string name="lb_vehicle_label">Vehicle Label</string>
+    <string name="lb_server_passwd">OVMS Server Password</string>
+    <string name="lb_module_passwd">OVMS Module Password</string>
+    <string name="lb_slide_choice_vehicle">Slide for choice vehicle</string>
+    
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
     
@@ -59,6 +71,9 @@
     <string name="msg_starting_charge">Starting Charge&#8230;</string>
     <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
     
+    <string name="err_connection_lost">OVMS Server Connection Lost</string>
+    <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
+    
     <string-array name="en_charger">
     	<item>Standard</item>
         <item>Storage</item>
@@ -66,4 +81,5 @@
         <item>Perform</item>
     </string-array>
     
+    <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string>
 </resources>

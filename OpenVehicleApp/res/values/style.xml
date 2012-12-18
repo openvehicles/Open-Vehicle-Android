@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
-
+    <item type="id" name="content"/>
+	<style name="Theme.App" parent="Theme.Sherlock" />
+    
 	<style name="SOCOverlayText">
         <item name="android:paddingLeft">4px</item>
         <item name="android:paddingBottom">4px</item>
@@ -26,11 +28,17 @@
         <item name="android:layout_y">75px</item>
     </style>
     
+    <!-- 
     <style name="TabCarTextBox" parent="@android:style/Widget.TextView">
+     -->
+    <style name="TabCarTextBox">
         <item name="android:layout_width">104px</item>
         <item name="android:layout_height">34px</item>
         <item name="android:textSize">20px</item>
+        <!-- 
         <item name="android:gravity">center</item>
+        <item name="android:background">#8AFF</item>
+        -->
     </style>
 
 </resources>
