@@ -22,8 +22,8 @@
         android:layout_below="@id/txt_title"
         android:layout_marginRight="8dp"
         android:layout_toLeftOf="@id/btn_edit"
-        android:scaleType="fitStart"
-        android:src="@drawable/car_default"/>
+        android:scaleType="fitStart"/>
+    <!-- android:src="@drawable/car_default" -->
     
 	<ImageButton android:id="@+id/btn_info" 
     	android:layout_width="wrap_content" android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
 
 <include layout="@layout/view_car_statusbar"/>
 
-<TextView android:id="@+id/textVehicleID"
+<TextView android:id="@+id/txt_title"
 	android:layout_width="match_parent"
 	android:layout_height="wrap_content"
 	android:gravity="center_horizontal"

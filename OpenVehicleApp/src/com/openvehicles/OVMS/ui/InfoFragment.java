@@ -238,8 +238,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 	// This updates the main informational part of the view.
 	// It is called when the server gets new data.
 	public void updateCarInfoView(CarData pCarData) {
-		TextView tv = (TextView)findViewById(R.id.textVehicleID);
-		tv.setText(pCarData.sel_vehicleid);
+		TextView tv = (TextView)findViewById(R.id.txt_title);
+		tv.setText(pCarData.sel_vehicle_label);
 
 		tv = (TextView)findViewById(R.id.tabInfoTextSOC);
 		tv.setText(pCarData.car_soc);

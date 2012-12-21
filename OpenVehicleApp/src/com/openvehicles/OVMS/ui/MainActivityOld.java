@@ -344,25 +344,20 @@ public class MainActivityOld extends TabActivity implements OnTabChangeListener 
 		Log.d("Tab", "Tab change to: " + currentActivityId);
 
 		if (currentActivityId == "tabInfo") {
-			TabInfoActivity tab = (TabInfoActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabInfoActivity tab = (TabInfoActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabCar") {
 			Log.d("Tab", "Telling tabCar to update");
-			TabCarActivity tab = (TabCarActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabCarActivity tab = (TabCarActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabMap") {
-			TabMapActivity tab = (TabMapActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabMapActivity tab = (TabMapActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabNotifications") {
-			TabNotifications tab = (TabNotifications) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabNotifications tab = (TabNotifications) getLocalActivityManager().getActivity(currentActivityId);
 			tab.Refresh();
 		} else if (currentActivityId == "tabCars") {
-			TabCarsActivity tab = (TabCarsActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabCarsActivity tab = (TabCarsActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.LoadCars(mSavedCars);
 		} else
 			getTabHost().setCurrentTabByTag("tabInfo");

@@ -1,8 +1,10 @@
 package com.openvehicles.OVMS.api;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.math.BigInteger;
 import java.net.Socket;
@@ -23,6 +25,7 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 
 public class ApiTask extends AsyncTask<Void, Object, Void> {
+	private static final String TAG = "ApiTask";
 	private Socket mSocket;
 	private Cipher mTxCipher, mRxCipher, mPmCipher;
 	private byte[] mPmDigestBuf;
@@ -30,6 +33,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private BufferedReader mInputstream;
 	private final CarData mCarData;
 	private final UpdateStatusListener mListener;
+	private final Random sRnd = new Random();
+
 	
 	private enum MsgState {
 		StateUpdate, StateError, StateCommand
@@ -38,7 +43,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	public ApiTask(CarData pCarData, UpdateStatusListener pListener) {
 		mCarData = pCarData;
 		mListener = pListener;
-		Log.v("OVMS", "Create TCPTask");
+		Log.v(TAG, "Create TCPTask");
 	}
 	
 	@Override
@@ -73,12 +78,12 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				// if (Inputstream.ready()) {
 				rx = mInputstream.readLine().trim();
 				msg = new String(mRxCipher.update(Base64.decode(rx, 0))).trim();
-				Log.d("OVMS", String.format("RX: %s (%s)", msg, rx));
+				Log.d(TAG, String.format("RX: %s (%s)", msg, rx));
 
 				if (msg.substring(0, 5).equals("MP-0 ")) {
 					handleMessage(msg.substring(5));
 				} else {
-					Log.d("OVMS", "Unknown protection scheme");
+					Log.d(TAG, "Unknown protection scheme");
 					// short pause after receiving message
 				}
 				
@@ -109,7 +114,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	public void ping() {
 		String msg = "TX: MP-0 A";
 		mOutputstream.println(Base64.encodeToString(mTxCipher.update(msg.getBytes()), Base64.NO_WRAP));
-		Log.d("OVMS", msg);
+		Log.d(TAG, msg);
 	}
 
 	public void connClose() {
@@ -122,10 +127,10 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	}
 
 	public boolean sendCommand(String command) {
-		Log.i("OVMS", "TX: " + command);
+		Log.i(TAG, "TX: " + command);
 		//OLD if (!MainActivityOld.this.isLoggedIn) {
 		if (! mListener.isLoggedIn()) {
-			Log.w("OVMS", "Server not ready. TX aborted.");
+			Log.w(TAG, "Server not ready. TX aborted.");
 			return false;
 		}
 
@@ -144,9 +149,10 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		char[] b64tab = b64tabString.toCharArray();
 
 		// generate session client token
-		Random rnd = new Random();
 		String client_tokenString = "";
-		for (int cnt = 0; cnt < 22; cnt++) client_tokenString += b64tab[rnd.nextInt(b64tab.length - 1)];
+		for (int cnt = 0; cnt < 22; cnt++) {
+			client_tokenString += b64tab[sRnd.nextInt(b64tab.length - 1)];
+		}
 
 		byte[] client_token = client_tokenString.getBytes();
 		try {
@@ -159,14 +165,10 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 			mSocket = new Socket(mCarData.sel_server, 6867);
 
-			mOutputstream = new PrintWriter(
-					new java.io.BufferedWriter(
-							new java.io.OutputStreamWriter(mSocket.getOutputStream())), true);
-			Log.d("OVMS", String.format("TX: MP-A 0 %s %s %s",
-					client_tokenString, client_digest, vehicleID));
+			mOutputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
+			Log.d(TAG, String.format("TX: MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
 
-			mOutputstream.println(String.format("MP-A 0 %s %s %s",
-					client_tokenString, client_digest, vehicleID));// \r\n
+			mOutputstream.println(String.format("MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
 
 			mInputstream = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
 
@@ -175,10 +177,11 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			try {
 				serverWelcomeMsg = mInputstream.readLine().trim().split("[ ]+");
 			} catch (Exception e) {
+				Log.e(TAG, "ERROR response server welcome message", e);
 				publishProgress(MsgState.StateError, e);
 				return;
 			}
-			Log.d("OVMS", String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1],
+			Log.d(TAG, String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1],
 					serverWelcomeMsg[2], serverWelcomeMsg[3]));
 
 			String server_tokenString = serverWelcomeMsg[2];
@@ -187,20 +190,20 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 			if (!Arrays.equals(client_hmac.doFinal(server_token), server_digest)) {
 				// server hash failed
-				Log.d("OVMS", String.format(
+				Log.d(TAG, String.format(
 						"Server authentication failed. Expected %s Got %s",
 						Base64.encodeToString(client_hmac
 								.doFinal(serverWelcomeMsg[2].getBytes()),
 								Base64.NO_WRAP), serverWelcomeMsg[3]));
 			} else {
-				Log.d("OVMS", "Server authentication OK.");
+				Log.d(TAG, "Server authentication OK.");
 			}
 
 			// generate client_key
 			String server_client_token = server_tokenString + client_tokenString;
 			byte[] client_key = client_hmac.doFinal(server_client_token.getBytes());
 
-			Log.d("OVMS", String.format("Client version of the shared key is %s - (%s) %s",
+			Log.d(TAG, String.format("Client version of the shared key is %s - (%s) %s",
 					server_client_token, toHex(client_key).toLowerCase(),
 					Base64.encodeToString(client_key, Base64.NO_WRAP)));
 
@@ -209,8 +212,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			mRxCipher.init(Cipher.DECRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
 
 			mTxCipher = Cipher.getInstance("RC4");
-			mTxCipher.init(Cipher.ENCRYPT_MODE,
-					new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
+			mTxCipher.init(Cipher.ENCRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
 
 			// prime ciphers
 			String primeData = "";
@@ -219,7 +221,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			mRxCipher.update(primeData.getBytes());
 			mTxCipher.update(primeData.getBytes());
 
-			Log.d("OVMS", String.format("Connected to %s. Ciphers initialized. Listening...", mCarData.sel_server));
+			Log.i(TAG, String.format("Connected to %s. Ciphers initialized. Listening...", mCarData.sel_server));
 
 			//OLD loginComplete();
 			mListener.onLoginComplete();
@@ -257,7 +259,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 							mCarData.sel_server_password.getBytes(), "HmacMD5");
 					pm_hmac.init(sk);
 					mPmDigestBuf = pm_hmac.doFinal(pmToken.getBytes());
-					Log.d("OVMS", "Paranoid Mode Token Accepted. Entering Privacy Mode.");
+					Log.d(TAG, "Paranoid Mode Token Accepted. Entering Privacy Mode.");
 				} catch (Exception e) {
 					Log.e("ERR", e.getMessage());
 					e.printStackTrace();
@@ -292,7 +294,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 				// notify main process of paranoid mode detection
 				if (!mCarData.sel_paranoid) {
-					Log.d("OVMS", "Paranoid Mode Detected");
+					Log.d(TAG, "Paranoid Mode Detected");
 					mCarData.sel_paranoid = true;
 					publishProgress(MsgState.StateUpdate);
 				}

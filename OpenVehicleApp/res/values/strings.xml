@@ -15,6 +15,8 @@
     <string name="UserPass">User Password (Paranoid Mode)</string>
     <string name="Quit">Exit Application</string>
     <string name="Edit">Edit</string>
+    <string name="Yes">Yse</string>
+    <string name="No">No</string>
     <string name="ClearNotifications">Clear Notifications</string>
     <string name="VehicleImage">Vehicle Image</string>
     <string name="btnAddCar">Add Car</string>
@@ -35,6 +37,8 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Wakeup</string>
     <string name="Add">Add</string>
+    <string name="Save">Save</string>
+    <string name="Delete">Delete</string>
     <string name="Battery">Battery</string>
     <string name="Car">Car</string>
     <string name="Location">Location</string>
@@ -70,6 +74,11 @@
     <string name="msg_setting_charge_c">Setting Charge Current&#8230;</string>
     <string name="msg_starting_charge">Starting Charge&#8230;</string>
     <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
+    <string name="msg_please_enter_value">Please enter a correct value</string>
+    <string name="msg_invalid_name">Your username must be greater than 3 characters length and cannot contain  special characters.</string>
+    <string name="msg_invalid_passwd">Your password must be between %1$d and %2$d characters in length.</string>
+    <string name="msg_invalid_id_already_registered">Vehicle ID %s is already registered. Please enter a another ID.</string>
+    <string name="msg_delete_this_car">Delete this car?</string>
     
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
     <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>

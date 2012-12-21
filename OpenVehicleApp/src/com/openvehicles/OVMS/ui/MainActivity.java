@@ -1,9 +1,5 @@
 package com.openvehicles.OVMS.ui;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -11,7 +7,6 @@ import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -31,6 +26,7 @@ import com.actionbarsherlock.app.ActionBar.Tab;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
+import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiStatusObservable;
 import com.openvehicles.OVMS.api.ApiTask;
@@ -41,12 +37,10 @@ import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class MainActivity extends SherlockFragmentActivity implements 
 		ActionBar.TabListener, UpdateStatusListener  {
-	private static final String SETTINGS_FILENAME = "OVMSSavedCars.obj";
+	private static final String TAG = "MainActivity";
 
 	public View mapview_container;
-	
 	private ViewPager mViewPager;
-	private ArrayList<CarData> mSavedCars;
 	private CarData mCarData;
 	private Handler mC2dmHandler = new Handler();
 	private ApiTask mApiTask;
@@ -88,7 +82,8 @@ public class MainActivity extends SherlockFragmentActivity implements
 		pagerAdapter.initTabUi();
 
 		// restore saved cars
-		loadCars();
+//		loadCars();
+//		changeCar(BaseApp.getSelectedCarData());
 
 		// check for C2DM registration
 		// Restore saved registration id
@@ -134,14 +129,14 @@ public class MainActivity extends SherlockFragmentActivity implements
 				mApiTask = null;
 			}
 		} catch (Exception e) {
+			Log.e(TAG, "ERROR pause ApiTask", e);
 		}
-		saveCars();
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		changeCar(mCarData);
+		changeCar(mCarData != null ? mCarData : BaseApp.getSelectedCarData());
 	}
 	
 	@Override
@@ -189,14 +184,15 @@ public class MainActivity extends SherlockFragmentActivity implements
 		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
 	}
 	
-	public ArrayList<CarData> getSavedCarData() {
-		return mSavedCars;
+	public CarData getCardata() {
+		return mCarData;
 	}
 	
 	public void changeCar(CarData pCarData) {
 		runOnUiThread(progressLoginShowDialog);
-		Log.d("OVMS", "Changed car to: " + pCarData.sel_vehicleid);
-
+		
+		Log.d(TAG, "Changed car to: " + pCarData.sel_vehicleid);
+		mCarData = pCarData;
 		isLoggedIn = false;
 
 		// kill previous connection
@@ -210,86 +206,16 @@ public class MainActivity extends SherlockFragmentActivity implements
 		}
 
 		// start new connection
-		mCarData = pCarData;
 		// reset the paranoid mode flag in car data
 		// it will be set again when the TCP task detects paranoid mode messages
-		pCarData.sel_paranoid = false;
+		mCarData.sel_paranoid = false;
 		mApiTask = new ApiTask(mCarData, this);
-		Log.v("TCP", "Starting TCP Connection (ChangeCar())");
+		Log.v(TAG, "Starting TCP Connection (changeCar())");
 		mApiTask.execute();
 //		getTabHost().setCurrentTabByTag("tabInfo");
 //		updateStatus();
 		onUpdateStatus();
 	}
-	
-	
-	@SuppressWarnings("unchecked")
-	private void loadCars() {
-		try {
-			Log.d("OVMS", "Loading saved cars from internal storage file: " + SETTINGS_FILENAME);
-			FileInputStream fis = this.openFileInput(SETTINGS_FILENAME);
-			ObjectInputStream is = new ObjectInputStream(fis);
-			mSavedCars = (ArrayList<CarData>) is.readObject();
-			is.close();
-
-			SharedPreferences settings = getSharedPreferences("OVMS", 0);
-			String lastVehicleID = settings.getString("LastVehicleID", "").trim();
-			if (lastVehicleID.length() == 0) {
-				// no vehicle ID saved
-				mCarData = mSavedCars.get(0);
-			} else {
-				Log.d("OVMS", String.format("Loaded %s cars. Last used car is ", mSavedCars.size(), lastVehicleID));
-				for (int idx = 0; idx < mSavedCars.size(); idx++) {
-					if ((mSavedCars.get(idx)).sel_vehicleid.equals(lastVehicleID)) {
-						mCarData = mSavedCars.get(idx);
-						break;
-					}
-				}
-				if (mCarData == null) {
-					mCarData = mSavedCars.get(0);
-				}
-			}
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.d("ERR", e.getMessage());
-
-			Log.d("OVMS", "Invalid save file. Initializing with demo car.");
-			// No settings file found. Initialize settings.
-			mSavedCars = new ArrayList<CarData>();
-			CarData demoCar = new CarData();
-			demoCar.sel_vehicleid = "DEMO";
-			demoCar.sel_server_password = "DEMO";
-			demoCar.sel_module_password = "DEMO";
-			demoCar.sel_server = "tmc.openvehicles.com";
-			demoCar.sel_vehicle_image = "car_roadster_lightninggreen";
-			mSavedCars.add(demoCar);
-
-			mCarData = demoCar;
-			saveCars();
-		}
-	}
-
-	public void saveCars() {
-		try {
-			Log.d("OVMS", "Saving cars to interal storage...");
-
-			// save last used vehicleID
-			SharedPreferences settings = getSharedPreferences("OVMS", 0);
-			SharedPreferences.Editor editor = settings.edit();
-			editor.putString("LastVehicleID", mCarData.sel_vehicleid);
-			editor.commit();
-
-			FileOutputStream fos = this.openFileOutput(SETTINGS_FILENAME, Context.MODE_PRIVATE);
-			ObjectOutputStream os = new ObjectOutputStream(fos);
-			os.writeObject(mSavedCars);
-			os.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			Log.d("ERR", e.getMessage());
-		}
-	}
-	
 	
 	private ProgressDialog mProgressLoginDialog = null;
 	private final Runnable progressLoginCloseDialog = new Runnable() {
@@ -322,10 +248,10 @@ public class MainActivity extends SherlockFragmentActivity implements
 				editor.putString("UUID", uuid);
 				editor.commit();
 
-				Log.d("OVMS", "Generated New C2DM UUID: " + uuid);
+				Log.d(TAG, "Generated New C2DM UUID: " + uuid);
 			} else {
 				uuid = settings.getString("UUID", "");
-				Log.d("OVMS", "Loaded Saved C2DM UUID: " + uuid);
+				Log.d(TAG, "Loaded Saved C2DM UUID: " + uuid);
 			}
 
 			// MP-0
@@ -336,7 +262,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 							mCarData.sel_vehicleid, mCarData.sel_server_password,
 							registrationID))) {
 				// command not successful, reschedule reporting after 5 seconds
-				Log.d("OVMS", "Reporting C2DM ID failed. Rescheduling.");
+				Log.d(TAG, "Reporting C2DM ID failed. Rescheduling.");
 				mC2dmHandler.postDelayed(reportC2DMRegistrationID, 5000);
 			}
 		}
@@ -366,25 +292,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 	
 	@Override
 	public void onServerSocketError(Throwable e) {
-		if (isSuppressServerErrorDialog) return;
-	
-		if (mAlertDialog != null && mAlertDialog.isShowing()){
-			return; // do not show duplicated alert dialogs
-		}
-		
 		if (mProgressLoginDialog != null) {
 			mProgressLoginDialog.hide();
 		}
+		
+		if (isSuppressServerErrorDialog) return;
+	
+		if (mAlertDialog != null && mAlertDialog.isShowing()){
+			return;
+		}
 
 		AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-		builder.setMessage(isLoggedIn ? R.string.err_connection_lost : R.string.err_connection_lost)
+		builder.setMessage(isLoggedIn ? R.string.err_connection_lost : R.string.err_check_following)
 			.setTitle(R.string.lb_communications_problem)
 			.setCancelable(false)
-			.setPositiveButton("Open Settings", new DialogInterface.OnClickListener() {
-				public void onClick(DialogInterface dialog, int id) {
-//								MainActivity.this.getTabHost().setCurrentTabByTag("tabCars");
-				}
-			});
+			.setPositiveButton(android.R.string.ok, null);
 		mAlertDialog = builder.create();
 		mAlertDialog.show();
 	}

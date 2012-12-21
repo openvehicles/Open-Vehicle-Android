@@ -11,8 +11,11 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.ui.validators.ValidationException;
+import com.openvehicles.OVMS.ui.validators.Validator;
 
 public final class Ui {
 	private static final String TAG = "Ui"; 
@@ -63,5 +66,27 @@ public final class Ui {
 			Log.e(TAG, e.toString());
 		}
 	}
+
+	public static void setValue(View pRootView, int pId, String pVal) {
+		try {
+			TextView tv = (TextView) pRootView.findViewById(pId);
+			tv.setText(pVal);
+		} catch (Exception e) {
+			Log.e(TAG, "string: " + e);
+		}
+	}
+	
+	public static String getValidValue(View pRootView, int pId, Validator pValidator) throws ValidationException {
+		String value = null;
+		EditText et = (EditText) pRootView.findViewById(pId);
+		value = et.getText().toString();
+		if (!pValidator.valid(et, value)) {
+			et.requestFocus();
+			et.setError(pValidator.getErrorMessage());
+			throw new ValidationException(pValidator.getErrorMessage());
+		}
+		return value; 
+	}
+	
 	
 }
