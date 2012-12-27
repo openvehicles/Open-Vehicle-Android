@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapController;
 import com.google.android.maps.MapView;
@@ -22,7 +25,7 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.BalloonItemizedOverlay;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
-public class MapFragment extends BaseFragment implements OnClickListener {
+public class MapFragment extends BaseFragment {
 	private View mMapViewContainer;
 	private MapView mMapView;
 	private MapController mMapController;
@@ -72,15 +75,30 @@ public class MapFragment extends BaseFragment implements OnClickListener {
 		} else {
 			mCarMarkerOverlay = (CarMarkerOverlay) overlays.get(0); 
 		}
+		setHasOptionsMenu(true);
 		
-		findViewById(R.id.btn_center_map).setOnClickListener(this);
+//		findViewById(R.id.btn_center_map).setOnClickListener(this);
 	}
 
+//	@Override
+//	public void onClick(View v) {
+//		if (mLastGeoPoint == null) return;
+//		
+//		mMapController.animateTo(mLastGeoPoint);
+//	}
+	
 	@Override
-	public void onClick(View v) {
-		if (mLastGeoPoint == null) return;
-		
-		mMapController.animateTo(mLastGeoPoint);
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.center_map, menu);
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		if (item.getItemId() == R.id.mi_center_map) {
+			if (mLastGeoPoint != null) mMapController.animateTo(mLastGeoPoint); 
+			return true;
+		}
+		return false;
 	}
 	
 	@Override

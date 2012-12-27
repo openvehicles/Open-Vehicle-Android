@@ -27,17 +27,31 @@ public final class Ui {
 	public static void showPinDialog(Context pContext, int pMsgResId, OnChangeListener<String> pListene) {
 		showPinDialog(pContext, pMsgResId, pMsgResId, pListene);
 	}
-	
+
 	public static void showPinDialog(Context pContext, int pTitleResId, int pButtonResId,
 			final OnChangeListener<String> pListene) {
+		showPinDialog(pContext, pTitleResId, pButtonResId, true, pListene);
+	}
+	
+	public static void showPinDialog(Context pContext, int pTitleResId, int pButtonResId, boolean isPin,
+			final OnChangeListener<String> pListene) {
+		View view = LayoutInflater.from(pContext).inflate(R.layout.dlg_pin, null);
+		EditText et = (EditText) view.findViewById(R.id.etxt_input_value);
+		if (isPin) {
+			et.setHint(R.string.lb_enter_pin);
+		} else {
+			et.setTransformationMethod(null);
+		}
+		
 		AlertDialog dialog = new AlertDialog.Builder(pContext)
-			.setTitle(pTitleResId)
-			.setView(LayoutInflater.from(pContext).inflate(R.layout.dlg_pin, null))
+//			.setTitle(pTitleResId)
+			.setMessage(pTitleResId)
+			.setView(view)
 			.setNegativeButton(R.string.Cancel, null)
 			.setPositiveButton(pButtonResId, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					EditText etxtPin = (EditText) ((Dialog) dialog).findViewById(R.id.etxt_pin);
+					EditText etxtPin = (EditText) ((Dialog) dialog).findViewById(R.id.etxt_input_value);
 					if (pListene != null) pListene.onAction(etxtPin.getText().toString());
 				}
 			})
@@ -46,7 +60,7 @@ public final class Ui {
         dialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-            	View v = ((Dialog) dialog).findViewById(R.id.etxt_pin).findViewById(R.id.etxt_pin);
+            	View v = ((Dialog) dialog).findViewById(R.id.etxt_input_value);
                 InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(v, InputMethodManager.SHOW_IMPLICIT);
             }

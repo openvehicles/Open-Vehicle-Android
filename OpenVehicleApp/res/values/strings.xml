@@ -10,6 +10,8 @@
     <string name="Cancel">Cancel</string>
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
+    <string name="Send">Send</string>
+    <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
     <string name="NetPass">Server Password</string>
     <string name="UserPass">User Password (Paranoid Mode)</string>
@@ -46,7 +48,8 @@
     <string name="Messages">Messages</string>
     <string name="Amps">Amps</string>
     <string name="Close">Close</string>
-    
+    <string name="Features">Features</string>
+    <string name="Parameters">Parameters</string>
     
     <string name="lb_wakeup_car">Wakeup Car</string>
     <string name="lb_unlock_car">Unlock Car</string>
@@ -63,6 +66,10 @@
     <string name="lb_server_passwd">OVMS Server Password</string>
     <string name="lb_module_passwd">OVMS Module Password</string>
     <string name="lb_slide_choice_vehicle">Slide for choice vehicle</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
+    <string name="lb_cellular_usage">Cellular Usage</string>
+    <string name="lb_reset_ovms_module">Reset OVMS Module</string>
+    <string name="lb_center_map">Center map</string>
     
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
@@ -79,6 +86,7 @@
     <string name="msg_invalid_passwd">Your password must be between %1$d and %2$d characters in length.</string>
     <string name="msg_invalid_id_already_registered">Vehicle ID %s is already registered. Please enter a another ID.</string>
     <string name="msg_delete_this_car">Delete this car?</string>
+    <string name="msg_mmi_ssd_code">Enter MMI/USSD Code, then tap SEND to transmit the code to your vehicle\'s cellular provider</string>
     
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
     <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
@@ -91,4 +99,5 @@
     </string-array>
     
     <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string>
+    
 </resources>

@@ -167,29 +167,29 @@ public class MainActivityOld extends TabActivity implements OnTabChangeListener 
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.layout.main_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuQuit:
-			finish();
-			return true;
-		case R.id.menuDeleteSavedNotifications:
-			OVMSNotifications notifications = new OVMSNotifications(this);
-			notifications.notifications = new ArrayList<NotificationData>();
-			notifications.save();
-			this.updateStatus();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.layout.main_menu, menu);
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.menuQuit:
+//			finish();
+//			return true;
+//		case R.id.menuDeleteSavedNotifications:
+//			OVMSNotifications notifications = new OVMSNotifications(this);
+//			notifications.notifications = new ArrayList<NotificationData>();
+//			notifications.save();
+//			this.updateStatus();
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 
 	private static final String SETTINGS_FILENAME = "OVMSSavedCars.obj";
 	

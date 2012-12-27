@@ -19,6 +19,9 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
@@ -36,7 +39,7 @@ import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class MainActivity extends SherlockFragmentActivity implements 
-		ActionBar.TabListener, UpdateStatusListener  {
+		ActionBar.OnNavigationListener, UpdateStatusListener  {
 	private static final String TAG = "MainActivity";
 
 	public View mapview_container;
@@ -48,29 +51,32 @@ public class MainActivity extends SherlockFragmentActivity implements
 	private boolean isLoggedIn = false;
 	private boolean isSuppressServerErrorDialog = false;
 	private ApiStatusObservable mObservable;
+	private MainPagerAdapter mPagerAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mViewPager = new ViewPager(this);
-		mViewPager.setId(android.R.id.tabhost);
-		setContentView(mViewPager);
+//		mViewPager = new ViewPager(this);
+//		mViewPager.setId(android.R.id.tabhost);
+//		setContentView(mViewPager);
+		setContentView(R.layout.activity_main);
+		mViewPager = (ViewPager) findViewById(R.id.vp_main);
 		
 		mObservable = ApiStatusObservable.get();
 		
 		final ActionBar actionBar = getSupportActionBar();
-		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+//		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 		actionBar.setDisplayShowTitleEnabled(false);
-		actionBar.setDisplayShowHomeEnabled(false);
+//		actionBar.setDisplayShowHomeEnabled(false);
 
-		MainPagerAdapter pagerAdapter = new MainPagerAdapter(
+		mPagerAdapter = new MainPagerAdapter(
 			new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
 			new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
-			new TabInfo(R.string.Location, R.drawable.ic_action_location, MapFragment.class),
+			new TabInfo(R.string.Location, R.drawable.ic_action_location_map, MapFragment.class),
 			new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
 			new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
 		);
-		mViewPager.setAdapter(pagerAdapter);
+		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -78,8 +84,11 @@ public class MainActivity extends SherlockFragmentActivity implements
 			}
 		});
 		
+		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+		actionBar.setListNavigationCallbacks(new NavAdapter(this, mPagerAdapter.getTabInfoItems()), this);
+
 		mapview_container = LayoutInflater.from(this).inflate(R.layout.fragment_map, null);
-		pagerAdapter.initTabUi();
+//		pagerAdapter.initTabUi();
 
 		// restore saved cars
 //		loadCars();
@@ -139,39 +148,47 @@ public class MainActivity extends SherlockFragmentActivity implements
 		changeCar(mCarData != null ? mCarData : BaseApp.getSelectedCarData());
 	}
 	
-	@Override
-	public void onTabSelected(Tab tab, android.support.v4.app.FragmentTransaction ft) {
-		mViewPager.setCurrentItem(tab.getPosition());
-	}
-
-	@Override
-	public void onTabUnselected(Tab tab, android.support.v4.app.FragmentTransaction ft) {}
-
-	@Override
-	public void onTabReselected(Tab tab, android.support.v4.app.FragmentTransaction ft) {}
+//	@Override
+//	public void onTabSelected(Tab tab, android.support.v4.app.FragmentTransaction ft) {
+//		mViewPager.setCurrentItem(tab.getPosition());
+//	}
+//
+//	@Override
+//	public void onTabUnselected(Tab tab, android.support.v4.app.FragmentTransaction ft) {}
+//
+//	@Override
+//	public void onTabReselected(Tab tab, android.support.v4.app.FragmentTransaction ft) {}
 	
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		getSupportMenuInflater().inflate(R.layout.main_menu, menu);
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
+		getSupportActionBar().setIcon(ti.icon_res_id);
+		mViewPager.setCurrentItem(itemPosition);
 		return true;
 	}
 	
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuQuit:
-			finish();
-			return true;
-		case R.id.menuDeleteSavedNotifications:
-			OVMSNotifications notifications = new OVMSNotifications(this);
-			notifications.notifications = new ArrayList<NotificationData>();
-			notifications.save();
-//			updateStatus();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		getSupportMenuInflater().inflate(R.layout.main_menu, menu);
+//		return true;
+//	}
+//	
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.menuQuit:
+//			finish();
+//			return true;
+//		case R.id.menuDeleteSavedNotifications:
+//			OVMSNotifications notifications = new OVMSNotifications(this);
+//			notifications.notifications = new ArrayList<NotificationData>();
+//			notifications.save();
+////			updateStatus();
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 	
 	public void sendCommand(int pResIdMessage, String pCommand) {
 		sendCommand(getString(pResIdMessage), pCommand);
@@ -316,7 +333,7 @@ public class MainActivity extends SherlockFragmentActivity implements
 		return isLoggedIn;
 	}
 	
-	private static class TabInfo {
+	private class TabInfo {
 		public final int title_res_id, icon_res_id;
 		public final Class<? extends BaseFragment> fragment_class;
 		
@@ -329,6 +346,26 @@ public class MainActivity extends SherlockFragmentActivity implements
 			icon_res_id = pIconResId;
 			fragment_class = pFragmentClass;
 		}
+		
+		@Override
+		public String toString() {
+			return getString(title_res_id);
+		}
+	}
+	
+	
+	private static class NavAdapter extends ArrayAdapter<TabInfo> {
+		public NavAdapter(Context context, TabInfo[] objects) {
+			super(context, R.layout.sherlock_spinner_item, objects);
+			setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+		}
+		
+		@Override
+		public View getDropDownView(int position, View convertView, ViewGroup parent) {
+			TextView tv = (TextView) super.getDropDownView(position, convertView, parent);
+			tv.setCompoundDrawablesWithIntrinsicBounds(getItem(position).icon_res_id, 0, 0, 0);
+			return tv; 
+		}
 	}
 
 	private class MainPagerAdapter extends FragmentPagerAdapter {
@@ -339,17 +376,21 @@ public class MainActivity extends SherlockFragmentActivity implements
 			mTabInfoItems = pTabInfoItems;
 		}
 		
-		public void initTabUi() {
-			ActionBar actionBar = getSupportActionBar();
-			if (actionBar.getTabCount() > 0) actionBar.removeAllTabs();
-			
-			for (TabInfo tabInfo : mTabInfoItems) {
-				actionBar.addTab(actionBar.newTab()
-						.setText(tabInfo.title_res_id)
-						.setIcon(tabInfo.icon_res_id)
-						.setTabListener(MainActivity.this));
-			}
+		public TabInfo[] getTabInfoItems() {
+			return mTabInfoItems;
 		}
+		
+//		public void initTabUi() {
+//			ActionBar actionBar = getSupportActionBar();
+//			if (actionBar.getTabCount() > 0) actionBar.removeAllTabs();
+//			
+//			for (TabInfo tabInfo : mTabInfoItems) {
+//				actionBar.addTab(actionBar.newTab()
+//						.setText(tabInfo.title_res_id)
+//						.setIcon(tabInfo.icon_res_id)
+//						.setTabListener(MainActivity.this));
+//			}
+//		}
 
 		@Override
 		public Fragment getItem(int pPosition) {

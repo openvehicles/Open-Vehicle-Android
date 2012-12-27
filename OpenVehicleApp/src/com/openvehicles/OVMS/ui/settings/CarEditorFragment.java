@@ -2,22 +2,17 @@ package com.openvehicles.OVMS.ui.settings;
 
 import java.util.List;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.Gallery;
 import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
@@ -26,6 +21,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.validators.PasswdValidator;
 import com.openvehicles.OVMS.ui.validators.StringValidator;
@@ -34,8 +30,7 @@ import com.openvehicles.OVMS.ui.validators.ValidationException;
 public class CarEditorFragment extends SherlockFragment {
 	private CarData mCarData;
 	private int mEditPosition;
-	private int mImagePosition;
-	private ViewPager mImgViewPager;
+	private Gallery mGalleryCar; 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,19 +40,24 @@ public class CarEditorFragment extends SherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_action_edit);		
+		
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
 			mCarData = BaseApp.getStoredCars().get(mEditPosition);
 		}
 		
-		mImgViewPager = (ViewPager) getView().findViewById(R.id.vp_car);
-		mImgViewPager.setAdapter(new CarPagerAdapter());
-		mImgViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-			@Override
-			public void onPageSelected(int position) {
-				mImagePosition = position;
-			}
-		});
+		mGalleryCar = (Gallery) getView().findViewById(R.id.ga_car);
+		mGalleryCar.setAdapter(new CarImgAdapter());
+		
+//		mImgViewPager = (ViewPager) getView().findViewById(R.id.vp_car);
+//		mImgViewPager.setAdapter(new CarPagerAdapter());
+//		mImgViewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+//			@Override
+//			public void onPageSelected(int position) {
+//				mImagePosition = position;
+//			}
+//		});
 		
 		setHasOptionsMenu(true);
 		if (mCarData != null) approveCarData();
@@ -65,8 +65,14 @@ public class CarEditorFragment extends SherlockFragment {
 	
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(mCarData != null && BaseApp.getStoredCars().size() > 1
-			&& BaseApp.getSelectedCarData() != mCarData ? R.menu.save_delete : R.menu.save, menu);
+		inflater.inflate(R.menu.control_save_delete, menu);
+	}
+	
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		Log.e("DEBUG", "onPrepareOptionsMenu edit car: " + ( BaseApp.getStoredCars().size() > 1));
+		menu.findItem(R.id.mi_delete).setVisible(mCarData != null && BaseApp.getStoredCars().size() > 1);
+		menu.findItem(R.id.mi_control).setVisible(mCarData != null);
 	}
 
 	@Override
@@ -77,6 +83,10 @@ public class CarEditorFragment extends SherlockFragment {
 			return true;
 		case R.id.mi_delete:
 			delete();
+			return true;
+		case R.id.mi_control:
+			BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
+			activity.setNextFragment(ControlFragment.class);
 			return true;
 		default:
 			return false;
@@ -125,7 +135,7 @@ public class CarEditorFragment extends SherlockFragment {
 			mCarData.sel_vehicle_label = Ui.getValidValue(rootView, R.id.txt_vehicle_label, new StringValidator()); 
 			mCarData.sel_server_password = Ui.getValidValue(rootView, R.id.txt_server_passwd, new PasswdValidator(4, 16)); 
 			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 16));
-			mCarData.sel_vehicle_image = sAvailableColors[mImagePosition];
+			mCarData.sel_vehicle_image = sAvailableColors[mGalleryCar.getSelectedItemPosition()];
 		} catch (ValidationException e) {
 			Log.e("Validation", e.getMessage(), e);
 			return;
@@ -142,6 +152,7 @@ public class CarEditorFragment extends SherlockFragment {
 	
 	private void approveCarData() {
 		View rootView = getView();
+		getSherlockActivity().setTitle(mCarData.sel_vehicleid);
 		Ui.setValue(rootView, R.id.txt_vehicle_id, mCarData.sel_vehicleid);
 		Ui.setValue(rootView, R.id.txt_vehicle_label, mCarData.sel_vehicle_label);
 		Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);
@@ -152,41 +163,64 @@ public class CarEditorFragment extends SherlockFragment {
 			index++;
 			if (imgRes.equals(mCarData.sel_vehicle_image)) break;
 		}
-		if (index > 0) mImgViewPager.setCurrentItem(index);
+		if (index > 0) mGalleryCar.setSelection(index);
 	}
-
-	private class CarPagerAdapter extends FragmentPagerAdapter {
-		public CarPagerAdapter() {
-			super(getFragmentManager());
-		}
-
-		@Override
-		public Fragment getItem(int pPosition) {
-			return new CarImageFragment(sAvailableColors[pPosition]);
-		}
-
+	
+	private static class CarImgAdapter extends BaseAdapter {
+		
 		@Override
 		public int getCount() {
 			return sAvailableColors.length;
 		}
-	}
-	
-	@SuppressLint("ValidFragment")
-	private static class CarImageFragment extends SherlockFragment {
-		public final String car_img_resname;
-		
-		public CarImageFragment(String pCarResName) {
-			car_img_resname = pCarResName;
-		}
-		
+
 		@Override
-		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-			ImageView iv = new ImageView(container.getContext());
+		public Object getItem(int position) {
+			return sAvailableColors[position];
+		}
+
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
+
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			ImageView iv = convertView != null ? (ImageView)convertView : new ImageView(parent.getContext());
 			iv.setScaleType(ImageView.ScaleType.FIT_START);
-			iv.setImageResource(Ui.getDrawableIdentifier(container.getContext(), car_img_resname));
+			iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(), sAvailableColors[position]));
 			return iv;
 		}
 	}
+
+//	private class CarPagerAdapter extends FragmentPagerAdapter {
+//		public CarPagerAdapter() {
+//			super(getFragmentManager());
+//		}
+//
+//		@Override
+//		public Fragment getItem(int pPosition) {
+//			CarImageFragment fragment = new CarImageFragment();
+//			fragment.car_img_resname = sAvailableColors[pPosition];
+//			return fragment;
+//		}
+//
+//		@Override
+//		public int getCount() {
+//			return sAvailableColors.length;
+//		}
+//	}
+//	
+//	public static class CarImageFragment extends SherlockFragment {
+//		public String car_img_resname;
+//		
+//		@Override
+//		public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+//			ImageView iv = new ImageView(container.getContext());
+//			iv.setScaleType(ImageView.ScaleType.FIT_START);
+//			iv.setImageResource(Ui.getDrawableIdentifier(container.getContext(), car_img_resname));
+//			return iv;
+//		}
+//	}
 	
 	private static final String[] sAvailableColors = {
 		"car_roadster_arcticwhite",
