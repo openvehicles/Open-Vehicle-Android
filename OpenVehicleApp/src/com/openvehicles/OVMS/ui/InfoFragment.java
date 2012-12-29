@@ -31,18 +31,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
-	}
-	
-	@Override
 	public void update(CarData pCarData) {
 		mCarData = pCarData;
 		

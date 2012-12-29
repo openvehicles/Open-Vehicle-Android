@@ -7,14 +7,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
+import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class ControlFragment extends BaseFragment implements OnClickListener {
-	private CarData mCarData;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -23,11 +21,6 @@ public class ControlFragment extends BaseFragment implements OnClickListener {
 		
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_control);
 		activity.setTitle(R.string.Control);
-		
-		int carDataPosition = getArguments().getInt("position", -1);
-		if (carDataPosition >= 0) {
-			mCarData = BaseApp.getStoredCars().get(carDataPosition);
-		}
 		
 		View pRootView = getView();
 		Ui.setOnClick(pRootView, R.id.btn_features, this);
@@ -53,6 +46,10 @@ public class ControlFragment extends BaseFragment implements OnClickListener {
 //						sendCommand(resId, cmd);						
 				}
 			});
+			break;
+		case R.id.btn_features:
+			BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
+			activity.setNextFragment(FeaturesFragment.class);
 			break;
 		}
 	}

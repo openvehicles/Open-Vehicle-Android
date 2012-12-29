@@ -33,18 +33,6 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
-	}
-	
-	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initUi(getActivity());

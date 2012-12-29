@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
 import com.actionbarsherlock.view.Menu;
@@ -31,18 +30,6 @@ public class MapFragment extends BaseFragment {
 	private MapController mMapController;
 	private GeoPoint mLastGeoPoint;
 	private CarMarkerOverlay mCarMarkerOverlay;
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
-	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.ui;
+package com.openvehicles.OVMS.ui.old;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;

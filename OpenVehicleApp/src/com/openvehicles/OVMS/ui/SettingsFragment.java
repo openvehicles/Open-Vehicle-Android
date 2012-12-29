@@ -21,11 +21,11 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class SettingsFragment extends BaseFragment implements OnItemClickListener {
 	private ListView mListView;
@@ -41,23 +41,11 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		super.onActivityCreated(savedInstanceState);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
-		mListView.setAdapter(new SettingsAdapter(getActivity(), BaseApp.getStoredCars()));
+		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage.get().getStoredCars()));
 		
-		update(BaseApp.getSelectedCarData());
+		update(CarsStorage.get().getSelectedCarData());
 		
 		setHasOptionsMenu(true);
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
 	}
 	
 	@Override
@@ -98,8 +86,8 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 			return;
 		default:
 			CarData carData = (CarData) parent.getAdapter().getItem(position);
-			BaseApp.setSelectedCarId(carData.sel_vehicleid);
-			changeCar(carData);
+			CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
+//			changeCar(carData);
 		}
 	}
 	
