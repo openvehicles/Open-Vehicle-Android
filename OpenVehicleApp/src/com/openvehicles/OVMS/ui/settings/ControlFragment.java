@@ -1,6 +1,7 @@
 package com.openvehicles.OVMS.ui.settings;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,19 +38,25 @@ public class ControlFragment extends BaseFragment implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
+		BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
 		switch (v.getId()) {
 		case R.id.btn_mmi_ussd_code:
-			Ui.showPinDialog(v.getContext(), R.string.msg_mmi_ssd_code, R.string.Send, false, 
-					new Ui.OnChangeListener<String>() {
+			Ui.showPinDialog(v.getContext(), R.string.msg_mmi_ssd_code, R.string.Send, false, new Ui.OnChangeListener<String>() {
 				@Override
 				public void onAction(String pData) {
-//						sendCommand(resId, cmd);						
+					if (TextUtils.isEmpty(pData)) return;
+					sendCommand(R.string.lb_mmi_ussd_code, "41," + pData);						
 				}
 			});
 			break;
 		case R.id.btn_features:
-			BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
 			activity.setNextFragment(FeaturesFragment.class);
+			break;
+		case R.id.btn_parameters:
+			activity.setNextFragment(ControlParametersFragment.class);
+			break;
+		case R.id.btn_reset_ovms_module:
+			sendCommand(R.string.msg_rebooting_car_module, "5");
 			break;
 		}
 	}

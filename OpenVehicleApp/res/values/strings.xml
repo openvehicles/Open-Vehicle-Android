@@ -11,6 +11,7 @@
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
     <string name="Send">Send</string>
+    <string name="Set">Set</string>
     <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
     <string name="NetPass">Server Password</string>
@@ -58,6 +59,8 @@
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
     <string name="lb_enter_pin">Enter PIN</string>
+    <string name="lb_enter_passwd">Enter password</string>
+    <string name="lb_enter_value">Enter value</string>
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
     <string name="lb_charger_setting">Charger Setting</string>
     <string name="lb_communications_problem">Communications Problem</string>
@@ -70,10 +73,27 @@
     <string name="lb_cellular_usage">Cellular Usage</string>
     <string name="lb_reset_ovms_module">Reset OVMS Module</string>
     <string name="lb_center_map">Center map</string>
+    <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
+    <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_car_bits">#%d: Car Bits</string>
+    <string name="lb_ft_can_write">#%d: CAN Write</string>
+    <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
+    <string name="lb_cp_module_password">#%d: Module Password</string>
+    <string name="lb_cp_miles_km">#%d: Miles/Km</string>
+    <string name="lb_cp_notifications">#%d: Notifications</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Cellular Network APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Cellular Network User</string>
+    <string name="lb_cp_cellular_network_password">#%d: Cellular Network Password</string>
+    <string name="lb_cp_vehicle_id">#%d: Vehicle ID</string>
+    <string name="lb_cp_server_password">#%d: Server Password</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoid Mode</string>
+    <string name="lb_cp_social_group_1">#%d: Social Group #1</string>
+    <string name="lb_cp_social_group_2">#%d: Social Group #2</string>
     
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
-    
     <string name="msg_wakeup_car">Waking up Car&#8230;</string>
     <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
     <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
@@ -81,6 +101,7 @@
     <string name="msg_setting_charge_c">Setting Charge Current&#8230;</string>
     <string name="msg_starting_charge">Starting Charge&#8230;</string>
     <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
+    <string name="msg_rebooting_car_module">Rebooting Car Module&#8230;</string>
     <string name="msg_please_enter_value">Please enter a correct value</string>
     <string name="msg_invalid_name">Your username must be greater than 3 characters length and cannot contain  special characters.</string>
     <string name="msg_invalid_passwd">Your password must be between %1$d and %2$d characters in length.</string>
@@ -90,6 +111,9 @@
     
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
     <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
+    <string name="err_failed">Failed: %s</string>
+    <string name="err_unsupported_operation">Unsupported operation</string>
+    <string name="err_unimplemented_operation">Unimplemented operation</string>
     
     <string-array name="en_charger">
     	<item>Standard</item>
@@ -98,11 +122,11 @@
         <item>Perform</item>
     </string-array>
     
-    <!-- JLab13 linux 
-    <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string> -->
+    <!-- JLab13 linux -->
+    <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string>
     
-    <!-- JLab13 mac -->
-    <string name="map_api_key_debug">0-B1ukjPvv6CMkiE-wCwIC9k63a80hdX5jfVIRw</string>
+    <!-- JLab13 mac 
+    <string name="map_api_key_debug">0-B1ukjPvv6CMkiE-wCwIC9k63a80hdX5jfVIRw</string> -->
     
     
 </resources>

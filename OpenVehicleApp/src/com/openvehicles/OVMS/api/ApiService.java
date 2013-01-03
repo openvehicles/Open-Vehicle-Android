@@ -1,5 +1,7 @@
 package com.openvehicles.OVMS.api;
 
+import java.util.Arrays;
+
 import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Intent;
@@ -16,9 +18,9 @@ import com.openvehicles.OVMS.utils.CarsStorage;
 public class ApiService extends Service implements OnUpdateStatusListener {
 	private static final String TAG = "MainActivity";
     private final IBinder mBinder = new ApiBinder();
+	private volatile CarData mCarData;
     private ApiTask mApiTask;
-	private CarData mCarData;
-	private AlertDialog mAlertDialog;
+//	private AlertDialog mAlertDialog;
 	private OnResultCommandListenner mOnResultCommandListenner;
 	
 	@Override
@@ -86,6 +88,15 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		mOnResultCommandListenner = pOnResultCommandListenner;
 		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
 	}
+	
+	public void cancelCommand() {
+		mOnResultCommandListenner = new OnResultCommandListenner() {
+			@Override
+			public void onResultCommand(String[] result) {
+				Log.w(TAG, "Canceled result: " + Arrays.toString(result));
+			}
+		};
+	}
 
 	@Override
 	public void onUpdateStatus() {
@@ -94,29 +105,29 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 	@Override
 	public void onServerSocketError(Throwable e) {
-		if (mAlertDialog != null && mAlertDialog.isShowing()){
-			return;
-		}
-
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		builder.setMessage(mApiTask.isLoggedIn() ? R.string.err_connection_lost : R.string.err_check_following)
-			.setTitle(R.string.lb_communications_problem)
-			.setCancelable(false)
-			.setPositiveButton(android.R.string.ok, null);
-		mAlertDialog = builder.create();
-		mAlertDialog.show();
+		Toast.makeText(this, mApiTask.isLoggedIn() ? R.string.err_connection_lost : R.string.err_check_following,
+				Toast.LENGTH_LONG).show();
+		
+//		if (mAlertDialog != null && mAlertDialog.isShowing()){
+//			return;
+//		}
+//
+//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+//		builder.setMessage(mApiTask.isLoggedIn() ? R.string.err_connection_lost : R.string.err_check_following)
+//			.setTitle(R.string.lb_communications_problem)
+//			.setCancelable(false)
+//			.setPositiveButton(android.R.string.ok, null);
+//		mAlertDialog = builder.create();
+//		mAlertDialog.show();
 	}
 
 	@Override
 	public void onResultCommand(String pCmd) {
-		Log.e("ApiService", "onResultCommand: " + pCmd);
 		if (TextUtils.isEmpty(pCmd)) return;
 		String[] data = pCmd.split(",\\s*");
 		
 		if (mOnResultCommandListenner != null) {
 			mOnResultCommandListenner.onResultCommand(data);
-			Log.e("ApiService", "mOnResultCommandListenner: " + mOnResultCommandListenner);
-			mOnResultCommandListenner = null;
 			return;
 		}
 		
@@ -140,6 +151,5 @@ public class ApiService extends Service implements OnUpdateStatusListener {
             return ApiService.this;
         }
     }
-	
 
 }

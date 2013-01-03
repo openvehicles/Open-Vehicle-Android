@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,8 +75,6 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Log.e("DEBUG", "onItemClick: " + position + ", v: " + view);
-
 		switch (view.getId()) {
 		case R.id.btn_edit:
 			edit(position);
@@ -87,7 +84,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		default:
 			CarData carData = (CarData) parent.getAdapter().getItem(position);
 			CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
-//			changeCar(carData);
+			changeCar(carData);
 		}
 	}
 	

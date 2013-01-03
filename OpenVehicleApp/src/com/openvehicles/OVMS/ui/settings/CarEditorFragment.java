@@ -29,6 +29,7 @@ import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class CarEditorFragment extends SherlockFragment {
 	private CarData mCarData;
+	private boolean isSelectedCar;
 	private int mEditPosition;
 	private Gallery mGalleryCar; 
 
@@ -45,6 +46,10 @@ public class CarEditorFragment extends SherlockFragment {
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
 			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+			
+			CarData selectedCarData = CarsStorage.get().getSelectedCarData();
+			isSelectedCar = selectedCarData != null && mCarData != null 
+				&& selectedCarData.sel_vehicleid.equals(mCarData.sel_vehicleid); 
 		}
 		
 		mGalleryCar = (Gallery) getView().findViewById(R.id.ga_car);
@@ -63,7 +68,7 @@ public class CarEditorFragment extends SherlockFragment {
 	public void onPrepareOptionsMenu(Menu menu) {
 		Log.e("DEBUG", "onPrepareOptionsMenu edit car: " + (CarsStorage.get().getStoredCars().size() > 1));
 		menu.findItem(R.id.mi_delete).setVisible(mCarData != null && CarsStorage.get().getStoredCars().size() > 1);
-		menu.findItem(R.id.mi_control).setVisible(mCarData != null);
+		menu.findItem(R.id.mi_control).setVisible(isSelectedCar);
 	}
 
 	@Override
@@ -178,6 +183,7 @@ public class CarEditorFragment extends SherlockFragment {
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ImageView iv = convertView != null ? (ImageView)convertView : new ImageView(parent.getContext());
 			iv.setScaleType(ImageView.ScaleType.FIT_START);
+			iv.setAdjustViewBounds(true);
 			iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(), sAvailableColors[position]));
 			return iv;
 		}

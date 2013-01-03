@@ -5,6 +5,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
@@ -19,16 +20,28 @@ import com.openvehicles.OVMS.entities.CarData;
 
 public class BaseFragment extends SherlockFragment implements ApiStstusObserver {
 	private ApiService mApiService;
+
+	
+	@Override
+	public void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Activity activity = getActivity();
+        Intent intent = new Intent(activity, ApiService.class);
+        activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+	}
+	
+	@Override
+	public void onDestroy() {
+		if (mApiService != null) {
+        	getActivity().unbindService(mConnection);
+    		Log.d(getClass().getSimpleName(), "unbindService");
+        }
+		super.onDestroy();
+	}
 	
 	@Override
 	public void onStart() {
 		super.onStart();
-		Log.e("BaseFragment", "onStart:" + getClass().getSimpleName());		
-		
-		Activity activity = getActivity();
-        Intent intent = new Intent(activity, ApiService.class);
-        activity.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-		
 		ApiStatusObservable.get().addObserver(this);
 	}
 	
@@ -36,10 +49,6 @@ public class BaseFragment extends SherlockFragment implements ApiStstusObserver 
 	public void onStop() {
 		super.onStop();
 		ApiStatusObservable.get().deleteObserver(this);
-
-		if (mApiService != null) {
-        	getActivity().unbindService(mConnection);
-        }
 	}	
 
 	@Override
@@ -64,6 +73,10 @@ public class BaseFragment extends SherlockFragment implements ApiStstusObserver 
 		if (mApiService == null) return;
 		mApiService.sendCommand(pCommand, pOnResultCommandListenner);
 	}
+
+	public void cancelCommand() {
+		mApiService.cancelCommand();
+	}
 	
 	public void changeCar(CarData pCarData) {
 		if (mApiService == null) return;
@@ -71,7 +84,6 @@ public class BaseFragment extends SherlockFragment implements ApiStstusObserver 
 	}
 	
 	public void onServiceBind() {
-		Log.e("BaseFragment", "onServiceBind:" + getClass().getSimpleName());		
 	}
 
     private ServiceConnection mConnection = new ServiceConnection() {
