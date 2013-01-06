@@ -3,7 +3,6 @@ package com.openvehicles.OVMS.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -17,30 +16,32 @@ import com.openvehicles.OVMS.R;
 public class BaseFragmentActivity extends SherlockFragmentActivity {
 	private static final String EXT_FRAGMENT_CLASS_NAME = "ext_fragmentclassname";
 	private static final String EXT_ONLY_ORIENTATION = "ext_only_orientation";
-	
-	public static void show(Context pContext, Class<? extends Fragment> pClazz,
-			int pOnlyOrientation) {
-		Intent intent = new Intent(pContext, BaseFragmentActivity.class);
-		intent.putExtra(EXT_FRAGMENT_CLASS_NAME, pClazz.getName());
-		intent.putExtra(EXT_ONLY_ORIENTATION, pOnlyOrientation);
-		pContext.startActivity(intent);
-	}
+	private static final String EXT_FOR_RESULT = "ext_for_result";
 	
 	public static void show(Context pContext, Class<? extends Fragment> pClazz,
 			Bundle pArgs, int pOnlyOrientation) {
 		Intent intent = new Intent(pContext, BaseFragmentActivity.class);
 		intent.putExtra(EXT_FRAGMENT_CLASS_NAME, pClazz.getName());
 		intent.putExtra(EXT_ONLY_ORIENTATION, pOnlyOrientation);
-		intent.putExtras(pArgs);
+		if (pArgs != null) intent.putExtras(pArgs);
 		pContext.startActivity(intent);
 	}
 	
+	public static void showForResult(Fragment pFragment, Class<? extends Fragment> pClazz,
+			Bundle pArgs, int pRequestCode, int pOnlyOrientation) {
+		Intent intent = new Intent(pFragment.getActivity(), BaseFragmentActivity.class);
+		intent.putExtra(EXT_FRAGMENT_CLASS_NAME, pClazz.getName());
+		intent.putExtra(EXT_ONLY_ORIENTATION, pOnlyOrientation);
+		intent.putExtra(EXT_FOR_RESULT, true);
+		if (pArgs != null) intent.putExtras(pArgs);
+		pFragment.startActivityForResult(intent, pRequestCode);
+	}
 
     @Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        String fragmentClassName =  getIntent().getStringExtra(EXT_FRAGMENT_CLASS_NAME);
+        String fragmentClassName = getIntent().getStringExtra(EXT_FRAGMENT_CLASS_NAME);
         if (TextUtils.isEmpty(fragmentClassName)) {
         	finish();
         	return;

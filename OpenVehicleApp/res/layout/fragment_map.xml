@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.maps.MapView xmlns:android="http://schemas.android.com/apk/res/android" 
+	android:id="@+id/mapview"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:apiKey="@string/map_api_key_debug"
+    android:clickable="true" />
+
+<!-- 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent" android:layout_height="match_parent" >
 
@@ -6,6 +14,7 @@
         android:layout_width="match_parent" android:layout_height="match_parent"
         android:apiKey="@string/map_api_key_debug"
         android:clickable="true" />
+    
     
     <ImageButton android:id="@+id/btn_center_map"
         android:layout_width="wrap_content" android:layout_height="wrap_content"
@@ -15,3 +24,4 @@
         android:src="@drawable/ic_action_location" />
     
 </FrameLayout>
+ -->

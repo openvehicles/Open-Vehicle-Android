@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.ui;
+package com.openvehicles.OVMS.ui.old;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,13 +35,11 @@ public class CarEditorActivity extends Activity {
 		setContentView(R.layout.careditor);
 		
 		existingVehicleIDs = (ArrayList<String>)getIntent().getExtras().getSerializable("ExistingVehicleIDs");
-		if (getIntent().getExtras().containsKey("Car"))
-		{
+		if (getIntent().getExtras().containsKey("Car")) {
 			// Edit Car
 			car = (CarData)getIntent().getExtras().getSerializable("Car");
 			originalVehicleID = car.sel_vehicleid;
-		} else
-		{
+		} else {
 			// Create New Car
 			car = new CarData();
 			originalVehicleID = "";

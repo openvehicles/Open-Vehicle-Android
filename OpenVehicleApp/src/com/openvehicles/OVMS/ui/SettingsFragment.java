@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -25,6 +24,7 @@ import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class SettingsFragment extends BaseFragment implements OnItemClickListener {
 	private ListView mListView;
@@ -40,20 +40,11 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		super.onActivityCreated(savedInstanceState);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
-		mListView.setAdapter(new SettingsAdapter(getActivity(), getSavedCarData()));
+		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage.get().getStoredCars()));
+		
+		update(CarsStorage.get().getSelectedCarData());
+		
 		setHasOptionsMenu(true);
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
 	}
 	
 	@Override
@@ -64,8 +55,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.mi_add) {
-			BaseFragmentActivity.show(getActivity(), CarEditorFragment.class,  
-					Configuration.ORIENTATION_UNDEFINED);
+			edit(-1);
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -85,10 +75,24 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 	
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Log.e("DEBUG", "onItemClick: " + position + ", v: " + view);
-
-		BaseFragmentActivity.show(getActivity(), CarEditorFragment.class,  
-				Configuration.ORIENTATION_UNDEFINED);
+		switch (view.getId()) {
+		case R.id.btn_edit:
+			edit(position);
+			return;
+		case R.id.btn_info:
+			return;
+		default:
+			CarData carData = (CarData) parent.getAdapter().getItem(position);
+			CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
+			changeCar(carData);
+		}
+	}
+	
+	private void edit(int pPosition) {
+		Bundle args = new Bundle();
+		args.putInt("position", pPosition);
+		BaseFragmentActivity.show(getActivity(), CarEditorFragment.class, 
+				args, Configuration.ORIENTATION_UNDEFINED);
 	}
 	
 	private static class SettingsAdapter extends BaseAdapter implements OnClickListener {
@@ -133,7 +137,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 			ImageView iv = (ImageView) convertView.findViewById(R.id.img_car);
 			iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(), it.sel_vehicle_image));
 			
-			((TextView)convertView.findViewById(R.id.txt_title)).setText(it.sel_vehicleid);
+			((TextView)convertView.findViewById(R.id.txt_title)).setText(it.sel_vehicle_label);
 			
 			if (mListView == null && parent instanceof ListView) {
 				mListView = (ListView) parent;
@@ -143,7 +147,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 			iv = (ImageView) convertView.findViewById(R.id.img_signal_rssi);
 			if (mListView.isItemChecked(position)) {
 				convertView.setBackgroundColor(0x8033B5E5);
-				btnInfo.setVisibility(View.VISIBLE);
+				btnInfo.	setVisibility(View.VISIBLE);
 				iv.setVisibility(View.VISIBLE);
 				iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(), "signal_strength_" + it.car_gsm_bars));
 			} else {
@@ -157,7 +161,6 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		@Override
 		public void onClick(View v) {
 			if (mListView == null || mListView.getOnItemClickListener() == null) return;
-			
 			mListView.getOnItemClickListener().onItemClick(mListView, v, 
 					(Integer) v.getTag(), v.getId());
 		}

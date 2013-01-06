@@ -1,0 +1,18 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <item android:id="@+id/mi_control"
+        android:title="@string/Control"
+        android:icon="@drawable/ic_action_control"
+        android:showAsAction="always"/>
+	
+	<item android:id="@+id/mi_save"
+        android:title="@string/Save"
+        android:icon="@drawable/ic_action_save"
+        android:showAsAction="always"/>
+	
+	<item android:id="@+id/mi_delete"
+		android:title="@string/Delete"
+		android:icon="@drawable/ic_action_discard"
+		android:showAsAction="always"/>
+	
+</menu>

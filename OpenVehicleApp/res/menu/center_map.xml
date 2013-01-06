@@ -1,0 +1,6 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+	<item android:id="@+id/mi_center_map"
+		android:title="@string/lb_center_map"
+		android:icon="@drawable/ic_action_location"
+		android:showAsAction="always|withText"/>
+</menu>

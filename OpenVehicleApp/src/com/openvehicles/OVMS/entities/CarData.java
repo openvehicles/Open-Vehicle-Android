@@ -15,6 +15,7 @@ public class CarData implements Serializable {
 
 	public String sel_server = "tmc.openvehicles.com"; // ServerNameOrIP
 	public String sel_vehicleid = "";			// VehicleID
+	public String sel_vehicle_label = "";		// VehicleLabel
 	public String sel_server_password = "";		// NetPass
 	public String sel_module_password = "";		// RegPass
 	public boolean sel_paranoid = false;		// ParanoidMode

@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.ui;
+package com.openvehicles.OVMS.ui.old;
 
 import java.io.BufferedReader;
 import java.io.FileInputStream;
@@ -167,29 +167,29 @@ public class MainActivityOld extends TabActivity implements OnTabChangeListener 
 		}
 	}
 
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.layout.main_menu, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-		case R.id.menuQuit:
-			finish();
-			return true;
-		case R.id.menuDeleteSavedNotifications:
-			OVMSNotifications notifications = new OVMSNotifications(this);
-			notifications.notifications = new ArrayList<NotificationData>();
-			notifications.save();
-			this.updateStatus();
-			return true;
-		default:
-			return super.onOptionsItemSelected(item);
-		}
-	}
+//	@Override
+//	public boolean onCreateOptionsMenu(Menu menu) {
+//		MenuInflater inflater = getMenuInflater();
+//		inflater.inflate(R.layout.main_menu, menu);
+//		return true;
+//	}
+//
+//	@Override
+//	public boolean onOptionsItemSelected(MenuItem item) {
+//		switch (item.getItemId()) {
+//		case R.id.menuQuit:
+//			finish();
+//			return true;
+//		case R.id.menuDeleteSavedNotifications:
+//			OVMSNotifications notifications = new OVMSNotifications(this);
+//			notifications.notifications = new ArrayList<NotificationData>();
+//			notifications.save();
+//			this.updateStatus();
+//			return true;
+//		default:
+//			return super.onOptionsItemSelected(item);
+//		}
+//	}
 
 	private static final String SETTINGS_FILENAME = "OVMSSavedCars.obj";
 	
@@ -344,25 +344,20 @@ public class MainActivityOld extends TabActivity implements OnTabChangeListener 
 		Log.d("Tab", "Tab change to: " + currentActivityId);
 
 		if (currentActivityId == "tabInfo") {
-			TabInfoActivity tab = (TabInfoActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabInfoActivity tab = (TabInfoActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabCar") {
 			Log.d("Tab", "Telling tabCar to update");
-			TabCarActivity tab = (TabCarActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabCarActivity tab = (TabCarActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabMap") {
-			TabMapActivity tab = (TabMapActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabMapActivity tab = (TabMapActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.RefreshStatus(mCarData);
 		} else if (currentActivityId == "tabNotifications") {
-			TabNotifications tab = (TabNotifications) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabNotifications tab = (TabNotifications) getLocalActivityManager().getActivity(currentActivityId);
 			tab.Refresh();
 		} else if (currentActivityId == "tabCars") {
-			TabCarsActivity tab = (TabCarsActivity) getLocalActivityManager().getActivity(
-					currentActivityId);
+			TabCarsActivity tab = (TabCarsActivity) getLocalActivityManager().getActivity(currentActivityId);
 			tab.LoadCars(mSavedCars);
 		} else
 			getTabHost().setCurrentTabByTag("tabInfo");

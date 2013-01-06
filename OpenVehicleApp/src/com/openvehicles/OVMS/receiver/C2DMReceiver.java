@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.util.ArrayList;
 
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.MainActivityOld;
+import com.openvehicles.OVMS.ui.old.MainActivityOld;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 

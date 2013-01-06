@@ -27,18 +27,6 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 	}
 	
 	@Override
-	public void onStart() {
-		super.onStart();
-		registerForUpdate();
-	}
-	
-	@Override
-	public void onStop() {
-		super.onStop();
-		unregisterForUpdate();
-	}
-	
-	@Override
 	public void update(CarData pCarData) {
 		mCarData = pCarData;
 		
@@ -67,7 +55,6 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 	@Override
 	public void onClick(View v) {
 		if (mCarData == null) return;
-		Log.e("DEBUG", "onClick: " + v);
 			
 		switch (v.getId()) {
 		case R.id.btn_lock_car:
