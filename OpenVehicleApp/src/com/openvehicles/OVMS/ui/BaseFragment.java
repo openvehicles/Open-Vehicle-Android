@@ -20,7 +20,6 @@ import com.openvehicles.OVMS.entities.CarData;
 
 public class BaseFragment extends SherlockFragment implements ApiStstusObserver {
 	private ApiService mApiService;
-
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +98,5 @@ public class BaseFragment extends SherlockFragment implements ApiStstusObserver 
         public void onServiceDisconnected(ComponentName name) {
         	mApiService = null;
         }
-    };    
-
+    };
 }

@@ -1,226 +1,243 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ovms="http://schemas.android.com/apk/res/com.openvehicles.OVMS"
-	android:layout_width="match_parent" android:layout_height="match_parent">
+	xmlns:tools="http://schemas.android.com/tools"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent" >
 
-<include layout="@layout/view_car_statusbar"/>	
-	
-<com.openvehicles.OVMS.ui.witdet.ScaleLayout 
-	android:layout_width="match_parent" android:layout_height="match_parent"
-	android:layout_marginTop="8dp"
-	ovms:content_width="534"
-    ovms:content_height="685">
-    
-	<!-- 
-    ovms:content_width="550"
-    ovms:content_height="701">
-	 -->
+	<include layout="@layout/view_car_statusbar" />
 
-	<ImageView android:id="@+id/tabCarImageCarOutline"
-		style="@style/TabCarImgCar"
-		android:src="@drawable/ol_car_default" />
-	
-    <ImageView android:id="@+id/tabCarImageCarChargePortOpen"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_cp" />
-	
-    <ImageView android:id="@+id/tabCarImageCarTrunkOpen"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_tr" 
-        android:visibility="invisible"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarRightDoorOpen"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_rd" 
-        android:visibility="invisible"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarHoodOpen"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_hd" 
-        android:visibility="invisible"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarLeftDoorOpen"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/roadster_outline_ld" 
-        android:visibility="invisible"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarLocked"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/carlock"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarValetMode"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/carvaleton"/>
-    
-    <ImageView android:id="@+id/tabCarImageCarHeadlightsON"
-        style="@style/TabCarImgCar"
-        android:src="@drawable/carlights" 
-        android:visibility="invisible"/>
-    
-    
-    <!-- 
-    <ImageView android:id="@+id/tabCarImageCarChargePortOpen"
-        style="@style/TabCarImgLetterBox"
-    	android:src="@drawable/motortemp_letterbox" />
-    	 -->
-    	 
-    <View android:id="@+id/tabCarImageCarChargePortOpen"
-        style="@style/TabCarImgLetterBox"
-        android:background="@drawable/motortemp_letterbox"/>
-    	 
-    
-    <ImageView android:id="@+id/tabCarImageCarTPMSBoxes"
-        style="@style/TabCarImgLetterBox"
-        android:src="@drawable/tirepress_letterbox" />
-    
-    <ImageView android:id="@+id/tabCarImageHomelink"
-    	android:layout_width="60px"
-    	android:layout_height="60px"
-    	android:layout_x="451px"
-    	android:layout_y="260px"
-    	android:clickable="true"
-    	android:src="@drawable/ic_home_link" />
+	<com.openvehicles.OVMS.ui.witdet.ScaleLayout
+		android:layout_width="match_parent"
+		android:layout_height="match_parent"
+		android:layout_marginTop="8dp" >
 
-    <TextView android:id="@+id/textFLWheel"
-        style="@style/TabCarTextBox"
-    	android:layout_x="2px"
-    	android:layout_y="76px"
-    	android:text="EL"
-    	android:textStyle="bold" />
-    
-    <TextView android:id="@+id/textFLWheelVal"
-        style="@style/TabCarTextBox"
-        android:layout_x="2px"
-        android:layout_y="112px"
-        android:text="40psi"
-        android:textStyle="bold" />    
+		<ImageView
+			android:id="@+id/tabCarImageCarOutline"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/ol_car_default" />
 
-    <TextView android:id="@+id/textFRWheel"
-        style="@style/TabCarTextBox"
-    	android:layout_x="430px"
-    	android:layout_y="76px"
-    	android:text="FR"
-    	android:textStyle="bold" />
-    
-    <TextView android:id="@+id/textFRWheelVal"
-        style="@style/TabCarTextBox"
-        android:layout_x="430px"
-        android:layout_y="112px"
-        android:text="40psi"
-        android:textStyle="bold" />    
-    
-    <TextView android:id="@+id/textRLWheel"
-        style="@style/TabCarTextBox"
-    	android:layout_x="2px"
-    	android:layout_y="446px"
-    	android:text="RL"
-    	android:textStyle="bold" />
-    
-    <TextView android:id="@+id/textRLWheelVal"
-        style="@style/TabCarTextBox"
-        android:layout_x="2px"
-        android:layout_y="483px"
-        android:text="40psi"
-        android:textStyle="bold" />    
+		<ImageView
+			android:id="@+id/tabCarImageCarChargePortOpen"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/roadster_outline_cp" />
 
-    <TextView android:id="@+id/textRRWheel"
-        style="@style/TabCarTextBox"
-    	android:layout_x="430px"
-    	android:layout_y="446px"
-    	android:text="RR"
-    	android:textStyle="bold" />
+		<ImageView
+			android:id="@+id/tabCarImageCarTrunkOpen"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/roadster_outline_tr"
+			android:visibility="invisible" />
 
-    <TextView android:id="@+id/textRRWheelVal"
-        style="@style/TabCarTextBox"
-        android:layout_x="430px"
-        android:layout_y="483px"
-        android:text="40psi"
-        android:textStyle="bold" />    
-    
+		<ImageView
+			android:id="@+id/tabCarImageCarRightDoorOpen"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/roadster_outline_rd"
+			android:visibility="invisible" />
 
-    <TextView
-        style="@style/TabCarTextBox"
-        android:layout_x="2px"
-        android:layout_y="614px"
-        android:text="PEM"/>
-    
-    <TextView android:id="@+id/tabCarTextPEM"
-        style="@style/TabCarTextBox"
-    	android:layout_x="2px"
-    	android:layout_y="648px"
-    	android:text="0°C"
-    	android:textStyle="bold" />
-    
-    <TextView
-        style="@style/TabCarTextBox"
-        android:layout_x="430px"
-        android:layout_y="614px"
-        android:text="BATTERY"/>
+		<ImageView
+			android:id="@+id/tabCarImageCarHoodOpen"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/roadster_outline_hd"
+			android:visibility="invisible" />
 
-    <TextView android:id="@+id/tabCarTextBattery"
-        style="@style/TabCarTextBox"
-    	android:layout_x="430px"
-    	android:layout_y="648px"
-    	android:text="0°C"
-    	android:textStyle="bold" />
-    
-    <TextView
-        style="@style/TabCarTextBox"
-        android:layout_x="215px"
-        android:layout_y="615px"
-        android:text="MOTOR"/>
-    
-    <TextView
-    	android:id="@+id/tabCarTextMotor"
-        style="@style/TabCarTextBox"
-    	android:layout_x="215px"
-    	android:layout_y="648px"
-    	android:text="0°C"
-    	android:textStyle="bold" />
-    
-    <TextView android:id="@+id/txt_homelink"
-        style="@style/TabCarTextBox"
-        android:layout_x="427px"
-        android:layout_y="308px"
-        android:text="HOMELINK"
-        android:clickable="true"
-        android:textSize="18px"/>
-    
-    <TextView android:id="@+id/tabCarTextAmbient"
-    	style="@style/TabCarTextBox"
-        android:layout_x="2px"
-        android:layout_y="301px"
-        android:text="0°C"
-        android:textStyle="bold" />
+		<ImageView
+			android:id="@+id/tabCarImageCarLeftDoorOpen"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/roadster_outline_ld"
+			android:visibility="invisible" />
 
-    <!-- 
-             android:layout_x="162px"
-     -->
-    <TextView android:id="@+id/tabCarTextSpeed"
-        android:layout_width="212px"
-        android:layout_height="44px"
-        android:layout_x="240px"
-        android:layout_y="200px"
-        android:text="0kph"
-        android:textSize="30px"/>
-    
-    
-    <!-- OnClick -->
-    <View android:id="@+id/btn_wakeup" 
-        android:layout_width="200px" android:layout_height="120px"
-        android:layout_x="166px" android:layout_y="400px"
-        android:clickable="true"/>
-    
-    <View android:id="@+id/btn_lock_car" 
-        android:layout_width="80px" android:layout_height="120px"
-        android:layout_x="188px" android:layout_y="260px"
-        android:clickable="true"/>
-    
-    <View android:id="@+id/btn_valet_maode" 
-        android:layout_width="80px" android:layout_height="120px"
-        android:layout_x="270px" android:layout_y="260px"
-        android:clickable="true"/>
-    
-    
-    
-</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
+		<ImageView
+			android:id="@+id/tabCarImageCarLocked"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/carlock" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCarValetMode"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/carvaleton" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCarHeadlightsON"
+			style="@style/TabCarImgCar"
+			android:src="@drawable/carlights"
+			android:visibility="invisible" />
+
+        <ImageView android:id="@+id/tabCarImageCarTempsBoxes"
+            style="@style/TabCarImgLetterBox"
+            android:src="@drawable/motortemp_letterbox" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCarTPMSBoxes"
+			style="@style/TabCarImgLetterBox"
+			android:src="@drawable/tirepress_letterbox" />
+
+		<ImageView
+			android:id="@+id/tabCarImageHomelink"
+			android:layout_width="60px"
+			android:layout_height="60px"
+			android:layout_x="451px"
+			android:layout_y="260px"
+			android:clickable="true"
+			android:src="@drawable/ic_home_link"
+			tools:ignore="PxUsage" />
+
+		<TextView
+			android:id="@+id/textFLWheel"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="76px"
+			android:text="EL"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textFLWheelVal"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="112px"
+			android:text="40psi"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textFRWheel"
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="76px"
+			android:text="FR"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textFRWheelVal"
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="112px"
+			android:text="40psi"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textRLWheel"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="446px"
+			android:text="RL"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textRLWheelVal"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="483px"
+			android:text="40psi"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textRRWheel"
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="446px"
+			android:text="RR"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/textRRWheelVal"
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="483px"
+			android:text="40psi"
+			android:textStyle="bold" />
+
+		<TextView
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="614px"
+			android:text="PEM" />
+
+		<TextView
+			android:id="@+id/tabCarTextPEM"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="648px"
+			android:text="0°C"
+			android:textStyle="bold" />
+
+		<TextView
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="614px"
+			android:text="BATTERY" />
+
+		<TextView
+			android:id="@+id/tabCarTextBattery"
+			style="@style/TabCarTextBox"
+			android:layout_x="430px"
+			android:layout_y="648px"
+			android:text="0°C"
+			android:textStyle="bold" />
+
+		<TextView
+			style="@style/TabCarTextBox"
+			android:layout_x="215px"
+			android:layout_y="615px"
+			android:text="MOTOR" />
+
+		<TextView
+			android:id="@+id/tabCarTextMotor"
+			style="@style/TabCarTextBox"
+			android:layout_x="215px"
+			android:layout_y="648px"
+			android:text="0°C"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/txt_homelink"
+			style="@style/TabCarTextBox"
+			android:layout_x="427px"
+			android:layout_y="308px"
+			android:clickable="true"
+			android:text="HOMELINK"
+			android:textSize="18px" />
+
+		<TextView
+			android:id="@+id/tabCarTextAmbient"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="301px"
+			android:text="0°C"
+			android:textStyle="bold" />
+
+<!--              android:layout_x="162px" -->
+
+		<TextView
+			android:id="@+id/tabCarTextSpeed"
+			android:layout_width="212px"
+			android:layout_height="44px"
+			android:layout_x="240px"
+			android:layout_y="200px"
+			android:text="0kph"
+			android:textSize="30px" />
+
+		<!-- OnClick -->
+
+		<View
+			android:id="@+id/btn_wakeup"
+			android:layout_width="200px"
+			android:layout_height="120px"
+			android:layout_x="166px"
+			android:layout_y="400px"
+			android:clickable="true" />
+
+		<View
+			android:id="@+id/btn_lock_car"
+			android:layout_width="80px"
+			android:layout_height="120px"
+			android:layout_x="188px"
+			android:layout_y="260px"
+			android:clickable="true" />
+
+		<View
+			android:id="@+id/btn_valet_maode"
+			android:layout_width="80px"
+			android:layout_height="120px"
+			android:layout_x="270px"
+			android:layout_y="260px"
+			android:clickable="true" />
+	</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
+
 </FrameLayout>

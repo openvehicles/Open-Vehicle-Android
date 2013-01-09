@@ -23,6 +23,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
+import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
@@ -80,6 +81,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 			edit(position);
 			return;
 		case R.id.btn_info:
+			info(position);
 			return;
 		default:
 			CarData carData = (CarData) parent.getAdapter().getItem(position);
@@ -94,6 +96,14 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		BaseFragmentActivity.show(getActivity(), CarEditorFragment.class, 
 				args, Configuration.ORIENTATION_UNDEFINED);
 	}
+	
+	private void info(int pPosition) {
+		Bundle args = new Bundle();
+		args.putInt("position", pPosition);
+		BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, 
+				args, Configuration.ORIENTATION_UNDEFINED);
+	}
+	
 	
 	private static class SettingsAdapter extends BaseAdapter implements OnClickListener {
 		private final LayoutInflater mInflater;

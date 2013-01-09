@@ -71,7 +71,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		for (int i = 0; i < cachedData.length; i++) {
 			cachedData[i] = data[data.length - 1 - i];
 		}
-		mListView.setAdapter(new ItemsAdapter(pContext, R.layout.tabnotifications_listitem, cachedData));
+		mListView.setAdapter(new ItemsAdapter(pContext, cachedData));
 	}
 	
 	
@@ -79,8 +79,8 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		private final LayoutInflater mInflater;
 		private final SimpleDateFormat mDateFormat = new SimpleDateFormat("MMM d, k:mm");
 
-		public ItemsAdapter(Context context, int textViewResourceId, NotificationData[] items) {
-			super(context, textViewResourceId, items);
+		public ItemsAdapter(Context context, NotificationData[] items) {
+			super(context, R.layout.item_notifications, items);
 			mInflater = LayoutInflater.from(context);
 		}
 
@@ -88,7 +88,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		public View getView(int position, View convertView, ViewGroup parent) {
 			View v = convertView;
 			if (v == null) {
-				v = mInflater.inflate(R.layout.tabnotifications_listitem, null);
+				v = mInflater.inflate(R.layout.item_notifications, null);
 			}
 
 			NotificationData it = getItem(position);

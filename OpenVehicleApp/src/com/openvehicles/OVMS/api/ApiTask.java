@@ -95,9 +95,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				
 				try {
 					Thread.sleep(100, 0);
-				} catch (InterruptedException e) {
-					// ??
-				}
+				} catch (InterruptedException e) {}
 			}
 		} catch (SocketException e) {
 			// connection lost, attempt to reconnect

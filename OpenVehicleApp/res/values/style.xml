@@ -28,17 +28,21 @@
         <item name="android:layout_y">75px</item>
     </style>
     
-    <!-- 
-    <style name="TabCarTextBox" parent="@android:style/Widget.TextView">
-     -->
     <style name="TabCarTextBox">
         <item name="android:layout_width">104px</item>
         <item name="android:layout_height">34px</item>
         <item name="android:textSize">20px</item>
-        <!-- 
         <item name="android:gravity">center</item>
-        <item name="android:background">#8AFF</item>
-        -->
     </style>
+    
+    <style name="TextValue" parent="@android:style/Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    	<item name="android:background">@android:drawable/edit_text</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+    </style>
+    	
 
 </resources>

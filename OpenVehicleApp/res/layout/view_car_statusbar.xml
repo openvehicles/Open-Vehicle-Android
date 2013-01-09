@@ -7,7 +7,7 @@
 
 	<TextView
         android:id="@+id/txt_parked_time"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:drawablePadding="4dp"
@@ -17,7 +17,7 @@
         android:textColor="#FFF" />
     
     <ImageView
-        android:id="@+id/tabCarConnectionImage"
+        android:id="@+id/img_car_connection"
         android:layout_width="28dp"
         android:layout_height="28dp"
         android:src="@drawable/connection_unknown"/>
