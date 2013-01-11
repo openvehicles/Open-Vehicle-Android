@@ -123,10 +123,10 @@
     </string-array>
     
     <!-- JLab13 linux -->
-    <string name="map_api_key_debug">0-B1ukjPvv6D2UQXZMV6S4Fs1pzdRcvn60nNjog</string>
+    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string>
     
     <!-- JLab13 mac 
-    <string name="map_api_key_debug">0-B1ukjPvv6CMkiE-wCwIC9k63a80hdX5jfVIRw</string> -->
+    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->
     
     
 </resources>
