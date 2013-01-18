@@ -1,10 +1,21 @@
 package com.openvehicles.OVMS.ui;
 
+import java.util.UUID;
+
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +23,29 @@ import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
 import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Window;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiObservable;
+import com.openvehicles.OVMS.api.ApiObserver;
+import com.openvehicles.OVMS.api.ApiService;
+import com.openvehicles.OVMS.entities.CarData;
 
-public class MainActivity extends SherlockFragmentActivity implements ActionBar.OnNavigationListener  {
-	private static final String TAG = "MainActivity";
+public class MainActivity extends ApiActivity implements ActionBar.OnNavigationListener  {
+//	private static final String TAG = "MainActivity";
 
+	private final Handler mC2dmHandler = new Handler();
 	public View mapview_container;
 	private ViewPager mViewPager;
-//	private Handler mC2dmHandler = new Handler();
 	private MainPagerAdapter mPagerAdapter;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setSupportProgressBarIndeterminateVisibility(false);
+		
+		registerReceiver(mApiEventReceiver, new IntentFilter(getPackageName() + ".ApiEvent"));
+		
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
@@ -54,80 +74,124 @@ public class MainActivity extends SherlockFragmentActivity implements ActionBar.
 
 		mapview_container = LayoutInflater.from(this).inflate(R.layout.fragment_map, null);
 
-//		// check for C2DM registration
-//		// Restore saved registration id
-//		SharedPreferences settings = getSharedPreferences("C2DM", 0);
-//		String registrationID = settings.getString("RegID", "");
-//		if (registrationID.length() == 0) {
-//			Log.d("C2DM", "Doing first time registration.");
-//
-//			// No C2DM ID available. Register now.
-//			ProgressDialog progress = ProgressDialog.show(this,
-//					"Push Notification Network",
-//					"Sending one-time registration...");
-//			Intent registrationIntent = new Intent(
-//					"com.google.android.c2dm.intent.REGISTER");
-//			registrationIntent.putExtra("app",
-//					PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
-//			registrationIntent.putExtra("sender", "openvehicles@gmail.com");
-//			startService(registrationIntent);
+		// check for C2DM registration
+		// Restore saved registration id
+		SharedPreferences settings = getSharedPreferences("C2DM", 0);
+		String registrationID = settings.getString("RegID", "");
+		if (registrationID.length() == 0) {
+			Log.d("C2DM", "Doing first time registration.");
+
+			// No C2DM ID available. Register now.
+//			ProgressDialog progress = ProgressDialog.show(this, "Push Notification Network", "Sending one-time registration...");
+			Intent intent = new Intent("com.google.android.c2dm.intent.REGISTER");
+			intent.putExtra("app", PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
+			intent.putExtra("sender", "openvehicles@gmail.com");
+			startService(intent);
 //			progress.dismiss();
-//
-//			mC2dmHandler.postDelayed(reportC2DMRegistrationID, 2000);
-//
-//			/*
-//			 * unregister Intent unregIntent = new
-//			 * Intent("com.google.android.c2dm.intent.UNREGISTER");
-//			 * unregIntent.putExtra("app", PendingIntent.getBroadcast(this, 0,
-//			 * new Intent(), 0)); startService(unregIntent);
-//			 */
-//		} else {
-//			Log.d("C2DM", "Loaded Saved C2DM registration ID: " + registrationID);
-//			mC2dmHandler.postDelayed(reportC2DMRegistrationID, 2000);
-//		}
+
+			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
+
+			/*
+			 * unregister Intent unregIntent = new
+			 * Intent("com.google.android.c2dm.intent.UNREGISTER");
+			 * unregIntent.putExtra("app", PendingIntent.getBroadcast(this, 0,
+			 * new Intent(), 0)); startService(unregIntent);
+			 */
+		} else {
+			Log.d("C2DM", "Loaded Saved C2DM registration ID: " + registrationID);
+			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
+		}
+		onNewIntent(getIntent());
+	}
+	
+	@Override
+	public void onNewIntent(Intent newIntent) {
+		super.onNewIntent(newIntent);
+		
+		if (newIntent.getBooleanExtra("onNotification", false)) {
+			onNavigationItemSelected(3, 0);
+		}
+	}
+	
+	@Override
+	protected void onDestroy() {
+		unregisterReceiver(mApiEventReceiver);
+		super.onDestroy();
 	}
 	
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
 		getSupportActionBar().setIcon(ti.icon_res_id);
-		mViewPager.setCurrentItem(itemPosition);
+		mViewPager.setCurrentItem(itemPosition, false);
 		return true;
 	}	
 	
-	private final Runnable reportC2DMRegistrationID = new Runnable() {
+	private final Runnable mC2DMRegistrationID = new Runnable() {
 		public void run() {
 			// check if tcp connection is still active (it may be closed as the user leaves the program)
-//			if (mApiTask == null) return;
-//
-//			SharedPreferences settings = getSharedPreferences("C2DM", 0);
-//			String registrationID = settings.getString("RegID", "");
-//			String uuid;
-//
-//			if (!settings.contains("UUID")) {
-//				// generate a new UUID
-//				uuid = UUID.randomUUID().toString();
-//				Editor editor = getSharedPreferences("C2DM", Context.MODE_PRIVATE).edit();
-//				editor.putString("UUID", uuid);
-//				editor.commit();
-//
-//				Log.d(TAG, "Generated New C2DM UUID: " + uuid);
-//			} else {
-//				uuid = settings.getString("UUID", "");
-//				Log.d(TAG, "Loaded Saved C2DM UUID: " + uuid);
-//			}
-//
-//			// MP-0
-//			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
-//			if ((registrationID.length() == 0)
-//					|| !mApiTask.sendCommand(String.format(
-//							"MP-0 p%s,c2dm,production,%s,%s,%s", uuid,
-//							mCarData.sel_vehicleid, mCarData.sel_server_password,
-//							registrationID))) {
-//				// command not successful, reschedule reporting after 5 seconds
-//				Log.d(TAG, "Reporting C2DM ID failed. Rescheduling.");
-//				mC2dmHandler.postDelayed(reportC2DMRegistrationID, 5000);
-//			}
+			ApiService service = getService();
+			if (service == null || !service.isLoggined()) return;
+
+			SharedPreferences settings = getSharedPreferences("C2DM", 0);
+			String registrationID = settings.getString("RegID", "");
+			String uuid;
+
+			if (!settings.contains("UUID")) {
+				// generate a new UUID
+				uuid = UUID.randomUUID().toString();
+				Editor editor = getSharedPreferences("C2DM", Context.MODE_PRIVATE).edit();
+				editor.putString("UUID", uuid);
+				editor.commit();
+
+				Log.d("C2DM", "Generated New C2DM UUID: " + uuid);
+			} else {
+				uuid = settings.getString("UUID", "");
+				Log.d("C2DM", "Loaded Saved C2DM UUID: " + uuid);
+			}
+
+			// MP-0
+			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
+			CarData carData = service.getCarData();
+			String cmd = String.format("MP-0 p%s,c2dm,production,%s,%s,%s", uuid,
+					carData.sel_vehicleid, carData.sel_server_password, registrationID);
+			service.sendCommand(cmd, null);
+			
+			if ((registrationID.length() == 0) || !service.sendCommand(cmd, null)) {
+				// command not successful, reschedule reporting after 5 seconds
+				Log.d("C2DM", "Reporting C2DM ID failed. Rescheduling.");
+				mC2dmHandler.postDelayed(mC2DMRegistrationID, 5000);
+			}
+		}
+	};
+	
+	private final BroadcastReceiver mApiEventReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			if (intent.getSerializableExtra("onServerSocketError") != null) {
+				setSupportProgressBarIndeterminateVisibility(false);				
+				
+				new AlertDialog.Builder(MainActivity.this)
+					.setTitle(R.string.Error)
+					.setMessage(intent.getStringExtra("message"))
+					.setPositiveButton(android.R.string.ok, null)
+					.show();
+			}
+			if (intent.getBooleanExtra("onLoginBegin", false)) {
+				setSupportProgressBarIndeterminateVisibility(true);
+				ApiObservable.get().addObserver(mApiObserver);
+			}
+		}
+	};
+	
+	private ApiObserver mApiObserver = new ApiObserver() {
+		@Override
+		public void update(CarData pCarData) {
+			setSupportProgressBarIndeterminateVisibility(false);				
+			ApiObservable.get().deleteObserver(this);			
+		}
+		@Override
+		public void onServiceAvailable(ApiService pService) {
 		}
 	};
 	

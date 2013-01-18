@@ -21,6 +21,7 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
@@ -42,9 +43,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
 		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage.get().getStoredCars()));
-		
-		update(CarsStorage.get().getSelectedCarData());
-		
+
 		setHasOptionsMenu(true);
 	}
 	
@@ -72,6 +71,11 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 			}
 		}
 		mListView.invalidateViews();
+	}
+	
+	@Override
+	public void onServiceAvailable(ApiService pService) {
+		if (pService.isLoggined()) update(pService.getCarData());
 	}
 	
 	@Override
@@ -103,7 +107,6 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, 
 				args, Configuration.ORIENTATION_UNDEFINED);
 	}
-	
 	
 	private static class SettingsAdapter extends BaseAdapter implements OnClickListener {
 		private final LayoutInflater mInflater;
@@ -171,8 +174,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		@Override
 		public void onClick(View v) {
 			if (mListView == null || mListView.getOnItemClickListener() == null) return;
-			mListView.getOnItemClickListener().onItemClick(mListView, v, 
-					(Integer) v.getTag(), v.getId());
+			mListView.getOnItemClickListener().onItemClick(mListView, v, (Integer) v.getTag(), v.getId());
 		}
 	}
 }

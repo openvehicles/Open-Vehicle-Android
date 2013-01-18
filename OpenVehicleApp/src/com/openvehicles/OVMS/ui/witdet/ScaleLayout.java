@@ -14,6 +14,9 @@ public class ScaleLayout extends ViewGroup {
 	private float mContentWidth = 0;
 	private float mContentHeigth = 0;
 	private final int mPadding;
+	private float mScale;
+	private boolean isScale = false;
+	private Runnable mOnScale;
 
     public ScaleLayout(Context context) {
         this(context, null);
@@ -22,6 +25,14 @@ public class ScaleLayout extends ViewGroup {
     public ScaleLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
 		mPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+    }
+    
+    public float getScale() {
+    	return mScale;
+    }
+    
+    public void setOnScale(Runnable pOnScale) {
+    	mOnScale = pOnScale;
     }
     
 	@Override
@@ -62,29 +73,31 @@ public class ScaleLayout extends ViewGroup {
 		
 		float scale_w = (w - mPadding * 2) / mContentWidth;
 		float scale_h = (h - mPadding * 2) / mContentHeigth;
-		float scale = Math.min(scale_w, scale_h);
+		mScale = Math.min(scale_w, scale_h);
 
-		int ofset_x = Math.round(((w - mPadding * 2) - mContentWidth * scale) * 0.5f); 
-		int ofset_y = Math.round(((h - mPadding * 2) - mContentHeigth * scale) * 0.5f); 
-		
-        int count = getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
-            if (child.getVisibility() == GONE || child.getTag(child.getId()) != null) continue;
-            
-            ScaleLayout.LayoutParams lp = (ScaleLayout.LayoutParams) child.getLayoutParams();
-            lp.x = mPadding + ofset_x + (int) (lp.x * scale);
-            lp.y = mPadding + ofset_y + (int) (lp.y * scale);
-            
-            lp.width = (int) (lp.width * scale);
-            lp.height = (int) (lp.height * scale);
-            child.setTag(child.getId(), true);
-            
-			if (child instanceof TextView) {
-				TextView tv = (TextView) child;
-				tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (tv.getTextSize() * scale));
-			}
-        }
+		if (!isScale) {
+			int ofset_x = Math.round(((w - mPadding * 2) - mContentWidth * mScale) * 0.5f); 
+			int ofset_y = Math.round(((h - mPadding * 2) - mContentHeigth * mScale) * 0.5f); 
+			
+	        int count = getChildCount();
+	        for (int i = 0; i < count; i++) {
+	            View child = getChildAt(i);
+	            
+	            ScaleLayout.LayoutParams lp = (ScaleLayout.LayoutParams) child.getLayoutParams();
+	            lp.x = mPadding + ofset_x + (int) (lp.x * mScale);
+	            lp.y = mPadding + ofset_y + (int) (lp.y * mScale);
+	            
+	            lp.width = (int) (lp.width * mScale);
+	            lp.height = (int) (lp.height * mScale);
+	            
+				if (child instanceof TextView) {
+					TextView tv = (TextView) child;
+					tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (int) (tv.getTextSize() * mScale));
+				}
+	        }
+	        isScale = true;
+			if (mOnScale != null) mOnScale.run();
+		}
         measureChildren(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(resolveSize(w, widthMeasureSpec), resolveSize(h, heightMeasureSpec));
 	}

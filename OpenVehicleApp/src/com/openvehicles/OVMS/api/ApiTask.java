@@ -588,4 +588,12 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		BigInteger bi = new BigInteger(1, bytes);
 		return String.format("%0" + (bytes.length << 1) + "X", bi);
 	}
+	
+	public interface OnUpdateStatusListener {
+		public void onUpdateStatus();
+		public void onServerSocketError(Throwable e);
+		public void onResultCommand(String pCmd);
+		public void onLoginBegin();
+		public void onLoginComplete();
+	}
 }

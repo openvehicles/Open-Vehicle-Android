@@ -11,6 +11,7 @@
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
     <string name="Send">Send</string>
+    <string name="Error">Error</string>
     <string name="Set">Set</string>
     <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>

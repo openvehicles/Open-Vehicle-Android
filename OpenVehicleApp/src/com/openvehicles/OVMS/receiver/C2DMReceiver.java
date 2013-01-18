@@ -71,6 +71,7 @@ public class C2DMReceiver extends BroadcastReceiver {
 	    }
 	}
 
+	@SuppressWarnings("unchecked")
 	private void handleMessage(Context context, Intent intent) {
 		// display message		
 		if (!intent.hasExtra("title") || !intent.hasExtra("message")) {
@@ -123,7 +124,7 @@ public class C2DMReceiver extends BroadcastReceiver {
 		notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
 
 		Intent notificationIntent = new Intent(context, MainActivity.class);
-		notificationIntent.putExtra("SetTab", "tabNotifications");
+		notificationIntent.putExtra("onNotification", true);
 		PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 		notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);
 		
