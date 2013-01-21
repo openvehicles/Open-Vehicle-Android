@@ -255,6 +255,10 @@ public class InfoFragment extends BaseFragment implements OnClickListener, OnRes
 		} else {
 			tv.setVisibility(View.INVISIBLE);
 		}
+
+		// The signal strength indicator
+		ImageView iv = (ImageView)findViewById(R.id.img_signal_rssi);
+		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "signal_strength_" + pCarData.car_gsm_bars));
 	}
 
 	// This updates the main informational part of the view.
