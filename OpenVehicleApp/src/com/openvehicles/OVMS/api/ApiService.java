@@ -52,7 +52,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 		// kill previous connection
 		if (mApiTask != null) {
-			Log.v("TCP", "Shutting down pervious TCP connection (ChangeCar())");
+			Log.v("TCP", "Shutting down previous TCP connection (ChangeCar())");
 			mApiTask.connClose();
 			mApiTask.cancel(true);
 		}
