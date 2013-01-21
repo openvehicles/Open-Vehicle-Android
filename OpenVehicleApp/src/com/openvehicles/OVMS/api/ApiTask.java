@@ -35,6 +35,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private final CarData mCarData;
 	private final OnUpdateStatusListener mListener;
 	private final Random sRnd = new Random();
+	private boolean isShuttingDown = true;
 
 	private enum MsgType {
 		msgUpdate, msgError, msgCommand, msgLoginBegin, msgLoginComplete
@@ -104,7 +105,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mSocket = null;
 			} catch (Exception ex) {
 			}
-			connInit();
+			if (!isShuttingDown)
+				connInit();
 		} catch (IOException e) {
 			e.printStackTrace();
 			publishProgress(MsgType.msgError, e);
@@ -123,6 +125,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 	public void connClose() {
 		try {
+			Log.d(TAG, "connClose() requested");
+			isShuttingDown = true;
 			if ((mSocket != null) && mSocket.isConnected()) {
 				mSocket.close();
 			}
@@ -150,6 +154,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		isLoggedIn = false;
 		publishProgress(MsgType.msgLoginBegin);
 		
+		Log.d(TAG, "connInit() requested");
+		isShuttingDown = false;
+
 		String shared_secret = mCarData.sel_server_password;
 		String vehicleID = mCarData.sel_vehicleid;
 		String b64tabString = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
