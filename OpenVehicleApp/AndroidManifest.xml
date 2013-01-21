@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="com.openvehicles.OVMS"
 	android:versionCode="1"
-	android:versionName="2.99.1" >
+	android:versionName="3.1.1" >
 
 	<uses-sdk
 		android:minSdkVersion="9"
