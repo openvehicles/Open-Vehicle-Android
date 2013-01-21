@@ -70,6 +70,7 @@
 			android:layout_y="450px"
 			android:gravity="center"
 			android:textSize="40px"
+			android:textColor="#ffffffff"
 			android:textStyle="bold" />
 
 		<TextView
