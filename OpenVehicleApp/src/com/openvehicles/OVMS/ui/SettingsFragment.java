@@ -21,8 +21,10 @@ import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
+import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
@@ -41,9 +43,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
 		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage.get().getStoredCars()));
-		
-		update(CarsStorage.get().getSelectedCarData());
-		
+
 		setHasOptionsMenu(true);
 	}
 	
@@ -74,12 +74,18 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 	}
 	
 	@Override
+	public void onServiceAvailable(ApiService pService) {
+		if (pService.isLoggined()) update(pService.getCarData());
+	}
+	
+	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		switch (view.getId()) {
 		case R.id.btn_edit:
 			edit(position);
 			return;
 		case R.id.btn_info:
+			info(position);
 			return;
 		default:
 			CarData carData = (CarData) parent.getAdapter().getItem(position);
@@ -92,6 +98,13 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		Bundle args = new Bundle();
 		args.putInt("position", pPosition);
 		BaseFragmentActivity.show(getActivity(), CarEditorFragment.class, 
+				args, Configuration.ORIENTATION_UNDEFINED);
+	}
+	
+	private void info(int pPosition) {
+		Bundle args = new Bundle();
+		args.putInt("position", pPosition);
+		BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, 
 				args, Configuration.ORIENTATION_UNDEFINED);
 	}
 	
@@ -161,8 +174,7 @@ public class SettingsFragment extends BaseFragment implements OnItemClickListene
 		@Override
 		public void onClick(View v) {
 			if (mListView == null || mListView.getOnItemClickListener() == null) return;
-			mListView.getOnItemClickListener().onItemClick(mListView, v, 
-					(Integer) v.getTag(), v.getId());
+			mListView.getOnItemClickListener().onItemClick(mListView, v, (Integer) v.getTag(), v.getId());
 		}
 	}
 }

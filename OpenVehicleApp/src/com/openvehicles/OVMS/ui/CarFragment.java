@@ -3,22 +3,24 @@ package com.openvehicles.OVMS.ui;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
-public class CarFragment extends BaseFragment implements OnClickListener {
+public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListenner {
 	private CarData mCarData;
 
 	@Override
@@ -71,7 +73,7 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 							resId = R.string.lb_lock_car;
 							cmd = "20,"+pData;
 						}
-						sendCommand(resId, cmd);						
+						sendCommand(resId, cmd, CarFragment.this);						
 					}
 				});
 			break;
@@ -90,7 +92,7 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 							resId = R.string.lb_valet_mode_on;
 							cmd = "21,"+pData;
 						}
-						sendCommand(resId, cmd);						
+						sendCommand(resId, cmd, CarFragment.this);						
 					}
 				});
 			break;
@@ -99,7 +101,7 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 		}
 	}
 
-	private static final int MI_WAKEUP	= Menu.FIRST;
+	private static final int MI_WAKEUP		= Menu.FIRST;
 	private static final int MI_HL_01		= Menu.FIRST + 1;
 	private static final int MI_HL_02		= Menu.FIRST + 2;
 	private static final int MI_HL_03		= Menu.FIRST + 3;
@@ -127,23 +129,29 @@ public class CarFragment extends BaseFragment implements OnClickListener {
 	public boolean onContextItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
 		case MI_WAKEUP:
-			sendCommand(R.string.msg_wakeup_car, "18");			
+			sendCommand(R.string.msg_wakeup_car, "18", this);			
 			return true;
 		case MI_HL_01:
-			sendCommand(R.string.msg_issuing_homelink, "24,0");			
+			sendCommand(R.string.msg_issuing_homelink, "24,0", this);			
 			return true;
 		case MI_HL_02:
-			sendCommand(R.string.msg_issuing_homelink, "24,1");			
+			sendCommand(R.string.msg_issuing_homelink, "24,1", this);			
 			return true;
 		case MI_HL_03:
-			sendCommand(R.string.msg_issuing_homelink, "24,2");			
+			sendCommand(R.string.msg_issuing_homelink, "24,2", this);			
 			return true;
 		default:
 			return false;
 		}
 	}
 	
-	
+	@Override
+	public void onResultCommand(String[] result) {
+		if (result.length >= 3) {
+			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
+		}
+		cancelCommand();
+	}
 	
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.

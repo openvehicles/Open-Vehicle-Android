@@ -3,6 +3,9 @@ package com.openvehicles.OVMS.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,23 +14,46 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
+import com.openvehicles.OVMS.ui.witdet.ScaleLayout;
 import com.openvehicles.OVMS.ui.witdet.SlideNumericView;
 import com.openvehicles.OVMS.ui.witdet.SwitcherView;
 
-public class InfoFragment extends BaseFragment implements OnClickListener  {
+public class InfoFragment extends BaseFragment implements OnClickListener, OnResultCommandListenner  {
 	private CarData mCarData;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_info, null);
+		View rootView = inflater.inflate(R.layout.fragment_info, null);
+		final ScaleLayout scaleLayout = (ScaleLayout) rootView.findViewById(R.id.scaleLayout);
+		scaleLayout.setOnScale(new Runnable() {
+			@Override
+			public void run() {
+				SeekBar sb = (SeekBar) scaleLayout.findViewById(R.id.tabInfoSliderChargerControl);
+				ScaleLayout.LayoutParams lp = (ScaleLayout.LayoutParams) sb.getLayoutParams();				
+				
+				Bitmap srcBmp = BitmapFactory.decodeResource(scaleLayout.getContext().getResources(),
+						R.drawable.charger_button);
+				int tw = (int) ( srcBmp.getWidth() * (lp.height / srcBmp.getHeight()) );  
+				
+				Bitmap dstBmp = Bitmap.createScaledBitmap(srcBmp, tw, lp.height, true);
+				srcBmp.recycle();
+
+				BitmapDrawable drw = new BitmapDrawable(scaleLayout.getContext().getResources(), dstBmp);
+				sb.setThumb(drw);
+//				sb.setThumbOffset(dstBmp.getWidth() / 9);				
+			}
+		});
+		return rootView;
 	}
 	
 	@Override
@@ -83,8 +109,16 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 		chargerSetting();
 	}
 	
+	@Override
+	public void onResultCommand(String[] result) {
+		if (result.length >= 3) {
+			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
+		}
+		cancelCommand();
+	}
+	
 	private void startCharge() {
-		sendCommand(R.string.msg_starting_charge, "11");
+		sendCommand(R.string.msg_starting_charge, "11", this);
 		mCarData.car_charge_linevoltage_raw = 0;
 		mCarData.car_charge_current_raw = 0;
 		mCarData.car_charge_state_s_raw = "starting";
@@ -93,7 +127,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 	}
 	
 	private void stopCharge() {
-		sendCommand(R.string.msg_stopping_charge, "12");
+		sendCommand(R.string.msg_stopping_charge, "12", this);
 		mCarData.car_charge_linevoltage_raw = 0;
 		mCarData.car_charge_current_raw = 0;
 		mCarData.car_charge_state_s_raw = "stopping";
@@ -138,13 +172,13 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 				 int ncl = snv.getValue();
 				 
 				 if (ncm != mCarData.car_charge_mode_i_raw && ncl != mCarData.car_charge_currentlimit_raw) {
-					 sendCommand(R.string.msg_setting_charge_mc, String.format("16,%d,%d", ncm, ncl));
+					 sendCommand(R.string.msg_setting_charge_mc, String.format("16,%d,%d", ncm, ncl), InfoFragment.this);
 				 } else
 				 if (ncm != mCarData.car_charge_mode_i_raw) {
-					 sendCommand(R.string.msg_setting_charge_m, String.format("10,%d", ncm));
+					 sendCommand(R.string.msg_setting_charge_m, String.format("10,%d", ncm), InfoFragment.this);
 				 } else
 				 if (ncl != mCarData.car_charge_currentlimit_raw) {
-					 sendCommand(R.string.msg_setting_charge_c, String.format("15,%d", ncl));
+					 sendCommand(R.string.msg_setting_charge_c, String.format("15,%d", ncl), InfoFragment.this);
 				 }
 			}
 		}).show();
@@ -318,4 +352,5 @@ public class InfoFragment extends BaseFragment implements OnClickListener  {
 		iv = (ImageView) findViewById(R.id.tabInfoImageCar);
 		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), pCarData.sel_vehicle_image));
 	}
+
 }

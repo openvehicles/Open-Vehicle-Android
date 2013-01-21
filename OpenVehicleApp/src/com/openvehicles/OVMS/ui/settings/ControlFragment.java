@@ -6,14 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
-public class ControlFragment extends BaseFragment implements OnClickListener {
+public class ControlFragment extends BaseFragment implements OnClickListener, OnResultCommandListenner {
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -45,7 +47,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener {
 				@Override
 				public void onAction(String pData) {
 					if (TextUtils.isEmpty(pData)) return;
-					sendCommand(R.string.lb_mmi_ussd_code, "41," + pData);						
+					sendCommand(R.string.lb_mmi_ussd_code, "41," + pData, ControlFragment.this);						
 				}
 			});
 			break;
@@ -56,8 +58,15 @@ public class ControlFragment extends BaseFragment implements OnClickListener {
 			activity.setNextFragment(ControlParametersFragment.class);
 			break;
 		case R.id.btn_reset_ovms_module:
-			sendCommand(R.string.msg_rebooting_car_module, "5");
+			sendCommand(R.string.msg_rebooting_car_module, "5", this);
 			break;
+		}
+	}
+
+	@Override
+	public void onResultCommand(String[] result) {
+		if (result.length >= 3) {
+			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
 		}
 	}
 }

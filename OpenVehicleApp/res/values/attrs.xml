@@ -1,12 +1,11 @@
 <resources>
-
+    <declare-styleable name="ScaleLayout_Layout">
+        <attr name="android:layout_x" />
+        <attr name="android:layout_y" />
+    </declare-styleable>
+	
 	<declare-styleable name="SwitcherView">
 		<attr name="android:entries" />
-	</declare-styleable>
-	
-	<declare-styleable name="ScaleLayout">
-		<attr name="content_width" format="integer" />
-		<attr name="content_height" format="integer" />
 	</declare-styleable>
 
     <declare-styleable name="SlideNumericView">

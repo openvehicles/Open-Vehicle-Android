@@ -10,10 +10,9 @@ import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.widget.FrameLayout;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 
-public class BaseFragmentActivity extends SherlockFragmentActivity {
+public class BaseFragmentActivity extends ApiActivity {
 	private static final String EXT_FRAGMENT_CLASS_NAME = "ext_fragmentclassname";
 	private static final String EXT_ONLY_ORIENTATION = "ext_only_orientation";
 	private static final String EXT_FOR_RESULT = "ext_for_result";

@@ -11,6 +11,7 @@
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
     <string name="Send">Send</string>
+    <string name="Error">Error</string>
     <string name="Set">Set</string>
     <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
@@ -51,6 +52,12 @@
     <string name="Close">Close</string>
     <string name="Features">Features</string>
     <string name="Parameters">Parameters</string>
+    <string name="Vehicle">Vehicle</string>
+    <string name="WIN">WIN</string>
+    <string name="Type">Type</string>
+    <string name="GMC">GMC</string>
+    <string name="Server">Server</string>
+    <string name="App">App</string>
     
     <string name="lb_wakeup_car">Wakeup Car</string>
     <string name="lb_unlock_car">Unlock Car</string>
@@ -91,6 +98,8 @@
     <string name="lb_cp_paranoid_mode">#%d: Paranoid Mode</string>
     <string name="lb_cp_social_group_1">#%d: Social Group #1</string>
     <string name="lb_cp_social_group_2">#%d: Social Group #2</string>
+    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_vehicle_info">Vehicle Info</string>
     
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
@@ -127,6 +136,5 @@
     
     <!-- JLab13 mac 
     <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->
-    
     
 </resources>

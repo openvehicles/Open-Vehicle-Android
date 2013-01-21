@@ -1,8 +1,5 @@
 package com.openvehicles.OVMS.api;
 
-import java.util.Arrays;
-
-import android.app.AlertDialog;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
@@ -12,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiTask.OnUpdateStatusListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
@@ -20,7 +18,6 @@ public class ApiService extends Service implements OnUpdateStatusListener {
     private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
     private ApiTask mApiTask;
-//	private AlertDialog mAlertDialog;
 	private OnResultCommandListenner mOnResultCommandListenner;
 	
 	@Override
@@ -70,55 +67,41 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		mApiTask.execute();
 	}
 	
-	public void sendCommand(int pResIdMessage, String pCommand) {
-		sendCommand(getString(pResIdMessage), pCommand);
+	public void sendCommand(int pResIdMessage, String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
+		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListenner);
 	}
-	
-	public void sendCommand(String pMessage, String pCommand) {
+
+	public void sendCommand(String pMessage, String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
 		if (mApiTask == null) return;
 
-		mOnResultCommandListenner = null;
+		mOnResultCommandListenner = pOnResultCommandListenner;
 		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
 		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
 	}
 	
-	public void sendCommand(String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
-		if (mApiTask == null) return;
+	public boolean sendCommand(String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
+		if (mApiTask == null || TextUtils.isEmpty(pCommand)) return false;
 		
 		mOnResultCommandListenner = pOnResultCommandListenner;
-		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
+		return mApiTask.sendCommand(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
 	}
 	
 	public void cancelCommand() {
-		mOnResultCommandListenner = new OnResultCommandListenner() {
-			@Override
-			public void onResultCommand(String[] result) {
-				Log.w(TAG, "Canceled result: " + Arrays.toString(result));
-			}
-		};
+		mOnResultCommandListenner = null;
 	}
 
 	@Override
 	public void onUpdateStatus() {
-		ApiStatusObservable.get().notifyObservers(mCarData);		
+		ApiObservable.get().notifyUpdate(mCarData);		
 	}
 
 	@Override
 	public void onServerSocketError(Throwable e) {
-		Toast.makeText(this, mApiTask.isLoggedIn() ? R.string.err_connection_lost : R.string.err_check_following,
-				Toast.LENGTH_LONG).show();
-		
-//		if (mAlertDialog != null && mAlertDialog.isShowing()){
-//			return;
-//		}
-//
-//		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//		builder.setMessage(mApiTask.isLoggedIn() ? R.string.err_connection_lost : R.string.err_check_following)
-//			.setTitle(R.string.lb_communications_problem)
-//			.setCancelable(false)
-//			.setPositiveButton(android.R.string.ok, null);
-//		mAlertDialog = builder.create();
-//		mAlertDialog.show();
+		Intent intent = new Intent(getPackageName() + ".ApiEvent");
+		intent.putExtra("onServerSocketError", e);
+		intent.putExtra("message", getString(mApiTask.isLoggedIn() ? 
+				R.string.err_connection_lost : R.string.err_check_following));
+		sendBroadcast(intent);
 	}
 
 	@Override
@@ -130,26 +113,44 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			mOnResultCommandListenner.onResultCommand(data);
 			return;
 		}
-		
-		if (data.length >= 3) {
-			Toast.makeText(this, data[2], Toast.LENGTH_LONG).show();
-		}
 	}
 
 	@Override
 	public void onLoginBegin() {
 		Log.d(TAG, "onLoginBegin");
+		
+		Intent intent = new Intent(getPackageName() + ".ApiEvent");
+		intent.putExtra("onLoginBegin", true);
+		sendBroadcast(intent);
 	}
 
 	@Override
 	public void onLoginComplete() {
 		Log.d(TAG, "onLoginComplete");
+		
+//		Intent intent = new Intent(getPackageName() + ".ApiEvent");
+//		intent.putExtra("onLoginComplete", true);
+//		sendBroadcast(intent);
+	}
+	
+	public boolean isLoggined() {
+		return mApiTask.isLoggedIn();
+	}
+	
+	public CarData getCarData() {
+		return mCarData;
+	}
+	
+	public CarData getLogginedCarData() {
+		return mApiTask.isLoggedIn() ? mCarData : null;
 	}
 	
     public class ApiBinder extends Binder {
+    	
     	public ApiService getService() {
             return ApiService.this;
         }
+    	
     }
 
 }

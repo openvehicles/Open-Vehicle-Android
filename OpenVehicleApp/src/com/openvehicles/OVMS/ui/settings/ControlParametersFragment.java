@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
@@ -37,8 +38,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 	}
 	
 	@Override
-	public void onServiceBind() {
-		sendCommand("3", this);
+	public void onServiceAvailable(ApiService pService) {
+		pService.sendCommand("3", this);
 	}
 	
 	@Override
