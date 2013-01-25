@@ -53,9 +53,9 @@
     <string name="Features">Features</string>
     <string name="Parameters">Parameters</string>
     <string name="Vehicle">Vehicle</string>
-    <string name="WIN">WIN</string>
+    <string name="WIN">VIN</string>
     <string name="Type">Type</string>
-    <string name="GMC">GMC</string>
+    <string name="GMC">GSM</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     
