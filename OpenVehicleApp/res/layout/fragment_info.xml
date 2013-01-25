@@ -113,7 +113,7 @@
 			android:layout_width="200px"
 			android:layout_x="322px"
 			android:layout_y="582px"
-			android:text="@string/IdealShort" />
+			android:text="@string/EstimatedShort" />
 
 		<TextView
 			android:id="@+id/tabInfoTextEstimatedRange"
