@@ -333,8 +333,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_soc_raw = Integer.parseInt(dataParts[0]);
 				mCarData.car_soc = String.format("%d%%",mCarData.car_soc_raw);
 				mCarData.car_distance_units_raw = dataParts[1].toString();
-				mCarData.car_distance_units = (mCarData.car_distance_units_raw == "M")?"m":"km";
-				mCarData.car_speed_units = (mCarData.car_distance_units_raw == "M")?"mph":"kph";
+				mCarData.car_distance_units = (mCarData.car_distance_units_raw.equals("M"))?"m":"km";
+				mCarData.car_speed_units = (mCarData.car_distance_units_raw.equals("M"))?"mph":"kph";
 				mCarData.car_charge_linevoltage_raw = Integer.parseInt(dataParts[2]);
 				mCarData.car_charge_linevoltage = String.format("%d%s", mCarData.car_charge_linevoltage_raw,"V");
 				mCarData.car_charge_current_raw = Integer.parseInt(dataParts[3]);
@@ -443,11 +443,21 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_lockunlock_raw = Integer.parseInt(dataParts[2]);
 
 				mCarData.car_temp_pem_raw = Integer.parseInt(dataParts[3]);
-				mCarData.car_temp_pem = String.format("%d\u00B0C",mCarData.car_temp_pem_raw);
 				mCarData.car_temp_motor_raw = Integer.parseInt(dataParts[4]);
-				mCarData.car_temp_motor = String.format("%d\u00B0C",mCarData.car_temp_motor_raw);
 				mCarData.car_temp_battery_raw = Integer.parseInt(dataParts[5]);
-				mCarData.car_temp_battery = String.format("%d\u00B0C",mCarData.car_temp_battery_raw);
+				if (mCarData.car_distance_units_raw.equals("M"))
+					{
+					mCarData.car_temp_pem = String.format("%.0f\u00B0F",(mCarData.car_temp_pem_raw*(9.0/5.0))+32.0);
+					mCarData.car_temp_motor = String.format("%.0f\u00B0F",(mCarData.car_temp_motor_raw*(9.0/5.0))+32.0);
+					mCarData.car_temp_battery = String.format("%.0f\u00B0F",(mCarData.car_temp_battery_raw*(9.0/5.0))+32.0);
+					}
+				else
+					{
+					mCarData.car_temp_pem = String.format("%d\u00B0C",mCarData.car_temp_pem_raw);
+					mCarData.car_temp_motor = String.format("%d\u00B0C",mCarData.car_temp_motor_raw);
+					mCarData.car_temp_battery = String.format("%d\u00B0C",mCarData.car_temp_battery_raw);
+					}
+				
 				mCarData.car_tripmeter_raw = Integer.parseInt(dataParts[6]);
 				mCarData.car_tripmeter = String.format("%d%s",mCarData.car_tripmeter_raw,mCarData.car_distance_units);
 				mCarData.car_odometer_raw = Integer.parseInt(dataParts[7]);
@@ -462,8 +472,11 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					mCarData.car_parked_time = new Date((new Date()).getTime() - mCarData.car_parking_timer_raw * 1000);
 
 					mCarData.car_temp_ambient_raw = Integer.parseInt(dataParts[10]);
-					mCarData.car_temp_ambient = String.format("%d\u00B0C",mCarData.car_temp_ambient_raw);
-
+					if (mCarData.car_distance_units_raw.equals("M"))
+						mCarData.car_temp_ambient = String.format("%.0f\u00B0F",(mCarData.car_temp_ambient_raw*(9.0/5.0))+32.0);
+					else
+						mCarData.car_temp_ambient = String.format("%d\u00B0C",mCarData.car_temp_ambient_raw);
+					
 					dataField = Integer.parseInt(dataParts[11]);
 					mCarData.car_doors3_raw =  dataField;
 					mCarData.car_coolingpump_on =  ((dataField & 0x02) == 0x02);
@@ -561,11 +574,20 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_tpms_fr_p = String.format("%.1f%s",mCarData.car_tpms_fr_p_raw, "psi"); 
 				mCarData.car_tpms_rl_p = String.format("%.1f%s",mCarData.car_tpms_rl_p_raw, "psi"); 
 				mCarData.car_tpms_rr_p = String.format("%.1f%s",mCarData.car_tpms_rr_p_raw, "psi"); 
-				mCarData.car_tpms_fl_t = String.format("%.0f%s",mCarData.car_tpms_fl_t_raw, "\u00B0C"); 
-				mCarData.car_tpms_fr_t = String.format("%.0f%s",mCarData.car_tpms_fr_t_raw, "\u00B0C"); 
-				mCarData.car_tpms_rl_t = String.format("%.0f%s",mCarData.car_tpms_rl_t_raw, "\u00B0C"); 
-				mCarData.car_tpms_rr_t = String.format("%.0f%s",mCarData.car_tpms_rr_t_raw, "\u00B0C"); 
-				
+				if (mCarData.car_distance_units_raw.equals("M"))
+					{
+					mCarData.car_tpms_fl_t = String.format("%.0f%s",(mCarData.car_tpms_fl_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
+					mCarData.car_tpms_fr_t = String.format("%.0f%s",(mCarData.car_tpms_fr_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
+					mCarData.car_tpms_rl_t = String.format("%.0f%s",(mCarData.car_tpms_rl_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
+					mCarData.car_tpms_rr_t = String.format("%.0f%s",(mCarData.car_tpms_rr_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
+					}
+				else
+					{
+					mCarData.car_tpms_fl_t = String.format("%.0f%s",mCarData.car_tpms_fl_t_raw, "\u00B0C"); 
+					mCarData.car_tpms_fr_t = String.format("%.0f%s",mCarData.car_tpms_fr_t_raw, "\u00B0C"); 
+					mCarData.car_tpms_rl_t = String.format("%.0f%s",mCarData.car_tpms_rl_t_raw, "\u00B0C"); 
+					mCarData.car_tpms_rr_t = String.format("%.0f%s",mCarData.car_tpms_rr_t_raw, "\u00B0C"); 
+					}
 				mCarData.car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
 				if (mCarData.car_stale_tpms_raw < 0)
 					mCarData.stale_tpms = DataStale.NoValue;

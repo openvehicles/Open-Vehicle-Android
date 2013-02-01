@@ -131,10 +131,10 @@
         <item>Perform</item>
     </string-array>
     
-    <!-- JLab13 linux -->
+    <!-- OVMS Debug -->
     <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string>
-    
-    <!-- JLab13 mac 
-    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->
-    
+
+    <!-- OVMS Release
+    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
+
 </resources>
