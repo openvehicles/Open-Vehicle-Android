@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">OVMS</string>
+    <string name="Loading">Veuillez patienter</string>
+    <string name="Settings">Réglages</string>
+    <string name="Range" formatted="false">Autonomie: %s (%s estimé)</string>
+    <string name="LastUpdated" formatted="false">mise à jour: %1$tF %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Annuler</string>
+    <string name="Delete">Supprimer</string>
+    <string name="Save">Enregister</string>
+    <string name="Send">Envoyer</string>
+    <string name="Error">Erreur</string>
+    <string name="Set">Régler</string>
+    <string name="Control">Contrôle</string>
+    <string name="ServerNameOrIP">Adresse du serveur(Domaine ou IP)</string>
+    <string name="NetPass">Mot de passe du serveur</string>
+    <string name="UserPass">Mot de passe utilisateur(Mode Paranoïa)</string>
+    <string name="Quit">Quitter l\'application</string>
+    <string name="Edit">Modifier</string>
+    <string name="Yes">Oui</string>
+    <string name="No">Non</string>
+    <string name="ClearNotifications">Effacer les notifications</string>
+    <string name="VehicleImage">Image du véhicule</string>
+    <string name="btnAddCar">Ajouter</string>
+    <string name="btnCenterMap">Centrer la carte</string>
+    <string name="ImageParking">Parking</string>
+    <string name="SysWarning">Alerte système</string>
+    <string name="LockIdle">Verouillage véhicule</string>
+    <string name="SignalStrength">Force du signal</string>
+    <string name="ChargerPlug">Prise chargeur</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">GLISSER POUR\nCHARGER</string>
+    <string name="DefaultMode">STANDARD</string>
+    <string name="ChargingOverlay">En charge</string>
+    <string name="BatteryOverlay">Batterie</string>
+    <string name="EstimatedShort">AUTONOMIE ESTIM.</string>
+    <string name="IdealShort">AUTONOMIE IDEALE</string>
+    <string name="BatteryText">Batterie</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Wakeup">Préconditionner l\'habitacle</string>
+    <string name="Add">Ajouter</string>
+    <string name="Save">Enregistrer</string>
+    <string name="Delete">Supprimer</string>
+    <string name="Battery">Batterie</string>
+    <string name="Car">Véhicule</string>
+    <string name="Location">Lieu</string>
+    <string name="Setings">Réglages</string>
+    <string name="Messages">Messages</string>
+    <string name="Amps">A</string>
+    <string name="Close">Fermer</string>
+    <string name="Features">Fonctions</string>
+    <string name="Parameters">Paramètres</string>
+    <string name="Vehicle">Véhicule</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Type</string>
+    <string name="GMC">GSM</string>
+    <string name="Server">Serveur</string>
+    <string name="App">Appli</string>
+    
+    <string name="lb_wakeup_car">Réveiller la voiture</string>
+    <string name="lb_unlock_car">Déverrouiller</string>
+    <string name="lb_lock_car">Verrouiller</string>
+    <string name="lb_valet_mode">Mode valet</string>
+    <string name="lb_valet_mode_on">Activer</string>
+    <string name="lb_valet_mode_off">Désactiver</string>
+    <string name="lb_enter_pin">Enter code</string>
+    <string name="lb_enter_passwd">Enter mot de passe</string>
+    <string name="lb_enter_value">Enter valeur</string>
+    <string name="lb_wrning_charger">AVERTIISEMENT\nDes réglages incorrects peuvent endommager les systèmes électriques!</string>
+    <string name="lb_charger_setting">Réglges chargeur</string>
+    <string name="lb_communications_problem">Erreur de communication</string>
+    <string name="lb_vehicle_id">ID Véhicule</string>
+    <string name="lb_vehicle_label">Nom convivial</string>
+    <string name="lb_server_passwd">Mot de passe serveur OVMS</string>
+    <string name="lb_module_passwd">Mot de passe module OVMS</string>
+    <string name="lb_slide_choice_vehicle">Glisser pour choisir une image</string>
+    <string name="lb_mmi_ussd_code">Code MMI/USSD</string>
+    <string name="lb_cellular_usage">Usage réseau GSM</string>
+    <string name="lb_reset_ovms_module">Réinitialiser module OVMS</string>
+    <string name="lb_center_map">Centrer carte</string>
+    <string name="lb_ft_digital_speedo">#%d: Tachymètre</string>
+    <string name="lb_ft_gps_stream">#%d: GPS temps réel</string>
+    <string name="lb_ft_minimum_soc">#%d: Charge batterie minimum</string>
+    <string name="lb_ft_car_bits">#%d: Bits voiture</string>
+    <string name="lb_ft_can_write">#%d: Ecriture bus CAN</string>
+    <string name="lb_cp_registered_telephone">#%d: Téléphone propriétaire</string>
+    <string name="lb_cp_module_password">#%d: Mot de passe module</string>
+    <string name="lb_cp_miles_km">#%d: Unités (Miles/km)</string>
+    <string name="lb_cp_notifications">#%d: Notifications</string>
+    <string name="lb_cp_ovms_server_ip">#%d: IP serveur OVMS</string>
+    <string name="lb_cp_cellular_network_apn">#%d: APN opérateur GPRS</string>
+    <string name="lb_cp_cellular_network_user">#%d: nom d\'utilisateur GPRS</string>
+    <string name="lb_cp_cellular_network_password">#%d: Mot de passe GPRS</string>
+    <string name="lb_cp_vehicle_id">#%d: ID Véhicule</string>
+    <string name="lb_cp_server_password">#%d: Mot de passe serveur</string>
+    <string name="lb_cp_paranoid_mode">#%d: Mode Paranoïa</string>
+    <string name="lb_cp_social_group_1">#%d: Réseau social n°1</string>
+    <string name="lb_cp_social_group_2">#%d: Réseau social n°2</string>
+    <string name="lb_ovms_firmware">Firmware OVMS:</string>
+    <string name="lb_vehicle_info">Infos véhicule</string>
+    
+    <string name="msg_charger_range">Le mode Distance limite la puissance\nUn usage fréquent réduit la durée de vie de la batterie</string>
+    <string name="msg_charger_perform">Un usage fréquent du mode Performance\nréduit la durée de vie de la batterie</string>
+    <string name="msg_wakeup_car">Réveil du véhicule&#8230;</string>
+    <string name="msg_issuing_homelink">Envoi de la commande Homelink&#8230;</string>
+    <string name="msg_setting_charge_mc">Réglage mode et intensité de charge&#8230;</string>
+    <string name="msg_setting_charge_m">Réglage mode de charge&#8230;</string>
+    <string name="msg_setting_charge_c">Réglage intensité de charge&#8230;</string>
+    <string name="msg_starting_charge">Démarre la charge&#8230;</string>
+    <string name="msg_stopping_charge">Stoppe la charge&#8230;</string>
+    <string name="msg_rebooting_car_module">Redémarre le module&#8230;</string>
+    <string name="msg_please_enter_value">Entrez une valeur correcte svp</string>
+    <string name="msg_invalid_name">Votre nom d\'utilisateur doit faire plus de 3 caractères, sans aucun caractère spécial.</string>
+    <string name="msg_invalid_passwd">Votre mot de passe doit comporter entre %1$d et %2$d caractères.</string>
+    <string name="msg_invalid_id_already_registered">L\'ID véhicule %s est déjà enregistré. Faites un autre choix.</string>
+    <string name="msg_delete_this_car">Supprimer ce véhicule?</string>
+    <string name="msg_mmi_ssd_code">Entrer code MMI/USSD, puis taper ENVOYER pour le transmettre à votre opérateur mobile</string>
+    
+    <string name="err_connection_lost">Connexion au serveur OVMS perdue</string>
+    <string name="err_check_following">Veuillez vérifier:\n1. L\adresse du serveur OVMS\n2. ID et mot de passe du véhicule</string>
+    <string name="err_failed">Echec: %s</string>
+    <string name="err_unsupported_operation">Opération non supportée</string>
+    <string name="err_unimplemented_operation">Opération non implémentée</string>
+    
+    <string-array name="en_charger">
+    	<item>Standard</item>
+        <item>Capacité</item>
+        <item>Distance</item>
+        <item>Performance</item>
+    </string-array>
+    
+    <!-- OVMS Debug -->
+    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string>
+
+    <!-- OVMS Release
+    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
+
+</resources>
