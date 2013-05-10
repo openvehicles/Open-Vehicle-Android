@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Even geduld aub</string>
+    <string name="Settings">Instellingen</string>
+    <string name="Range" formatted="false">Bereik: %s (%s estimated)</string>
+    <string name="LastUpdated" formatted="false">Bijgewerkt: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Annuleren</string>
+    <string name="Delete">Verwijderen</string>
+    <string name="Save">Bewaren</string>
+    <string name="Send">Zenden</string>
+    <string name="Error">Fout</string>
+    <string name="Set">Instellen</string>
+    <string name="Control">Controle</string>
+    <string name="ServerNameOrIP">Server Adres (Domein of IP)</string>
+    <string name="NetPass">Server wachtwoord</string>
+    <string name="UserPass">Gebruikerswachtwoord (Paranoid Mode)</string>
+    <string name="Quit">Verlaat Applicatie</string>
+    <string name="Edit">Wijzigen</string>
+    <string name="Yes">Ja</string>
+    <string name="No">Nee</string>
+    <string name="ClearNotifications">Verwijder Merdingen</string>
+    <string name="VehicleImage">Voertuig Afbeelding</string>
+    <string name="btnAddCar">Voertuig Toevoegen</string>
+    <string name="btnCenterMap">Kaart Centreren</string>
+    <string name="ImageParking">Parkeerplaats Voertuig</string>
+    <string name="SysWarning">Systeem Waarschuwing</string>
+    <string name="LockIdle">Voertuig Slot</string>
+    <string name="SignalStrength">Signaalsterkte</string>
+    <string name="ChargerPlug">Laadstekker</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">Schuif om op te laden</string>
+    <string name="DefaultMode">STANDAARD</string>
+    <string name="ChargingOverlay">Laden</string>
+    <string name="BatteryOverlay">Batterij</string>
+    <string name="EstimatedShort">GESCHAT BEREIK</string>
+    <string name="IdealShort">IDEAAL BEREIK</string>
+    <string name="BatteryText">Batterij</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Wakeup">Wakker Maken</string>
+    <string name="Add">Toevoegen</string>
+    <string name="Save">Opslagen</string>
+    <string name="Delete">Verwijderen</string>
+    <string name="Battery">Batterij</string>
+    <string name="Car">Wagen</string>
+    <string name="Location">Locatie</string>
+    <string name="Setings">Instellingen</string>
+    <string name="Messages">Berichten</string>
+    <string name="Amps">Amps</string>
+    <string name="Close">Sluiten</string>
+    <string name="Features">Functies</string>
+    <string name="Parameters">Parameters</string>
+    <string name="Vehicle">Voertuig</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Type</string>
+    <string name="GMC">GSM</string>
+    <string name="Server">Server</string>
+    <string name="App">App</string>
+    
+    <string name="lb_wakeup_car">Wagen Wakker Maken</string>
+    <string name="lb_unlock_car">Wagen Openen</string>
+    <string name="lb_lock_car">Wagen Sluiten</string>
+    <string name="lb_valet_mode">Valet Mode</string>
+    <string name="lb_valet_mode_on">Valet Aan</string>
+    <string name="lb_valet_mode_off">Valet Uit</string>
+    <string name="lb_enter_pin">PIN Invoeren</string>
+    <string name="lb_enter_passwd">Wachtwoord Invoeren</string>
+    <string name="lb_enter_value">Waarde Invoeren</string>
+    <string name="lb_wrning_charger">OPGEPAST \ Verkeerde lader instellingen kunnen de elektrische systemen beschadigen!</string>
+    <string name="lb_charger_setting">Lader Instellingen</string>
+    <string name="lb_communications_problem">Communicatie Probleem</string>
+    <string name="lb_vehicle_id">Voertuig ID</string>
+    <string name="lb_vehicle_label">Voertuig Label</string>
+    <string name="lb_server_passwd">OVMS Server Wachtwoord</string>
+    <string name="lb_module_passwd">OVMS Module Wachtwoord</string>
+    <string name="lb_slide_choice_vehicle">Schuif voor voertuigkeuze</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
+    <string name="lb_cellular_usage">Mobiel Gebruik</string>
+    <string name="lb_reset_ovms_module">Reset OVMS Module</string>
+    <string name="lb_center_map">Kaart Centreren</string>
+    <string name="lb_ft_digital_speedo">#%d: Digitale Snelheidsmeter</string>
+    <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_car_bits">#%d: Voertuig Bits</string>
+    <string name="lb_ft_can_write">#%d: CAN Schrijven</string>
+    <string name="lb_cp_registered_telephone">#%d: Geregistreerde Telefoon</string>
+    <string name="lb_cp_module_password">#%d: Module Wachtwoord</string>
+    <string name="lb_cp_miles_km">#%d: Miles/Km</string>
+    <string name="lb_cp_notifications">#%d: Meldingen</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Mobiel Netwerk APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Mobiel Netwerk Gebruiker</string>
+    <string name="lb_cp_cellular_network_password">#%d: Mobiel Netwerk Wachtwoord</string>
+    <string name="lb_cp_vehicle_id">#%d: Voertuig ID</string>
+    <string name="lb_cp_server_password">#%d: Server Wachtwoord</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoid Mode</string>
+    <string name="lb_cp_social_group_1">#%d: Sociale Groep #1</string>
+    <string name="lb_cp_social_group_2">#%d: Sociale Groep #2</string>
+    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_vehicle_info">Voertuig Info</string>
+    
+    <string name="msg_charger_range">Bereik Mode beperkt de kracht \ Frequent gebruik zal de levensduur van de batterij verminderen!</string>
+    <string name="msg_charger_perform">Frequent gebruik van Prestatie Mode zal de levensduur van de batterij verminderen!</string>
+    <string name="msg_wakeup_car">Wakker maken Voertuig&#8230;</string>
+    <string name="msg_issuing_homelink">Uitvoeren Homelink Commando&#8230;</string>
+    <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
+    <string name="msg_setting_charge_m">Instellen van Laad Mode&#8230;</string>
+    <string name="msg_setting_charge_c">Instellen van oplaad stroom&#8230;</string>
+    <string name="msg_starting_charge">Laden Starten&#8230;</string>
+    <string name="msg_stopping_charge">Laden Stoppen&#8230;</string>
+    <string name="msg_rebooting_car_module">Rebooten Voertuig Module&#8230;</string>
+    <string name="msg_please_enter_value">AUB voer een correcte waarde in</string>
+    <string name="msg_invalid_name">Uw gebruikersnaam moet langer zijn dan 3 karakters en kan geen speciale karakters bevatten.</string>
+    <string name="msg_invalid_passwd">Uw wachtwoord moet tussen de %1$d en %2$d karakters lang zijn.</string>
+    <string name="msg_invalid_id_already_registered">Voertuig ID %s is reeds geregistreerd. Voer AUB een ander ID in.</string>
+    <string name="msg_delete_this_car">Dit voertuig verwijderen?</string>
+    <string name="msg_mmi_ssd_code">Voer MMI/USSD Code in, dan tik ZENDEN om de code naar jouw voertuig mobiele provider te sturen</string>
+    
+    <string name="err_connection_lost">OVMS Server Verbinding Verloren</string>
+    <string name="err_check_following">AUB het volgende:\n1. OVMS Server adres\n2. Uw voertuig ID en wachtwoorden</string>
+    <string name="err_failed">Mislukt: %s</string>
+    <string name="err_unsupported_operation">Niet gesteunde operatie</string>
+    <string name="err_unimplemented_operation">Niet geïmplementeerde operatie</string>
+    
+    <string-array name="en_charger">
+    	<item>Standaard</item>
+        <item>Berging</item>
+        <item>Bereik</item>
+        <item>Prestatie</item>
+    </string-array>
+</resources>
