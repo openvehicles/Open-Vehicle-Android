@@ -123,6 +123,20 @@
     <string name="err_failed">Failed: %s</string>
     <string name="err_unsupported_operation">Unsupported operation</string>
     <string name="err_unimplemented_operation">Unimplemented operation</string>
+
+    <string name="live">live</string>
+    <string name="ndays">%d days</string>
+    <string name="nhours">%d hours</string>
+    <string name="nmins">%d mins</string>
+    <string name="min1">1 min</string>
+    <string name="justnow">just now</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
+    <string name="slidetocharge">SLIDE TO\nCHARGE</string>
+    <string name="timedcharge">TIMED CHARGE</string>
+    <string name="pushnotifications">Push Notifications</string>
+    <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
+    <string formatted="false" name="charging">CHARGING\n%s %s</string>
     
     <string-array name="en_charger">
     	<item>Standard</item>
