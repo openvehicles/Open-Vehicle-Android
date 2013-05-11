@@ -48,7 +48,7 @@
     <string name="Location">Lieu</string>
     <string name="Setings">Réglages</string>
     <string name="Messages">Messages</string>
-    <string name="Amps">A</string>
+    <string name="Amps">Ampères</string>
     <string name="Close">Fermer</string>
     <string name="Features">Fonctions</string>
     <string name="Parameters">Paramètres</string>
@@ -65,11 +65,11 @@
     <string name="lb_valet_mode">Mode valet</string>
     <string name="lb_valet_mode_on">Activer</string>
     <string name="lb_valet_mode_off">Désactiver</string>
-    <string name="lb_enter_pin">Enter code</string>
+    <string name="lb_enter_pin">Entrer code</string>
     <string name="lb_enter_passwd">Enter mot de passe</string>
     <string name="lb_enter_value">Enter valeur</string>
-    <string name="lb_wrning_charger">AVERTIISEMENT\nDes réglages incorrects peuvent endommager les systèmes électriques!</string>
-    <string name="lb_charger_setting">Réglges chargeur</string>
+    <string name="lb_wrning_charger">AVERTISSEMENT\nDes réglages incorrects peuvent endommager les systèmes électriques du véhicule!</string>
+    <string name="lb_charger_setting">Réglages chargeur</string>
     <string name="lb_communications_problem">Erreur de communication</string>
     <string name="lb_vehicle_id">ID Véhicule</string>
     <string name="lb_vehicle_label">Nom convivial</string>
@@ -77,9 +77,9 @@
     <string name="lb_module_passwd">Mot de passe module OVMS</string>
     <string name="lb_slide_choice_vehicle">Glisser pour choisir une image</string>
     <string name="lb_mmi_ussd_code">Code MMI/USSD</string>
-    <string name="lb_cellular_usage">Usage réseau GSM</string>
-    <string name="lb_reset_ovms_module">Réinitialiser module OVMS</string>
-    <string name="lb_center_map">Centrer carte</string>
+    <string name="lb_cellular_usage">Usage réseau mobile</string>
+    <string name="lb_reset_ovms_module">Réinitialiser le module OVMS</string>
+    <string name="lb_center_map">Centrer la carte</string>
     <string name="lb_ft_digital_speedo">#%d: Tachymètre</string>
     <string name="lb_ft_gps_stream">#%d: GPS temps réel</string>
     <string name="lb_ft_minimum_soc">#%d: Charge batterie minimum</string>
@@ -91,14 +91,14 @@
     <string name="lb_cp_notifications">#%d: Notifications</string>
     <string name="lb_cp_ovms_server_ip">#%d: IP serveur OVMS</string>
     <string name="lb_cp_cellular_network_apn">#%d: APN opérateur GPRS</string>
-    <string name="lb_cp_cellular_network_user">#%d: nom d\'utilisateur GPRS</string>
+    <string name="lb_cp_cellular_network_user">#%d: Nom d\'utilisateur GPRS</string>
     <string name="lb_cp_cellular_network_password">#%d: Mot de passe GPRS</string>
     <string name="lb_cp_vehicle_id">#%d: ID Véhicule</string>
     <string name="lb_cp_server_password">#%d: Mot de passe serveur</string>
     <string name="lb_cp_paranoid_mode">#%d: Mode Paranoïa</string>
     <string name="lb_cp_social_group_1">#%d: Réseau social n°1</string>
     <string name="lb_cp_social_group_2">#%d: Réseau social n°2</string>
-    <string name="lb_ovms_firmware">Firmware OVMS:</string>
+    <string name="lb_ovms_firmware">Version OVMS:</string>
     <string name="lb_vehicle_info">Infos véhicule</string>
     
     <string name="msg_charger_range">Le mode Distance limite la puissance\nUn usage fréquent réduit la durée de vie de la batterie</string>
@@ -116,7 +116,7 @@
     <string name="msg_invalid_passwd">Votre mot de passe doit comporter entre %1$d et %2$d caractères.</string>
     <string name="msg_invalid_id_already_registered">L\'ID véhicule %s est déjà enregistré. Faites un autre choix.</string>
     <string name="msg_delete_this_car">Supprimer ce véhicule?</string>
-    <string name="msg_mmi_ssd_code">Entrer code MMI/USSD, puis taper ENVOYER pour le transmettre à votre opérateur mobile</string>
+    <string name="msg_mmi_ssd_code">Entrer le code MMI/USSD, puis taper ENVOYER pour le transmettre à votre opérateur mobile.</string>
     
     <string name="err_connection_lost">Connexion au serveur OVMS perdue</string>
     <string name="err_check_following">Veuillez vérifier:\n1. L\adresse du serveur OVMS\n2. ID et mot de passe du véhicule</string>
@@ -131,10 +131,4 @@
         <item>Performance</item>
     </string-array>
     
-    <!-- OVMS Debug -->
-    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string>
-
-    <!-- OVMS Release
-    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
-
 </resources>
