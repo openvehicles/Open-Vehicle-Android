@@ -46,7 +46,7 @@
     <string name="Battery">Batterij</string>
     <string name="Car">Wagen</string>
     <string name="Location">Locatie</string>
-    <string name="Setings">Instellingen</string>
+    <string name="Settings">Instellingen</string>
     <string name="Messages">Berichten</string>
     <string name="Amps">Amps</string>
     <string name="Close">Sluiten</string>
@@ -100,7 +100,7 @@
     <string name="lb_cp_social_group_2">#%d: Sociale Groep #2</string>
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Voertuig Info</string>
-    
+
     <string name="msg_charger_range">Bereik Mode beperkt de kracht \ Frequent gebruik zal de levensduur van de batterij verminderen!</string>
     <string name="msg_charger_perform">Frequent gebruik van Prestatie Mode zal de levensduur van de batterij verminderen!</string>
     <string name="msg_wakeup_car">Wakker maken Voertuig&#8230;</string>
@@ -117,17 +117,18 @@
     <string name="msg_invalid_id_already_registered">Voertuig ID %s is reeds geregistreerd. Voer AUB een ander ID in.</string>
     <string name="msg_delete_this_car">Dit voertuig verwijderen?</string>
     <string name="msg_mmi_ssd_code">Voer MMI/USSD Code in, dan tik ZENDEN om de code naar jouw voertuig mobiele provider te sturen</string>
-    
+
     <string name="err_connection_lost">OVMS Server Verbinding Verloren</string>
     <string name="err_check_following">AUB het volgende:\n1. OVMS Server adres\n2. Uw voertuig ID en wachtwoorden</string>
     <string name="err_failed">Mislukt: %s</string>
     <string name="err_unsupported_operation">Niet gesteunde operatie</string>
-    <string name="err_unimplemented_operation">Niet geïmplementeerde operatie</string>
-    
+    <string name="err_unimplemented_operation">Niet geÃ¯mplementeerde operatie</string>
+
     <string-array name="en_charger">
-    	<item>Standaard</item>
+        <item>Standaard</item>
         <item>Berging</item>
         <item>Bereik</item>
         <item>Prestatie</item>
     </string-array>
+    
 </resources>
