@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Bitte warten</string>
+    <string name="Settings">Einstellungen</string>
+    <string name="Range" formatted="false">Reichweite: %s (%s geschätzt)</string>
+    <string name="LastUpdated" formatted="false">Letztes Update: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Abbrechen</string>
+    <string name="Delete">Entfernen</string>
+    <string name="Save">Speichern</string>
+    <string name="Send">Absenden</string>
+    <string name="Error">Fehler</string>
+    <string name="Set">Einstellen</string>
+    <string name="Control">Kontrolle</string>
+    <string name="ServerNameOrIP">Server Adresse (Domain oder IP)</string>
+    <string name="NetPass">Server Passwort</string>
+    <string name="UserPass">Benutzer Passwort (Paranoid Modus)</string>
+    <string name="Quit">App beenden</string>
+    <string name="Edit">Bearbeiten</string>
+    <string name="Yes">Ja</string>
+    <string name="No">Nein</string>
+    <string name="ClearNotifications">Benachrichtigungen löschen</string>
+    <string name="VehicleImage">Fahrzeug-Bild</string>
+    <string name="btnAddCar">Auto hinzufügen</string>
+    <string name="btnCenterMap">Karte zentrieren</string>
+    <string name="ImageParking">Auto parkt</string>
+    <string name="SysWarning">System-Warnung</string>
+    <string name="LockIdle">Auto abgeschlossen</string>
+    <string name="SignalStrength">Signalstärke</string>
+    <string name="ChargerPlug">Lader-Stecker</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
+    <string name="DefaultMode">STANDARD</string>
+    <string name="ChargingOverlay">Laden</string>
+    <string name="BatteryOverlay">Batterie</string>
+    <string name="EstimatedShort">GESCHÄTZTE REICHWEITE</string>
+    <string name="IdealShort">IDEALE REICHWEITE</string>
+    <string name="BatteryText">Batterie</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Wakeup">Aufwachen</string>
+    <string name="Add">Hinzufügen</string>
+    <string name="Save">Speichern</string>
+    <string name="Delete">Entfernen</string>
+    <string name="Battery">Batterie</string>
+    <string name="Car">Auto</string>
+    <string name="Location">Position</string>
+    <string name="Settings">Einstellungen</string>
+    <string name="Messages">Nachrichten</string>
+    <string name="Amps">Ampere</string>
+    <string name="Close">Schließen</string>
+    <string name="Features">Features</string>
+    <string name="Parameters">Parameter</string>
+    <string name="Vehicle">Fahrzeug</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Typ</string>
+    <string name="GMC">GSM</string>
+    <string name="Server">Server</string>
+    <string name="App">App</string>
+
+    <string name="lb_wakeup_car">Auto aufwecken</string>
+    <string name="lb_unlock_car">Auto aufschließen</string>
+    <string name="lb_lock_car">Auto abschließen</string>
+    <string name="lb_valet_mode">Valet Modus</string>
+    <string name="lb_valet_mode_on">Valet An</string>
+    <string name="lb_valet_mode_off">Valet Aus</string>
+    <string name="lb_enter_pin">PIN eingeben</string>
+    <string name="lb_enter_passwd">Passwort eingeben</string>
+    <string name="lb_enter_value">Wert eingeben</string>
+    <string name="lb_wrning_charger">WARNUNG\nFalsche Lader-Einstellungen könnten die Elektronik beschädigen!</string>
+    <string name="lb_charger_setting">Lader-Einstellungen</string>
+    <string name="lb_communications_problem">Kommunikationsproblem</string>
+    <string name="lb_vehicle_id">Fahrzeug ID</string>
+    <string name="lb_vehicle_label">Fahrzeugbeschreibung</string>
+    <string name="lb_server_passwd">OVMS Server-Passwort</string>
+    <string name="lb_module_passwd">OVMS Modul-Passwort</string>
+    <string name="lb_slide_choice_vehicle">Slide um Fahrzeug auszuwählen</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
+    <string name="lb_cellular_usage">Datenverbrauch</string>
+    <string name="lb_reset_ovms_module">OVMS Modul zurücksetzen</string>
+    <string name="lb_center_map">Karte zentrieren</string>
+    <string name="lb_ft_digital_speedo">#%d: Digitaler Tacho</string>
+    <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_car_bits">#%d: Car Bits</string>
+    <string name="lb_ft_can_write">#%d: CAN Write</string>
+    <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
+    <string name="lb_cp_module_password">#%d: Module-Passwort</string>
+    <string name="lb_cp_miles_km">#%d: Meilen/Km</string>
+    <string name="lb_cp_notifications">#%d: Benachrichtigung</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Mobilfunk APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Mobilfunk User</string>
+    <string name="lb_cp_cellular_network_password">#%d: Mobilfunk Passwort</string>
+    <string name="lb_cp_vehicle_id">#%d: Fahrzeug ID</string>
+    <string name="lb_cp_server_password">#%d: Server Passwort</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoid Modus</string>
+    <string name="lb_cp_social_group_1">#%d: Social Gruppe #1</string>
+    <string name="lb_cp_social_group_2">#%d: Social Gruppe #2</string>
+    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_vehicle_info">Fahrzeug Info</string>
+
+    <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
+    <string name="msg_charger_perform">Regelmäßige Verwendung des Performance-Modus\nreduziert die langfristige Akku-Lebensdauer</string>
+    <string name="msg_wakeup_car">Wecke auto auf&#8230;</string>
+    <string name="msg_issuing_homelink">Erteile Homelink-Kommando&#8230;</string>
+    <string name="msg_setting_charge_mc">Setze Lade-Modus und Stromstärke&#8230;</string>
+    <string name="msg_setting_charge_m">Setze Lade-Modus&#8230;</string>
+    <string name="msg_setting_charge_c">Setze Stromstärke&#8230;</string>
+    <string name="msg_starting_charge">Starte Ladung&#8230;</string>
+    <string name="msg_stopping_charge">Stoppe Ladung&#8230;</string>
+    <string name="msg_rebooting_car_module">Starte Auto-Modul neu&#8230;</string>
+    <string name="msg_please_enter_value">Bitte gebe einen korrekten Wert ein</string>
+    <string name="msg_invalid_name">Dein Benutzername muss länger als 3 Zeichen sein und darf keine Sonderzeichen enthalten.</string>
+    <string name="msg_invalid_passwd">Dein passwort muss zwischen %1$d und %2$d Zeichen lang sein.</string>
+    <string name="msg_invalid_id_already_registered">Fahrzeug ID %s ist bereits registriert. Bitte gib eine andere ID ein.</string>
+    <string name="msg_delete_this_car">Dieses Auto löschen?</string>
+    <string name="msg_mmi_ssd_code">Gib den MMI/USSD Code ein und drücke dann auf SENDEN um den Code an deinen Netzbetreiber zu senden</string>
+
+    <string name="err_connection_lost">OVMS Server Verbindung verloren</string>
+    <string name="err_check_following">Bitte überprüfe die folgenden Daten:\n1. OVMS Server Adresse\n2. Deine Fahrzeug-ID und Passwörter</string>
+    <string name="err_failed">Gescheitert: %s</string>
+    <string name="err_unsupported_operation">Nicht unterstütze Operation</string>
+    <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
+
+    <string-array name="en_charger">
+        <item>Standard</item>
+        <item>Storage</item>
+        <item>Range</item>
+        <item>Perform</item>
+    </string-array>
+
+</resources>
