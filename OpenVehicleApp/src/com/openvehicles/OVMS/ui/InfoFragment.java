@@ -44,6 +44,10 @@ public class InfoFragment extends BaseFragment implements OnClickListener, OnRes
 				Bitmap srcBmp = BitmapFactory.decodeResource(scaleLayout.getContext().getResources(),
 						R.drawable.charger_button);
 				int tw = (int) ( srcBmp.getWidth() * (lp.height / srcBmp.getHeight()) );  
+				int th = lp.height;
+				
+				if (tw<40) { tw = 61; } // Sane lower limit
+				if (th<10) { th = 22; } // Sane lower limit
 				
 				Bitmap dstBmp = Bitmap.createScaledBitmap(srcBmp, tw, lp.height, true);
 				srcBmp.recycle();
