@@ -84,7 +84,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="76px"
-			android:text="EL"
+			android:text="FL"
 			android:textStyle="bold" />
 
 		<TextView
@@ -147,7 +147,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="614px"
-			android:text="PEM" />
+			android:text="@string/textPEM" />
 
 		<TextView
 			android:id="@+id/tabCarTextPEM"
@@ -161,7 +161,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="430px"
 			android:layout_y="614px"
-			android:text="BATTERY" />
+			android:text="@string/textBATTERY" />
 
 		<TextView
 			android:id="@+id/tabCarTextBattery"
@@ -175,7 +175,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="215px"
 			android:layout_y="615px"
-			android:text="MOTOR" />
+			android:text="@string/textMOTOR" />
 
 		<TextView
 			android:id="@+id/tabCarTextMotor"
@@ -191,7 +191,7 @@
 			android:layout_x="427px"
 			android:layout_y="308px"
 			android:clickable="true"
-			android:text="HOMELINK"
+			android:text="@string/textHOMELINK"
 			android:textSize="18px" />
 
 		<TextView

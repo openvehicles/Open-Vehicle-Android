@@ -172,27 +172,27 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			tv.setTextColor(0xFFFFFFFF);
 		}
 		else if (minutes == 0) {
-			tv.setText("live");
+			tv.setText(getText(R.string.live));
 			tv.setTextColor(0xFFFFFFFF);
 		}
 		else if (minutes == 1) {
-			tv.setText("1 min");
+			tv.setText(getText(R.string.min1));
 			tv.setTextColor(0xFFFFFFFF);
 		}
 		else if (days > 1) {
-			tv.setText(String.format("%d days",days));
+			tv.setText(String.format(getText(R.string.ndays).toString(),days));
 			tv.setTextColor(0xFFFF0000);
 		}
 		else if (hours > 1) {
-			tv.setText(String.format("%d hours",hours));
+			tv.setText(String.format(getText(R.string.nhours).toString(),hours));
 			tv.setTextColor(0xFFFF0000);
 		}
 		else if (minutes > 60) {
-			tv.setText(String.format("%d mins",minutes));
+			tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
 			tv.setTextColor(0xFFFF0000);			
 		}
 		else {
-			tv.setText(String.format("%d mins",minutes));
+			tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
 			tv.setTextColor(0xFFFFFFFF);
 		}
 
@@ -210,18 +210,18 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			days = minutes/(60*24);
 
 			if (minutes == 0)
-				tv.setText("just now");
+				tv.setText(getText(R.string.justnow));
 			else if (minutes == 1)
 				tv.setText("1 min");
 			else if (days > 1)
-				tv.setText(String.format("%d days",days));
+				tv.setText(String.format(getText(R.string.ndays).toString(),days));
 			else if (hours > 1)
-				tv.setText(String.format("%d hours",hours));
+				tv.setText(String.format(getText(R.string.nhours).toString(),hours));
 			else if (minutes > 60)
-				tv.setText(String.format("%d mins",minutes));
+				tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
 			else
-				tv.setText(String.format("%d mins",minutes));
-		} else {
+				tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
+			} else {
 //			parkinglayoutv.setVisibility(View.INVISIBLE);
 			tv.setVisibility(View.INVISIBLE);
 		}

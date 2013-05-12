@@ -137,7 +137,12 @@
     <string name="pushnotifications">Push Notifications</string>
     <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
     <string formatted="false" name="charging">CHARGING\n%s %s</string>
-    
+
+    <string name="textMOTOR">MOTOR</string>
+    <string name="textPEM">PEM</string>
+    <string name="textBATTERY">BATTERY</string>
+    <string name="textHOMELINK">HOMELINK</string>
+
     <string-array name="en_charger">
     	<item>Standard</item>
         <item>Storage</item>

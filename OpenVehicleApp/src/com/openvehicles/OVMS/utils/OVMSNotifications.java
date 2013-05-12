@@ -7,6 +7,8 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.openvehicles.OVMS.R;
+
 import android.content.Context;
 import android.util.Log;
 
@@ -34,7 +36,8 @@ public class OVMSNotifications {
 			notifications = new ArrayList<NotificationData>();
 			
 			// load demos
-			addNotification("Push Notifications", "Push notifications received for your registered vehicles are archived here.");
+			addNotification(mContext.getText(R.string.pushnotifications).toString(),
+							mContext.getText(R.string.pushnotifications_welcome).toString());
 			save();
 		}
 	}

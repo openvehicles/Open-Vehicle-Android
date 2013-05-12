@@ -17,10 +17,13 @@ import java.util.Random;
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
+import com.openvehicles.OVMS.BaseApp;
+import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 
@@ -255,6 +258,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	}
 	
 	private void handleMessage(String msg) {
+		Context mContext = BaseApp.getApp();
+
 		Log.i(TAG, "handleMessage: " + msg);
 		
 		char code = msg.charAt(0);
@@ -334,7 +339,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_soc = String.format("%d%%",mCarData.car_soc_raw);
 				mCarData.car_distance_units_raw = dataParts[1].toString();
 				mCarData.car_distance_units = (mCarData.car_distance_units_raw.equals("M"))?"m":"km";
-				mCarData.car_speed_units = (mCarData.car_distance_units_raw.equals("M"))?"mph":"kph";
+				mCarData.car_speed_units = (mCarData.car_distance_units_raw.equals("M"))
+						?mContext.getText(R.string.mph).toString()
+						:mContext.getText(R.string.kph).toString();
 				mCarData.car_charge_linevoltage_raw = Integer.parseInt(dataParts[2]);
 				mCarData.car_charge_linevoltage = String.format("%d%s", mCarData.car_charge_linevoltage_raw,"V");
 				mCarData.car_charge_current_raw = Integer.parseInt(dataParts[3]);
