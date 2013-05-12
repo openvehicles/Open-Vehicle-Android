@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-       <string name="app_name">Open Vehicle</string>
+    <string name="app_name">Open Vehicle</string>
     <string name="Loading">Vennligst vent</string>
     <string name="Settings">Innstillinger</string>
     <string name="Range" formatted="false">Rekkevidde: %s (%s estimert)</string>
@@ -31,7 +31,7 @@
     <string name="SignalStrength">Signalstyrke</string>
     <string name="ChargerPlug">Laderplug</string>
     <string name="DefaultCharging">70A/220V</string>
-    <string name="DefaultSlidetoCharge">SKYV FOR\nLADE</string>
+    <string name="DefaultSlidetoCharge">SLIDE FOR Å\nLADE</string>
     <string name="DefaultMode">STANDARD</string>
     <string name="ChargingOverlay">Lader</string>
     <string name="BatteryOverlay">Batteri</string>
@@ -69,9 +69,9 @@
     <string name="lb_enter_passwd">Tast passord</string>
     <string name="lb_enter_value">Angi verdi</string>
     <string name="lb_wrning_charger">ADVARSEL\nFeil lader innstilling kan skade det elektriske anlegget!</string>
-    <string name="lb_charger_setting">Lader Innstilling</string>
-    <string name="lb_communications_problem">Kommunikasjons Problem</string>
-    <string name="lb_vehicle_id">Kjøretøy ID</string>
+    <string name="lb_charger_setting">Laderinnstilling</string>
+    <string name="lb_communications_problem">Kommunikasjonsproblem</string>
+    <string name="lb_vehicle_id">KjøretøyID</string>
     <string name="lb_vehicle_label">Kjøretøy Etikett</string>
     <string name="lb_server_passwd">OVMS Server Passord</string>
     <string name="lb_module_passwd">OVMS Modul Passord</string>
@@ -93,13 +93,13 @@
     <string name="lb_cp_cellular_network_apn">#%d: Mobilnettverk APN</string>
     <string name="lb_cp_cellular_network_user">#%d: Mobilnettverk Bruker</string>
     <string name="lb_cp_cellular_network_password">#%d: Mobilnettverk Passord</string>
-    <string name="lb_cp_vehicle_id">#%d: Kjøretøy ID</string>
+    <string name="lb_cp_vehicle_id">#%d: KjøretøyID</string>
     <string name="lb_cp_server_password">#%d: Server Passord</string>
-    <string name="lb_cp_paranoid_mode">#%d: Paranoid Modus</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoiamodus</string>
     <string name="lb_cp_social_group_1">#%d: Sosialgruppe #1</string>
     <string name="lb_cp_social_group_2">#%d: Sosialgruppe #2</string>
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
-    <string name="lb_vehicle_info">Kjøretøy Info</string>
+    <string name="lb_vehicle_info">Kjøretøyinfo</string>
 
     <string name="msg_charger_range">Rekkevidde Modus begrenser effekten\nGjentatt bruk vil redusere batteri levetiden</string>
     <string name="msg_charger_perform">Gjentatt bruk av Performance Modus\nVil redusere batteri levetiden</string>
@@ -107,23 +107,37 @@
     <string name="msg_issuing_homelink">Utfører Homelink Kommando&#8230;</string>
     <string name="msg_setting_charge_mc">Setter Lademodus og Strømstyrke&#8230;</string>
     <string name="msg_setting_charge_m">Setter Lademodus&#8230;</string>
-    <string name="msg_setting_charge_c">Setter Lade Strøm&#8230;</string>
+    <string name="msg_setting_charge_c">Setter Ladestrøm&#8230;</string>
     <string name="msg_starting_charge">Starter Lading&#8230;</string>
     <string name="msg_stopping_charge">Stopper Lading&#8230;</string>
     <string name="msg_rebooting_car_module">Restarter Bilmodul&#8230;</string>
     <string name="msg_please_enter_value">Vennligst angi korrekt verdi</string>
-    <string name="msg_invalid_name">Dit brukernavn må være lenger en 3 tegn og kan ikke inneholde spesialtegn.</string>
+    <string name="msg_invalid_name">Ditt brukernavn må være lenger en 3 tegn og kan ikke inneholde spesialtegn.</string>
     <string name="msg_invalid_passwd">Ditt passord må være  mellom %1$d og %2$d tegn langt.</string>
     <string name="msg_invalid_id_already_registered">Kjøretøy ID %s er allerede registrert. Vennligst angi en annen ID.</string>
     <string name="msg_delete_this_car">Slett denne bilen?</string>
-    <string name="msg_mmi_ssd_code">Angi MMI/USSD Kode, trykk så SEND for å sende koden til ditt kjøretøys mobil operatør</string>
+    <string name="msg_mmi_ssd_code">Angi MMI/USSD Kode, trykk så SEND for å sende koden til ditt kjøretøys mobiloperatør</string>
 
     <string name="err_connection_lost">Mistet OVMS Server tilkoblingen</string>
     <string name="err_check_following">Vennligst sjekk følgende:\n1. OVMS Server addresse\n2. Din kjøretøy ID and passord</string>
     <string name="err_failed">Feilet: %s</string>
     <string name="err_unsupported_operation">Ustøttet operasjon</string>
-    <string name="err_unimplemented_operation">Unimplementert operasjon</string>
+    <string name="err_unimplemented_operation">Uimplementert operasjon</string>
 
+    <string name="live">live</string>
+    <string name="ndays">%d dager</string>
+    <string name="nhours">%d timer</string>
+    <string name="nmins">%d minutter</string>
+    <string name="min1">1 minutt</string>
+    <string name="justnow">nå</string>
+    <string name="mph">mph</string>
+    <string name="kph">km/t</string>
+    <string name="slidetocharge">SLIDE FOR Å\nLADE</string>
+    <string name="timedcharge">TIDSSTYRT LADING</string>
+    <string name="pushnotifications">Push Melding</string>
+    <string name="pushnotifications_welcome">Push meldinger mottatt for ditt registrerte kjøretøy er arkivert her.</string>
+    <string formatted="false" name="charging">LADER\n%s %s</string>
+    
     <string-array name="en_charger">
         <item>Standard</item>
         <item>Lagring</item>

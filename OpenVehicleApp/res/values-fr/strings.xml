@@ -117,15 +117,29 @@
     <string name="msg_invalid_id_already_registered">L\'ID véhicule %s est déjà enregistré. Faites un autre choix.</string>
     <string name="msg_delete_this_car">Supprimer ce véhicule?</string>
     <string name="msg_mmi_ssd_code">Entrer le code MMI/USSD, puis taper ENVOYER pour le transmettre à votre opérateur mobile.</string>
-    
+
     <string name="err_connection_lost">Connexion au serveur OVMS perdue</string>
-    <string name="err_check_following">Veuillez vérifier:\n1. L\adresse du serveur OVMS\n2. ID et mot de passe du véhicule</string>
+    <string name="err_check_following">Veuillez vérifier:\n1. L\'adresse du serveur OVMS\n2. ID et mot de passe du véhicule</string>
     <string name="err_failed">Echec: %s</string>
     <string name="err_unsupported_operation">Opération non supportée</string>
     <string name="err_unimplemented_operation">Opération non implémentée</string>
-    
+
+    <string name="live">en direct</string>
+    <string name="ndays">%d jours</string>
+    <string name="nhours">%d heures</string>
+    <string name="nmins">%d mins</string>
+    <string name="min1">1 min</string>
+    <string name="justnow">à l\'instant</string>
+    <string name="mph">miles/h</string>
+    <string name="kph">km/h</string>
+    <string name="slidetocharge">GLISSER POUR\nLANCER LA CHARGE</string>
+    <string name="timedcharge">CHARGE DIFFÉRÉE</string>
+    <string name="pushnotifications">Messages de notification</string>
+    <string name="pushnotifications_welcome">Les messages de notification reçus pour les véhicules que vous avez enregistrés sont archivés ici.</string>
+    <string formatted="false" name="charging">EN CHARGE\n%s %s</string>
+
     <string-array name="en_charger">
-    	<item>Standard</item>
+        <item>Standard</item>
         <item>Capacité</item>
         <item>Distance</item>
         <item>Performance</item>

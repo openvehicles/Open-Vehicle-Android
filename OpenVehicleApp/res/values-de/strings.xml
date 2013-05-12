@@ -124,6 +124,20 @@
     <string name="err_unsupported_operation">Nicht unterstütze Operation</string>
     <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
 
+    <string name="live">live</string>
+    <string name="ndays">%d Tage</string>
+    <string name="nhours">%d Stunden</string>
+    <string name="nmins">%d Minuten</string>
+    <string name="min1">1 Minute</string>
+    <string name="justnow">Gerade eben</string>
+    <string name="mph">mph</string>
+    <string name="kph">kmh</string>
+    <string name="slidetocharge">SLIDE TO\nCHARGE</string>
+    <string name="timedcharge">GEPLANTE LADUNG</string>
+    <string name="pushnotifications">Push-Benachrichtigungen</string>
+    <string name="pushnotifications_welcome">Erhaltene Push-Nachrichten für deine registrierten Fahrzeuge werden hier archiviert.</string>
+    <string formatted="false" name="charging">LADEN\n%s %s</string>
+
     <string-array name="en_charger">
         <item>Standard</item>
         <item>Storage</item>
