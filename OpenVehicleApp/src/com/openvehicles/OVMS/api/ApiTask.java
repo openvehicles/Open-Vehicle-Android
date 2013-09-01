@@ -383,6 +383,10 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					mCarData.stale_chargetimer = DataStale.Good;
 
 			}
+			if (dataParts.length >= 10) {
+				mCarData.car_CAC = Double.parseDouble(dataParts[18]);
+			}
+
 			Log.v(TAG, "Notify Vehicle Status Update: " + mCarData.sel_vehicleid);
 			
 			publishProgress(MsgType.msgUpdate);

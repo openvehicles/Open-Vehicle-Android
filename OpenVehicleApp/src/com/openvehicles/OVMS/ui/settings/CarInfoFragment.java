@@ -51,6 +51,7 @@ public class CarInfoFragment extends BaseFragment {
 		Ui.setValue(rootView, R.id.txt_server, mCarData.server_firmware);
 		Ui.setValue(rootView, R.id.txt_car, mCarData.car_firmware);
 		Ui.setValue(rootView, R.id.txt_gsm, mCarData.car_gsm_signal);
+		Ui.setValue(rootView, R.id.txt_cac, String.format("%.1f",mCarData.car_CAC));
 		
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(context, "signal_strength_" + mCarData.car_gsm_bars));

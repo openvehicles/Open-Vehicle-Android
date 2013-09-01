@@ -64,6 +64,7 @@ public class CarData implements Serializable {
 	public String server_firmware = "";
 	public double car_12vline_voltage;
 	public DataStale stale_firmware = DataStale.NoValue;
+	public double car_CAC = 0.0;
 
 	// Status
 	public String car_soc = "";

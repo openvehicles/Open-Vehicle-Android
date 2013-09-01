@@ -52,11 +52,18 @@
 		android:layout_marginLeft="8dp"
 		android:layout_toRightOf="@id/img_signal_rssi" />
 
-    <TextView
+	<TextView
+		android:id="@+id/txt_cac"
+		style="@style/TextValue"
+		android:layout_alignLeft="@id/txt_type"
+		android:layout_alignRight="@id/txt_gsm"
+		android:layout_below="@id/txt_gsm" />
+
+	<TextView
     	android:id="@+id/ac_02"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_below="@id/txt_gsm"
+    	android:layout_below="@id/txt_cac"
     	android:layout_marginTop="10dp"
         android:layout_marginBottom="4dp"
     	android:text="@string/lb_ovms_firmware" />
@@ -106,6 +113,14 @@
 		android:layout_alignParentLeft="true"
 		android:text="@string/GMC" />
 
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@id/txt_cac"
+		android:layout_alignBottom="@id/txt_cac"
+		android:layout_alignParentLeft="true"
+		android:text="@string/CAC" />
+	
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
