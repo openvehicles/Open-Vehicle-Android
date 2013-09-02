@@ -58,7 +58,7 @@
     <string name="GMC">GSM</string>
     <string name="Server">Serveur</string>
     <string name="App">Appli</string>
-    
+
     <string name="lb_wakeup_car">Réveiller la voiture</string>
     <string name="lb_unlock_car">Déverrouiller</string>
     <string name="lb_lock_car">Verrouiller</string>
@@ -100,7 +100,7 @@
     <string name="lb_cp_social_group_2">#%d: Réseau social n°2</string>
     <string name="lb_ovms_firmware">Version OVMS:</string>
     <string name="lb_vehicle_info">Infos véhicule</string>
-    
+
     <string name="msg_charger_range">Le mode Distance limite la puissance\nUn usage fréquent réduit la durée de vie de la batterie</string>
     <string name="msg_charger_perform">Un usage fréquent du mode Performance\nréduit la durée de vie de la batterie</string>
     <string name="msg_wakeup_car">Réveil du véhicule&#8230;</string>
@@ -127,16 +127,21 @@
     <string name="live">en direct</string>
     <string name="ndays">%d jours</string>
     <string name="nhours">%d heures</string>
-    <string name="nmins">%d mins</string>
+    <string name="nmins">%d min</string>
     <string name="min1">1 min</string>
     <string name="justnow">à l\'instant</string>
     <string name="mph">miles/h</string>
     <string name="kph">km/h</string>
-    <string name="slidetocharge">GLISSER POUR\nLANCER LA CHARGE</string>
+    <string name="slidetocharge">GLISSER\nCHARGE</string>
     <string name="timedcharge">CHARGE DIFFÉRÉE</string>
     <string name="pushnotifications">Messages de notification</string>
     <string name="pushnotifications_welcome">Les messages de notification reçus pour les véhicules que vous avez enregistrés sont archivés ici.</string>
     <string formatted="false" name="charging">EN CHARGE\n%s %s</string>
+
+    <string name="textMOTOR">MOTEUR</string>
+    <string name="textPEM">M.E.P</string>
+    <string name="textBATTERY">BATTERIE</string>
+    <string name="textHOMELINK">HOMELINK</string>
 
     <string-array name="en_charger">
         <item>Standard</item>
@@ -144,5 +149,4 @@
         <item>Distance</item>
         <item>Performance</item>
     </string-array>
-    
 </resources>
