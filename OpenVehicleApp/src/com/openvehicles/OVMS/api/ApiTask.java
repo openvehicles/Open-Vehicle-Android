@@ -383,7 +383,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					mCarData.stale_chargetimer = DataStale.Good;
 
 			}
-			if (dataParts.length >= 10) {
+			if (dataParts.length >= 19) {
 				mCarData.car_CAC = Double.parseDouble(dataParts[18]);
 			}
 
