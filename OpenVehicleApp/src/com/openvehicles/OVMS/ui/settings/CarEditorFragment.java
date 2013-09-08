@@ -220,6 +220,10 @@ public class CarEditorFragment extends SherlockFragment {
 		"car_twizy_diamondblackwithivygreen",
 		"car_twizy_snowwhiteandflameorange",
 		"car_twizy_snowwhiteandurbanblue",
-		"car_twizy_snowwhitewithblack"
+		"car_twizy_snowwhitewithblack",
+		"car_thinkcity_brightred",
+		"car_thinkcity_citrusyellow",
+		"car_thinkcity_classicblack",
+		"car_thinkcity_skyblue"
 	 };		
 }
