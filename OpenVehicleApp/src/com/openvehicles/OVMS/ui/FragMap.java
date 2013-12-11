@@ -99,6 +99,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				new DemoClusterOptionsProvider(getResources()))
 				.addMarkersDynamically(true));
 		map.setOnInfoWindowClickListener(this);
+    	map.getUiSettings().setRotateGesturesEnabled(false); // Disable two-finger rotation gesture
 		// setUpClusteringViews();
 		setHasOptionsMenu(true);
 		flag = true;
