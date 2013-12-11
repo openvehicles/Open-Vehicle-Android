@@ -14,25 +14,29 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:text="CHARGING STATION"
+            android:layout_marginLeft="5dp"
+            android:text="CHARGING STATIONS"
             android:textColor="#000"
             android:textSize="15sp" />
     </RelativeLayout>
 
-    <LinearLayout
-        android:paddingLeft="35dp"
-        android:paddingRight="40dp" 
-        android:id="@+id/cluster_views"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
+    <RelativeLayout
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:paddingLeft="15dp"
+      android:paddingRight="15dp"
+      android:paddingTop="2dp"
+      android:paddingBottom="2dp"
+      android:id="@+id/cluster_views" >
 
         <TextView
             android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Open Charge Map"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
             android:textColor="#000" />
 
         <CheckBox
@@ -40,15 +44,40 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:checked="true" />
-    </LinearLayout>
+        
+    </RelativeLayout>
 
-    <SeekBar
-        android:id="@+id/seekbar_cluster_size"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:max="4"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp" />
+        android:orientation="vertical"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp" 
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp" >
 
+        <TextView
+            android:id="@+id/seekbar_cluster_size_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center_vertical"
+            android:text="Clustering"
+            android:textColor="#000" />
+
+        <SeekBar
+            android:id="@+id/seekbar_cluster_size"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/seekbar_cluster_size_label"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:max="4"
+            android:paddingLeft="100dp" />
+    </RelativeLayout>
+    
 </LinearLayout>
