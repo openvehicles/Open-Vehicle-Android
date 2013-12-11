@@ -435,7 +435,10 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		for (int i = 0; i < al_title.size(); i++) {
 			if (marker.getTitle().endsWith(al_title.get(i))) {
 				DetailFragment.address = al_address.get(i) + "";
-				DetailFragment.number = al_numberofpoints.get(i) + "";
+				if (! al_numberofpoints.get(i).equals("null"))
+				  DetailFragment.number = al_numberofpoints.get(i) + "";
+				else
+			      DetailFragment.number = "";
 				DetailFragment.title = al_optr.get(i) + "";
 				DetailFragment.Usage = al_usage.get(i) + "";
 				DetailFragment.level1 = al_level1.get(i) + "";
