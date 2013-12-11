@@ -159,5 +159,6 @@
 
     <!-- OVMS Google Play Release -->
     <string name="map_api_key_debug">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+    <string name="connections">Connections</string>
 
 </resources>

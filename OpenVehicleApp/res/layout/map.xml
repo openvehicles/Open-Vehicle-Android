@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:id="@+id/fm"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+<!--     <fragment -->
+<!--         android:id="@+id/map" -->
+<!--         android:name="pl.mg6.android.maps.extensions.SupportMapFragment" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="match_parent" /> -->
+
+</LinearLayout>

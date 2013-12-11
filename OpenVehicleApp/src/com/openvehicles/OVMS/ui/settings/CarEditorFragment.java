@@ -18,6 +18,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
@@ -132,6 +133,7 @@ public class CarEditorFragment extends SherlockFragment {
 			mCarData.sel_server_password = Ui.getValidValue(rootView, R.id.txt_server_passwd, new PasswdValidator(4, 16)); 
 			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 16));
 			mCarData.sel_vehicle_image = sAvailableColors[mGalleryCar.getSelectedItemPosition()];
+
 		} catch (ValidationException e) {
 			Log.e("Validation", e.getMessage(), e);
 			return;
@@ -142,6 +144,7 @@ public class CarEditorFragment extends SherlockFragment {
 		}
 		
 		CarsStorage.get().saveStoredCars();
+		
 		getActivity().finish();
 	}
 	
@@ -154,6 +157,9 @@ public class CarEditorFragment extends SherlockFragment {
 		Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);
 		Ui.setValue(rootView, R.id.txt_module_passwd, mCarData.sel_module_password);
 
+		AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
+		System.out.println("sel_vehicle_label" + mCarData.sel_vehicle_label);
+		appPrefes.SaveData("sel_vehicle_label", mCarData.sel_vehicle_label);
 		int index = -1;
 		for (String imgRes: sAvailableColors) {
 			index++;
