@@ -72,8 +72,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	AppPrefes appPrefes;
 	static boolean flag = true;
 	static boolean flag1 = true;
-	private static final double[] CLUSTER_SIZES = new double[] { 180, 160, 144,
-			120, 96 };
+	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
 	View rootView;
 	boolean autotrack = true;
 	static Updateclust updateclust;
