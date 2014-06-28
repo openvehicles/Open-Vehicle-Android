@@ -32,6 +32,16 @@
 	        android:layout_marginTop="8dp"
 	        android:hint="@string/lb_module_passwd"
 	        android:inputType="textPassword"/>
+
+	    <EditText
+	        android:id="@+id/txt_server_address"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_marginTop="8dp"
+	        android:ems="10"
+	        android:hint="@string/ServerNameOrIP"
+	        android:inputType="text"
+	        android:text="tmc.openvehicles.com" />
 	
 	    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 	        android:layout_marginTop="8dp"

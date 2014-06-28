@@ -76,7 +76,7 @@
     <string name="lb_vehicle_label">Vehicle Label</string>
     <string name="lb_server_passwd">OVMS Server Password</string>
     <string name="lb_module_passwd">OVMS Module Password</string>
-    <string name="lb_slide_choice_vehicle">Slide for choice vehicle</string>
+    <string name="lb_slide_choice_vehicle">Slide for vehicle choice</string>
     <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
     <string name="lb_cellular_usage">Cellular Usage</string>
     <string name="lb_reset_ovms_module">Reset OVMS Module</string>
