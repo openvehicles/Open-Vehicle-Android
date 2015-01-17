@@ -41,12 +41,9 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Wakeup</string>
     <string name="Add">Add</string>
-    <string name="Save">Save</string>
-    <string name="Delete">Delete</string>
     <string name="Battery">Battery</string>
     <string name="Car">Car</string>
     <string name="Location">Location</string>
-    <string name="Settings">Settings</string>
     <string name="Messages">Messages</string>
     <string name="Amps">Amps</string>
     <string name="Close">Close</string>
@@ -57,6 +54,7 @@
     <string name="Type">Type</string>
     <string name="GMC">GSM</string>
     <string name="CAC">CAC</string>
+    <string name="Info12V">12V</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     

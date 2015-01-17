@@ -41,12 +41,9 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Våkne</string>
     <string name="Add">Legg Til</string>
-    <string name="Save">Lagre</string>
-    <string name="Delete">Slett</string>
     <string name="Battery">Batteri</string>
     <string name="Car">Bil</string>
     <string name="Location">Lokasjon</string>
-    <string name="Settings">Innstillinger</string>
     <string name="Messages">Meldinger</string>
     <string name="Amps">Ampere</string>
     <string name="Close">Lukk</string>

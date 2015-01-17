@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.luttu.Main;
 import com.openvehicles.OVMS.ui.utils.Database;
@@ -52,7 +53,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 	@Override
 	protected Void doInBackground(Void... params) {
 		// TODO Auto-generated method stub
-		System.out.println("doing" + al_lat.size());
+		Log.d("OCM", "GetMapDetails.doInBackground old al_lat.size=" + al_lat.size());
 		getdata();
 		for (int i = 0; i < al_lat.size(); i++) {
 			database.insert_mapdetails(al_lat.get(i), al_lng.get(i),
@@ -61,7 +62,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 					al_level2.get(i), al_connction_id.get(i),
 					al_connction1.get(i), al_numberofpoints.get(i));
 		}
-		System.out.println("do" + al_lat.size());
+		Log.d("OCM", "GetMapDetails.doInBackground new al_lat.size=" + al_lat.size());
 		return null;
 	}
 

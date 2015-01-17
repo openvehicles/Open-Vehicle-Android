@@ -41,12 +41,9 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Aufwachen</string>
     <string name="Add">Hinzufügen</string>
-    <string name="Save">Speichern</string>
-    <string name="Delete">Entfernen</string>
     <string name="Battery">Batterie</string>
     <string name="Car">Auto</string>
     <string name="Location">Position</string>
-    <string name="Settings">Einstellungen</string>
     <string name="Messages">Nachrichten</string>
     <string name="Amps">Ampere</string>
     <string name="Close">Schließen</string>

@@ -41,12 +41,9 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Préconditionner l\'habitacle</string>
     <string name="Add">Ajouter</string>
-    <string name="Save">Enregistrer</string>
-    <string name="Delete">Supprimer</string>
     <string name="Battery">Batterie</string>
     <string name="Car">Véhicule</string>
     <string name="Location">Lieu</string>
-    <string name="Settings">Réglages</string>
     <string name="Messages">Messages</string>
     <string name="Amps">Ampères</string>
     <string name="Close">Fermer</string>

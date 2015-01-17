@@ -87,9 +87,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		rootView = inflater.inflate(R.layout.mmap, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 		updateclust = this;
-		url = "http://api.openchargemap.io/v2/poi/?output=json&countrycode=US&maxresults=100";
-		url = "http://www.openchargemap.org/api/?output=json&latitude=37.410866&longitude=-122.001946&distance=285&distanceunit=KM&maxresults=500";
-		System.out.println("url" + url);
+		url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude=37.410866&longitude=-122.001946&distance=285&distanceunit=KM&maxresults=50";
 		database = new Database(getActivity());
 		FragmentManager fm = getActivity().getSupportFragmentManager();
 		SupportMapFragment f = (SupportMapFragment) fm
@@ -181,7 +179,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (item.getItemId() == 1) {
 			changemenuitem(1);
 		} else if (item.getItemId() == 2) {
-			url = "http://www.openchargemap.org/api/?output=json&latitude="
+			url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
 					+ lat
 					+ "&longitude="
 					+ lng
@@ -281,7 +279,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	@Override
 	public void after(boolean flag) {
 		// TODO Auto-generated method stub
-		System.out.println("aaaaaaaaaaaaaaaa");
+		Log.d("OCM", "FragMap.after clear=" + flag);
 		al_lat.clear();
 		al_lng.clear();
 		al_title.clear();
@@ -309,6 +307,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			}
 		}
 		Cursor cursor = database.get_mapdetails();
+		Log.d("OCM", "FragMap.after addMarkers cnt=" + cursor.getCount());
 		if (cursor.getCount() != 0) {
 			if (cursor.moveToFirst()) {
 				do {
@@ -347,6 +346,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	public void filter(boolean flag) {
 		// TODO Auto-generated method stub
+		Log.d("OCM", "FragMap.filter clear=" + flag);
 		if (flag) {
 			map.clear();
 		} else {
@@ -361,7 +361,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				}
 			}
 		}
-		System.out.println("aaaaaaaaaaaaaaaa");
 		al_title.clear();
 		al_lat.clear();
 		al_lng.clear();
@@ -375,6 +374,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		al_usage.clear();
 		al_status.clear();
 		Cursor cursor = database.get_mapdetails(appPrefes.getData("Id"));
+		Log.d("OCM", "FragMap.filter addMarkers cnt=" + cursor.getCount());
 		if (cursor.getCount() != 0) {
 			if (cursor.moveToFirst()) {
 				do {
@@ -517,7 +517,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				+ pCarData.car_range_estimated_raw);
 		addCircles(pCarData.car_range_ideal_raw,
 				pCarData.car_range_estimated_raw);
-		url = "http://www.openchargemap.org/api/?output=json&latitude="
+		url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
 				+ pCarData.car_latitude + "&longitude="
 				+ pCarData.car_longitude
 				+ "&distance=285&distanceunit=KM&maxresults=500";

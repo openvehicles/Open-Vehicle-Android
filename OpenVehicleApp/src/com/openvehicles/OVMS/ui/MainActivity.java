@@ -55,7 +55,7 @@ public class MainActivity extends ApiActivity implements
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setSupportProgressBarIndeterminateVisibility(false);
 		getdata();
-		String url = "http://www.openchargemap.org/api/?output=json&action=getcorereferencedata";
+		String url = "http://api.openchargemap.io/v2/referencedata/";
 		ConnectionList connectionList = new ConnectionList(this, this, url,
 				true);
 		registerReceiver(mApiEventReceiver, new IntentFilter(getPackageName()
@@ -137,7 +137,7 @@ public class MainActivity extends ApiActivity implements
 		}
 		String[] strings = lat.split("\\.");
 		String[] strings2 = lng.split("\\.");
-		String url = "http://www.openchargemap.org/api/?output=json&latitude="
+		String url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
 				+ lat + "&longitude=" + lng
 				+ "&distance=285&distanceunit=KM&maxresults=500";
 		int latitude = Integer.parseInt(strings[0]);
@@ -333,7 +333,7 @@ public class MainActivity extends ApiActivity implements
 		GetMapDetails getMapDetails = new GetMapDetails(MainActivity.this, url,
 				this);
 		getMapDetails.execute();
-		System.out.println("url" + url);
+		Log.d("OCM", "MainActivity.upatelocation url=" + url);
 	}
 
 }

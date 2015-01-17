@@ -514,6 +514,12 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					mCarData.car_doors4_raw = dataField;
 					mCarData.car_alarm_sounding = ((dataField & 0x02) == 0x02);
 				}
+				if (dataParts.length >= 18) {
+					mCarData.car_12vline_ref = Double.parseDouble(dataParts[16]);
+					dataField = Integer.parseInt(dataParts[17]);
+					mCarData.car_doors5_raw = dataField;
+					mCarData.car_charging_12v = ((dataField & 0x10) == 0x10);
+				}
 
 				publishProgress(MsgType.msgUpdate);
 			}

@@ -32,6 +32,7 @@ public class CarData implements Serializable {
 	public boolean car_chargeport_open = false;
 	public boolean car_pilot_present = false;
 	public boolean car_charging = false;
+	public boolean car_charging_12v = false;
 	public boolean car_handbrake_on = false;
 	public boolean car_started = false;
 	public boolean car_locked = false;
@@ -63,6 +64,7 @@ public class CarData implements Serializable {
 	public int car_gsm_bars = 0;
 	public String server_firmware = "";
 	public double car_12vline_voltage;
+	public double car_12vline_ref;
 	public DataStale stale_firmware = DataStale.NoValue;
 	public double car_CAC = 0.0;
 
@@ -113,6 +115,7 @@ public class CarData implements Serializable {
 	public int car_doors2_raw = 0;
 	public int car_doors3_raw = 0;
 	public int car_doors4_raw = 0;
+	public int car_doors5_raw = 0;
 	public int car_lockunlock_raw = 0;
 	public int car_temp_pem_raw = 0;
 	public int car_temp_motor_raw = 0;
