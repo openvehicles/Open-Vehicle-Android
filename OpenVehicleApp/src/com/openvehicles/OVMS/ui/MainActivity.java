@@ -48,13 +48,17 @@ public class MainActivity extends ApiActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+
 		super.onCreate(savedInstanceState);
 		appPrefes = new AppPrefes(this, "ovms");
 		database = new Database(this);
-		updateLocation = this;
+
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setSupportProgressBarIndeterminateVisibility(false);
-		getdata();
+
+		// OCM init:
+		updateLocation = this;
+		updatelocation();
 		String url = "http://api.openchargemap.io/v2/referencedata/";
 		ConnectionList connectionList = new ConnectionList(this, this, url,
 				true);
@@ -122,34 +126,6 @@ public class MainActivity extends ApiActivity implements
 			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
 		}
 		onNewIntent(getIntent());
-	}
-
-	private void getdata() {
-		String lat = "37.410866";
-		String lng = "-122.001946";
-		if (appPrefes.getData("lat_main").equals("")) {
-			appPrefes.SaveData("lat_main", lat);
-			appPrefes.SaveData("lng_main", lng);
-			System.out.println("nulllllllllllllll");
-		} else {
-			lat = appPrefes.getData("lat_main");
-			lng = appPrefes.getData("lng_main");
-		}
-		String[] strings = lat.split("\\.");
-		String[] strings2 = lng.split("\\.");
-		String url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
-				+ lat + "&longitude=" + lng
-				+ "&distance=285&distanceunit=KM&maxresults=500";
-		int latitude = Integer.parseInt(strings[0]);
-		int longitude = Integer.parseInt(strings2[0]);
-		Cursor cursor = database.getlatlngdetail(latitude, longitude);
-		if (cursor.moveToFirst()) {
-		} else {
-			database.addlatlngdetail(latitude, longitude);
-			System.out.println("lat" + strings[0] + " app"
-					+ appPrefes.getData("lat_main"));
-			new GetMapDetails(MainActivity.this, url, this).execute();
-		}
 	}
 
 	@Override
@@ -327,13 +303,79 @@ public class MainActivity extends ApiActivity implements
 
 	}
 
+
 	@Override
-	public void updatelocation(String url) {
-		// TODO Auto-generated method stub
-		GetMapDetails getMapDetails = new GetMapDetails(MainActivity.this, url,
-				this);
-		getMapDetails.execute();
-		Log.d("OCM", "MainActivity.upatelocation url=" + url);
+	public void updatelocation() {
+
+		// get car location:
+
+		String lat = "37.410866";
+		String lng = "-122.001946";
+
+		if (appPrefes.getData("lat_main").equals("")) {
+			// init car position:
+			appPrefes.SaveData("lat_main", lat);
+			appPrefes.SaveData("lng_main", lng);
+			System.out.println("nulllllllllllllll");
+		} else {
+			// get current car position:
+			lat = appPrefes.getData("lat_main");
+			lng = appPrefes.getData("lng_main");
+		}
+
+
+		// As OCM does not yet support incremental queries,
+		// we're using a cache with key = int(lat/lng)
+		// resulting in a tile size of max. 112 x 112 km
+		// = diagonal max 159 km
+		// The API call will fetch a fixed radius of 160 km
+		// covering all adjacent tiles.
+
+		// check OCM cache for key int(lat/lng):
+
+		boolean cache_valid = true;
+
+		String[] strings = lat.split("\\.");
+		String[] strings2 = lng.split("\\.");
+		int latitude = Integer.parseInt(strings[0]);
+		int longitude = Integer.parseInt(strings2[0]);
+
+		Cursor cursor = database.getlatlngdetail(latitude, longitude);
+		if (cursor.getCount() == 0) {
+			cache_valid = false;
+		}
+		else if (cursor.moveToFirst()) {
+			// check if last tile update was more than 4 weeks (28 days) ago:
+			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
+			long now = System.currentTimeMillis() / 1000;
+			if (now > last_update + (3600 * 24 * 28))
+				cache_valid = false;
+		}
+
+		if (cache_valid) {
+			Log.d("OCM", "MainActivity.getdata: cache valid for lat/lng=" + latitude + "/" + longitude
+					+ ", lat_main=" + appPrefes.getData("lat_main"));
+		} else {
+			database.addlatlngdetail(latitude, longitude);
+
+			// make OCM API URL:
+			String maxresults = appPrefes.getData("maxresults");
+			String url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false"
+					+ "&latitude=" + lat
+					+ "&longitude=" + lng
+					+ "&distance=160" // see above
+					+ "&distanceunit=KM"
+					+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults);
+
+			Log.d("OCM", "MainActivity.getdata: new fetch for lat/lng=" + latitude + "/" + longitude
+					+ ", lat_main=" + appPrefes.getData("lat_main")
+					+ " => url=" + url);
+
+			// start fetcher:
+			new GetMapDetails(MainActivity.this, url, this).execute();
+
+		}
+
 	}
 
 }

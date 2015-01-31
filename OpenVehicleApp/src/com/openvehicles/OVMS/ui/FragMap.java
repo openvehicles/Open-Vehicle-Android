@@ -52,8 +52,8 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		afterasytask, OnClickListener, Updateclust {
-	String url;
 	private GoogleMap map;
+	ArrayList<String> al_cpid = new ArrayList<String>();
 	ArrayList<String> al_lat = new ArrayList<String>();
 	ArrayList<String> al_lng = new ArrayList<String>();
 	ArrayList<String> al_title = new ArrayList<String>();
@@ -77,9 +77,14 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	boolean autotrack = true;
 	static Updateclust updateclust;
 
+	static double lat = 0, lng = 0;
+	static int maxrange = 160;
+	static String distance_units = "KM";
+
 	public interface UpdateLocation {
-		public void updatelocation(String url);
+		public void updatelocation();
 	}
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,7 +92,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		rootView = inflater.inflate(R.layout.mmap, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 		updateclust = this;
-		url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude=37.410866&longitude=-122.001946&distance=285&distanceunit=KM&maxresults=50";
+
+		lat = 37.410866;
+		lng = -122.001946;
+		maxrange = 285;
+		distance_units = "KM";
+
 		database = new Database(getActivity());
 		FragmentManager fm = getActivity().getSupportFragmentManager();
 		SupportMapFragment f = (SupportMapFragment) fm
@@ -102,8 +112,10 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		setHasOptionsMenu(true);
 		flag = true;
 		// after();
+
 		return rootView;
 	}
+
 
 	void updateClustering(int clusterSizeIndex, boolean enabled) {
 		ClusteringSettings clusteringSettings = new ClusteringSettings();
@@ -114,11 +126,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			// MarkerGenerator.addMarkers(map, al_title.get(i), lis.get(i)
 			// .getPosition());
 			// }
-			if (appPrefes.getData("filter").equals("off")) {
-				after(false);
-			} else {
-				filter(false);
-			}
+			after(false);
 			clusteringSettings
 					.clusterOptionsProvider(new DemoClusterOptionsProvider(
 							getResources()));
@@ -167,7 +175,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		} else {
 			sub.add(0, 2, 1, "Filtered Stations OFF");
 		}
-		sub.add(0, 3, 2, "Only show Stations in range OFF");
+		if (appPrefes.getData("inrange").equals("off")) {
+			sub.add(0, 3, 2, "Only show Stations in range ON");
+		} else {
+			sub.add(0, 3, 2, "Only show Stations in range OFF");
+		}
 		sub.add(0, 4, 3, "Settings");
 		sub.getItem().setShowAsAction(
 				MenuItem.SHOW_AS_ACTION_ALWAYS
@@ -179,14 +191,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (item.getItemId() == 1) {
 			changemenuitem(1);
 		} else if (item.getItemId() == 2) {
-			url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
-					+ lat
-					+ "&longitude="
-					+ lng
-					+ "&distance=285&distanceunit=KM&maxresults=500&connectiontypeid="
-					+ appPrefes.getData("Id");
-			System.out.println("menu" + url);
-			// getdata();
 			changemenuitem(2);
 		} else if (item.getItemId() == 3) {
 			changemenuitem(3);
@@ -213,18 +217,20 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			if (turnoff.getTitle().toString().equals("Filtered Stations ON")) {
 				appPrefes.SaveData("filter", "on");
 				turnoff.setTitle("Filtered Stations OFF");
-				filter(false);
 			} else {
 				appPrefes.SaveData("filter", "off");
 				turnoff.setTitle("Filtered Stations ON");
-				after(false);
 			}
+			after(false);
 		} else if (value == 3) {
-			if (turnoff.getTitle().toString()
-					.equals("Only show Stations in range OFF")) {
+			if (turnoff.getTitle().toString().equals("Only show Stations in range OFF")) {
+				appPrefes.SaveData("inrange", "off");
 				turnoff.setTitle("Only show Stations in range ON");
-			} else
+			} else {
+				appPrefes.SaveData("inrange", "on");
 				turnoff.setTitle("Only show Stations in range OFF");
+			}
+			after(false);
 		}
 
 	}
@@ -277,22 +283,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	// after fetch value from server
 	@Override
-	public void after(boolean flag) {
-		// TODO Auto-generated method stub
-		Log.d("OCM", "FragMap.after clear=" + flag);
-		al_lat.clear();
-		al_lng.clear();
-		al_title.clear();
-		al_address.clear();
-		al_numberofpoints.clear();
-		al_level1.clear();
-		al_level2.clear();
-		al_connction1.clear();
-		al_connction_id.clear();
-		al_optr.clear();
-		al_usage.clear();
-		al_status.clear();
-		if (flag) {
+	public void after(boolean clearmap) {
+
+		Log.d("OCM", "FragMap.after clearmap=" + clearmap);
+
+		if (clearmap) {
 			map.clear();
 		} else {
 			lis = map.getMarkers();
@@ -306,18 +301,72 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				}
 			}
 		}
-		Cursor cursor = database.get_mapdetails();
-		Log.d("OCM", "FragMap.after addMarkers cnt=" + cursor.getCount());
+
+
+		// Reload charge points from database:
+
+		al_cpid.clear();
+		al_lat.clear();
+		al_lng.clear();
+		al_title.clear();
+		al_address.clear();
+		al_numberofpoints.clear();
+		al_level1.clear();
+		al_level2.clear();
+		al_connction1.clear();
+		al_connction_id.clear();
+		al_optr.clear();
+		al_usage.clear();
+		al_status.clear();
+
+		Cursor cursor;
+		boolean check_range = false;
+		double maxrange_m = 0;
+
+		if (appPrefes.getData("filter").equals("on")) {
+			cursor = database.get_mapdetails(appPrefes.getData("Id"));
+		} else {
+			cursor = database.get_mapdetails();
+		}
+
+		if (appPrefes.getData("inrange").equals("on")) {
+			check_range = true;
+			if (distance_units.equals("Miles"))
+				maxrange_m = maxrange * 1.609344 * 1000;
+			else
+				maxrange_m = maxrange * 1000;
+		}
+
+		Log.d("OCM", "FragMap.after addMarkers avail=" + cursor.getCount());
+
 		if (cursor.getCount() != 0) {
+			int cnt_added = 0;
 			if (cursor.moveToFirst()) {
 				do {
+					// check position:
+
 					double Latitude = Double.parseDouble(cursor
 							.getString(cursor.getColumnIndex("lat")));
 					double Longitude = Double.parseDouble(cursor
 							.getString(cursor.getColumnIndex("lng")));
+
+					if (check_range) {
+						if (distance(lat, lng, Latitude, Longitude) > maxrange_m)
+							continue;
+					}
+
+					// add marker:
+
+					String cpid = cursor.getString(cursor.getColumnIndex("cpid"));
+
 					MarkerGenerator.addMarkers(map,
 							cursor.getString(cursor.getColumnIndex("title")),
-							new LatLng(Latitude, Longitude));
+							new LatLng(Latitude, Longitude),
+							cpid);
+
+					// store chargepoint info:
+
+					al_cpid.add(cpid);
 					al_lat.add(cursor.getString(cursor.getColumnIndex("lat")));
 					al_lng.add(cursor.getString(cursor.getColumnIndex("lng")));
 					al_title.add(cursor.getString(cursor
@@ -339,77 +388,16 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 							.getColumnIndex("usage")));
 					al_status.add(cursor.getString(cursor
 							.getColumnIndex("status")));
+
+					cnt_added++;
+
 				} while (cursor.moveToNext());
 			}
+
+			Log.d("OCM", "FragMap.after addMarkers added=" + cnt_added);
 		}
 	}
 
-	public void filter(boolean flag) {
-		// TODO Auto-generated method stub
-		Log.d("OCM", "FragMap.filter clear=" + flag);
-		if (flag) {
-			map.clear();
-		} else {
-			lis = map.getMarkers();
-			for (int i = 0; i < lis.size(); i++) {
-				Marker carmarker = lis.get(i);
-				int j = carmarker.getClusterGroup();
-				if (j == -1) {
-					lis.remove(i);
-				} else {
-					carmarker.remove();
-				}
-			}
-		}
-		al_title.clear();
-		al_lat.clear();
-		al_lng.clear();
-		al_address.clear();
-		al_numberofpoints.clear();
-		al_level1.clear();
-		al_level2.clear();
-		al_connction1.clear();
-		al_connction_id.clear();
-		al_optr.clear();
-		al_usage.clear();
-		al_status.clear();
-		Cursor cursor = database.get_mapdetails(appPrefes.getData("Id"));
-		Log.d("OCM", "FragMap.filter addMarkers cnt=" + cursor.getCount());
-		if (cursor.getCount() != 0) {
-			if (cursor.moveToFirst()) {
-				do {
-					double Latitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("lat")));
-					double Longitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("lng")));
-					MarkerGenerator.addMarkers(map,
-							cursor.getString(cursor.getColumnIndex("title")),
-							new LatLng(Latitude, Longitude));
-					al_lat.add(cursor.getString(cursor.getColumnIndex("lat")));
-					al_lng.add(cursor.getString(cursor.getColumnIndex("lng")));
-					al_title.add(cursor.getString(cursor
-							.getColumnIndex("title")));
-					al_address.add(cursor.getString(cursor
-							.getColumnIndex("AddressLine1")));
-					al_numberofpoints.add(cursor.getString(cursor
-							.getColumnIndex("numberofpoint")));
-					al_level1.add(cursor.getString(cursor
-							.getColumnIndex("level1")));
-					al_level2.add(cursor.getString(cursor
-							.getColumnIndex("level2")));
-					al_connction1.add(cursor.getString(cursor
-							.getColumnIndex("connction1")));
-					al_connction_id.add(cursor.getString(cursor
-							.getColumnIndex("connction_id")));
-					al_optr.add(cursor.getString(cursor.getColumnIndex("optr")));
-					al_usage.add(cursor.getString(cursor
-							.getColumnIndex("usage")));
-					al_status.add(cursor.getString(cursor
-							.getColumnIndex("status")));
-				} while (cursor.moveToNext());
-			}
-		}
-	}
 
 	double roundTwoDecimals(double d) {
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
@@ -417,9 +405,10 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		return Double.valueOf(twoDForm.format(d));
 	}
 
+
 	// click marker event
 	private void dialog(Marker marker) {
-		// TODO Auto-generated method stub
+
 		Dialog dialog = new Dialog(getActivity());
 		dialog.setContentView(R.layout.mapdialog);
 		dialog.setTitle("Information");
@@ -433,8 +422,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		TextView tv_connction1 = (TextView) dialog
 				.findViewById(R.id.tv_connction1);
 		bt_route.setOnClickListener(this);
-		for (int i = 0; i < al_title.size(); i++) {
-			if (marker.getTitle().endsWith(al_title.get(i))) {
+
+		// find marker entry:
+		for (int i = 0; i < al_cpid.size(); i++) {
+			if (marker.getData().equals(al_cpid.get(i))) {
+
+				// load data:
 				DetailFragment.address = al_address.get(i) + "";
 				if (! al_numberofpoints.get(i).equals("null"))
 				  DetailFragment.number = al_numberofpoints.get(i) + "";
@@ -457,30 +450,38 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				slng = al_lng.get(i);
 				DetailFragment.slat = slat;
 				DetailFragment.slng = slng;
+
+				break;
 			}
 		}
+
 		Bundle args = new Bundle();
 		BaseFragmentActivity.show(getActivity(), DetailFragment.class, args,
 				Configuration.ORIENTATION_UNDEFINED);
 		// dialog.show();
 	}
 
-	static double lat = 0, lng;
 
 	// fetch latitude and longitude
 	@Override
 	public void update(CarData pCarData) {
-		Log.d("OVMS", "Car on map: " + pCarData.car_latitude + " lng"
-				+ pCarData.car_longitude);
-		System.out.println("latitude" + lat);
+
+		// get car position:
+
 		lat = pCarData.car_latitude;
 		lng = pCarData.car_longitude;
-//		appPrefes.SaveData("sel_vehicle_label", pCarData.sel_vehicle_label);   
-		if (appPrefes.getData("filter").equals("on")) {
-			filter(true);
-		} else {
-			after(true);
-		}
+		maxrange = Math.max(pCarData.car_range_estimated_raw, pCarData.car_range_ideal_raw);
+		distance_units = (pCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
+
+		Log.d("OVMS", "FragMap.update: Car on map: lat=" + lat + " lng=" + lng
+				+ " maxrange=" + maxrange + distance_units);
+
+		// update charge point markers:
+
+		after(true);
+
+		// update car position marker:
+
 		final LatLng MELBOURNE = new LatLng(lat, lng);
 		Drawable drawable = getResources().getDrawable(
 				Ui.getDrawableIdentifier(getActivity(), "map_"
@@ -490,17 +491,17 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				.title(pCarData.sel_vehicle_label)
 				.rotation((float) pCarData.car_direction)
 				.icon(BitmapDescriptorFactory.fromBitmap(myLogo));
-		// .fromResource(R.drawable.map_car_roadster_lightninggreen));
 		Marker carmarker = map.addMarker(marker);
 		carmarker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
+
 		if (flag) {
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(MELBOURNE, 18));
 			flag = false;
-		} else if (autotrack)
+		} else if (autotrack) {
 			map.moveCamera(CameraUpdateFactory.newLatLng(MELBOURNE));
+		}
 
-		// database.insert_mapdetails("" + lat, "" + lng, "Melbourne", " ",
-		// " ", " ", " ");
+		al_cpid.add("0");
 		al_lat.add("" + lat);
 		al_lng.add("" + lng);
 		al_title.add("DEMO");
@@ -513,31 +514,23 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		al_optr.add("");
 		al_usage.add("");
 		al_status.add("");
-		System.out.println("first" + pCarData.car_range_ideal_raw + "  second"
-				+ pCarData.car_range_estimated_raw);
+
+		// update range circles:
+
+		Log.i("OCM", "FragMap.update: adding range circles:"
+				+ " ideal=" + pCarData.car_range_ideal_raw
+				+ " estimated=" + pCarData.car_range_estimated_raw);
 		addCircles(pCarData.car_range_ideal_raw,
 				pCarData.car_range_estimated_raw);
-		url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false&latitude="
-				+ pCarData.car_latitude + "&longitude="
-				+ pCarData.car_longitude
-				+ "&distance=285&distanceunit=KM&maxresults=500";
-		String slat = "" + pCarData.car_latitude;
-		String slng = "" + pCarData.car_longitude;
-		String[] strings = slat.split("\\.");
-		String[] strings2 = slng.split("\\.");
-		int latitude = Integer.parseInt(strings[0]);
-		int longitude = Integer.parseInt(strings2[0]);
+
+
+		// start chargepoint data update:
+
 		appPrefes.SaveData("lat_main", "" + pCarData.car_latitude);
 		appPrefes.SaveData("lng_main", "" + pCarData.car_longitude);
-		Cursor cursor = database.getlatlngdetail(latitude, longitude);
-		if (cursor.moveToFirst()) {
-		} else {
-			database.addlatlngdetail(latitude, longitude);
-			System.out.println("lat" + strings[0] + " app"
-					+ appPrefes.getData("lat_main"));
-			// getdata();
-			MainActivity.updateLocation.updatelocation(url);
-		}
+
+		MainActivity.updateLocation.updatelocation();
+
 	}
 
 	// draw circle in a map
@@ -565,6 +558,18 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		// map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
 	}
 
+	// calculate distance in meters:
+	public static double distance(double lat1, double lon1, double lat2, double lon2) {
+		double dLat = Math.toRadians(lat2-lat1);
+		double dLon = Math.toRadians(lon2-lon1);
+		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+						Math.sin(dLon/2) * Math.sin(dLon/2);
+		double c = 2 * Math.asin(Math.sqrt(a));
+		return 6371000 * c;
+	}
+
+
 	@Override
 	public void onClick(View v) {
 		// TODO Auto-generated method stub
@@ -580,7 +585,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	@Override
 	public void updateclust(int clusterSizeIndex, boolean enabled) {
-		// TODO Auto-generated method stub
 		updateClustering(clusterSizeIndex, enabled);
+	}
+
+	@Override
+	public void clearcache() {
+		database.clear_latlngdetail();
+		MainActivity.updateLocation.updatelocation();
 	}
 }

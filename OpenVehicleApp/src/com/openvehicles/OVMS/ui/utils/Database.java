@@ -5,21 +5,30 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
+
+import com.openvehicles.OVMS.entities.ChargePoint;
+import com.testflightapp.lib.core.StringUtils;
 
 public class Database extends SQLiteOpenHelper {
 	Context c;
 
 	public Database(Context context) {
-		super(context, "sampledatabase", null, 1);
+		super(context, "sampledatabase", null, 2);
 		c = context;
 	}
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		// TODO Auto-generated method stub
-		db.execSQL("Create table mapdetails(lat text,lng text,title text,optr text,status text,usage text,AddressLine1 text,level1 text,level2 text,connction_id text,connction1 text,numberofpoint TEXT)");
+		Log.i("OCM", "Database creation");
+		db.execSQL("CREATE TABLE IF NOT EXISTS mapdetails(cpid INTEGER PRIMARY KEY," +
+				"lat text,lng text,title text,optr text,status text,usage text," +
+				"AddressLine1 text,level1 text,level2 text,connction_id text,connction1 text," +
+				"numberofpoint TEXT)");
 		db.execSQL("CREATE TABLE if not exists company(id INTEGER PRIMARY KEY AUTOINCREMENT,userid TEXT,instance TEXT,companyname TEXT)");
-		db.execSQL("CREATE TABLE if not exists latlngdetail(id INTEGER PRIMARY KEY AUTOINCREMENT,lat INTEGER,lng INTEGER)");
+		db.execSQL("CREATE TABLE IF NOT EXISTS latlngdetail(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+				"lat INTEGER, lng INTEGER, last_update INTEGER)");
 		db.execSQL("CREATE TABLE if not exists ConnectionTypes(Id INTEGER PRIMARY KEY AUTOINCREMENT,tId TEXT,title TEXT,chec TEXT,CompanyName TEXT)");
 		db.execSQL("CREATE TABLE if not exists ConnectionTypes_Main(Id TEXT,tId TEXT,title TEXT)");
 		db.execSQL("CREATE TABLE if not exists companydetail(companyname TEXT,buffer TEXT)");
@@ -31,35 +40,66 @@ public class Database extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		// TODO Auto-generated method stub
+		Log.i("OCM", "Database upgrade from version " + oldVersion + " to version " + newVersion);
+		if (oldVersion == 1 && newVersion == 2) {
 
+			// update OCM POI details:
+			db.execSQL("DROP TABLE mapdetails");
+			db.execSQL("CREATE TABLE mapdetails(cpid INTEGER PRIMARY KEY," +
+					"lat text,lng text,title text,optr text,status text,usage text," +
+					"AddressLine1 text,level1 text,level2 text,connction_id text,connction1 text," +
+					"numberofpoint TEXT)");
+
+			// update OCM POI cache:
+			db.execSQL("DROP TABLE latlngdetail");
+			db.execSQL("CREATE TABLE latlngdetail(id INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"lat INTEGER, lng INTEGER, last_update INTEGER)");
+
+		}
 	}
 
-	public void insert_mapdetails(String lat, String lng, String title,
-			String optr, String status, String usage, String AddressLine1,
-			String level1, String level2, String conn_id, String conn,
-			String numberofpoint) {
-		SQLiteDatabase db1 = this.getWritableDatabase();
-		Cursor cursor = db1.rawQuery("select * from mapdetails where lat='"
-				+ lat + "'", null);
-		if (cursor.getCount() == 0) {
+	public void insert_mapdetails(ChargePoint cp) {
+		try {
 			SQLiteDatabase db = this.getWritableDatabase();
 			ContentValues contentValues = new ContentValues();
-			contentValues.put("lat", lat);
-			contentValues.put("lng", lng);
-			contentValues.put("title", title);
-			contentValues.put("optr", optr);
-			contentValues.put("status", status);
-			contentValues.put("usage", usage);
-			contentValues.put("AddressLine1", AddressLine1);
-			contentValues.put("level1", level1);
-			contentValues.put("level2", level2);
-			contentValues.put("connction1", conn);
-			contentValues.put("connction_id", conn_id);
-			contentValues.put("numberofpoint", numberofpoint);
-			db.insert("mapdetails", null, contentValues);
+			contentValues.put("cpid", cp.ID); // primary key
+			if (cp.AddressInfo != null) {
+				contentValues.put("lat", cp.AddressInfo.Latitude);
+				contentValues.put("lng", cp.AddressInfo.Longitude);
+				contentValues.put("title", ifNull(cp.AddressInfo.Title, "untitled"));
+				contentValues.put("AddressLine1", ifNull(cp.AddressInfo.AddressLine1, ""));
+			}
+			if (cp.OperatorInfo != null) {
+				contentValues.put("optr", ifNull(cp.OperatorInfo.Title, "unknown"));
+			}
+			if (cp.StatusType != null) {
+				contentValues.put("status", ifNull(cp.StatusType.Title, "unknown"));
+			}
+			if (cp.UsageType != null) {
+				contentValues.put("usage", ifNull(cp.UsageType.Title, "unknown"));
+			}
+			if (cp.Connections != null) {
+				if (cp.Connections.length >= 1) {
+					ChargePoint.Connection con = cp.Connections[0];
+					if (con.Level != null)
+						contentValues.put("level1", ifNull(con.Level.Title, "unknown"));
+					if (con.ConnectionType != null) {
+						contentValues.put("connction1", ifNull(con.ConnectionType.Title, "unknown"));
+						contentValues.put("connction_id", ifNull(con.ConnectionType.ID, "0"));
+					}
+				}
+				if (cp.Connections.length >= 2) {
+					ChargePoint.Connection con = cp.Connections[1];
+					if (con.Level != null)
+						contentValues.put("level2", ifNull(con.Level.Title, "unknown"));
+				}
+			}
+			contentValues.put("numberofpoint", ifNull(cp.NumberOfPoints, "1"));
+			db.insertWithOnConflict("mapdetails", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
 			db.close();
+		} catch(Exception e) {
+			e.printStackTrace();
 		}
-		db1.close();
 	}
 
 	public void addCompany(String userid, String companyname, String instance) {
@@ -72,20 +112,31 @@ public class Database extends SQLiteOpenHelper {
 		db.close();
 	}
 
+	// update/add OCM latlng cache tile:
 	public void addlatlngdetail(int lat, int lng) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("lat", lat);
 		contentValues.put("lng", lng);
-		db.insert("latlngdetail", null, contentValues);
+		contentValues.put("last_update", System.currentTimeMillis() / 1000);
+		if (db.update("latlngdetail", contentValues, "lat=" + lat + " AND lng=" + lng, null) == 0) {
+			db.insert("latlngdetail", null, contentValues);
+		}
 		db.close();
 	}
 
+	// query OCM latlng cache tile:
 	public Cursor getlatlngdetail(int lat, int lng) {
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery("select * from latlngdetail where lat="
 				+ lat + " and lng=" + lng, null);
 		return cursor;
+	}
+
+	// clear OCM latlng cache:
+	public void clear_latlngdetail() {
+		SQLiteDatabase db = this.getWritableDatabase();
+		db.delete("latlngdetail", null, null);
 	}
 
 	public void addConnectionTypesdetail(String tId, String Title,
@@ -296,4 +347,13 @@ public class Database extends SQLiteOpenHelper {
 		String deleteSQL = "delete from producttable";
 		db.execSQL(deleteSQL);
 	}
+
+
+	public static <T> T ifNull(T toCheck, T ifNull){
+		if(toCheck == null){
+			return ifNull;
+		}
+		return toCheck;
+	}
+
 }
