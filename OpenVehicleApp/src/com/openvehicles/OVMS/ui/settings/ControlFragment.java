@@ -25,7 +25,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		SherlockFragmentActivity activity = getSherlockActivity();
-		String url = "http://www.openchargemap.org/api/?output=json&action=getcorereferencedata";
+		String url = "http://api.openchargemap.io/v2/referencedata/";
 		connectionList = new ConnectionList(getActivity(), this, url,false);
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_control);
 		activity.setTitle(R.string.Control);
@@ -49,8 +49,8 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 		BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
 		switch (v.getId()) {
 		case R.id.btn_mmi_ussd_code:
-			Ui.showPinDialog(v.getContext(), R.string.msg_mmi_ssd_code,
-					R.string.Send, false, new Ui.OnChangeListener<String>() {
+			Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
+					"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
 						@Override
 						public void onAction(String pData) {
 							if (TextUtils.isEmpty(pData))

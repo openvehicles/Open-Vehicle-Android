@@ -52,7 +52,15 @@ public class CarInfoFragment extends BaseFragment {
 		Ui.setValue(rootView, R.id.txt_car, mCarData.car_firmware);
 		Ui.setValue(rootView, R.id.txt_gsm, mCarData.car_gsm_signal);
 		Ui.setValue(rootView, R.id.txt_cac, String.format("%.2f",mCarData.car_CAC));
-		
+
+		Ui.setValue(rootView, R.id.txt_12v_info, String.format("%.1fV (%s)",
+			mCarData.car_12vline_voltage,
+			mCarData.car_charging_12v
+				? "charging"
+				: mCarData.car_12vline_ref <= 1.5
+					? String.format("calmdown, %d min left", 15 - (mCarData.car_12vline_ref*10))
+					: String.format("ref=%.1fV", mCarData.car_12vline_ref)));
+
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(context, "signal_strength_" + mCarData.car_gsm_bars));
 		

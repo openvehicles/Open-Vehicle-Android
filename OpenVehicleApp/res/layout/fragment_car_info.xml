@@ -3,7 +3,8 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 <RelativeLayout 
 	android:layout_width="match_parent" android:layout_height="wrap_content"
-	android:padding="18dp">
+	android:padding="18dp"
+    >
 
 	<TextView
 		android:id="@+id/txt_vehicle_id"
@@ -59,11 +60,18 @@
 		android:layout_alignRight="@id/txt_gsm"
 		android:layout_below="@id/txt_gsm" />
 
-	<TextView
+    <TextView
+        android:id="@+id/txt_12v_info"
+        style="@style/TextValue"
+        android:layout_alignLeft="@id/txt_type"
+        android:layout_alignRight="@id/txt_gsm"
+        android:layout_below="@id/txt_cac" />
+
+    <TextView
     	android:id="@+id/ac_02"
     	android:layout_width="wrap_content"
     	android:layout_height="wrap_content"
-    	android:layout_below="@id/txt_cac"
+    	android:layout_below="@id/txt_12v_info"
     	android:layout_marginTop="10dp"
         android:layout_marginBottom="4dp"
     	android:text="@string/lb_ovms_firmware" />
@@ -120,8 +128,16 @@
 		android:layout_alignBottom="@id/txt_cac"
 		android:layout_alignParentLeft="true"
 		android:text="@string/CAC" />
-	
-	<TextView
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@id/txt_12v_info"
+        android:layout_alignBottom="@id/txt_12v_info"
+        android:layout_alignParentLeft="true"
+        android:text="@string/Info12V" />
+
+    <TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/txt_server"

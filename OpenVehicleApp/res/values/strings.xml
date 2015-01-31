@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" >
     <string name="app_name">Open Vehicle</string>
     <string name="Loading">Please wait</string>
     <string name="Settings">Settings</string>
@@ -41,12 +41,9 @@
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Wakeup</string>
     <string name="Add">Add</string>
-    <string name="Save">Save</string>
-    <string name="Delete">Delete</string>
     <string name="Battery">Battery</string>
     <string name="Car">Car</string>
     <string name="Location">Location</string>
-    <string name="Settings">Settings</string>
     <string name="Messages">Messages</string>
     <string name="Amps">Amps</string>
     <string name="Close">Close</string>
@@ -57,6 +54,7 @@
     <string name="Type">Type</string>
     <string name="GMC">GSM</string>
     <string name="CAC">CAC</string>
+    <string name="Info12V">12V</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     
@@ -150,7 +148,14 @@
         <item>Range</item>
         <item>Perform</item>
     </string-array>
-    
+
+    <string-array name="ocm_options_maxresults">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+    </string-array>
+
     <!-- OVMS Debug
     <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->  
 

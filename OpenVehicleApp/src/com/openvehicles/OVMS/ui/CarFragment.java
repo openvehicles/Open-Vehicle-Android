@@ -105,6 +105,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	private static final int MI_HL_01		= Menu.FIRST + 1;
 	private static final int MI_HL_02		= Menu.FIRST + 2;
 	private static final int MI_HL_03		= Menu.FIRST + 3;
+	private static final int MI_HL_DEFAULT	= Menu.FIRST + 4;
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -116,7 +117,14 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			break;
 		case R.id.tabCarImageHomelink:
 		case R.id.txt_homelink:
-			menu.setHeaderTitle("Homelink");
+			if (mCarData.car_type.equals("RT")) {
+				// Renault Twizy: use Homelink for profile switching:
+				menu.setHeaderTitle("Profile");
+				menu.add(0, MI_HL_DEFAULT, 0, "Default");
+			}
+			else {
+				menu.setHeaderTitle("Homelink");
+			}
 			menu.add(0, MI_HL_01, 0, "1");
 			menu.add(0, MI_HL_02, 0, "2");
 			menu.add(0, MI_HL_03, 0, "3");
@@ -139,6 +147,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			return true;
 		case MI_HL_03:
 			sendCommand(R.string.msg_issuing_homelink, "24,2", this);			
+			return true;
+		case MI_HL_DEFAULT:
+			sendCommand(R.string.msg_issuing_homelink, "24", this);
 			return true;
 		default:
 			return false;
