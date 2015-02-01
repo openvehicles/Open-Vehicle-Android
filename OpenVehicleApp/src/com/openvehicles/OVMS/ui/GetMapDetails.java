@@ -50,7 +50,15 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 	}
 
 	@Override
+	protected void onCancelled(Void result) {
+		Log.d("OCM", "GetMapDetails cancelled");
+	}
+
+	@Override
 	protected Void doInBackground(Void... params) {
+
+		if (isCancelled())
+			return null;
 
 		// read from OCM:
 
@@ -65,12 +73,12 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 		Log.d("OCM", "GetMapDetails read " + chargePoints.size() + " chargepoints");
 
 		// update database:
-
-		for (int i = 0; i < chargePoints.size(); i++) {
+		int i;
+		for (i = 0; !isCancelled() && (i < chargePoints.size()); i++) {
 			database.insert_mapdetails(chargePoints.get(i));
 		}
 
-		Log.d("OCM", "GetMapDetails saved " + chargePoints.size() + " chargepoints to database");
+		Log.d("OCM", "GetMapDetails saved " + i + " chargepoints to database");
 
 		return null;
 	}
@@ -96,7 +104,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 		// read charge points array:
 
 		reader.beginArray();
-		while (reader.hasNext()) {
+		while (!isCancelled() && reader.hasNext()) {
 			ChargePoint chargePoint = gson.fromJson(reader, ChargePoint.class);
 			chargePoints.add(chargePoint);
 		}
