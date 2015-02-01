@@ -10,6 +10,8 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
+import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
@@ -45,6 +47,7 @@ public class MainActivity extends ApiActivity implements
 	AppPrefes appPrefes;
 	Database database;
 	public static UpdateLocation updateLocation;
+	public GetMapDetails getMapDetails;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -371,8 +374,24 @@ public class MainActivity extends ApiActivity implements
 					+ ", lat_main=" + appPrefes.getData("lat_main")
 					+ " => url=" + url);
 
-			// start fetcher:
-			new GetMapDetails(MainActivity.this, url, this).execute();
+			// cancel old fetcher task:
+			if (getMapDetails != null) {
+				getMapDetails.cancel(true);
+			}
+
+			// create new fetcher task:
+			getMapDetails = new GetMapDetails(MainActivity.this, url, this);
+
+			// After Android 3.0, the default behavior of AsyncTask is execute in a single
+			// thread using SERIAL_EXECUTOR. This means the thread will no longer run while
+			// the App is in the foreground...
+			// Solution source:
+			// http://stackoverflow.com/questions/13080367/android-async-task-behavior-in-2-3-3-and-4-0-os
+			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+				getMapDetails.execute();
+			} else {
+				getMapDetails.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			}
 
 		}
 
