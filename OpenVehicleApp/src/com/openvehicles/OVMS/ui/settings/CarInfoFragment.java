@@ -57,8 +57,8 @@ public class CarInfoFragment extends BaseFragment {
 			mCarData.car_12vline_voltage,
 			mCarData.car_charging_12v
 				? "charging"
-				: mCarData.car_12vline_ref <= 1.5
-					? String.format("calmdown, %d min left", 15 - (mCarData.car_12vline_ref*10))
+				: (mCarData.car_12vline_ref <= 1.5)
+					? String.format("calmdown, %d min left", 15 - (int)(mCarData.car_12vline_ref*10))
 					: String.format("ref=%.1fV", mCarData.car_12vline_ref)));
 
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
