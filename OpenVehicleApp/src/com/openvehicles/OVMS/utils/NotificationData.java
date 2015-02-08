@@ -14,4 +14,15 @@ public class NotificationData implements Serializable {
 		this.Title = title;
 		this.Message = message;
 	}
+
+	// equals operator: used to detect duplicates
+	public boolean equals(NotificationData o) {
+		return (o.Title.equals(Title) && o.Message.equals(Message));
+	}
+
+	// message formatter:
+	public String getMessageFormatted() {
+		// default: use line breaks as sent by the module:
+		return Message.replace('\r', '\n');
+	}
 }

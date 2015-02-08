@@ -42,17 +42,26 @@ public class OVMSNotifications {
 		}
 	}
 	
-	public void addNotification(NotificationData notification) {
-		notifications.add(notification);
-	}
-	
-	public void addNotification(String title, String message) {
-		notifications.add(new NotificationData(new Date(), title, message));
+	public boolean addNotification(String title, String message) {
+
+		NotificationData newNotify = new NotificationData(new Date(), title, message);
+
+		// Check if new notification is a duplicate:
+		if (notifications.size() > 0) {
+			NotificationData lastNotify = notifications.get(notifications.size() - 1);
+			if (newNotify.equals(lastNotify)) {
+				Log.d("OVMS", "addNotification: dropping duplicate");
+				return false;
+			}
+		}
+
+		notifications.add(newNotify);
+		return true;
 	}
 	
 	public void save() {
 		try {
-			Log.d("OVMS", "Saving notifications list to interal storage...");
+			Log.d("OVMS", "Saving notifications list to internal storage...");
 
 			FileOutputStream fos = mContext.openFileOutput(SETTINGS_FILENAME, Context.MODE_PRIVATE);
 			ObjectOutputStream os = new ObjectOutputStream(fos);

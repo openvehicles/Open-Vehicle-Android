@@ -65,9 +65,17 @@ public class MainActivity extends ApiActivity implements
 		String url = "http://api.openchargemap.io/v2/referencedata/";
 		ConnectionList connectionList = new ConnectionList(this, this, url,
 				true);
-		registerReceiver(mApiEventReceiver, new IntentFilter(getPackageName()
-				+ ".ApiEvent"));
 
+		// set up receiver for server communication service:
+		registerReceiver(mApiEventReceiver, new IntentFilter(
+				getPackageName() + ".ApiEvent"));
+
+		// set up receiver for notifications:
+		Log.d("Main", "Notifications registering receiver for Intent: " + getPackageName() + ".Notification");
+		registerReceiver(mNotificationReceiver, new IntentFilter(
+				getPackageName() + ".Notification"));
+
+		// init UI tabs:
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
@@ -75,23 +83,22 @@ public class MainActivity extends ApiActivity implements
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 
-		mPagerAdapter = new MainPagerAdapter(new TabInfo(R.string.Battery,
-				R.drawable.ic_action_battery, InfoFragment.class), new TabInfo(
-				R.string.Car, R.drawable.ic_action_car, CarFragment.class),
-				new TabInfo(R.string.Location,
-						R.drawable.ic_action_location_map, FragMap.class),
-				new TabInfo(R.string.Messages, R.drawable.ic_action_email,
-						NotificationsFragment.class), new TabInfo(
-						R.string.Settings, R.drawable.ic_action_settings,
-						SettingsFragment.class));
+		mPagerAdapter = new MainPagerAdapter(
+				new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
+				new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
+				new TabInfo(R.string.Location, R.drawable.ic_action_location_map, FragMap.class),
+				new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
+				new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
+		);
+
 		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+		mViewPager.setOnPageChangeListener(
+			new ViewPager.SimpleOnPageChangeListener() {
+				@Override
+				public void onPageSelected(int position) {
+					actionBar.setSelectedNavigationItem(position);
+				}
+			});
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		actionBar.setListNavigationCallbacks(
@@ -143,6 +150,7 @@ public class MainActivity extends ApiActivity implements
 	@Override
 	protected void onDestroy() {
 		unregisterReceiver(mApiEventReceiver);
+		unregisterReceiver(mNotificationReceiver);
 		super.onDestroy();
 	}
 
@@ -230,6 +238,7 @@ public class MainActivity extends ApiActivity implements
 	private class TabInfo {
 		public final int title_res_id, icon_res_id;
 		public final Class<? extends BaseFragment> fragment_class;
+		public Fragment fragment;
 
 		public String getFragmentName() {
 			return fragment_class.getName();
@@ -240,6 +249,7 @@ public class MainActivity extends ApiActivity implements
 			title_res_id = pTitleResId;
 			icon_res_id = pIconResId;
 			fragment_class = pFragmentClass;
+			fragment = null;
 		}
 
 		@Override
@@ -279,8 +289,14 @@ public class MainActivity extends ApiActivity implements
 
 		@Override
 		public Fragment getItem(int pPosition) {
-			return Fragment.instantiate(MainActivity.this,
-					mTabInfoItems[pPosition].getFragmentName());
+			if (mTabInfoItems[pPosition].fragment == null) {
+				// instantiate fragment:
+				mTabInfoItems[pPosition].fragment = Fragment.instantiate(
+						MainActivity.this,
+						mTabInfoItems[pPosition].getFragmentName());
+			}
+			//Log.d("MainActivity", "MainPagerAdapter: pos=" + pPosition + " => frg=" + mTabInfoItems[pPosition].fragment);
+			return mTabInfoItems[pPosition].fragment;
 		}
 
 		@Override
@@ -305,6 +321,27 @@ public class MainActivity extends ApiActivity implements
 		// TODO Auto-generated method stub
 
 	}
+
+
+	// Make notification updates visible immediately:
+	private final BroadcastReceiver mNotificationReceiver = new BroadcastReceiver() {
+
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			//Log.d("Main", "Notifications: received " + intent.toString());
+
+			// show messages list:
+			onNavigationItemSelected(3, 0);
+
+			// update messages list:
+			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
+			if (frg != null) {
+				//Log.d("Main", "Notifications: calling frg.update()");
+				frg.update();
+			}
+		}
+	};
+
 
 
 	@Override

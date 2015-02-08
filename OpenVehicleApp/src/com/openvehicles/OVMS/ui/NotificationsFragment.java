@@ -37,7 +37,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		super.onActivityCreated(savedInstanceState);
 		initUi(getActivity());
 	}
-	
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Log.d("OVMS", "Displaying notification: #" + position);
@@ -45,7 +45,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		NotificationData data = (NotificationData) parent.getAdapter().getItem(position);
 		new AlertDialog.Builder(parent.getContext())
 			.setTitle(data.Title)
-			.setMessage(data.Message)
+			.setMessage(data.getMessageFormatted())
 			.setCancelable(false)
 			.setPositiveButton(R.string.Close, new DialogInterface.OnClickListener() {
 				@Override
@@ -58,10 +58,16 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 	@Override
 	public void update(CarData pCarData) {
 		Context context = getActivity();
-		if (context == null) initUi(context);
+		if (context != null) initUi(context);
 	}
-	
+
+	public void update() {
+		Context context = getActivity();
+		if (context != null) initUi(context);
+	}
+
 	private void initUi(Context pContext) {
+		// load notifications:
 		OVMSNotifications notifications = new OVMSNotifications(pContext);
 		NotificationData[] data = new NotificationData[notifications.notifications.size()];
 		notifications.notifications.toArray(data);
@@ -71,6 +77,8 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		for (int i = 0; i < cachedData.length; i++) {
 			cachedData[i] = data[data.length - 1 - i];
 		}
+
+		// attach array to ListView:
 		mListView.setAdapter(new ItemsAdapter(pContext, cachedData));
 	}
 	
@@ -96,7 +104,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 				TextView tv = (TextView) v.findViewById(R.id.textNotificationsListTitle);
 				tv.setText(it.Title);
 				tv = (TextView) v.findViewById(R.id.textNotificationsListMessage);
-				tv.setText(it.Message);
+				tv.setText(it.getMessageFormatted());
 
 				tv = (TextView) v.findViewById(R.id.textNotificationsListTimestamp);
 				tv.setText(mDateFormat.format(it.Timestamp));

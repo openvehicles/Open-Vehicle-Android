@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class C2DMReceiver extends BroadcastReceiver {
@@ -79,55 +80,48 @@ public class C2DMReceiver extends BroadcastReceiver {
 			return;
 		}
 		
-		// load saved cars to get the correct icon
-		ArrayList<CarData> allSavedCars = null;
-		try {
-			final String settingsFileName = "OVMSSavedCars.obj";
-			Log.d("OVMS", "Loading saved cars from internal storage file: " + settingsFileName);
-			FileInputStream fis;
-			fis = context.openFileInput(settingsFileName);
-			ObjectInputStream is = new ObjectInputStream(fis);
-			allSavedCars = (ArrayList<CarData>) is.readObject();
-			is.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 
 		// set up notification
-		String ns = Context.NOTIFICATION_SERVICE;
-		NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-		
+
 		CharSequence contentTitle = intent.getStringExtra("title");
 		CharSequence contentText = intent.getStringExtra("message");
 		CharSequence tickerText = contentText;
-		int icon = android.R.drawable.ic_lock_idle_alarm;
-		
+
 		// save notification to file
 		OVMSNotifications savedList = new OVMSNotifications(context);
-		savedList.addNotification(contentTitle.toString(), contentText.toString());
-		savedList.save();
+		boolean is_new = savedList.addNotification(contentTitle.toString(), contentText.toString());
+		if (is_new) {
+			savedList.save();
 
-		// try to find the correct icon for this car
-		if (allSavedCars != null) {
-			for (CarData car : allSavedCars) {
-				// OVMS server sends Vehicle ID in the title field
-				if (car.sel_vehicleid.equals(contentTitle)) {
-					icon = Ui.getDrawableIdentifier(context, car.sel_vehicle_image + "32x32");
-					break;
-				}
-			}
+			// try to find the correct icon for this car
+			int icon = 0;
+			CarData car = CarsStorage.get().getCarById(contentTitle.toString());
+			if (car != null)
+				icon = Ui.getDrawableIdentifier(context, "map_" + car.sel_vehicle_image);
+			if (icon == 0)
+				icon = android.R.drawable.ic_lock_idle_alarm;
+
+			// create Notification:
+			long when = System.currentTimeMillis();
+			Notification notification = new Notification(icon, tickerText, when);
+			notification.flags = Notification.FLAG_AUTO_CANCEL;
+			notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+
+			Intent notificationIntent = new Intent(context, MainActivity.class);
+			notificationIntent.putExtra("onNotification", true);
+			PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+			notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);
+			context.sendBroadcast(notificationIntent);
+
+			// announce Notification via Android system:
+			String ns = Context.NOTIFICATION_SERVICE;
+			NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
+			mNotificationManager.notify(1, notification);
+
+			// update UI:
+			Log.d("C2DM", "Notifications: sending Intent: " + context.getPackageName() + ".Notification");
+			Intent uiNotify = new Intent(context.getPackageName() + ".Notification");
+			context.sendBroadcast(uiNotify);
 		}
-
-		long when = System.currentTimeMillis();
-		Notification notification = new Notification(icon, tickerText, when);
-		notification.flags = Notification.FLAG_AUTO_CANCEL;
-		notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
-
-		Intent notificationIntent = new Intent(context, MainActivity.class);
-		notificationIntent.putExtra("onNotification", true);
-		PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-		notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);
-		
-		mNotificationManager.notify(1, notification);
 	}
 }
