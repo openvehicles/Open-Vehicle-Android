@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
-    android:versionCode="20150208"
-    android:versionName="3.3.3">
+    android:versionCode="20150214"
+    android:versionName="3.4.0">
 
     <uses-sdk
         android:minSdkVersion="9"

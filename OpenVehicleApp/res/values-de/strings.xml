@@ -49,6 +49,7 @@
     <string name="Close">Schließen</string>
     <string name="Features">Features</string>
     <string name="Parameters">Parameter</string>
+    <string name="CellularStats">Datenverbrauch</string>
     <string name="Vehicle">Fahrzeug</string>
     <string name="WIN">VIN</string>
     <string name="Type">Typ</string>
@@ -120,6 +121,12 @@
     <string name="err_failed">Gescheitert: %s</string>
     <string name="err_unsupported_operation">Nicht unterstütze Operation</string>
     <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
+
+    <string name="msg_retrieving_data">Empfange Daten&#8230;</string>
+    <string formatted="false" name="cellular_usage_info_car">Fahrzeug: %.1f MB/Monat (%d Tage)</string>
+    <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/Monat (%d Tage)</string>
+    <string name="chart_axis_date">Datum</string>
+    <string name="chart_axis_datavolume">Datenverbrauch (KB)</string>
 
     <string name="live">live</string>
     <string name="ndays">%d Tage</string>

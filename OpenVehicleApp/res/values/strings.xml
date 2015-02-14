@@ -49,6 +49,7 @@
     <string name="Close">Close</string>
     <string name="Features">Features</string>
     <string name="Parameters">Parameters</string>
+    <string name="CellularStats">Cellular usage stats</string>
     <string name="Vehicle">Vehicle</string>
     <string name="WIN">VIN</string>
     <string name="Type">Type</string>
@@ -122,6 +123,12 @@
     <string name="err_failed">Failed: %s</string>
     <string name="err_unsupported_operation">Unsupported operation</string>
     <string name="err_unimplemented_operation">Unimplemented operation</string>
+
+    <string name="msg_retrieving_data">Retrieving data&#8230;</string>
+    <string formatted="false" name="cellular_usage_info_car">Car: %.1f MB/month (%d days)</string>
+    <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/month (%d days)</string>
+    <string name="chart_axis_date">Date</string>
+    <string name="chart_axis_datavolume">Volume (KB)</string>
 
     <string name="live">live</string>
     <string name="ndays">%d days</string>

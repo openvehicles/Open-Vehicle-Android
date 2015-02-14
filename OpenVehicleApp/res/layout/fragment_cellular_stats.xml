@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+
+        <TextView
+            android:id="@+id/cellular_usage_info_car"
+            style="@style/TextValue"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:text="Car:"
+            android:layout_alignParentRight="false"
+            android:layout_height="wrap_content"
+            android:autoText="false"
+            android:textSize="@dimen/text_size"/>
+
+        <lecho.lib.hellocharts.view.ColumnChartView
+            android:id="@+id/cellular_usage_chart_car"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/cellular_usage_chart_app"
+            android:layout_alignParentLeft="true"
+            android:layout_weight="1">
+        </lecho.lib.hellocharts.view.ColumnChartView>
+
+        <TextView
+            style="@style/TextValue"
+            android:id="@+id/cellular_usage_info_app"
+            android:layout_width="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:text="App:"
+            android:layout_alignParentRight="false"
+            android:layout_height="wrap_content"
+            android:autoText="false"
+            android:textSize="@dimen/text_size"/>
+
+        <lecho.lib.hellocharts.view.ColumnChartView
+            android:id="@+id/cellular_usage_chart_app"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_weight="1">
+        </lecho.lib.hellocharts.view.ColumnChartView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/abs__bright_foreground_disabled_holo_light"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:paddingLeft="20dip"
+        android:paddingRight="20dip"
+        android:layout_margin="20dip"
+        android:paddingTop="10dip"
+        android:paddingBottom="10dip"
+        android:id="@+id/cellular_progress_layer"
+        android:visibility="visible">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/msg_retrieving_data"
+            android:id="@+id/textView"
+            android:singleLine="false"
+            android:gravity="center_horizontal"
+            android:textColor="@color/abs__background_holo_dark"/>
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cellular_progress"
+            android:layout_gravity="center_horizontal"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:indeterminate="false"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:minHeight="20dip"
+            android:visibility="visible"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

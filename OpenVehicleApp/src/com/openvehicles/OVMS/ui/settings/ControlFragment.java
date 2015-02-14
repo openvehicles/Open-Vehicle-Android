@@ -48,30 +48,33 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	public void onClick(View v) {
 		BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
 		switch (v.getId()) {
-		case R.id.btn_mmi_ussd_code:
-			Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
-					"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
-						@Override
-						public void onAction(String pData) {
-							if (TextUtils.isEmpty(pData))
-								return;
-							sendCommand(R.string.lb_mmi_ussd_code, "41,"
-									+ pData, ControlFragment.this);
-						}
-					});
-			break;
-		case R.id.btn_features:
-			activity.setNextFragment(FeaturesFragment.class);
-			break;
-		case R.id.btn_parameters:
-			activity.setNextFragment(ControlParametersFragment.class);
-			break;
-		case R.id.btn_reset_ovms_module:
-			sendCommand(R.string.msg_rebooting_car_module, "5", this);
-			break;
-		case R.id.btn_connections:
-			connectionList.sublist();
-			break;
+			case R.id.btn_mmi_ussd_code:
+				Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
+						"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
+							@Override
+							public void onAction(String pData) {
+								if (TextUtils.isEmpty(pData))
+									return;
+								sendCommand(R.string.lb_mmi_ussd_code, "41,"
+										+ pData, ControlFragment.this);
+							}
+						});
+				break;
+			case R.id.btn_features:
+				activity.setNextFragment(FeaturesFragment.class);
+				break;
+			case R.id.btn_parameters:
+				activity.setNextFragment(ControlParametersFragment.class);
+				break;
+			case R.id.btn_reset_ovms_module:
+				sendCommand(R.string.msg_rebooting_car_module, "5", this);
+				break;
+			case R.id.btn_connections:
+				connectionList.sublist();
+				break;
+			case R.id.btn_cellular_usage:
+				activity.setNextFragment(CellularStatsFragment.class);
+				break;
 		}
 	}
 
