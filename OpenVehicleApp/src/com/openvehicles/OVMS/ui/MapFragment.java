@@ -86,7 +86,7 @@ public class MapFragment extends BaseFragment {
 	public void update(CarData pCarData) {
 //		mLastGeoPoint = new GeoPoint((int) (pCarData.car_latitude * 1E6),
 //			(int) (pCarData.car_longitude * 1E6));
-//		Log.d("OVMS", "Car on map: " + mLastGeoPoint);
+//		Log.d("MapFragment", "Car on map: " + mLastGeoPoint);
 		
 		
 		String lastReportDate = pCarData.car_lastupdated == null ? "-" :

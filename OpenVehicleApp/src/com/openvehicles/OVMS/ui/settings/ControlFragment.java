@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -88,6 +89,6 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	@Override
 	public void connections(String al, String name) {
 		// TODO Auto-generated method stub
-		System.out.println("id"+al);
+		Log.d("ControlFragment", "connections: al=" + al);
 	}
 }

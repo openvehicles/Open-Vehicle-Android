@@ -47,7 +47,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	}
 	
 	public void changeCar(CarData pCarData) {
-		Log.d(TAG, "Changed car to: " + pCarData.sel_vehicleid);
+		Log.i(TAG, "Changed car to: " + pCarData.sel_vehicleid);
 		mCarData = pCarData;
 
 		// kill previous connection
@@ -128,12 +128,12 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	public void onLoginComplete() {
 		Log.d(TAG, "onLoginComplete");
 		
-//		Intent intent = new Intent(getPackageName() + ".ApiEvent");
-//		intent.putExtra("onLoginComplete", true);
-//		sendBroadcast(intent);
+		//Intent intent = new Intent(getPackageName() + ".ApiEvent");
+		//intent.putExtra("onLoginComplete", true);
+		//sendBroadcast(intent);
 	}
 	
-	public boolean isLoggined() {
+	public boolean isLoggedIn() {
 		return mApiTask.isLoggedIn();
 	}
 	
@@ -141,7 +141,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		return mCarData;
 	}
 	
-	public CarData getLogginedCarData() {
+	public CarData getLoggedInCarData() {
 		return mApiTask.isLoggedIn() ? mCarData : null;
 	}
 	

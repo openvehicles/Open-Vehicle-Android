@@ -128,6 +128,9 @@
     <string name="chart_axis_date">Datum</string>
     <string name="chart_axis_datavolume">Datenverbrauch (KB)</string>
 
+    <string formatted="false" name="lb_chargepoint_conn_level">Ladeleistung #%d</string>
+    <string formatted="false" name="lb_chargepoint_conn_type">Anschlusstyp #%d</string>
+
     <string name="live">live</string>
     <string name="ndays">%d Tage</string>
     <string name="nhours">%d Stunden</string>

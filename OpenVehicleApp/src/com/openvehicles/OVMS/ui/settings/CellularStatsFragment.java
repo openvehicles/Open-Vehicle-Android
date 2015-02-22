@@ -20,6 +20,7 @@ import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
@@ -41,8 +42,7 @@ import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
 public class CellularStatsFragment extends BaseFragment implements OnResultCommandListenner {
-
-	//private static final String TAG = "CellularStatsFragment";
+	private static final String TAG = "CellularStatsFragment";
 
 	private class UsageData {
 		public String date;
@@ -73,6 +73,9 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 	private long carTotalBytes;
 	private long appTotalBytes;
 
+	// system services:
+	ApiService mService;
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,12 +92,26 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 	
 	@Override
 	public void onServiceAvailable(ApiService pService) {
+		mService = pService;
+	}
+
+	@Override
+	public void update(CarData pCarData) {
+		// called after login / if new data is available
+		requestData();
+	}
+
+	// request data from server:
+	public void requestData() {
+		// check if server is available:
+		if (mService == null || mService.isLoggedIn() == false)
+			return;
 
 		// check if we need an update:
 		long now = System.currentTimeMillis() / 1000;
 		if ((now - lastRetrieve) > 3600) {
 
-			// last update was 1 hour ago: refresh data
+			// last update was >1 hour ago: refresh data
 
 			lastRetrieve = now;
 
@@ -106,14 +123,13 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 			recNr = 0;
 
 			// Request cellular usage data:
-			pService.sendCommand("30", this);
+			mService.sendCommand("30", this);
 
 			// Show progress bar:
 			updateUi();
 		}
-
 	}
-	
+
 	@Override
 	public void onResultCommand(String[] result) {
 

@@ -38,7 +38,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private final CarData mCarData;
 	private final OnUpdateStatusListener mListener;
 	private final Random sRnd = new Random();
-	private boolean isShuttingDown = true;
+	private boolean isShuttingDown = false;
 
 	private enum MsgType {
 		msgUpdate, msgError, msgCommand, msgLoginBegin, msgLoginComplete
@@ -80,43 +80,62 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 	@Override
 	protected Void doInBackground(Void... params) {
-		try {
-			connInit();
+		String rx, msg;
 
-			String rx, msg;
-			while (mSocket.isConnected()) {
-				// if (Inputstream.ready()) {
-				rx = mInputstream.readLine().trim();
-				msg = new String(mRxCipher.update(Base64.decode(rx, 0))).trim();
-				Log.d(TAG, String.format("RX: %s (%s)", msg, rx));
-
-				if (msg.substring(0, 5).equals("MP-0 ")) {
-					handleMessage(msg.substring(5));
-				} else {
-					Log.d(TAG, "Unknown protection scheme");
-					// short pause after receiving message
-				}
-				
-				try {
-					Thread.sleep(100, 0);
-				} catch (InterruptedException e) {}
-			}
-		} catch (SocketException e) {
-			// connection lost, attempt to reconnect
+		while (!isShuttingDown) {
 			try {
-				mSocket.close();
-				mSocket = null;
-			} catch (Exception ex) {
-			}
-			if (!isShuttingDown)
+				// (re-)open socket connection
 				connInit();
-		} catch (IOException e) {
-			e.printStackTrace();
-			publishProgress(MsgType.msgError, e);
-		} catch (Exception e) {
-			e.printStackTrace();
+
+				while (mSocket.isConnected()) {
+					// read & decrypt message
+					rx = mInputstream.readLine().trim();
+					msg = new String(mRxCipher.update(Base64.decode(rx, 0))).trim();
+					Log.d(TAG, String.format("RX: %s (%s)", msg, rx));
+
+					if (msg.substring(0, 5).equals("MP-0 ")) {
+						// is valid message (for protocol version 0):
+						handleMessage(msg.substring(5));
+					} else {
+						Log.d(TAG, "Unknown protection scheme");
+						// sleep for 100 ms to prevent DoS by invalid data
+						try {
+							Thread.sleep(100);
+						} catch (InterruptedException e) {
+							// ignore
+						}
+					}
+				}
+
+				// reconnect if not shutting down:
+				continue;
+
+			} catch (SocketException e) {
+				// connection lost, attempt to reconnect
+				try {
+					mSocket.close();
+					mSocket = null;
+				} catch (Exception ex) {
+					// ignore
+				}
+				continue;
+
+			} catch (IOException e) {
+				// reader closed or I/O error
+				e.printStackTrace();
+				publishProgress(MsgType.msgError, e);
+				break;
+
+			} catch (Exception e) {
+				// other error
+				e.printStackTrace();
+				publishProgress(MsgType.msgError, e);
+				break;
+
+			}
 		}
 
+		Log.d(TAG, "Terminating AsyncTask");
 		return null;
 	}
 	

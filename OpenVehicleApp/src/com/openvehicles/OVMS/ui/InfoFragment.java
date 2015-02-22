@@ -30,6 +30,8 @@ import com.openvehicles.OVMS.ui.witdet.SwitcherView;
 
 public class InfoFragment extends BaseFragment implements OnClickListener,
 		OnResultCommandListenner {
+	private static final String TAG = "InfoFragment";
+
 	private CarData mCarData;
 
 	@Override
@@ -236,7 +238,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		long minutes = (seconds) / 60;
 		long hours = minutes / 60;
 		long days = minutes / (60 * 24);
-		Log.d("OVMS", "Last updated: " + seconds + " secs ago");
+		Log.d(TAG, "Last updated: " + seconds + " secs ago");
 
 		if (pCarData.car_lastupdated == null) {
 			tv.setText("");

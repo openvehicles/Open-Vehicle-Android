@@ -52,26 +52,14 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		afterasytask, OnClickListener, Updateclust {
+	private static final String TAG = "FragMap";
+
 	private GoogleMap map;
-	ArrayList<String> al_cpid = new ArrayList<String>();
-	ArrayList<String> al_lat = new ArrayList<String>();
-	ArrayList<String> al_lng = new ArrayList<String>();
-	ArrayList<String> al_title = new ArrayList<String>();
-	ArrayList<String> al_address = new ArrayList<String>();
-	ArrayList<String> al_level1 = new ArrayList<String>();
-	ArrayList<String> al_level2 = new ArrayList<String>();
-	ArrayList<String> al_connction1 = new ArrayList<String>();
-	ArrayList<String> al_connction_id = new ArrayList<String>();
-	ArrayList<String> al_optr = new ArrayList<String>();
-	ArrayList<String> al_usage = new ArrayList<String>();
-	ArrayList<String> al_status = new ArrayList<String>();
-	ArrayList<String> al_numberofpoints = new ArrayList<String>();
 	Database database;
 	String slat, slng;
 	private Menu menu;
 	AppPrefes appPrefes;
 	static boolean flag = true;
-	static boolean flag1 = true;
 	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
 	View rootView;
 	boolean autotrack = true;
@@ -116,16 +104,10 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		return rootView;
 	}
 
-
 	void updateClustering(int clusterSizeIndex, boolean enabled) {
 		ClusteringSettings clusteringSettings = new ClusteringSettings();
 		clusteringSettings.addMarkersDynamically(true);
 		if (enabled) {
-			// if (lis != null) {
-			// for (int i = 0; i < lis.size(); i++) {
-			// MarkerGenerator.addMarkers(map, al_title.get(i), lis.get(i)
-			// .getPosition());
-			// }
 			after(false);
 			clusteringSettings
 					.clusterOptionsProvider(new DemoClusterOptionsProvider(
@@ -133,12 +115,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 			double clusterSize = CLUSTER_SIZES[clusterSizeIndex];
 			clusteringSettings.clusterSize(clusterSize);
-			// }
 		} else {
-			// clusteringSettings.addMarkersDynamically(false);
-			// map.getMarkers().clear();
-			// map.clear();
-			// clusteringSettings.enabled(false);
 			lis = map.getMarkers();
 			for (int i = 0; i < lis.size(); i++) {
 				Marker carmarker = lis.get(i);
@@ -149,7 +126,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					carmarker.remove();
 				}
 			}
-			// map.clear();
 		}
 		map.setClustering(clusteringSettings);
 	}
@@ -235,6 +211,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	}
 
+	@Override
 	public void onDestroyView() {
 		try {
 			flag = true;
@@ -244,6 +221,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					.beginTransaction();
 			ft.remove(fragment);
 			ft.commit();
+			database.close();
 		} catch (Exception e) {
 		}
 		super.onDestroyView();
@@ -262,20 +240,13 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		startActivity(intent);
 	}
 
-	// fetch data from server
-	// private void getdata() {
-	// GetMapDetails getMapDetails = new GetMapDetails(getActivity(), url,
-	// this);
-	// getMapDetails.execute();
-	// System.out.println("url" + url);
-	// }
 
 	// marker click event
 	@Override
 	public void onInfoWindowClick(Marker marker) {
 		// TODO Auto-generated method stub
 		int j = marker.getClusterGroup();
-		System.out.println("iii" + j);
+		Log.d(TAG, "click: ClusterGroup=" + j);
 		if (j == 0) {
 			dialog(marker);
 		}
@@ -285,7 +256,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	@Override
 	public void after(boolean clearmap) {
 
-		Log.d("OCM", "FragMap.after clearmap=" + clearmap);
+		Log.d(TAG, "after: clearmap=" + clearmap);
 
 		if (clearmap) {
 			map.clear();
@@ -303,21 +274,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		}
 
 
-		// Reload charge points from database:
-
-		al_cpid.clear();
-		al_lat.clear();
-		al_lng.clear();
-		al_title.clear();
-		al_address.clear();
-		al_numberofpoints.clear();
-		al_level1.clear();
-		al_level2.clear();
-		al_connction1.clear();
-		al_connction_id.clear();
-		al_optr.clear();
-		al_usage.clear();
-		al_status.clear();
+		// Load charge points from database:
 
 		Cursor cursor;
 		boolean check_range = false;
@@ -337,7 +294,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				maxrange_m = maxrange * 1000;
 		}
 
-		Log.d("OCM", "FragMap.after addMarkers avail=" + cursor.getCount());
+		Log.d(TAG, "after: addMarkers avail=" + cursor.getCount());
 
 		if (cursor.getCount() != 0) {
 			int cnt_added = 0;
@@ -364,101 +321,30 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 							new LatLng(Latitude, Longitude),
 							cpid);
 
-					// store chargepoint info:
-
-					al_cpid.add(cpid);
-					al_lat.add(cursor.getString(cursor.getColumnIndex("lat")));
-					al_lng.add(cursor.getString(cursor.getColumnIndex("lng")));
-					al_title.add(cursor.getString(cursor
-							.getColumnIndex("title")));
-					al_address.add(cursor.getString(cursor
-							.getColumnIndex("AddressLine1")));
-					al_numberofpoints.add(cursor.getString(cursor
-							.getColumnIndex("numberofpoint")));
-					al_level1.add(cursor.getString(cursor
-							.getColumnIndex("level1")));
-					al_level2.add(cursor.getString(cursor
-							.getColumnIndex("level2")));
-					al_connction1.add(cursor.getString(cursor
-							.getColumnIndex("connction1")));
-					al_connction_id.add(cursor.getString(cursor
-							.getColumnIndex("connction_id")));
-					al_optr.add(cursor.getString(cursor.getColumnIndex("optr")));
-					al_usage.add(cursor.getString(cursor
-							.getColumnIndex("usage")));
-					al_status.add(cursor.getString(cursor
-							.getColumnIndex("status")));
-
 					cnt_added++;
 
 				} while (cursor.moveToNext());
 			}
 
-			Log.d("OCM", "FragMap.after addMarkers added=" + cnt_added);
+			Log.d(TAG, "after: addMarkers added=" + cnt_added);
 		}
 	}
 
 
 	double roundTwoDecimals(double d) {
 		DecimalFormat twoDForm = new DecimalFormat("#.##");
-		System.out.println("lattt" + twoDForm.format(d));
+		//Log.d(TAG, "roundTwoDecimals=" + twoDForm.format(d));
 		return Double.valueOf(twoDForm.format(d));
 	}
 
 
 	// click marker event
 	private void dialog(Marker marker) {
-
-		Dialog dialog = new Dialog(getActivity());
-		dialog.setContentView(R.layout.mapdialog);
-		dialog.setTitle("Information");
-		Button bt_route = (Button) dialog.findViewById(R.id.bt_route);
-		TextView tv_title = (TextView) dialog.findViewById(R.id.tvtitle);
-		TextView tv_lat = (TextView) dialog.findViewById(R.id.tvlat);
-		TextView tv_lng = (TextView) dialog.findViewById(R.id.tvlng);
-		TextView tv_address = (TextView) dialog.findViewById(R.id.tv_address);
-		TextView tv_level1 = (TextView) dialog.findViewById(R.id.tv_level1);
-		TextView tv_level2 = (TextView) dialog.findViewById(R.id.tv_level2);
-		TextView tv_connction1 = (TextView) dialog
-				.findViewById(R.id.tv_connction1);
-		bt_route.setOnClickListener(this);
-
-		// find marker entry:
-		for (int i = 0; i < al_cpid.size(); i++) {
-			if (marker.getData().equals(al_cpid.get(i))) {
-
-				// load data:
-				DetailFragment.address = al_address.get(i) + "";
-				if (! al_numberofpoints.get(i).equals("null"))
-				  DetailFragment.number = al_numberofpoints.get(i) + "";
-				else
-			      DetailFragment.number = "";
-				DetailFragment.title = al_optr.get(i) + "";
-				DetailFragment.Usage = al_usage.get(i) + "";
-				DetailFragment.level1 = al_level1.get(i) + "";
-				DetailFragment.level2 = al_level2.get(i) + "";
-				DetailFragment.connection = al_connction1.get(i) + "";
-				DetailFragment.status = al_status.get(i) + "";
-				tv_title.setText(al_optr.get(i));
-				tv_lat.setText(al_usage.get(i));
-				tv_lng.setText(al_status.get(i));
-				tv_address.setText(al_address.get(i));
-				tv_level1.setText(al_level1.get(i));
-				tv_level2.setText(al_level2.get(i));
-				tv_connction1.setText(al_connction1.get(i));
-				slat = al_lat.get(i);
-				slng = al_lng.get(i);
-				DetailFragment.slat = slat;
-				DetailFragment.slng = slng;
-
-				break;
-			}
-		}
-
+		// open dialog:
 		Bundle args = new Bundle();
+		args.putString("cpId", (String) marker.getData());
 		BaseFragmentActivity.show(getActivity(), DetailFragment.class, args,
 				Configuration.ORIENTATION_UNDEFINED);
-		// dialog.show();
 	}
 
 
@@ -473,7 +359,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		maxrange = Math.max(pCarData.car_range_estimated_raw, pCarData.car_range_ideal_raw);
 		distance_units = (pCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
 
-		Log.d("OVMS", "FragMap.update: Car on map: lat=" + lat + " lng=" + lng
+		Log.d(TAG, "update: Car on map: lat=" + lat + " lng=" + lng
 				+ " maxrange=" + maxrange + distance_units);
 
 		// update charge point markers:
@@ -501,23 +387,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			map.moveCamera(CameraUpdateFactory.newLatLng(MELBOURNE));
 		}
 
-		al_cpid.add("0");
-		al_lat.add("" + lat);
-		al_lng.add("" + lng);
-		al_title.add("DEMO");
-		al_address.add("");
-		al_numberofpoints.add("");
-		al_level1.add("");
-		al_level2.add("");
-		al_connction1.add("");
-		al_connction_id.add("");
-		al_optr.add("");
-		al_usage.add("");
-		al_status.add("");
-
 		// update range circles:
 
-		Log.i("OCM", "FragMap.update: adding range circles:"
+		Log.i(TAG, "update: adding range circles:"
 				+ " ideal=" + pCarData.car_range_ideal_raw
 				+ " estimated=" + pCarData.car_range_estimated_raw);
 		addCircles(pCarData.car_range_ideal_raw,
@@ -547,15 +419,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				Color.RED);
 		map.addCircle(options.center(new LatLng(lat, lng))
 				.data("second circle").radius(rd2));
-	}
-
-	private void bounds() {
-		// TODO Auto-generated method stub
-		// LatLngBounds.Builder builder = new LatLngBounds.Builder();
-		// builder.include(Latlng1);
-		// builder.include(Latlng2);
-		// LatLngBounds bounds = builder.build();
-		// map.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
 	}
 
 	// calculate distance in meters:

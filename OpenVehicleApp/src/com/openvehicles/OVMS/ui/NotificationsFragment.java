@@ -23,6 +23,8 @@ import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 
 public class NotificationsFragment extends BaseFragment implements OnItemClickListener {
+	private static final String TAG = "NotificationsFragment";
+
 	private ListView mListView;
 	
 	@Override
@@ -40,7 +42,7 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-		Log.d("OVMS", "Displaying notification: #" + position);
+		Log.d(TAG, "Displaying notification: #" + position);
 		
 		NotificationData data = (NotificationData) parent.getAdapter().getItem(position);
 		new AlertDialog.Builder(parent.getContext())

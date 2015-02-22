@@ -13,6 +13,7 @@ import android.content.Context;
 import android.util.Log;
 
 public class OVMSNotifications {
+	private static final String TAG = "OVMSNotifications";
 	private static final String SETTINGS_FILENAME = "OVMSSavedNotifications.obj";
 	
 	public ArrayList<NotificationData> notifications;
@@ -22,17 +23,17 @@ public class OVMSNotifications {
 	public OVMSNotifications(Context context) {
 		mContext = context;
 		try {
-			Log.d("OVMS", "Loading saved notifications list from internal storage file: " + SETTINGS_FILENAME);
+			Log.d(TAG, "Loading saved notifications list from internal storage file: " + SETTINGS_FILENAME);
 			FileInputStream fis = context.openFileInput(SETTINGS_FILENAME);
 			ObjectInputStream is = new ObjectInputStream(fis);
 			notifications = (ArrayList<NotificationData>) is.readObject();
 			is.close();
-			Log.d("OVMS", String.format("Loaded %s saved notifications.", notifications.size()));
+			Log.d(TAG, String.format("Loaded %s saved notifications.", notifications.size()));
 		} catch (Exception e) {
 			//e.printStackTrace();
-			Log.d("ERR", e.getMessage());
+			Log.e(TAG, e.getMessage());
 
-			Log.d("OVMS", "Initializing with save notifications list.");
+			Log.d(TAG, "Initializing with save notifications list.");
 			notifications = new ArrayList<NotificationData>();
 			
 			// load demos
@@ -50,7 +51,7 @@ public class OVMSNotifications {
 		if (notifications.size() > 0) {
 			NotificationData lastNotify = notifications.get(notifications.size() - 1);
 			if (newNotify.equals(lastNotify)) {
-				Log.d("OVMS", "addNotification: dropping duplicate");
+				Log.d(TAG, "addNotification: dropping duplicate");
 				return false;
 			}
 		}
@@ -61,16 +62,16 @@ public class OVMSNotifications {
 	
 	public void save() {
 		try {
-			Log.d("OVMS", "Saving notifications list to internal storage...");
+			Log.d(TAG, "Saving notifications list to internal storage...");
 
 			FileOutputStream fos = mContext.openFileOutput(SETTINGS_FILENAME, Context.MODE_PRIVATE);
 			ObjectOutputStream os = new ObjectOutputStream(fos);
 			os.writeObject(this.notifications);
 			os.close();
-			Log.d("OVMS", String.format("Saved %s notifications.", notifications.size()));
+			Log.d(TAG, String.format("Saved %s notifications.", notifications.size()));
 		} catch (Exception e) {
 			e.printStackTrace();
-			Log.d("ERR", e.getMessage());
+			Log.e(TAG, e.getMessage());
 		}
 	}
 }

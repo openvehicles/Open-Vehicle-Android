@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
@@ -78,7 +77,7 @@ public class SettingsFragment extends BaseFragment implements
 
 	@Override
 	public void onServiceAvailable(ApiService pService) {
-		if (pService.isLoggined())
+		if (pService.isLoggedIn())
 			update(pService.getCarData());
 	}
 
@@ -88,8 +87,8 @@ public class SettingsFragment extends BaseFragment implements
 		switch (view.getId()) {
 		case R.id.btn_edit:
 			edit(position);
-//			System.out.println("sel_vehicle_label" + itttl.sel_vehicle_label);
-//			appPrefes.SaveData("sel_vehicle_label", itttl.sel_vehicle_label);
+			//Log.d("CarEditorFragment", "sel_vehicle_label=" + itttl.sel_vehicle_label);
+			//appPrefes.SaveData("sel_vehicle_label", itttl.sel_vehicle_label);
 			return;
 		case R.id.btn_info:
 			info(position);

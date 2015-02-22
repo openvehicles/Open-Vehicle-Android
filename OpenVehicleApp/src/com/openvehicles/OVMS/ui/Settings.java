@@ -23,6 +23,8 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 
 public class Settings extends Fragment {
+	private static final String TAG = "Settings(OCM)";
+
 	View view;
 	AppPrefes appPrefes;
 
@@ -113,7 +115,6 @@ public class Settings extends Fragment {
 					@Override
 					public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 						String selected = adapterView.getItemAtPosition(i).toString();
-						Log.d("OCM", "maxresults sel=" + i + " text=" + selected);
 						if (!appPrefes.getData("maxresults").equals(selected)) {
 							appPrefes.SaveData("maxresults", "" + selected);
 							FragMap.updateclust.clearcache();

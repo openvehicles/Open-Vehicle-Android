@@ -73,9 +73,7 @@ public class CarInfoFragment extends BaseFragment {
 	
 	@Override
 	public void update(CarData pCarData) {
-		View rootView = getView();
-		Ui.setValue(rootView, R.id.txt_gsm, mCarData.car_gsm_signal);
-		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
-		iv.setImageResource(Ui.getDrawableIdentifier(rootView.getContext(), "signal_strength_" + mCarData.car_gsm_bars));
+		mCarData = pCarData;
+		approveCarData();
 	}
 }

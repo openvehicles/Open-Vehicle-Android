@@ -21,8 +21,9 @@ import com.openvehicles.OVMS.ui.utils.Database;
 // This is the OCM API fetch background job
 
 public class GetMapDetails extends AsyncTask<Void, Void, Void> {
-	Main main;
+	private static final String TAG = "GetMapDetails";
 
+	Main main;
 	String url;
 	Database database;
 	afterasytask name;
@@ -51,7 +52,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onCancelled(Void result) {
-		Log.d("OCM", "GetMapDetails cancelled");
+		Log.d(TAG, "cancelled");
 	}
 
 	@Override
@@ -62,7 +63,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 		// read from OCM:
 
-		Log.d("OCM", "GetMapDetails from url=" + url);
+		Log.d(TAG, "reading from url=" + url);
 
 		try {
 			getdata();
@@ -70,15 +71,20 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 			e.printStackTrace();
 		}
 
-		Log.d("OCM", "GetMapDetails read " + chargePoints.size() + " chargepoints");
+		Log.d(TAG, "read " + chargePoints.size() + " chargepoints");
 
 		// update database:
+
+		database.beginWrite();
+
 		int i;
 		for (i = 0; !isCancelled() && (i < chargePoints.size()); i++) {
 			database.insert_mapdetails(chargePoints.get(i));
 		}
 
-		Log.d("OCM", "GetMapDetails saved " + i + " chargepoints to database");
+		database.endWrite(true);
+
+		Log.d(TAG, "saved " + i + " chargepoints to database");
 
 		return null;
 	}
@@ -88,8 +94,8 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 		// TODO Auto-generated method stub
 		super.onPostExecute(result);
 		// main.Diacancel();
-		System.out.println("post");
 		name.after(true);
+		database.close();
 	}
 
 

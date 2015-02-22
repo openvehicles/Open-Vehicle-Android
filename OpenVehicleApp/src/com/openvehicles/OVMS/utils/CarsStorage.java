@@ -17,7 +17,8 @@ import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.entities.CarData;
 
 public class CarsStorage {
-	private static final String TAG = "StorageCars";
+	private static final String TAG = "CarsStorage";
+
 	private static CarsStorage sInstance;
 	private final Context mContext = BaseApp.getApp();
 	private ArrayList<CarData> mStoredCars;
@@ -57,7 +58,7 @@ public class CarsStorage {
 	
 	public void saveStoredCars() {
 		if (mStoredCars == null) return;
-		Log.d("OVMS", "Saving cars to interal storage...");
+		Log.d(TAG, "Saving cars to interal storage...");
 		try {
 
 			FileOutputStream fos = mContext.openFileOutput(Consts.STOREDCARS_FILENAME,

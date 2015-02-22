@@ -67,7 +67,7 @@ public class CarEditorFragment extends SherlockFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		Log.e("DEBUG", "onPrepareOptionsMenu edit car: " + (CarsStorage.get().getStoredCars().size() > 1));
+		Log.d("CarEditorFragment", "onPrepareOptionsMenu edit car: " + (CarsStorage.get().getStoredCars().size() > 1));
 		menu.findItem(R.id.mi_delete).setVisible(mCarData != null && CarsStorage.get().getStoredCars().size() > 1);
 		menu.findItem(R.id.mi_control).setVisible(isSelectedCar);
 	}
@@ -160,7 +160,7 @@ public class CarEditorFragment extends SherlockFragment {
 		Ui.setValue(rootView, R.id.txt_server_address, mCarData.sel_server);
 
 		AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
-		System.out.println("sel_vehicle_label" + mCarData.sel_vehicle_label);
+		Log.d("CarEditorFragment", "sel_vehicle_label=" + mCarData.sel_vehicle_label);
 		appPrefes.SaveData("sel_vehicle_label", mCarData.sel_vehicle_label);
 		int index = -1;
 		for (String imgRes: sAvailableColors) {

@@ -39,7 +39,7 @@ import com.openvehicles.OVMS.utils.ConnectionList.Con;
 
 public class MainActivity extends ApiActivity implements
 		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
-	// private static final String TAG = "MainActivity";
+	private static final String TAG = "MainActivity";
 
 	private final Handler mC2dmHandler = new Handler();
 	private ViewPager mViewPager;
@@ -71,7 +71,7 @@ public class MainActivity extends ApiActivity implements
 				getPackageName() + ".ApiEvent"));
 
 		// set up receiver for notifications:
-		Log.d("Main", "Notifications registering receiver for Intent: " + getPackageName() + ".Notification");
+		Log.d(TAG, "Notifications registering receiver for Intent: " + getPackageName() + ".Notification");
 		registerReceiver(mNotificationReceiver, new IntentFilter(
 				getPackageName() + ".Notification"));
 
@@ -109,7 +109,7 @@ public class MainActivity extends ApiActivity implements
 		SharedPreferences settings = getSharedPreferences("C2DM", 0);
 		String registrationID = settings.getString("RegID", "");
 		if (registrationID.length() == 0) {
-			Log.d("C2DM", "Doing first time registration.");
+			Log.d(TAG, "C2DM: Doing first time registration.");
 
 			// No C2DM ID available. Register now.
 			// ProgressDialog progress = ProgressDialog.show(this,
@@ -131,7 +131,7 @@ public class MainActivity extends ApiActivity implements
 			 * new Intent(), 0)); startService(unregIntent);
 			 */
 		} else {
-			Log.d("C2DM", "Loaded Saved C2DM registration ID: "
+			Log.d(TAG, "C2DM: Loaded Saved C2DM registration ID: "
 					+ registrationID);
 			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
 		}
@@ -151,6 +151,7 @@ public class MainActivity extends ApiActivity implements
 	protected void onDestroy() {
 		unregisterReceiver(mApiEventReceiver);
 		unregisterReceiver(mNotificationReceiver);
+		database.close();
 		super.onDestroy();
 	}
 
@@ -167,7 +168,7 @@ public class MainActivity extends ApiActivity implements
 			// check if tcp connection is still active (it may be closed as the
 			// user leaves the program)
 			ApiService service = getService();
-			if (service == null || !service.isLoggined())
+			if (service == null || !service.isLoggedIn())
 				return;
 
 			SharedPreferences settings = getSharedPreferences("C2DM", 0);
@@ -182,10 +183,10 @@ public class MainActivity extends ApiActivity implements
 				editor.putString("UUID", uuid);
 				editor.commit();
 
-				Log.d("C2DM", "Generated New C2DM UUID: " + uuid);
+				Log.d(TAG, "C2DM: Generated New C2DM UUID: " + uuid);
 			} else {
 				uuid = settings.getString("UUID", "");
-				Log.d("C2DM", "Loaded Saved C2DM UUID: " + uuid);
+				Log.d(TAG, "C2DM: Loaded Saved C2DM UUID: " + uuid);
 			}
 
 			// MP-0
@@ -199,7 +200,7 @@ public class MainActivity extends ApiActivity implements
 			if ((registrationID.length() == 0)
 					|| !service.sendCommand(cmd, null)) {
 				// command not successful, reschedule reporting after 5 seconds
-				Log.d("C2DM", "Reporting C2DM ID failed. Rescheduling.");
+				Log.d(TAG, "C2DM: Reporting C2DM ID failed. Rescheduling.");
 				mC2dmHandler.postDelayed(mC2DMRegistrationID, 5000);
 			}
 		}
@@ -295,7 +296,7 @@ public class MainActivity extends ApiActivity implements
 						MainActivity.this,
 						mTabInfoItems[pPosition].getFragmentName());
 			}
-			//Log.d("MainActivity", "MainPagerAdapter: pos=" + pPosition + " => frg=" + mTabInfoItems[pPosition].fragment);
+			//Log.d(TAG, "MainPagerAdapter: pos=" + pPosition + " => frg=" + mTabInfoItems[pPosition].fragment);
 			return mTabInfoItems[pPosition].fragment;
 		}
 
@@ -328,7 +329,7 @@ public class MainActivity extends ApiActivity implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//Log.d("Main", "Notifications: received " + intent.toString());
+			//Log.d(TAG, "Notifications: received " + intent.toString());
 
 			// show messages list:
 			onNavigationItemSelected(3, 0);
@@ -336,7 +337,7 @@ public class MainActivity extends ApiActivity implements
 			// update messages list:
 			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
 			if (frg != null) {
-				//Log.d("Main", "Notifications: calling frg.update()");
+				//Log.d(TAG, "Notifications: calling frg.update()");
 				frg.update();
 			}
 		}
@@ -356,7 +357,7 @@ public class MainActivity extends ApiActivity implements
 			// init car position:
 			appPrefes.SaveData("lat_main", lat);
 			appPrefes.SaveData("lng_main", lng);
-			System.out.println("nulllllllllllllll");
+			Log.i(TAG, "updatelocation: init car position");
 		} else {
 			// get current car position:
 			lat = appPrefes.getData("lat_main");
@@ -393,7 +394,7 @@ public class MainActivity extends ApiActivity implements
 		}
 
 		if (cache_valid) {
-			Log.d("OCM", "MainActivity.getdata: cache valid for lat/lng=" + latitude + "/" + longitude
+			Log.d(TAG, "getdata: cache valid for lat/lng=" + latitude + "/" + longitude
 					+ ", lat_main=" + appPrefes.getData("lat_main"));
 		} else {
 			database.addlatlngdetail(latitude, longitude);
@@ -407,7 +408,7 @@ public class MainActivity extends ApiActivity implements
 					+ "&distanceunit=KM"
 					+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults);
 
-			Log.d("OCM", "MainActivity.getdata: new fetch for lat/lng=" + latitude + "/" + longitude
+			Log.d(TAG, "getdata: new fetch for lat/lng=" + latitude + "/" + longitude
 					+ ", lat_main=" + appPrefes.getData("lat_main")
 					+ " => url=" + url);
 

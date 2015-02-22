@@ -10,6 +10,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.view.Window;
@@ -52,10 +53,16 @@ public class ConnectionList {
 
 				protected void onPostExecute(Void result) {
 					// main.Diacancel();
+
+					database.beginWrite();
+
 					for (int i = 0; i < al.size(); i++) {
 						database.addConnectionTypes_Main("" + i, al_Id.get(i),
 								al.get(i));
 					}
+
+					database.endWrite(true);
+					database.close();
 				};
 
 				@Override
@@ -121,9 +128,12 @@ public class ConnectionList {
 				String ID = "", Title = "", Tid = "";
 				int len = listView.getCount();
 				SparseBooleanArray checked = listView.getCheckedItemPositions();
+
+				database.beginWrite();
+
 				for (int i = 0; i < len; i++) {
 					if (checked.get(i)) {
-						database.updaetConnectionTypesdetail(
+						database.updateConnectionTypesDetail(
 								hList.get(i).get("ID"), "true",
 								appPrefes.getData("sel_vehicle_label"));
 						if (ID.equals("")) {
@@ -138,10 +148,14 @@ public class ConnectionList {
 							appPrefes.SaveData("Id", Tid);
 						}
 					} else
-						database.updaetConnectionTypesdetail(
+						database.updateConnectionTypesDetail(
 								hList.get(i).get("ID"), "false",
 								appPrefes.getData("sel_vehicle_label"));
 				}
+
+				database.endWrite(true);
+				database.close();
+
 				sub.connections(Tid, Title);
 			}
 		});
@@ -154,7 +168,8 @@ public class ConnectionList {
 		al_Id.clear();
 		al_check.clear();
 		hList.clear();
-		System.out.println("sel_vehicle_label"
+
+		Log.d("ConnectionList", "getlist: sel_vehicle_label="
 				+ appPrefes.getData("sel_vehicle_label"));
 		if (database.get_ConnectionTypesdetails(
 				appPrefes.getData("sel_vehicle_label")).moveToFirst()) {
@@ -188,10 +203,14 @@ public class ConnectionList {
 					} while (cursor.moveToNext());
 				}
 			}
+
+			database.beginWrite();
 			for (int i = 0; i < al.size(); i++) {
-				database.addConnectionTypesdetail(al_Id.get(i), al.get(i),
+				database.addConnectionTypesDetail(al_Id.get(i), al.get(i),
 						"false", appPrefes.getData("sel_vehicle_label"));
 			}
+			database.endWrite(true);
+
 			al.clear();
 			al_Id.clear();
 			al_check.clear();
@@ -217,5 +236,7 @@ public class ConnectionList {
 				}
 			}
 		}
+
+		database.close();
 	}
 }

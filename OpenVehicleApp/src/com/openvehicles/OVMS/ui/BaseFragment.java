@@ -19,7 +19,7 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 		ApiService service = getService();
 		if (service != null) {
 			onServiceAvailable(service);
-			if (service.isLoggined())
+			if (service.isLoggedIn())
 				update(service.getCarData());
 		}
 	}
