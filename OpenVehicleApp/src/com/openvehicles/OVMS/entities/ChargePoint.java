@@ -17,17 +17,21 @@ public class ChargePoint {
 		public String Title;
 	}
 	public UsageType UsageType;
+	public String UsageCost;
 
 	static public class AddressInfo {
 		public String
 				Title,
 				AddressLine1,
 				Latitude,
-				Longitude;
+				Longitude,
+				AccessComments,
+				RelatedURL;
 	}
 	public AddressInfo AddressInfo;
 
 	public String NumberOfPoints;
+	public String GeneralComments;
 
 	static public class StatusType {
 		public String Title;

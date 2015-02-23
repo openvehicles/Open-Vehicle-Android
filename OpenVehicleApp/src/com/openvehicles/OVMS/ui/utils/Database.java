@@ -17,7 +17,7 @@ public class Database extends SQLiteOpenHelper {
 	SQLiteDatabase db;
 
 	public Database(Context context) {
-		super(context, "sampledatabase", null, 3);
+		super(context, "sampledatabase", null, 4);
 		c = context;
 	}
 
@@ -105,6 +105,25 @@ public class Database extends SQLiteOpenHelper {
 			// could conTypeTitle be fetched from ConnectionTypes_Main?
 			// conLevelTitle: no Level core reference data available?
 		}
+
+		if (oldVersion < 4) {
+			// Version 4:
+
+			// mapdetails:
+			// remove level1, level2, connction_id, connction1
+			// add UsageCost, AccessComments, RelatedURL, GeneralComments
+			db.execSQL("DROP TABLE mapdetails");
+			db.execSQL("CREATE TABLE mapdetails(cpid INTEGER PRIMARY KEY," +
+					"Latitude TEXT, Longitude TEXT, Title TEXT," +
+					"OperatorInfo TEXT, StatusType TEXT, UsageType TEXT," +
+					"AddressLine1 TEXT, RelatedURL TEXT, UsageCost TEXT," +
+					"AccessComments TEXT, GeneralComments TEXT," +
+					"NumberOfPoints TEXT)");
+
+			// clear cache:
+			db.execSQL("DELETE FROM Connection");
+			db.execSQL("DELETE FROM latlngdetail");
+		}
 	}
 
 	public void insert_mapdetails(ChargePoint cp) {
@@ -116,23 +135,29 @@ public class Database extends SQLiteOpenHelper {
 			contentValues.put("cpid", cp.ID); // primary key
 
 			if (cp.AddressInfo != null) {
-				contentValues.put("lat", cp.AddressInfo.Latitude);
-				contentValues.put("lng", cp.AddressInfo.Longitude);
-				contentValues.put("title", ifNull(cp.AddressInfo.Title, "untitled"));
+				contentValues.put("Latitude", cp.AddressInfo.Latitude);
+				contentValues.put("Longitude", cp.AddressInfo.Longitude);
+				contentValues.put("Title", ifNull(cp.AddressInfo.Title, "untitled"));
 				contentValues.put("AddressLine1", ifNull(cp.AddressInfo.AddressLine1, ""));
+				contentValues.put("AccessComments", ifNull(cp.AddressInfo.AccessComments, ""));
+				contentValues.put("RelatedURL", ifNull(cp.AddressInfo.RelatedURL, ""));
 			}
 
 			if (cp.OperatorInfo != null) {
-				contentValues.put("optr", ifNull(cp.OperatorInfo.Title, "unknown"));
+				contentValues.put("OperatorInfo", ifNull(cp.OperatorInfo.Title, "unknown"));
 			}
 
 			if (cp.StatusType != null) {
-				contentValues.put("status", ifNull(cp.StatusType.Title, "unknown"));
+				contentValues.put("StatusType", ifNull(cp.StatusType.Title, "unknown"));
 			}
 
 			if (cp.UsageType != null) {
-				contentValues.put("usage", ifNull(cp.UsageType.Title, "unknown"));
+				contentValues.put("UsageType", ifNull(cp.UsageType.Title, "unknown"));
 			}
+			contentValues.put("UsageCost", ifNull(cp.UsageCost, "unknown"));
+
+			contentValues.put("GeneralComments", ifNull(cp.GeneralComments, ""));
+			contentValues.put("NumberOfPoints", ifNull(cp.NumberOfPoints, "1"));
 
 			if (cp.Connections != null) {
 
@@ -161,8 +186,6 @@ public class Database extends SQLiteOpenHelper {
 				}
 
 			}
-
-			contentValues.put("numberofpoint", ifNull(cp.NumberOfPoints, "1"));
 
 			db.insertWithOnConflict("mapdetails", null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);
 

@@ -6,8 +6,8 @@ import pl.mg6.android.maps.extensions.GoogleMap;
 import pl.mg6.android.maps.extensions.MarkerOptions;
 
 public class MarkerGenerator {
-	public static void addMarkers(GoogleMap map, String title, LatLng latlng, String cpid) {
+	public static void addMarkers(GoogleMap map, String title, String snippet, LatLng latlng, String cpid) {
 		MarkerOptions options = new MarkerOptions();
-		map.addMarker(options.title(title).position(latlng).data(cpid));
+		map.addMarker(options.title(title).snippet(snippet).position(latlng).data(cpid));
 	}
 }

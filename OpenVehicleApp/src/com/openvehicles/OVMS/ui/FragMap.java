@@ -303,9 +303,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					// check position:
 
 					double Latitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("lat")));
+							.getString(cursor.getColumnIndex("Latitude")));
 					double Longitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("lng")));
+							.getString(cursor.getColumnIndex("Longitude")));
 
 					if (check_range) {
 						if (distance(lat, lng, Latitude, Longitude) > maxrange_m)
@@ -315,9 +315,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					// add marker:
 
 					String cpid = cursor.getString(cursor.getColumnIndex("cpid"));
+					String title = cursor.getString(cursor.getColumnIndex("Title"));
+					String snippet = cursor.getString(cursor.getColumnIndex("OperatorInfo"));
 
 					MarkerGenerator.addMarkers(map,
-							cursor.getString(cursor.getColumnIndex("title")),
+							title, snippet,
 							new LatLng(Latitude, Longitude),
 							cpid);
 

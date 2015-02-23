@@ -23,7 +23,6 @@ public class DetailFragment extends Fragment {
 
 	private String cpId, slat, slng;
 
-	RelativeLayout rel_route;
 	AppPrefes appPrefes;
 	Database database;
 
@@ -50,15 +49,22 @@ public class DetailFragment extends Fragment {
 		if (!row.moveToFirst())
 			return null;
 
-		slat = row.getString(row.getColumnIndex("lat"));
-		slng = row.getString(row.getColumnIndex("lng"));
+		slat = row.getString(row.getColumnIndex("Latitude"));
+		slng = row.getString(row.getColumnIndex("Longitude"));
 
-		String title, usage, status, address, number;
-		title = row.getString(row.getColumnIndex("title"));
-		status = row.getString(row.getColumnIndex("status"));
-		address = row.getString(row.getColumnIndex("AddressLine1"));
-		usage = row.getString(row.getColumnIndex("usage"));
-		number = row.getString(row.getColumnIndex("numberofpoint"));
+		final String Title, UsageType, StatusType, AddressLine1, NumberOfPoints,
+				OperatorInfo, UsageCost, AccessComments, RelatedURL, GeneralComments;
+
+		Title = row.getString(row.getColumnIndex("Title"));
+		OperatorInfo = row.getString(row.getColumnIndex("OperatorInfo"));
+		StatusType = row.getString(row.getColumnIndex("StatusType"));
+		UsageType = row.getString(row.getColumnIndex("UsageType"));
+		UsageCost = row.getString(row.getColumnIndex("UsageCost"));
+		AccessComments = row.getString(row.getColumnIndex("AccessComments"));
+		NumberOfPoints = row.getString(row.getColumnIndex("NumberOfPoints"));
+		AddressLine1 = row.getString(row.getColumnIndex("AddressLine1"));
+		RelatedURL = row.getString(row.getColumnIndex("RelatedURL"));
+		GeneralComments = row.getString(row.getColumnIndex("GeneralComments"));
 
 		row.close();
 
@@ -67,16 +73,21 @@ public class DetailFragment extends Fragment {
 
 		View detail = inflater.inflate(R.layout.detail, null);
 
-		Ui.setValue(detail, R.id.value_opname, "" + title);
-		Ui.setValue(detail, R.id.value_opstatus, "" + status);
-		Ui.setValue(detail, R.id.value_addres, "" + address);
-		Ui.setValue(detail, R.id.value_opusage, "" + usage);
-		Ui.setValue(detail, R.id.value_points, "" + number);
+		Ui.setValue(detail, R.id.value_Title, "" + Title);
+		Ui.setValue(detail, R.id.value_OperatorInfo, "" + OperatorInfo);
+		Ui.setValue(detail, R.id.value_StatusType, "" + StatusType);
+		Ui.setValue(detail, R.id.value_UsageType, "" + UsageType);
+		Ui.setValue(detail, R.id.value_UsageCost, "" + UsageCost);
+		Ui.setValue(detail, R.id.value_AccessComments, "" + AccessComments);
+		Ui.setValue(detail, R.id.value_NumberOfPoints, "" + NumberOfPoints);
+		Ui.setValue(detail, R.id.value_AddressLine1, "" + AddressLine1);
+		Ui.setValue(detail, R.id.value_RelatedURL, "" + RelatedURL);
+		Ui.setValue(detail, R.id.value_GeneralComments, "" + GeneralComments);
 
 
 		// add connections:
 
-		LinearLayout layout = (LinearLayout) detail.findViewById(R.id.LinearLayout1);
+		LinearLayout layout = (LinearLayout) detail.findViewById(R.id.DetailContentGroup);
 		View itemConn;
 
 		row = database.getChargePointConnections(cpId);
@@ -108,15 +119,28 @@ public class DetailFragment extends Fragment {
 
 
 		// routing button:
-
-		rel_route = (RelativeLayout) detail.findViewById(R.id.rel_route);
-		rel_route.setOnClickListener(new OnClickListener() {
+		Ui.setOnClick(detail, R.id.btnGetRoute, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				direction();
 			}
 		});
 
+		// OCM button:
+		Ui.setOnClick(detail, R.id.btnViewInOCM, new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				openURL("http://openchargemap.org/site/poi/details/" + cpId);
+			}
+		});
+
+		// click on RelatedURL => open browser:
+		Ui.setOnClick(detail, R.id.value_RelatedURL, new OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				openURL(RelatedURL);
+			}
+		});
 
 		return detail;
 	}
@@ -144,4 +168,11 @@ public class DetailFragment extends Fragment {
 
 		startActivity(intent);
 	}
+
+	private void openURL(String url) {
+		Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+				Uri.parse(url));
+		startActivity(intent);
+	}
+
 }

@@ -47,35 +47,46 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/btnGroup1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="horizontal"
+        android:padding="2dip">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="Get Route"
+            android:id="@+id/btnGetRoute"
+            android:layout_weight="50"
+            android:layout_margin="2dip"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="View in OCM"
+            android:id="@+id/btnViewInOCM"
+            android:layout_weight="50"
+            android:layout_margin="2dip"/>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#808080" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
         android:scrollbars="none" >
 
         <LinearLayout
+            android:id="@+id/DetailContentGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical" >
-
-            <RelativeLayout
-                android:id="@+id/rel_route"
-                android:layout_width="match_parent"
-                android:layout_height="50dip"
-                android:background="@android:color/white" >
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerInParent="true"
-                    android:text="Route to Charging Station"
-                    android:textColor="#000"
-                    android:textSize="20sp" />
-            </RelativeLayout>
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#808080" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -99,9 +110,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
 
                 <TextView
                     android:id="@+id/heading_opname"
@@ -113,12 +126,21 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/value_opname"
+                    android:id="@+id/value_Title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading_opname"
                     android:layout_marginLeft="10dp"
-                    android:text="Operator Name"
+                    android:text="Title"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/value_OperatorInfo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/value_Title"
+                    android:layout_marginLeft="10dp"
+                    android:text="OperatorInfo"
                     android:textColor="#000"
                     android:textSize="13sp" />
             </RelativeLayout>
@@ -131,9 +153,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
 
                 <TextView
                     android:id="@+id/heading_opstatus"
@@ -145,12 +169,12 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/value_opstatus"
+                    android:id="@+id/value_StatusType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading_opstatus"
                     android:layout_marginLeft="10dp"
-                    android:text="Operator Name"
+                    android:text="StatusType"
                     android:textColor="#000"
                     android:textSize="13sp" />
             </RelativeLayout>
@@ -163,9 +187,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
 
                 <TextView
                     android:id="@+id/heading_usage"
@@ -177,12 +203,21 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/value_opusage"
+                    android:id="@+id/value_UsageType"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading_usage"
                     android:layout_marginLeft="10dp"
-                    android:text="Usage"
+                    android:text="UsageType"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/value_UsageCost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/value_UsageType"
+                    android:layout_marginLeft="10dp"
+                    android:text="UsageCost"
                     android:textColor="#000"
                     android:textSize="13sp" />
             </RelativeLayout>
@@ -195,9 +230,11 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:paddingBottom="5dip"
+                android:paddingTop="5dip">
 
                 <TextView
                     android:id="@+id/heading_points"
@@ -209,7 +246,7 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/value_points"
+                    android:id="@+id/value_NumberOfPoints"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/heading_points"
@@ -227,12 +264,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dip"
+                android:layout_height="wrap_content"
                 android:background="@android:color/white"
-                android:gravity="center_vertical" >
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
 
                 <TextView
-                    android:id="@+id/heading_addres"
+                    android:id="@+id/heading_Address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -241,12 +280,90 @@
                     android:textSize="15sp" />
 
                 <TextView
-                    android:id="@+id/value_addres"
+                    android:id="@+id/value_AddressLine1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/heading_addres"
+                    android:layout_below="@+id/heading_Address"
                     android:layout_marginLeft="10dp"
-                    android:text="Operator Name"
+                    android:text="AddressLine1"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/value_RelatedURL"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/value_AddressLine1"
+                    android:layout_marginLeft="10dp"
+                    android:text="RelatedURL"
+                    android:textColor="#00f"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="#808080" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
+
+                <TextView
+                    android:id="@+id/heading_AccessComments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Access Info"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/value_AccessComments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/heading_AccessComments"
+                    android:layout_marginLeft="10dp"
+                    android:text="AccessComments"
+                    android:textColor="#000"
+                    android:textSize="13sp" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:background="#808080" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:gravity="center_vertical"
+                android:paddingTop="5dip"
+                android:paddingBottom="5dip">
+
+                <TextView
+                    android:id="@+id/heading_GeneralComments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="Comments"
+                    android:textColor="#000"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/value_GeneralComments"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/heading_GeneralComments"
+                    android:layout_marginLeft="10dp"
+                    android:text="GeneralComments"
                     android:textColor="#000"
                     android:textSize="13sp" />
             </RelativeLayout>
