@@ -3,43 +3,54 @@ package com.openvehicles.OVMS.ui;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.CompoundButton.OnCheckedChangeListener;
-import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.utils.ConnectionList;
 
-public class Settings extends Fragment {
+public class Settings extends Fragment implements ConnectionList.Con {
 	private static final String TAG = "Settings(OCM)";
 
 	View view;
 	AppPrefes appPrefes;
+	ConnectionList connectionList;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
 		view = inflater.inflate(R.layout.setting, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
+
+		String url = "http://api.openchargemap.io/v2/referencedata/";
+		connectionList = new ConnectionList(getActivity(), this, url,false);
+
 		setUpClusteringViews();
+
 		return view;
 	}
 
-	public interface Updateclust {
-		public void updateclust(int clusterSizeIndex, boolean enabled);
-		public void clearcache();
+	public interface UpdateMap {
+		public void updateClustering(int clusterSizeIndex, boolean enabled);
+		public void clearCache();
+		public void updateFilter(String connectionList);
+	}
+
+	@Override
+	public void connections(String al, String name) {
+		Log.d(TAG, "connections: al=" + al);
+		FragMap.updateMap.updateFilter(al);
 	}
 
 	private void setUpClusteringViews() {
@@ -49,6 +60,9 @@ public class Settings extends Fragment {
 				.findViewById(R.id.seekbar_cluster_size);
 		Spinner maxResultsSpinner = (Spinner) view
 				.findViewById(R.id.ocm_maxresults);
+		Button btnConnections = (Button) view
+				.findViewById(R.id.btn_connections);
+
 
 		if (appPrefes.getData("check").equals("false")) {
 			clusterCheckbox.setChecked(false);
@@ -85,7 +99,7 @@ public class Settings extends Fragment {
 												 boolean isChecked) {
 						clusterSizeSeekbar.setEnabled(isChecked);
 						appPrefes.SaveData("check", "" + isChecked);
-						FragMap.updateclust.updateclust(
+						FragMap.updateMap.updateClustering(
 								clusterSizeSeekbar.getProgress(), isChecked);
 					}
 				});
@@ -101,7 +115,7 @@ public class Settings extends Fragment {
 					public void onProgressChanged(SeekBar seekBar,
 												  int progress, boolean fromUser) {
 						appPrefes.SaveData("progress", "" + progress);
-						FragMap.updateclust.updateclust(progress, true);
+						FragMap.updateMap.updateClustering(progress, true);
 					}
 
 					@Override
@@ -117,13 +131,21 @@ public class Settings extends Fragment {
 						String selected = adapterView.getItemAtPosition(i).toString();
 						if (!appPrefes.getData("maxresults").equals(selected)) {
 							appPrefes.SaveData("maxresults", "" + selected);
-							FragMap.updateclust.clearcache();
+							FragMap.updateMap.clearCache();
 						}
 					}
 
 					@Override
 					public void onNothingSelected(AdapterView<?> adapterView) {
 
+					}
+				});
+
+		btnConnections
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						connectionList.sublist();
 					}
 				});
 

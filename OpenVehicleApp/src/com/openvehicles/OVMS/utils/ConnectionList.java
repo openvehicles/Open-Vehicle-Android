@@ -125,36 +125,36 @@ public class ConnectionList {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
 					long arg3) {
 				// TODO Auto-generated method stub
-				String ID = "", Title = "", Tid = "";
+				String Title = "", Tid = "";
+				String selVehicleLabel = appPrefes.getData("sel_vehicle_label");
+
 				int len = listView.getCount();
 				SparseBooleanArray checked = listView.getCheckedItemPositions();
 
 				database.beginWrite();
+				database.resetConnectionTypesDetail(selVehicleLabel);
 
 				for (int i = 0; i < len; i++) {
 					if (checked.get(i)) {
+
 						database.updateConnectionTypesDetail(
 								hList.get(i).get("ID"), "true",
-								appPrefes.getData("sel_vehicle_label"));
-						if (ID.equals("")) {
+								selVehicleLabel);
+
+						if (Tid.equals("")) {
 							Tid = al_Id.get(i);
-							ID = hList.get(i).get("ID");
 							Title = hList.get(i).get("Title");
-							appPrefes.SaveData("Id", Tid);
 						} else {
 							Tid = Tid + "," + al_Id.get(i);
-							ID = ID + "," + hList.get(i).get("ID");
 							Title = Title + "," + hList.get(i).get("Title");
-							appPrefes.SaveData("Id", Tid);
 						}
-					} else
-						database.updateConnectionTypesDetail(
-								hList.get(i).get("ID"), "false",
-								appPrefes.getData("sel_vehicle_label"));
+					}
 				}
 
 				database.endWrite(true);
 				database.close();
+
+				appPrefes.SaveData("Id", Tid);
 
 				sub.connections(Tid, Title);
 			}
@@ -171,37 +171,33 @@ public class ConnectionList {
 
 		Log.d("ConnectionList", "getlist: sel_vehicle_label="
 				+ appPrefes.getData("sel_vehicle_label"));
-		if (database.get_ConnectionTypesdetails(
-				appPrefes.getData("sel_vehicle_label")).moveToFirst()) {
-			Cursor cursor = database.get_ConnectionTypesdetails(appPrefes
-					.getData("sel_vehicle_label"));
-			if (cursor.getCount() != 0) {
-				if (cursor.moveToFirst()) {
-					do {
-						al.add(cursor.getString(cursor.getColumnIndex("title")));
-						al_check.add(cursor.getString(cursor
-								.getColumnIndex("chec")));
-						al_Id.add(cursor.getString(cursor.getColumnIndex("tId")));
-						HashMap<String, String> hmap = new HashMap<String, String>();
-						hmap.put("ID",
-								cursor.getString(cursor.getColumnIndex("Id")));
-						hmap.put("Title", cursor.getString(cursor
-								.getColumnIndex("title")));
-						hmap.put("check",
-								cursor.getString(cursor.getColumnIndex("chec")));
-						hList.add(hmap);
-					} while (cursor.moveToNext());
-				}
+
+		Cursor cursor = database.get_ConnectionTypesdetails(
+				appPrefes.getData("sel_vehicle_label"));
+
+		if (cursor.getCount() != 0) {
+			while (cursor.moveToNext()) {
+				al.add(cursor.getString(cursor.getColumnIndex("title")));
+				al_check.add(cursor.getString(cursor
+						.getColumnIndex("chec")));
+				al_Id.add(cursor.getString(cursor.getColumnIndex("tId")));
+				HashMap<String, String> hmap = new HashMap<String, String>();
+				hmap.put("ID",
+						cursor.getString(cursor.getColumnIndex("Id")));
+				hmap.put("Title", cursor.getString(cursor
+						.getColumnIndex("title")));
+				hmap.put("check",
+						cursor.getString(cursor.getColumnIndex("chec")));
+				hList.add(hmap);
 			}
+
 		} else {
-			Cursor cursor = database.get_ConnectionTypes_Main();
-			if (cursor.getCount() != 0) {
-				if (cursor.moveToFirst()) {
-					do {
-						al.add(cursor.getString(cursor.getColumnIndex("title")));
-						al_Id.add(cursor.getString(cursor.getColumnIndex("tId")));
-					} while (cursor.moveToNext());
-				}
+			cursor.close();
+
+			cursor = database.get_ConnectionTypes_Main();
+			while (cursor.moveToNext()) {
+				al.add(cursor.getString(cursor.getColumnIndex("title")));
+				al_Id.add(cursor.getString(cursor.getColumnIndex("tId")));
 			}
 
 			database.beginWrite();
@@ -217,26 +213,24 @@ public class ConnectionList {
 			hList.clear();
 			Cursor cursor1 = database.get_ConnectionTypesdetails(appPrefes
 					.getData("sel_vehicle_label"));
-			if (cursor1.getCount() != 0) {
-				if (cursor1.moveToFirst()) {
-					do {
-						al.add(cursor1.getString(cursor1.getColumnIndex("title")));
-						al_check.add(cursor1.getString(cursor1
-								.getColumnIndex("chec")));
-						al_Id.add(cursor1.getString(cursor1.getColumnIndex("tId")));
-						HashMap<String, String> hmap = new HashMap<String, String>();
-						hmap.put("ID",
-								cursor1.getString(cursor1.getColumnIndex("Id")));
-						hmap.put("Title", cursor1.getString(cursor1
-								.getColumnIndex("title")));
-						hmap.put("check",
-								cursor1.getString(cursor1.getColumnIndex("chec")));
-						hList.add(hmap);
-					} while (cursor1.moveToNext());
-				}
+			while (cursor1.moveToNext()) {
+				al.add(cursor1.getString(cursor1.getColumnIndex("title")));
+				al_check.add(cursor1.getString(cursor1
+						.getColumnIndex("chec")));
+				al_Id.add(cursor1.getString(cursor1.getColumnIndex("tId")));
+				HashMap<String, String> hmap = new HashMap<String, String>();
+				hmap.put("ID",
+						cursor1.getString(cursor1.getColumnIndex("Id")));
+				hmap.put("Title", cursor1.getString(cursor1
+						.getColumnIndex("title")));
+				hmap.put("check",
+						cursor1.getString(cursor1.getColumnIndex("chec")));
+				hList.add(hmap);
 			}
+			cursor1.close();
 		}
 
+		cursor.close();
 		database.close();
 	}
 }

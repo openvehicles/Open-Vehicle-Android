@@ -152,4 +152,12 @@
         <item>Perform</item>
     </string-array>
 
+    <string name="mi_map_options">Optionen</string>
+    <string name="mi_map_autotrack">Fahrzeug verfolgen</string>
+    <string name="mi_map_filter_connections">Meine Anschlüsse</string>
+    <string name="mi_map_filter_range">Meine Reichweite</string>
+    <string name="mi_map_settings">Einstellungen</string>
+
+    <string name="connections">Lade-Anschlüsse</string>
+
 </resources>

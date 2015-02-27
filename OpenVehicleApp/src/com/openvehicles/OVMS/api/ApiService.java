@@ -14,7 +14,7 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class ApiService extends Service implements OnUpdateStatusListener {
-	private static final String TAG = "MainActivity";
+	private static final String TAG = "ApiService";
     private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
     private ApiTask mApiTask;

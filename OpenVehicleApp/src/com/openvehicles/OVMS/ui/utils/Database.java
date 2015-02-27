@@ -10,6 +10,8 @@ import android.util.Log;
 import com.openvehicles.OVMS.entities.ChargePoint;
 import com.testflightapp.lib.core.StringUtils;
 
+import java.util.HashMap;
+
 public class Database extends SQLiteOpenHelper {
 	private static final String TAG = "Database";
 
@@ -260,6 +262,15 @@ public class Database extends SQLiteOpenHelper {
 		db.update("ConnectionTypes", contentValues, whereClause, null);
 	}
 
+	public void resetConnectionTypesDetail(String CompanyName) {
+		open();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("chec", "false");
+		String whereClause = "CompanyName=?";
+		String whereArgs[] = { CompanyName };
+		db.update("ConnectionTypes", contentValues, whereClause, whereArgs);
+	}
+
 	public void addcompanydetail(String companyname, String buffer) {
 		open();
 		ContentValues contentValues = new ContentValues();
@@ -377,6 +388,18 @@ public class Database extends SQLiteOpenHelper {
 				"select * from ConnectionTypes where CompanyName='" + cmpname
 						+ "' ORDER BY title", null);
 		return cursor;
+	}
+
+	public String getConnectionFilter(String vehicleLabel) {
+		open();
+		Cursor cursor = get_ConnectionTypesdetails(vehicleLabel);
+		StringBuffer idList = new StringBuffer(1000);
+		while (cursor.moveToNext()) {
+			if (cursor.getString(cursor.getColumnIndex("chec")).equals("true"))
+				idList.append("," + cursor.getString(cursor.getColumnIndex("tId")));
+		}
+		cursor.close();
+		return (idList.length() > 1) ? idList.substring(1) : "";
 	}
 
 	public Cursor getCompanydetails() {

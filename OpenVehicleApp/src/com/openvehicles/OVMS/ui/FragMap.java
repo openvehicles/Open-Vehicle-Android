@@ -1,7 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.List;
 
 import pl.mg6.android.maps.extensions.CircleOptions;
@@ -12,7 +11,7 @@ import pl.mg6.android.maps.extensions.GoogleMap.OnInfoWindowClickListener;
 import pl.mg6.android.maps.extensions.Marker;
 import pl.mg6.android.maps.extensions.MarkerOptions;
 import pl.mg6.android.maps.extensions.SupportMapFragment;
-import android.app.Dialog;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -30,13 +29,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.view.SubMenu;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -44,26 +40,26 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
-import com.openvehicles.OVMS.ui.Settings.Updateclust;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider;
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
-		afterasytask, OnClickListener, Updateclust {
+		afterasytask, OnClickListener, Settings.UpdateMap {
 	private static final String TAG = "FragMap";
 
 	private GoogleMap map;
 	Database database;
 	String slat, slng;
-	private Menu menu;
 	AppPrefes appPrefes;
+
 	static boolean flag = true;
 	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
 	View rootView;
+	Menu optionsMenu;
 	boolean autotrack = true;
-	static Updateclust updateclust;
+	static Settings.UpdateMap updateMap;
 
 	static double lat = 0, lng = 0;
 	static int maxrange = 160;
@@ -79,7 +75,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			Bundle savedInstanceState) {
 		rootView = inflater.inflate(R.layout.mmap, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
-		updateclust = this;
+		updateMap = this;
 
 		lat = 37.410866;
 		lng = -122.001946;
@@ -97,14 +93,18 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.setOnInfoWindowClickListener(this);
     	map.getUiSettings().setRotateGesturesEnabled(false); // Disable two-finger rotation gesture
 		// setUpClusteringViews();
+
 		setHasOptionsMenu(true);
 		flag = true;
 		// after();
 
+		autotrack = !appPrefes.getData("autotrack").equals("off");
+
 		return rootView;
 	}
 
-	void updateClustering(int clusterSizeIndex, boolean enabled) {
+	@Override
+	public void updateClustering(int clusterSizeIndex, boolean enabled) {
 		ClusteringSettings clusteringSettings = new ClusteringSettings();
 		clusteringSettings.addMarkersDynamically(true);
 		if (enabled) {
@@ -130,6 +130,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.setClustering(clusteringSettings);
 	}
 
+
 	List<Marker> lis;
 
 	private void replacefragment(Fragment frag) {
@@ -142,74 +143,56 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		// inflater.inflate(R.menu.option, menu);
-		this.menu = menu;
-		SubMenu sub = menu.addSubMenu("Options");
-		sub.add(0, 1, 0, "Turn OFF autotrack");
-		if (appPrefes.getData("filter").equals("off")) {
-			sub.add(0, 2, 1, "Filtered Stations ON");
-		} else {
-			sub.add(0, 2, 1, "Filtered Stations OFF");
-		}
-		if (appPrefes.getData("inrange").equals("off")) {
-			sub.add(0, 3, 2, "Only show Stations in range ON");
-		} else {
-			sub.add(0, 3, 2, "Only show Stations in range OFF");
-		}
-		sub.add(0, 4, 3, "Settings");
-		sub.getItem().setShowAsAction(
-				MenuItem.SHOW_AS_ACTION_ALWAYS
-						| MenuItem.SHOW_AS_ACTION_WITH_TEXT);
+
+		inflater.inflate(R.menu.map_options, menu);
+
+		optionsMenu = menu;
+
+		// set checkboxes:
+		optionsMenu.findItem(R.id.mi_map_autotrack)
+				.setChecked(autotrack);
+		optionsMenu.findItem(R.id.mi_map_filter_connections)
+				.setChecked(appPrefes.getData("filter").equals("on"));
+		optionsMenu.findItem(R.id.mi_map_filter_range)
+				.setChecked(appPrefes.getData("inrange").equals("on"));
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		if (item.getItemId() == 1) {
-			changemenuitem(1);
-		} else if (item.getItemId() == 2) {
-			changemenuitem(2);
-		} else if (item.getItemId() == 3) {
-			changemenuitem(3);
-		} else if (item.getItemId() == 4) {
-			Bundle args = new Bundle();
-			BaseFragmentActivity.show(getActivity(), Settings.class, args,
-					Configuration.ORIENTATION_UNDEFINED);
+
+		int menuId = item.getItemId();
+		boolean newState = !item.isChecked();
+
+		switch(menuId) {
+
+			case R.id.mi_map_autotrack:
+				appPrefes.SaveData("autotrack", newState ? "on" : "off");
+				item.setChecked(newState);
+				autotrack = newState;
+				break;
+
+			case R.id.mi_map_filter_connections:
+				appPrefes.SaveData("filter", newState ? "on" : "off");
+				item.setChecked(newState);
+				after(false);
+				break;
+
+			case R.id.mi_map_filter_range:
+				appPrefes.SaveData("inrange", newState ? "on" : "off");
+				item.setChecked(newState);
+				after(false);
+				break;
+
+			case R.id.mi_map_settings:
+				Bundle args = new Bundle();
+				BaseFragmentActivity.show(getActivity(), Settings.class, args,
+						Configuration.ORIENTATION_UNDEFINED);
+				break;
 		}
+
 		return false;
 	}
 
-	private void changemenuitem(int value) {
-		// TODO Auto-generated method stub
-		MenuItem turnoff = menu.findItem(value);
-		if (value == 1) {
-			if (turnoff.getTitle().toString().equals("Turn OFF autotrack")) {
-				turnoff.setTitle("Turn ON autotrack");
-				autotrack = false;
-			} else {
-				turnoff.setTitle("Turn OFF autotrack");
-				autotrack = true;
-			}
-		} else if (value == 2) {
-			if (turnoff.getTitle().toString().equals("Filtered Stations ON")) {
-				appPrefes.SaveData("filter", "on");
-				turnoff.setTitle("Filtered Stations OFF");
-			} else {
-				appPrefes.SaveData("filter", "off");
-				turnoff.setTitle("Filtered Stations ON");
-			}
-			after(false);
-		} else if (value == 3) {
-			if (turnoff.getTitle().toString().equals("Only show Stations in range OFF")) {
-				appPrefes.SaveData("inrange", "off");
-				turnoff.setTitle("Only show Stations in range ON");
-			} else {
-				appPrefes.SaveData("inrange", "on");
-				turnoff.setTitle("Only show Stations in range OFF");
-			}
-			after(false);
-		}
-
-	}
 
 	@Override
 	public void onDestroyView() {
@@ -281,8 +264,15 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		double maxrange_m = 0;
 
 		if (appPrefes.getData("filter").equals("on")) {
-			cursor = database.get_mapdetails(appPrefes.getData("Id"));
+			// check if filter is defined, else fallback to all stations:
+			String connectionList = appPrefes.getData("Id");
+			Log.d(TAG, "after: connectionList=(" + connectionList + ")");
+			if (!connectionList.equals(""))
+				cursor = database.get_mapdetails(connectionList);
+			else
+				cursor = database.get_mapdetails();
 		} else {
+			// filter off:
 			cursor = database.get_mapdetails();
 		}
 
@@ -449,13 +439,15 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	@Override
-	public void updateclust(int clusterSizeIndex, boolean enabled) {
-		updateClustering(clusterSizeIndex, enabled);
-	}
-
-	@Override
-	public void clearcache() {
+	public void clearCache() {
 		database.clear_latlngdetail();
 		MainActivity.updateLocation.updatelocation();
 	}
+
+	@Override
+	public void updateFilter(String connectionList) {
+		// update markers:
+		after(false);
+	}
+
 }
