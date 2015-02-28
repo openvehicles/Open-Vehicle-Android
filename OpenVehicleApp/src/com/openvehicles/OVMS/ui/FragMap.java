@@ -61,6 +61,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	boolean autotrack = true;
 	static Settings.UpdateMap updateMap;
 
+	private CarData mCarData;
 	static double lat = 0, lng = 0;
 	static int maxrange = 160;
 	static String distance_units = "KM";
@@ -83,6 +84,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		distance_units = "KM";
 
 		database = new Database(getActivity());
+
 		FragmentManager fm = getActivity().getSupportFragmentManager();
 		SupportMapFragment f = (SupportMapFragment) fm
 				.findFragmentById(R.id.mmap);
@@ -92,12 +94,13 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				.addMarkersDynamically(true));
 		map.setOnInfoWindowClickListener(this);
     	map.getUiSettings().setRotateGesturesEnabled(false); // Disable two-finger rotation gesture
+		map.moveCamera(CameraUpdateFactory.zoomTo(15));
 		// setUpClusteringViews();
 
 		setHasOptionsMenu(true);
 		flag = true;
-		// after();
 
+		// get config:
 		autotrack = !appPrefes.getData("autotrack").equals("off");
 
 		return rootView;
@@ -169,6 +172,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				appPrefes.SaveData("autotrack", newState ? "on" : "off");
 				item.setChecked(newState);
 				autotrack = newState;
+				if (autotrack)
+					update();
 				break;
 
 			case R.id.mi_map_filter_connections:
@@ -340,16 +345,24 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 
-	// fetch latitude and longitude
 	@Override
 	public void update(CarData pCarData) {
+		mCarData = pCarData;
+		update();
+	}
 
-		// get car position:
 
-		lat = pCarData.car_latitude;
-		lng = pCarData.car_longitude;
-		maxrange = Math.max(pCarData.car_range_estimated_raw, pCarData.car_range_ideal_raw);
-		distance_units = (pCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
+	public void update() {
+
+		if (mCarData == null)
+			return;
+
+		// get last known car position:
+
+		lat = mCarData.car_latitude;
+		lng = mCarData.car_longitude;
+		maxrange = Math.max(mCarData.car_range_estimated_raw, mCarData.car_range_ideal_raw);
+		distance_units = (mCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
 
 		Log.d(TAG, "update: Car on map: lat=" + lat + " lng=" + lng
 				+ " maxrange=" + maxrange + distance_units);
@@ -363,17 +376,17 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		final LatLng MELBOURNE = new LatLng(lat, lng);
 		Drawable drawable = getResources().getDrawable(
 				Ui.getDrawableIdentifier(getActivity(), "map_"
-						+ pCarData.sel_vehicle_image));
+						+ mCarData.sel_vehicle_image));
 		Bitmap myLogo = ((BitmapDrawable) drawable).getBitmap();
 		MarkerOptions marker = new MarkerOptions().position(MELBOURNE)
-				.title(pCarData.sel_vehicle_label)
-				.rotation((float) pCarData.car_direction)
+				.title(mCarData.sel_vehicle_label)
+				.rotation((float) mCarData.car_direction)
 				.icon(BitmapDescriptorFactory.fromBitmap(myLogo));
 		Marker carmarker = map.addMarker(marker);
 		carmarker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
 
 		if (flag) {
-			map.moveCamera(CameraUpdateFactory.newLatLngZoom(MELBOURNE, 18));
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(MELBOURNE, 15));
 			flag = false;
 		} else if (autotrack) {
 			map.moveCamera(CameraUpdateFactory.newLatLng(MELBOURNE));
@@ -382,16 +395,16 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		// update range circles:
 
 		Log.i(TAG, "update: adding range circles:"
-				+ " ideal=" + pCarData.car_range_ideal_raw
-				+ " estimated=" + pCarData.car_range_estimated_raw);
-		addCircles(pCarData.car_range_ideal_raw,
-				pCarData.car_range_estimated_raw);
+				+ " ideal=" + mCarData.car_range_ideal_raw
+				+ " estimated=" + mCarData.car_range_estimated_raw);
+		addCircles(mCarData.car_range_ideal_raw,
+				mCarData.car_range_estimated_raw);
 
 
 		// start chargepoint data update:
 
-		appPrefes.SaveData("lat_main", "" + pCarData.car_latitude);
-		appPrefes.SaveData("lng_main", "" + pCarData.car_longitude);
+		appPrefes.SaveData("lat_main", "" + mCarData.car_latitude);
+		appPrefes.SaveData("lng_main", "" + mCarData.car_longitude);
 
 		MainActivity.updateLocation.updatelocation();
 
