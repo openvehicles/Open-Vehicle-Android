@@ -122,7 +122,8 @@
 
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Vehicle Info</string>
-    
+
+    <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
     <string name="msg_wakeup_car">Waking up Car&#8230;</string>

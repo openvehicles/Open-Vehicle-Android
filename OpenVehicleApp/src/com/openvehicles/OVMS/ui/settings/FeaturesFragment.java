@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+import com.actionbarsherlock.view.Window;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
@@ -46,7 +47,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		SherlockFragmentActivity activity = getSherlockActivity(); 
+		SherlockFragmentActivity activity = getSherlockActivity();
 		activity.setTitle(R.string.Features);
 	}
 	
@@ -88,6 +89,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			cancelCommand();
 			switch (rcode) {
 			case 0:
+				Toast.makeText(getActivity(), getString(R.string.msg_ok),
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 1: // failed
 				Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
@@ -111,17 +114,16 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		case 0:
 			if (result.length > 4) {
 				int fn = Integer.parseInt(result[2]);
-//				int fm = Integer.parseInt(result[3]);
+				int fm = Integer.parseInt(result[3]);
 				int fv = Integer.parseInt(result[4]);
 				
 				if (fn < FeaturesAdapter.FEATURES_MAX) {
 					mAdapter.setFeature(fn, fv);
 				}
 				
-//				if (fn == (fm - 1)) {
-//					cancelCommand();
-//					mListView.setAdapter(mAdapter);
-//				}
+				if (fn == (fm - 1)) {
+					cancelCommand();
+				}
 			}
 			break;
 		case 1: // failed

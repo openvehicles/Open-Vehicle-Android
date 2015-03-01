@@ -109,6 +109,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 			cancelCommand();
 			switch (rcode) {
 			case 0:
+				Toast.makeText(getActivity(), getString(R.string.msg_ok),
+						Toast.LENGTH_SHORT).show();
 				break;
 			case 1: // failed
 				Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
@@ -132,17 +134,16 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		case 0:
 			if (result.length > 4) {
 				int fn = Integer.parseInt(result[2]);
-//				int fm = Integer.parseInt(result[3]);
+				int fm = Integer.parseInt(result[3]);
 				String fv = result[4];
 				
 				if (fn < ControlParametersAdapter.PARAM_FEATURE_S) {
 					mAdapter.setParam(fn, fv);
 				}
 				
-//				if (fn == (fm - 1)) {
-//					cancelCommand();
-//					mListView.setAdapter(mAdapter);
-//				}
+				if (fn == (fm - 1)) {
+					cancelCommand();
+				}
 			}
 			break;
 		case 1: // failed
