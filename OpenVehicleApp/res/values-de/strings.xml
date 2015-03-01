@@ -35,8 +35,8 @@
     <string name="DefaultMode">STANDARD</string>
     <string name="ChargingOverlay">Laden</string>
     <string name="BatteryOverlay">Batterie</string>
-    <string name="EstimatedShort">GESCHÄTZTE REICHWEITE</string>
-    <string name="IdealShort">IDEALE REICHWEITE</string>
+    <string name="EstimatedShort">...GESCHÄTZT</string>
+    <string name="IdealShort">REICHWEITE IDEAL</string>
     <string name="BatteryText">Batterie</string>
     <string name="Homelink">Homelink</string>
     <string name="Wakeup">Aufwachen</string>
@@ -121,6 +121,12 @@
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Fahrzeug Info</string>
 
+    <string name="lb_charger_setting_twizy">Lade-Benachrichtigungen</string>
+    <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Benachrichtigung aus.</string>
+    <string name="lb_sufficient_soc">Ausreichender SOC (%)</string>
+    <string name="lb_sufficient_range">Ausreichende Reichweite (%s)</string>
+    <string name="msg_setting_charge_alerts">Setze Lade-Benachrichtigungen&#8230;</string>
+
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_charger_perform">Regelmäßige Verwendung des Performance-Modus\nreduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_wakeup_car">Wecke auto auf&#8230;</string>
@@ -167,6 +173,9 @@
     <string name="pushnotifications">Push-Benachrichtigungen</string>
     <string name="pushnotifications_welcome">Erhaltene Push-Nachrichten für deine registrierten Fahrzeuge werden hier archiviert.</string>
     <string formatted="false" name="charging">LADEN\n%s %s</string>
+    <string formatted="false" name="info_etr_full">100%%: ~%d Min.</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%d Min.</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%d Min.</string>
 
     <string-array name="en_charger">
         <item>Standard</item>

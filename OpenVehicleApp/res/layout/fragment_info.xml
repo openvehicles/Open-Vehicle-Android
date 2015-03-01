@@ -81,10 +81,33 @@
 			android:layout_y="510px"
 			android:gravity="right"
 			android:textColor="#fff07d00"
-			android:textSize="28px"
-			android:textStyle="bold" />
+            android:textStyle="bold" />
 
-		<ImageView
+        <TextView
+            android:id="@+id/tabInfoTextChargeEtrSuff"
+            android:layout_width="233px"
+            android:layout_height="76px"
+            android:layout_x="59px"
+            android:layout_y="665px"
+            android:gravity="center"
+            android:textColor="#fff07d00"
+            android:textStyle="bold"
+            android:textSize="24px"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/tabInfoTextChargeEtrFull"
+            android:layout_width="233px"
+            android:layout_height="76px"
+            android:layout_x="292px"
+            android:layout_y="665px"
+            android:gravity="center"
+            android:textColor="#fff07d00"
+            android:textStyle="bold"
+            android:textSize="24px"
+            android:text="" />
+
+        <ImageView
 			android:id="@+id/tabInfoImageBatteryText"
 			android:layout_width="466px"
 			android:layout_height="76px"
@@ -155,6 +178,7 @@
 			android:max="100"
 			android:progress="0"
 			android:progressDrawable="@android:color/transparent"/>
-	</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
+
+    </com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 
 </LinearLayout>

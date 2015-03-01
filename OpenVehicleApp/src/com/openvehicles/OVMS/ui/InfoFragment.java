@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -33,6 +35,20 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	private static final String TAG = "InfoFragment";
 
 	private CarData mCarData;
+
+	private AlertDialog chargerDialog;
+
+	private boolean collectResults = false;
+
+	public int maxRange;
+	public int suffRange;
+	public int suffSOC;
+	public int etrAtSOC;
+	public int etrSuffRange;
+	public int etrSuffSOC;
+	public int etrFull;
+
+
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -78,10 +94,18 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void update(CarData pCarData) {
+
 		mCarData = pCarData;
 
+		// update UI:
 		updateLastUpdatedView(pCarData);
 		updateCarInfoView(pCarData);
+
+		// Twizy and new SOC?
+		if (mCarData.car_type.equals("RT") && (mCarData.car_soc_raw != etrAtSOC)) {
+			// get max range, charge alerts + etr update:
+			sendCommand("203", InfoFragment.this);
+		}
 	}
 
 	@Override
@@ -137,10 +161,57 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void onResultCommand(String[] result) {
-		if (result.length >= 3) {
+
+		if (result.length <= 1)
+			return;
+
+		int command = Integer.parseInt(result[0]);
+		int rcode = Integer.parseInt(result[1]);
+
+		if (mCarData.car_type.equals("RT") && (command == 201 || command == 202)) {
+			// Renault Twizy: SetMaxRange / QueryMaxRange result
+			if (result.length < 3)
+				return;
+
+			// get result data:
+			maxRange = Integer.parseInt(result[2]);
+
+			// update UI:
+			if (collectResults == true) {
+				collectResults = false;
+				sendCommand("203", InfoFragment.this);
+			} else {
+				updateChargeAlerts();
+			}
+		}
+
+		else if (mCarData.car_type.equals("RT") && (command == 203 || command == 204)) {
+			// Renault Twizy: SetChargeAlerts / QueryChargeAlerts result
+			if (result.length < 7)
+				return;
+
+			// get result data:
+			suffRange = Integer.parseInt(result[2]);
+			suffSOC = Integer.parseInt(result[3]);
+			etrSuffRange = Integer.parseInt(result[4]);
+			etrSuffSOC = Integer.parseInt(result[5]);
+			etrFull = Integer.parseInt(result[6]);
+			etrAtSOC = mCarData.car_soc_raw;
+
+			// update UI:
+			if (collectResults == true) {
+				collectResults = false;
+				sendCommand("201", InfoFragment.this);
+			} else {
+				updateChargeAlerts();
+			}
+		}
+
+		else if (result.length >= 3) {
+			// default: display first command result field
 			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
 		}
-		cancelCommand();
+
 	}
 
 	private void startCharge() {
@@ -162,6 +233,13 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	}
 
 	private void chargerSetting() {
+		if (mCarData.car_type.equals("RT"))
+			chargerSettingRenaultTwizy();
+		else
+			chargerSettingDefault();
+	}
+
+	private void chargerSettingDefault() {
 		View content = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dlg_charger, null);
 		SwitcherView sw = (SwitcherView) content.findViewById(R.id.sv_state);
@@ -221,6 +299,135 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 							}
 						}).show();
 	}
+
+	// Charger settings for Renault Twizy:
+	// 	(charge alert setup)
+	private void chargerSettingRenaultTwizy() {
+
+		// open dialog:
+
+		View content = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_twizy, null);
+
+		chargerDialog = new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.lb_charger_setting_twizy)
+				.setView(content)
+				.setNegativeButton(R.string.Cancel, null)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								Dialog dlg = (Dialog) pDlg;
+
+								SlideNumericView snvRange = (SlideNumericView) dlg
+										.findViewById(R.id.snv_sufficient_range);
+								SlideNumericView snvSOC = (SlideNumericView) dlg
+										.findViewById(R.id.snv_sufficient_soc);
+
+								int suffRange = snvRange.getValue();
+								int suffSOC = snvSOC.getValue();
+
+								// SetChargeAlerts (204):
+								sendCommand(
+										R.string.msg_setting_charge_alerts,
+										String.format("204,%d,%d", suffRange, suffSOC),
+										InfoFragment.this);
+							}
+						}).show();
+
+
+		// request missing data:
+		if (maxRange == 0) {
+			collectResults = true;
+			sendCommand("201", InfoFragment.this);
+		}
+		else if (etrAtSOC == 0) {
+			collectResults = true;
+			sendCommand("203", InfoFragment.this);
+		}
+
+		// ...or display directly:
+		if (collectResults == false) {
+			updateChargeAlerts();
+		}
+
+	}
+
+
+	// load ChargeAlerts data into UI:
+	public void updateChargeAlerts() {
+
+		// update dialog if open:
+
+		if (chargerDialog != null) {
+
+			LinearLayout progressLayer = (LinearLayout) chargerDialog.findViewById(R.id.progress_layer);
+			if (progressLayer != null && progressLayer.getVisibility() != View.GONE) {
+
+				// add distance units to range label:
+				TextView lbRange = (TextView) chargerDialog.findViewById(R.id.lb_sufficient_range);
+				lbRange.setText(getString(R.string.lb_sufficient_range, mCarData.car_distance_units));
+
+				// set range:
+				SlideNumericView snvRange = (SlideNumericView) chargerDialog
+						.findViewById(R.id.snv_sufficient_range);
+				if (snvRange != null) {
+					snvRange.init(0, maxRange, 1);
+					snvRange.setValue(suffRange);
+				}
+
+				// set SOC:
+				SlideNumericView snvSOC = (SlideNumericView) chargerDialog
+						.findViewById(R.id.snv_sufficient_soc);
+				if (snvSOC != null) {
+					snvSOC.setValue(suffSOC);
+				}
+
+				// hide progress bar if all results collected:
+				if (collectResults == false) {
+					progressLayer.setVisibility(View.GONE);
+				}
+			}
+		}
+
+
+		// update main UI:
+
+		String infoEtr = "";
+
+		if (etrSuffRange != 0) {
+			String infoEtrRange = getString(R.string.info_etr_suffrange,
+					suffRange, mCarData.car_distance_units, etrSuffRange);
+			if (infoEtr.length() > 0)
+				infoEtr += "\n";
+			infoEtr += infoEtrRange;
+		}
+
+		if (etrSuffSOC != 0) {
+			String infoEtrSOC = getString(R.string.info_etr_suffsoc,
+					suffSOC, etrSuffSOC);
+			if (infoEtr.length() > 0)
+				infoEtr += "\n";
+			infoEtr += infoEtrSOC;
+		}
+
+		Ui.setValue(this.getView(), R.id.tabInfoTextChargeEtrSuff, infoEtr);
+
+
+		infoEtr = "";
+
+		if (etrFull != 0) {
+			String infoEtrFull = getString(R.string.info_etr_full,
+					etrFull);
+			if (infoEtr.length() > 0)
+				infoEtr += "\n";
+			infoEtr += infoEtrFull;
+		}
+
+		Ui.setValue(this.getView(), R.id.tabInfoTextChargeEtrFull, infoEtr);
+
+	}
+
 
 	// This updates the part of the view with times shown.
 	// It is called by a periodic timer so it gets updated every few seconds.
