@@ -12,24 +12,37 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.Con;
 
 public class ControlFragment extends BaseFragment implements OnClickListener,
 		OnResultCommandListenner, Con {
 	ConnectionList connectionList;
+	private int mEditPosition;
+	private CarData mCarData;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		SherlockFragmentActivity activity = getSherlockActivity();
+
+		// get data of car to edit:
+		mEditPosition = getArguments().getInt("position", -1);
+		if (mEditPosition >= 0) {
+			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+		}
+
 		String url = "http://api.openchargemap.io/v2/referencedata/";
 		connectionList = new ConnectionList(getActivity(), this, url,false);
+
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_control);
 		activity.setTitle(R.string.Control);
+
 		View pRootView = getView();
 		Ui.setOnClick(pRootView, R.id.btn_features, this);
 		Ui.setOnClick(pRootView, R.id.btn_parameters, this);
@@ -48,6 +61,8 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	@Override
 	public void onClick(View v) {
 		BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
+		Bundle args;
+
 		switch (v.getId()) {
 			case R.id.btn_mmi_ussd_code:
 				Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
@@ -62,10 +77,14 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 						});
 				break;
 			case R.id.btn_features:
-				activity.setNextFragment(FeaturesFragment.class);
+				args = new Bundle();
+				args.putInt("position", mEditPosition);
+				activity.setNextFragment(FeaturesFragment.class, args);
 				break;
 			case R.id.btn_parameters:
-				activity.setNextFragment(ControlParametersFragment.class);
+				args = new Bundle();
+				args.putInt("position", mEditPosition);
+				activity.setNextFragment(ControlParametersFragment.class, args);
 				break;
 			case R.id.btn_reset_ovms_module:
 				sendCommand(R.string.msg_rebooting_car_module, "5", this);

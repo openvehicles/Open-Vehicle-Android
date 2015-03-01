@@ -4,6 +4,7 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -82,8 +83,10 @@ public class CarEditorFragment extends SherlockFragment {
 			delete();
 			return true;
 		case R.id.mi_control:
+			Bundle args = new Bundle();
+			args.putInt("position", mEditPosition);
 			BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
-			activity.setNextFragment(ControlFragment.class);
+			activity.setNextFragment(ControlFragment.class, args);
 			return true;
 		default:
 			return false;

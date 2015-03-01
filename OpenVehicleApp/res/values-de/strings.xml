@@ -78,11 +78,19 @@
     <string name="lb_cellular_usage">Datenverbrauch</string>
     <string name="lb_reset_ovms_module">OVMS Modul zurücksetzen</string>
     <string name="lb_center_map">Karte zentrieren</string>
+
     <string name="lb_ft_digital_speedo">#%d: Digitaler Tacho</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
     <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
     <string name="lb_ft_car_bits">#%d: Car Bits</string>
     <string name="lb_ft_can_write">#%d: CAN Write</string>
+
+    <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown-Schwellwert</string>
+    <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown-Kompensation</string>
+    <string name="lb_ft_rt_suffsoc">#%d: Ausreichender SOC</string>
+    <string name="lb_ft_rt_suffrange">#%d: Ausreichende Reichweite</string>
+    <string name="lb_ft_rt_maxrange">#%d: Maximale Reichweite</string>
+
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
     <string name="lb_cp_module_password">#%d: Module-Passwort</string>
     <string name="lb_cp_miles_km">#%d: Meilen/Km</string>
@@ -96,6 +104,20 @@
     <string name="lb_cp_paranoid_mode">#%d: Paranoid Modus</string>
     <string name="lb_cp_social_group_1">#%d: Social Gruppe #1</string>
     <string name="lb_cp_social_group_2">#%d: Social Gruppe #2</string>
+    <string name="lb_cp_gsmlock">#%d: GSM-Sperre</string>
+    <string name="lb_cp_vehicle_type">#%d: Fahrzeugtyp</string>
+    <string name="lb_cp_cooldown">#%d: Abkühlzeit</string>
+    <string name="lb_cp_timezone">#%d: Zeitzone</string>
+    <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
+    <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
+    <string name="lb_cp_acc3">#%d: ACC #3 (base64)</string>
+    <string name="lb_cp_acc4">#%d: ACC #4 (base64)</string>
+
+    <string name="lb_cp_rt_profile">#%d: Aktives Profil</string>
+    <string name="lb_cp_rt_profile1">#%d: Profil #1 (binär)</string>
+    <string name="lb_cp_rt_profile2">#%d: Profil #2 (binär)</string>
+    <string name="lb_cp_rt_profile3">#%d: Profil #3 (binär)</string>
+
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Fahrzeug Info</string>
 
@@ -121,6 +143,7 @@
     <string name="err_failed">Gescheitert: %s</string>
     <string name="err_unsupported_operation">Nicht unterstütze Operation</string>
     <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
+    <string name="err_param_not_editable">Sorry, dieser Parameter ist nicht editierbar!</string>
 
     <string name="msg_retrieving_data">Empfange Daten&#8230;</string>
     <string formatted="false" name="cellular_usage_info_car">Fahrzeug: %.1f MB/Monat (%d Tage)</string>
