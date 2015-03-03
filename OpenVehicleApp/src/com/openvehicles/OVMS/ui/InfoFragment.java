@@ -89,6 +89,10 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 				// sb.setThumbOffset(dstBmp.getWidth() / 9);
 			}
 		});
+
+		// request new ETR data:
+		etrAtSOC = 0;
+
 		return rootView;
 	}
 
@@ -394,10 +398,13 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		// update main UI:
 
 		String infoEtr = "";
+		TextView textView;
+		boolean etrVisible = false;
 
 		if (etrSuffRange != 0) {
 			String infoEtrRange = getString(R.string.info_etr_suffrange,
-					suffRange, mCarData.car_distance_units, etrSuffRange);
+					suffRange, mCarData.car_distance_units,
+					String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60));
 			if (infoEtr.length() > 0)
 				infoEtr += "\n";
 			infoEtr += infoEtrRange;
@@ -405,26 +412,45 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		if (etrSuffSOC != 0) {
 			String infoEtrSOC = getString(R.string.info_etr_suffsoc,
-					suffSOC, etrSuffSOC);
+					suffSOC,
+					String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60));
 			if (infoEtr.length() > 0)
 				infoEtr += "\n";
 			infoEtr += infoEtrSOC;
 		}
 
-		Ui.setValue(this.getView(), R.id.tabInfoTextChargeEtrSuff, infoEtr);
+		textView = (TextView) findViewById(R.id.tabInfoTextChargeEtrSuff);
+		textView.setText(infoEtr);
+		if (!infoEtr.equals("")) {
+			etrVisible = true;
+			textView.setVisibility(View.VISIBLE);
+		} else {
+			textView.setVisibility(View.INVISIBLE);
+		}
 
 
 		infoEtr = "";
 
 		if (etrFull != 0) {
 			String infoEtrFull = getString(R.string.info_etr_full,
-					etrFull);
+					String.format("%02d:%02d", etrFull / 60, etrFull % 60));
 			if (infoEtr.length() > 0)
 				infoEtr += "\n";
 			infoEtr += infoEtrFull;
 		}
 
-		Ui.setValue(this.getView(), R.id.tabInfoTextChargeEtrFull, infoEtr);
+		textView = (TextView) findViewById(R.id.tabInfoTextChargeEtrFull);
+		textView.setText(infoEtr);
+		if (!infoEtr.equals("")) {
+			etrVisible = true;
+			textView.setVisibility(View.VISIBLE);
+		} else {
+			textView.setVisibility(View.INVISIBLE);
+		}
+
+		// display background if any ETR visible:
+		ImageView bgImg = (ImageView) findViewById(R.id.tabInfoImageChargeEtr);
+		bgImg.setVisibility(etrVisible ? View.VISIBLE : View.INVISIBLE);
 
 	}
 

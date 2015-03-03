@@ -125,6 +125,7 @@
     <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Benachrichtigung aus.</string>
     <string name="lb_sufficient_soc">Ausreichender SOC (%)</string>
     <string name="lb_sufficient_range">Ausreichende Reichweite (%s)</string>
+    <string name="msg_getting_charge_alerts">Rufe Lade-Benachrichtigungen vom Modul ab&#8230;</string>
     <string name="msg_setting_charge_alerts">Setze Lade-Benachrichtigungen&#8230;</string>
 
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
@@ -173,9 +174,9 @@
     <string name="pushnotifications">Push-Benachrichtigungen</string>
     <string name="pushnotifications_welcome">Erhaltene Push-Nachrichten für deine registrierten Fahrzeuge werden hier archiviert.</string>
     <string formatted="false" name="charging">LADEN\n%s %s</string>
-    <string formatted="false" name="info_etr_full">100%%: ~%d Min.</string>
-    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%d Min.</string>
-    <string formatted="false" name="info_etr_suffrange">%d%s: ~%d Min.</string>
+    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
 
     <string-array name="en_charger">
         <item>Standard</item>

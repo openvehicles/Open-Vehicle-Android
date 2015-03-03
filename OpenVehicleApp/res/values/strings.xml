@@ -127,6 +127,7 @@
     <string name="lb_charger_setting_twizy_hint">Hint: set to zero to deactivate the alert.</string>
     <string name="lb_sufficient_soc">Sufficient SOC (%)</string>
     <string name="lb_sufficient_range">Sufficient range (%s)</string>
+    <string name="msg_getting_charge_alerts">Getting charge alerts from module&#8230;</string>
     <string name="msg_setting_charge_alerts">Setting charge alerts&#8230;</string>
 
     <string name="msg_ok">OK</string>
@@ -176,9 +177,9 @@
     <string name="pushnotifications">Push Notifications</string>
     <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
     <string formatted="false" name="charging">CHARGING\n%s %s</string>
-    <string formatted="false" name="info_etr_full">100%%: ~%d min</string>
-    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%d min</string>
-    <string formatted="false" name="info_etr_suffrange">%d%s: ~%d min</string>
+    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
 
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>

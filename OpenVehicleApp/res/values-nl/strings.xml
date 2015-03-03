@@ -166,9 +166,9 @@
     <string name="pushnotifications">Push Notificaties</string>
     <string name="pushnotifications_welcome">Push notificaties voor het geregistreerde voertuig worden hier gearchiveerd.</string>
     <string formatted="false" name="charging">LADEN\n%s %s</string>
-    <string formatted="false" name="info_etr_full">100%%: ~%d min</string>
-    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%d min</string>
-    <string formatted="false" name="info_etr_suffrange">%d%s: ~%d min</string>
+    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
 
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
