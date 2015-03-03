@@ -97,6 +97,12 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	}
 
 	@Override
+	public void onDestroyView() {
+		cancelCommand();
+		super.onDestroyView();
+	}
+
+	@Override
 	public void update(CarData pCarData) {
 
 		mCarData = pCarData;
@@ -420,12 +426,14 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		}
 
 		textView = (TextView) findViewById(R.id.tabInfoTextChargeEtrSuff);
-		textView.setText(infoEtr);
-		if (!infoEtr.equals("")) {
-			etrVisible = true;
-			textView.setVisibility(View.VISIBLE);
-		} else {
-			textView.setVisibility(View.INVISIBLE);
+		if (textView != null) {
+			textView.setText(infoEtr);
+			if (!infoEtr.equals("")) {
+				etrVisible = true;
+				textView.setVisibility(View.VISIBLE);
+			} else {
+				textView.setVisibility(View.INVISIBLE);
+			}
 		}
 
 
@@ -440,17 +448,21 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		}
 
 		textView = (TextView) findViewById(R.id.tabInfoTextChargeEtrFull);
-		textView.setText(infoEtr);
-		if (!infoEtr.equals("")) {
-			etrVisible = true;
-			textView.setVisibility(View.VISIBLE);
-		} else {
-			textView.setVisibility(View.INVISIBLE);
+		if (textView != null) {
+			textView.setText(infoEtr);
+			if (!infoEtr.equals("")) {
+				etrVisible = true;
+				textView.setVisibility(View.VISIBLE);
+			} else {
+				textView.setVisibility(View.INVISIBLE);
+			}
 		}
 
 		// display background if any ETR visible:
 		ImageView bgImg = (ImageView) findViewById(R.id.tabInfoImageChargeEtr);
-		bgImg.setVisibility(etrVisible ? View.VISIBLE : View.INVISIBLE);
+		if (bgImg != null) {
+			bgImg.setVisibility(etrVisible ? View.VISIBLE : View.INVISIBLE);
+		}
 
 	}
 
