@@ -92,7 +92,7 @@
             android:layout_y="665px"
             android:scaleType="fitXY"
             android:src="@drawable/etr_background"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
 
         <TextView
             android:id="@+id/tabInfoTextChargeEtrSuff"
@@ -106,7 +106,7 @@
             android:textSize="24px"
             android:text="50km: ~01:23\n95%: ~01:23"
             android:icon="@drawable/etr_sufficient"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:background="@drawable/etr_sufficient"
             android:paddingRight="30dp"/>
 
@@ -120,7 +120,7 @@
             android:textStyle="bold"
             android:textSize="24px"
             android:text="100%: ~01:23"
-            android:visibility="visible"
+            android:visibility="invisible"
             android:background="@drawable/etr_full"
             android:paddingRight="30dp"
             android:gravity="center_vertical|right"/>
