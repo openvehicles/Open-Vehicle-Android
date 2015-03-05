@@ -398,7 +398,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		// update dialog if open:
 
-		if (chargerDialog != null) {
+		if (chargerDialog != null && maxRange != 0 && etrAtSOC != 0) {
 
 			LinearLayout progressLayer = (LinearLayout) chargerDialog.findViewById(R.id.progress_layer);
 			if (progressLayer != null && progressLayer.getVisibility() != View.GONE) {
