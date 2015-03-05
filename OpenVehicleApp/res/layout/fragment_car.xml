@@ -194,7 +194,14 @@
 			android:text="@string/textHOMELINK"
 			android:textSize="18px" />
 
-		<TextView
+        <TextView
+            android:id="@+id/tabCarTextAmbientLabel"
+            style="@style/TabCarTextBox"
+            android:layout_x="2px"
+            android:layout_y="267px"
+            android:text="@string/textAMBIENT" />
+
+        <TextView
 			android:id="@+id/tabCarTextAmbient"
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
@@ -232,7 +239,7 @@
 			android:clickable="true" />
 
 		<View
-			android:id="@+id/btn_valet_maode"
+			android:id="@+id/btn_valet_mode"
 			android:layout_width="80px"
 			android:layout_height="120px"
 			android:layout_x="270px"

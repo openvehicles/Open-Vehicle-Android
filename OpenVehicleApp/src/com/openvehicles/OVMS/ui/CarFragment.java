@@ -19,6 +19,7 @@ import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 import com.openvehicles.OVMS.ui.utils.Ui;
+import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListenner {
 	private static final String TAG = "CarFragment";
@@ -27,7 +28,26 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		return inflater.inflate(R.layout.fragment_car, null);
+
+		// init car data:
+		mCarData = CarsStorage.get().getSelectedCarData();
+
+		// inflate layout:
+		View rootView = inflater.inflate(R.layout.fragment_car, null);
+
+		if (mCarData.car_type.equals("RT")) {
+			// layout changes for Renault Twizy:
+
+			// exchange "Homelink" by "Profile":
+			ImageView icon = (ImageView) rootView.findViewById(R.id.tabCarImageHomelink);
+			if (icon != null)
+				icon.setImageResource(R.drawable.ic_drive_profile);
+			TextView label = (TextView) rootView.findViewById(R.id.txt_homelink);
+			if (label != null)
+				label.setText(R.string.textPROFILE);
+		}
+
+		return rootView;
 	}
 	
 	@Override
@@ -47,7 +67,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		registerForContextMenu(findViewById(R.id.tabCarImageHomelink));
 		
 		findViewById(R.id.btn_lock_car).setOnClickListener(this);
-		findViewById(R.id.btn_valet_maode).setOnClickListener(this);
+		findViewById(R.id.btn_valet_mode).setOnClickListener(this);
 	}
 	
 	@Override
@@ -59,47 +79,86 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	@Override
 	public void onClick(View v) {
 		if (mCarData == null) return;
-			
+
+		final int dialogTitle, dialogButton;
+		boolean isPinEntry;
+
 		switch (v.getId()) {
-		case R.id.btn_lock_car:
-			Ui.showPinDialog(getActivity(), mCarData.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car,
-				new Ui.OnChangeListener<String>() {
-					@Override
-					public void onAction(String pData) {
-						String cmd;
-						int resId;
-						if (mCarData.car_locked) {
-							resId = R.string.lb_unlock_car;
-							cmd = "22,"+pData;
-						} else {
-							resId = R.string.lb_lock_car;
-							cmd = "20,"+pData;
-						}
-						sendCommand(resId, cmd, CarFragment.this);						
-					}
-				});
-			break;
-		case R.id.btn_valet_maode:
-			Ui.showPinDialog(getActivity(), R.string.lb_valet_mode,
-					mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on,
-				new Ui.OnChangeListener<String>() {
-					@Override
-					public void onAction(String pData) {
-						String cmd;
-						int resId;
-						if (mCarData.car_valetmode) {
-							resId = R.string.lb_valet_mode_off;
-							cmd = "23,"+pData;
-						} else {
-							resId = R.string.lb_valet_mode_on;
-							cmd = "21,"+pData;
-						}
-						sendCommand(resId, cmd, CarFragment.this);						
-					}
-				});
-			break;
-		default:
-			v.performLongClick();
+
+			case R.id.btn_lock_car:
+
+				// get dialog mode & labels:
+				if (mCarData.car_type.equals("RT")) {
+					dialogTitle = R.string.lb_lock_mode_twizy;
+					dialogButton = mCarData.car_locked
+							? (mCarData.car_valetmode
+								? R.string.lb_valet_mode_extend_twizy
+								: R.string.lb_unlock_car_twizy)
+							: R.string.lb_lock_car_twizy;
+					isPinEntry = false;
+				} else {
+					dialogTitle = mCarData.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car;
+					dialogButton = dialogTitle;
+					isPinEntry = true;
+				}
+
+				// show dialog:
+				Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
+						new Ui.OnChangeListener<String>() {
+							@Override
+							public void onAction(String pData) {
+								String cmd;
+								int resId;
+								if (mCarData.car_locked) {
+									resId = dialogButton;
+									cmd = "22," + pData;
+								} else {
+									resId = dialogButton;
+									cmd = "20," + pData;
+								}
+								sendCommand(resId, cmd, CarFragment.this);
+							}
+						});
+				break;
+
+			case R.id.btn_valet_mode:
+
+				// get dialog mode & labels:
+				if (mCarData.car_type.equals("RT")) {
+					dialogTitle = R.string.lb_valet_mode_twizy;
+					dialogButton = mCarData.car_valetmode
+							? (mCarData.car_locked
+								? R.string.lb_unvalet_unlock_twizy
+								: R.string.lb_valet_mode_off_twizy)
+							: R.string.lb_valet_mode_on_twizy;
+					isPinEntry = false;
+				} else {
+					dialogTitle = R.string.lb_valet_mode;
+					dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on;
+					isPinEntry = true;
+				}
+
+				// show dialog:
+				Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
+						new Ui.OnChangeListener<String>() {
+							@Override
+							public void onAction(String pData) {
+								String cmd;
+								int resId;
+								if (mCarData.car_valetmode) {
+									resId = dialogButton;
+									cmd = "23," + pData;
+								} else {
+									resId = dialogButton;
+									cmd = "21," + pData;
+								}
+								sendCommand(resId, cmd, CarFragment.this);
+							}
+						});
+				break;
+
+			default:
+				v.performLongClick();
 		}
 	}
 
@@ -112,26 +171,29 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
 		switch (v.getId()) {
-		case R.id.btn_wakeup:
-			menu.setHeaderTitle(R.string.lb_wakeup_car);
-			menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
-			menu.add(R.string.Cancel);
-			break;
-		case R.id.tabCarImageHomelink:
-		case R.id.txt_homelink:
-			if (mCarData.car_type.equals("RT")) {
-				// Renault Twizy: use Homelink for profile switching:
-				menu.setHeaderTitle("Profile");
-				menu.add(0, MI_HL_DEFAULT, 0, "Default");
-			}
-			else {
-				menu.setHeaderTitle("Homelink");
-			}
-			menu.add(0, MI_HL_01, 0, "1");
-			menu.add(0, MI_HL_02, 0, "2");
-			menu.add(0, MI_HL_03, 0, "3");
-			menu.add(R.string.Cancel);
-			break;
+
+			case R.id.btn_wakeup:
+				if (mCarData.car_type.equals("RT"))
+					break; // no wakeup support for Twizy
+				menu.setHeaderTitle(R.string.lb_wakeup_car);
+				menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
+				menu.add(R.string.Cancel);
+				break;
+
+			case R.id.tabCarImageHomelink:
+			case R.id.txt_homelink:
+				if (mCarData.car_type.equals("RT")) {
+					// Renault Twizy: use Homelink for profile switching:
+					menu.setHeaderTitle(R.string.textPROFILE);
+					menu.add(0, MI_HL_DEFAULT, 0, R.string.Default);
+				} else {
+					menu.setHeaderTitle(R.string.textHOMELINK);
+				}
+				menu.add(0, MI_HL_01, 0, "1");
+				menu.add(0, MI_HL_02, 0, "2");
+				menu.add(0, MI_HL_03, 0, "3");
+				menu.add(R.string.Cancel);
+				break;
 		}
 	}
 	
@@ -160,9 +222,32 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	
 	@Override
 	public void onResultCommand(String[] result) {
-		if (result.length >= 3) {
-			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
+		if (result.length <= 1)
+			return;
+
+		int command = Integer.parseInt(result[0]);
+		int resCode = Integer.parseInt(result[1]);
+		String cmdMessage = getSentCommandMessage(result[0]);
+
+		switch (resCode) {
+			case 0: // ok
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
+						Toast.LENGTH_SHORT).show();
+				break;
+			case 1: // failed
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_failed, result[2]),
+						Toast.LENGTH_SHORT).show();
+				break;
+			case 2: // unsupported
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),
+						Toast.LENGTH_SHORT).show();
+				break;
+			case 3: // unimplemented
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
+						Toast.LENGTH_SHORT).show();
+				break;
 		}
+
 		cancelCommand();
 	}
 	
@@ -253,23 +338,50 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
 		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_"+pCarData.sel_vehicle_image));
 
-		// Ambient weather
+		// "Ambient" box:
+		TextView label = (TextView) findViewById(R.id.tabCarTextAmbientLabel);
 		TextView tv = (TextView) findViewById(R.id.tabCarTextAmbient);
-		if (pCarData.stale_ambient_temp == DataStale.NoValue) {
-			tv.setText("");
-			tv.setTextColor(0xFF808080);
-		}
-		else if ((pCarData.stale_ambient_temp == DataStale.Stale)||(!pCarData.car_coolingpump_on)) {
-			tv.setText(pCarData.car_temp_ambient);
-			tv.setTextColor(0xFF808080);
-		}
-		else {
-			tv.setText(pCarData.car_temp_ambient);
-			tv.setTextColor(0xFFFFFFFF);
+
+		if (mCarData.car_type.equals("RT")) {
+
+			// Renault Twizy: display 12V state
+
+			label.setText(R.string.text12VBATT);
+
+			tv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
+
+			if (mCarData.car_12vline_ref <= 1.5) {
+				// charging / calmdown
+				tv.setTextColor(0xFFA9A9FF);
+			} else {
+				Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
+				if (diff >= 1.6)
+					tv.setTextColor(0xFFFF0000);
+				else if (diff >= 1.0)
+					tv.setTextColor(0xFFFF6600);
+				else
+					tv.setTextColor(0xFFFFFFFF);
+			}
+
+		} else {
+
+			// Standard car: display ambient temperature
+
+			label.setText(R.string.textAMBIENT);
+			if (pCarData.stale_ambient_temp == DataStale.NoValue) {
+				tv.setText("");
+				tv.setTextColor(0xFF808080);
+			} else if ((pCarData.stale_ambient_temp == DataStale.Stale) || (!pCarData.car_coolingpump_on)) {
+				tv.setText(pCarData.car_temp_ambient);
+				tv.setTextColor(0xFF808080);
+			} else {
+				tv.setText(pCarData.car_temp_ambient);
+				tv.setTextColor(0xFFFFFFFF);
+			}
 		}
 
 		// TPMS
-//		String tirePressureDisplayFormat = "%s\n%s";
+		//	String tirePressureDisplayFormat = "%s\n%s";
         TextView fltv = (TextView) findViewById(R.id.textFLWheel);
         TextView fltvv = (TextView) findViewById(R.id.textFLWheelVal);
 

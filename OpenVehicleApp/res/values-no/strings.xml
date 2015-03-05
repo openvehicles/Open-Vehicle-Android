@@ -133,7 +133,7 @@
     <string name="timedcharge">TIDSSTYRT LADING</string>
     <string name="pushnotifications">Push Melding</string>
     <string name="pushnotifications_welcome">Push meldinger mottatt for ditt registrerte kjøretøy er arkivert her.</string>
-    <string formatted="false" name="charging">LADER\n%s %s</string>
+    <string formatted="false" name="state_charging">LADER\n%s %s</string>
     
     <string-array name="en_charger">
         <item>Standard</item>

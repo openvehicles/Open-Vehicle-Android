@@ -10,7 +10,15 @@ import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.entities.CarData;
 
+import java.util.HashMap;
+
 public class BaseFragment extends SherlockFragment implements ApiObserver {
+
+	public HashMap<String, String> mSentCommandMessage;
+
+	public BaseFragment() {
+		mSentCommandMessage = new HashMap<String, String>();
+	}
 
 	@Override
 	public void onStart() {
@@ -38,11 +46,17 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 	public void onServiceAvailable(ApiService pService) {
 	}
 
+	public String getSentCommandMessage(String cmd) {
+		String msg = mSentCommandMessage.get(cmd);
+		return (msg == null) ? "" : msg;
+	}
+
 	public void cancelCommand() {
 		ApiService service = getService();
 		if (service == null)
 			return;
 		service.cancelCommand();
+		mSentCommandMessage.clear();
 	}
 	public View findViewById(int pResId) {
 		return getView().findViewById(pResId);
@@ -50,17 +64,25 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 
 	public void sendCommand(int pResIdMessage, String pCommand,
 			OnResultCommandListenner pOnResultCommandListenner) {
-		ApiService service = getService();
-		if (service == null)
-			return;
-		service.sendCommand(pResIdMessage, pCommand, pOnResultCommandListenner);
+		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListenner);
 	}
 
 	public void sendCommand(String pMessage, String pCommand,
 			OnResultCommandListenner pOnResultCommandListenner) {
+
 		ApiService service = getService();
 		if (service == null)
 			return;
+
+		// remember pMessage for result display:
+		try {
+			String cmd = pCommand.split(",", 2)[0];
+			mSentCommandMessage.put(cmd, pMessage);
+		} catch (Exception e) {
+			// ignore
+		}
+
+		// pass on to API service:
 		service.sendCommand(pMessage, pCommand, pOnResultCommandListenner);
 	}
 

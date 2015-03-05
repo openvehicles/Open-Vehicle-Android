@@ -80,8 +80,9 @@
 			android:layout_height="40px"
 			android:layout_x="89px"
 			android:layout_y="510px"
-			android:gravity="right"
-			android:textColor="#fff07d00"
+			android:gravity="bottom|right"
+            android:textSize="24px"
+            android:textColor="#fff07d00"
             android:textStyle="bold" />
 
         <ImageView
@@ -171,7 +172,7 @@
 			android:id="@+id/tabInfoTextChargeStatusLeft"
 			style="@style/TabCarTextBox"
 			android:layout_height="46px"
-			android:layout_x="328px"
+            android:layout_x="328px"
 			android:layout_y="322px"
 			android:text="@string/DefaultCharging"
 			android:textSize="16px"
@@ -187,7 +188,19 @@
 			android:textSize="16px"
 			android:gravity="center_vertical|right"/>
 
-		<com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
+        <TextView
+            android:id="@+id/tabInfoTextChargeStatus"
+            style="@style/TabCarTextBox"
+            android:layout_height="46px"
+            android:layout_width="200px"
+            android:layout_x="328px"
+            android:layout_y="322px"
+            android:text=""
+            android:textSize="16px"
+            android:gravity="center"
+            android:visibility="invisible"/>
+
+        <com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
 			android:id="@+id/tabInfoSliderChargerControl"
 			android:layout_width="212px"
 			android:layout_height="42px"

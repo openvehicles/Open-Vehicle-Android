@@ -39,6 +39,8 @@
     <string name="IdealShort">IDEAL RANGE</string>
     <string name="BatteryText">Battery</string>
     <string name="Homelink">Homelink</string>
+    <string name="Profile">Profile</string>
+    <string name="Default">Default</string>
     <string name="Wakeup">Wakeup</string>
     <string name="Add">Add</string>
     <string name="Battery">Battery</string>
@@ -60,11 +62,22 @@
     <string name="App">App</string>
 
     <string name="lb_wakeup_car">Wakeup Car</string>
-    <string name="lb_unlock_car">Unlock Car</string>
+
     <string name="lb_lock_car">Lock Car</string>
+    <string name="lb_unlock_car">Unlock Car</string>
     <string name="lb_valet_mode">Valet Mode</string>
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
+
+    <string name="lb_lock_mode_twizy">Limit max speed (kph):</string>
+    <string name="lb_lock_car_twizy">Set speed limit</string>
+    <string name="lb_unlock_car_twizy">Clear speed limit</string>
+    <string name="lb_valet_mode_twizy">Limit trip length (km):</string>
+    <string name="lb_valet_mode_on_twizy">Set trip limit</string>
+    <string name="lb_valet_mode_off_twizy">Clear trip limit</string>
+    <string name="lb_valet_mode_extend_twizy">Allow +1km</string>
+    <string name="lb_unvalet_unlock_twizy">Clear trip+speed limit</string>
+
     <string name="lb_enter_pin">Enter PIN</string>
     <string name="lb_enter_passwd">Enter password</string>
     <string name="lb_enter_value">Enter value</string>
@@ -176,7 +189,12 @@
     <string name="timedcharge">TIMED CHARGE</string>
     <string name="pushnotifications">Push Notifications</string>
     <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
-    <string formatted="false" name="charging">CHARGING\n%s %s</string>
+
+    <string formatted="false" name="state_charging">CHARGING\n%s %s</string>
+    <string formatted="false" name="state_topping_off">TOPPING OFF\n%s %s</string>
+    <string formatted="false" name="state_done">DONE\n%s %s</string>
+    <string formatted="false" name="state_stopped">STOPPED\n%s %s</string>
+
     <string formatted="false" name="info_etr_full">100%%: ~%s</string>
     <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
     <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
@@ -185,6 +203,9 @@
     <string name="textPEM">PEM</string>
     <string name="textBATTERY">BATTERY</string>
     <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">PROFILE</string>
+    <string name="textAMBIENT">AMBIENT</string>
+    <string name="text12VBATT">12V BATT</string>
 
     <string-array name="en_charger">
     	<item>Standard</item>

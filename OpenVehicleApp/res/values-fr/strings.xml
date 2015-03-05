@@ -133,7 +133,7 @@
     <string name="timedcharge">CHARGE DIFFÉRÉE</string>
     <string name="pushnotifications">Messages de notification</string>
     <string name="pushnotifications_welcome">Les messages de notification reçus pour les véhicules que vous avez enregistrés sont archivés ici.</string>
-    <string formatted="false" name="charging">EN CHARGE\n%s %s</string>
+    <string formatted="false" name="state_charging">EN CHARGE\n%s %s</string>
 
     <string name="textMOTOR">MOTEUR</string>
     <string name="textPEM">M.E.P</string>

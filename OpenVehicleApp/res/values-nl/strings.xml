@@ -165,7 +165,7 @@
     <string name="timedcharge">GEPLAND LADEN</string>
     <string name="pushnotifications">Push Notificaties</string>
     <string name="pushnotifications_welcome">Push notificaties voor het geregistreerde voertuig worden hier gearchiveerd.</string>
-    <string formatted="false" name="charging">LADEN\n%s %s</string>
+    <string formatted="false" name="state_charging">LADEN\n%s %s</string>
     <string formatted="false" name="info_etr_full">100%%: ~%s</string>
     <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
     <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
