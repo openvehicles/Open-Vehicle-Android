@@ -3,6 +3,7 @@ package com.openvehicles.OVMS.ui;
 import java.text.SimpleDateFormat;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -31,6 +32,12 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
+
+		// cancel Android system notification:
+		NotificationManager mNotificationManager = (NotificationManager) getActivity()
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancelAll();
+
 		return mListView;
 	}
 	

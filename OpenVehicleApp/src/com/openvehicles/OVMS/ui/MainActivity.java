@@ -332,7 +332,8 @@ public class MainActivity extends ApiActivity implements
 			//Log.d(TAG, "Notifications: received " + intent.toString());
 
 			// show messages list:
-			onNavigationItemSelected(3, 0);
+			// ...or better not, as it can interrupt user activity...
+			//onNavigationItemSelected(3, 0);
 
 			// update messages list:
 			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
