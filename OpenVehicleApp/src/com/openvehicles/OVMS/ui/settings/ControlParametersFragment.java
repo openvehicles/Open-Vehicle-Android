@@ -26,6 +26,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 	private ListView mListView;
 	private int mEditPosition;
 	private CarData mCarData;
+	private ApiService mService;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -39,6 +40,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
 
+		createProgressOverlay(inflater, container, false);
+
 		return mListView;
 	}
 	
@@ -48,12 +51,32 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		SherlockFragmentActivity activity = getSherlockActivity(); 
 		activity.setTitle(R.string.Parameters);
 	}
-	
+
 	@Override
 	public void onServiceAvailable(ApiService pService) {
-		pService.sendCommand("3", this);
+		mService = pService;
 	}
-	
+
+	@Override
+	public void update(CarData pCarData) {
+		requestData();
+	}
+
+	private void requestData() {
+
+		// only start request once:
+		if (mAdapter != null)
+			return;
+
+		// create storage adapter:
+		mAdapter = new ControlParametersAdapter();
+		mListView.setAdapter(mAdapter);
+
+		// send request:
+		showProgressOverlay();
+		mService.sendCommand("3", this);
+	}
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Context context = parent.getContext();
@@ -97,17 +120,12 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 			return;
 		}
 		
-		if (mAdapter == null) {
-			mAdapter = new ControlParametersAdapter();
-			mListView.setAdapter(mAdapter);
-		}
-
 		int command = Integer.parseInt(result[0]);
-		int rcode = Integer.parseInt(result[1]);
+		int resCode = Integer.parseInt(result[1]);
 		
 		if (command == 4) {
 			cancelCommand();
-			switch (rcode) {
+			switch (resCode) {
 			case 0:
 				Toast.makeText(getActivity(), getString(R.string.msg_ok),
 						Toast.LENGTH_SHORT).show();
@@ -130,13 +148,15 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 
 		if (command != 3) return; // Not for us
 		
-		switch (rcode) {
+		switch (resCode) {
 		case 0:
 			if (result.length > 4) {
 				int fn = Integer.parseInt(result[2]);
 				int fm = Integer.parseInt(result[3]);
 				String fv = result[4];
-				
+
+				stepProgressOverlay(fn+1, fm);
+
 				if (fn < ControlParametersAdapter.PARAM_FEATURE_S) {
 					mAdapter.setParam(fn, fv);
 				}
@@ -164,9 +184,9 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 	}
 	
 	private class ControlParametersAdapter extends BaseAdapter {
-//		private static final int PARAM_MAX		= 32;
-//		private static final int PARAM_MAX_LENGTH = 32;
-//		private static final int PARAM_BANKSIZE	= 8;
+		//		private static final int PARAM_MAX		= 32;
+		//		private static final int PARAM_MAX_LENGTH = 32;
+		//		private static final int PARAM_BANKSIZE	= 8;
 
 		// Standard:
 		static final int PARAM_REGPHONE  	= 0x00;
@@ -199,15 +219,15 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 
 
 		public static final int PARAM_FEATURE_S = 0x18;
-//		private static final int PARAM_FEATURE8  = 0x18;
-//		private static final int PARAM_FEATURE9  = 0x19;
-//		private static final int PARAM_FEATURE10 = 0x1A;
-//		private static final int PARAM_FEATURE11 = 0x1B;
-//		private static final int PARAM_FEATURE12 = 0x1C;
-//		private static final int PARAM_FEATURE13 = 0x1D;
-//		private static final int PARAM_FEATURE14 = 0x1E;
-//		private static final int PARAM_FEATURE15 = 0x1F;
-		
+		//		private static final int PARAM_FEATURE8  = 0x18;
+		//		private static final int PARAM_FEATURE9  = 0x19;
+		//		private static final int PARAM_FEATURE10 = 0x1A;
+		//		private static final int PARAM_FEATURE11 = 0x1B;
+		//		private static final int PARAM_FEATURE12 = 0x1C;
+		//		private static final int PARAM_FEATURE13 = 0x1D;
+		//		private static final int PARAM_FEATURE14 = 0x1E;
+		//		private static final int PARAM_FEATURE15 = 0x1F;
+
 		private LayoutInflater mInflater;
 		private final String[] mParams = new String[PARAM_FEATURE_S];
 
@@ -313,10 +333,6 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 					mInflater = LayoutInflater.from(context);
 				}
 				convertView = mInflater.inflate(R.layout.item_keyvalue, null);
-//				TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
-//				tv.setTextAppearance(context, android.R.style.TextAppearance_Small);
-//				tv = (TextView) convertView.findViewById(android.R.id.text2);
-//				tv.setGravity(Gravity.RIGHT);
 			}
 			TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
 			tv.setText(getTitleRow(context, position));

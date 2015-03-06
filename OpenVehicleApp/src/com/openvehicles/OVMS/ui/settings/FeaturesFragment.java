@@ -14,7 +14,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Window;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
@@ -28,6 +27,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	private ListView mListView;
 	private int mEditPosition;
 	private CarData mCarData;
+	private ApiService mService;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -41,6 +41,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
 
+		createProgressOverlay(inflater, container, false);
+
 		return mListView;
 	}
 	
@@ -50,12 +52,32 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		SherlockFragmentActivity activity = getSherlockActivity();
 		activity.setTitle(R.string.Features);
 	}
-	
+
 	@Override
 	public void onServiceAvailable(ApiService pService) {
-		pService.sendCommand("1", this);
+		mService = pService;
 	}
-	
+
+	@Override
+	public void update(CarData pCarData) {
+		requestData();
+	}
+
+	private void requestData() {
+
+		// only start request once:
+		if (mAdapter != null)
+			return;
+
+		// create storage adapter:
+		mAdapter = new FeaturesAdapter();
+		mListView.setAdapter(mAdapter);
+
+		// send request:
+		showProgressOverlay();
+		mService.sendCommand("1", this);
+	}
+
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Context context = parent.getContext();
@@ -77,17 +99,12 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			return;
 		}
 		
-		if (mAdapter == null) {
-			mAdapter = new FeaturesAdapter();
-			mListView.setAdapter(mAdapter);
-		}
-
 		int command = Integer.parseInt(result[0]);
-		int rcode = Integer.parseInt(result[1]);
+		int resCode = Integer.parseInt(result[1]);
 		
 		if (command == 2) {
 			cancelCommand();
-			switch (rcode) {
+			switch (resCode) {
 			case 0:
 				Toast.makeText(getActivity(), getString(R.string.msg_ok),
 						Toast.LENGTH_SHORT).show();
@@ -110,17 +127,19 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 
 		if (command != 1) return; // Not for us
 		
-		switch (rcode) {
+		switch (resCode) {
 		case 0:
 			if (result.length > 4) {
 				int fn = Integer.parseInt(result[2]);
 				int fm = Integer.parseInt(result[3]);
 				int fv = Integer.parseInt(result[4]);
-				
+
+				stepProgressOverlay(fn + 1, fm);
+
 				if (fn < FeaturesAdapter.FEATURES_MAX) {
 					mAdapter.setFeature(fn, fv);
 				}
-				
+
 				if (fn == (fm - 1)) {
 					cancelCommand();
 				}

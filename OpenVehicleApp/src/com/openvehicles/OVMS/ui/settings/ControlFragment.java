@@ -1,5 +1,8 @@
 package com.openvehicles.OVMS.ui.settings;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,12 +22,14 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.Con;
+import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class ControlFragment extends BaseFragment implements OnClickListener,
 		OnResultCommandListenner, Con {
 	ConnectionList connectionList;
 	private int mEditPosition;
 	private CarData mCarData;
+	private String ussdCmd;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -50,12 +55,20 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 		Ui.setOnClick(pRootView, R.id.btn_connections, this);
 		Ui.setOnClick(pRootView, R.id.btn_cellular_usage, this);
 		Ui.setOnClick(pRootView, R.id.btn_reset_ovms_module, this);
+
+		ussdCmd = "";
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		return inflater.inflate(R.layout.fragment_control, null);
+	}
+
+	@Override
+	public void onDestroyView() {
+		cancelCommand();
+		super.onDestroyView();
 	}
 
 	@Override
@@ -71,6 +84,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 							public void onAction(String pData) {
 								if (TextUtils.isEmpty(pData))
 									return;
+								ussdCmd = pData;
 								sendCommand(R.string.lb_mmi_ussd_code, "41,"
 										+ pData, ControlFragment.this);
 							}
@@ -100,8 +114,59 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void onResultCommand(String[] result) {
-		if (result.length >= 3) {
-			Toast.makeText(getActivity(), result[2], Toast.LENGTH_SHORT).show();
+		if (result.length <= 1)
+			return;
+
+		Context context = getActivity();
+		int command = Integer.parseInt(result[0]);
+		int resCode = Integer.parseInt(result[1]);
+		String cmdMessage = getSentCommandMessage(result[0]);
+
+		switch (resCode) {
+			case 0: // ok
+
+				if (command == 41) {
+					// only process second cmd result carrying data:
+					if (result.length >= 3) {
+						// add MMI/USSD result to Notifications:
+						OVMSNotifications savedList = new OVMSNotifications(context);
+						boolean is_new = savedList.addNotification(
+								mCarData.sel_vehicleid + " " + cmdMessage,
+								ussdCmd + " =>\n" + result[2]);
+						if (is_new) {
+							savedList.save();
+
+							// signal App to reload notifications:
+							Intent uiNotify = new Intent(context.getPackageName() + ".Notification");
+							context.sendBroadcast(uiNotify);
+
+							// user info dialog:
+							new AlertDialog.Builder(context)
+									.setTitle(cmdMessage)
+									.setMessage(ussdCmd + " =>\n" + result[2])
+									.setPositiveButton(android.R.string.ok, null)
+									.show();
+						}
+					}
+				} else {
+					// default:
+					Toast.makeText(context, cmdMessage + " => " + getString(R.string.msg_ok),
+							Toast.LENGTH_SHORT).show();
+				}
+
+				break;
+			case 1: // failed
+				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_failed, result[2]),
+						Toast.LENGTH_SHORT).show();
+				break;
+			case 2: // unsupported
+				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unsupported_operation),
+						Toast.LENGTH_SHORT).show();
+				break;
+			case 3: // unimplemented
+				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
+						Toast.LENGTH_SHORT).show();
+				break;
 		}
 	}
 

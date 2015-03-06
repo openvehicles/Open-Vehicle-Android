@@ -1,19 +1,9 @@
 package com.openvehicles.OVMS.ui.settings;
 
-import android.content.Context;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
@@ -24,15 +14,10 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-import lecho.lib.hellocharts.formatter.AxisValueFormatter;
-import lecho.lib.hellocharts.formatter.SimpleAxisValueFormatter;
 import lecho.lib.hellocharts.gesture.ZoomType;
-import lecho.lib.hellocharts.listener.ColumnChartOnValueSelectListener;
 import lecho.lib.hellocharts.model.Axis;
 import lecho.lib.hellocharts.model.AxisValue;
 import lecho.lib.hellocharts.model.Column;
@@ -74,11 +59,12 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 	private long appTotalBytes;
 
 	// system services:
-	ApiService mService;
+	private ApiService mService;
 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		createProgressOverlay(inflater, container, true);
 		return inflater.inflate(R.layout.fragment_cellular_stats, null);
 	}
 	
@@ -87,9 +73,8 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		super.onActivityCreated(savedInstanceState);
 		SherlockFragmentActivity activity = getSherlockActivity(); 
 		activity.setTitle(R.string.CellularStats);
-		updateUi();
 	}
-	
+
 	@Override
 	public void onServiceAvailable(ApiService pService) {
 		mService = pService;
@@ -122,11 +107,15 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 			recCnt = 0;
 			recNr = 0;
 
+			// Show progress bar:
+			showProgressOverlay();
+
 			// Request cellular usage data:
 			mService.sendCommand("30", this);
 
-			// Show progress bar:
-			updateUi();
+		} else {
+			// need to hide explicitly because onStart=true:
+			hideProgressOverlay();
 		}
 	}
 
@@ -161,6 +150,8 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 						recNr = Integer.parseInt(result[2]);
 						recCnt = Integer.parseInt(result[3]);
 
+						stepProgressOverlay(recNr, recCnt);
+
 						// parse result data:
 						String nDate = result[4];
 						int nCarRxBytes = Integer.parseInt(result[5]);
@@ -174,10 +165,8 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 						// got all?
 						if (recNr == recCnt) {
 							cancelCommand();
+							updateUi();
 						}
-
-						// Inform user:
-						updateUi();
 
 					} catch(Exception e) {
 						// malformed record, ignore
@@ -204,143 +193,120 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 	public void updateUi() {
 
+		if (recCnt == 0 || recNr < recCnt)
+			return;
+
+		// Data ready: show results
+
 		View rootView = getView();
-		LinearLayout progressBarLayer = (LinearLayout) findViewById(R.id.cellular_progress_layer);
-		ProgressBar progressBar = (ProgressBar) findViewById(R.id.cellular_progress);
+
+		ColumnChartView mChartViewCar;
+		ColumnChartData mChartDataCar;
+		ColumnChartView mChartViewApp;
+		ColumnChartData mChartDataApp;
+
+		int days = mUsageData.size();
+		float carMBPerMonth = carTotalBytes / days * 30 / 1000000;
+		float appMBPerMonth = appTotalBytes / days * 30 / 1000000;
+
+		Ui.setValue(rootView, R.id.cellular_usage_info_car, getString(R.string.cellular_usage_info_car,
+				carMBPerMonth, days));
+		Ui.setValue(rootView, R.id.cellular_usage_info_app, getString(R.string.cellular_usage_info_app,
+				appMBPerMonth, days));
 
 
-		// Update progress bar:
+		// Update graphs:
 
-		if (recCnt != progressBar.getMax())
-			progressBar.setMax(recCnt);
-		progressBar.setProgress(recNr);
-
-
-		// Check data state:
-
-		if (recCnt == 0 || recNr < recCnt) {
-
-			// Retrieving data: show progress
-
-			progressBarLayer.setVisibility(View.VISIBLE);
-
-		} else {
-
-			// Data ready: show results
-
-			ColumnChartView mChartViewCar;
-			ColumnChartData mChartDataCar;
-			ColumnChartView mChartViewApp;
-			ColumnChartData mChartDataApp;
-
-			int days = mUsageData.size();
-			float carMBPerMonth = carTotalBytes / days * 30 / 1000000;
-			float appMBPerMonth = appTotalBytes / days * 30 / 1000000;
-
-			Ui.setValue(rootView, R.id.cellular_usage_info_car, getString(R.string.cellular_usage_info_car,
-					carMBPerMonth, days));
-			Ui.setValue(rootView, R.id.cellular_usage_info_app, getString(R.string.cellular_usage_info_app,
-					appMBPerMonth, days));
+		UsageData day;
+		List<Column> columns;
+		List<SubcolumnValue> values;
 
 
-			// Update graphs:
+		// Create axes:
 
-			UsageData day;
-			List<Column> columns;
-			List<SubcolumnValue> values;
+		Axis axisX = new Axis();
+		Axis axisY = new Axis().setHasLines(true);
+		axisX.setName(getString(R.string.chart_axis_date));
+		axisY.setName(getString(R.string.chart_axis_datavolume));
 
+		axisX.setHasTiltedLabels(true);
+		axisX.setMaxLabelChars(5);
 
-			// Create axes:
+		List<AxisValue> axisValues;
 
-			Axis axisX = new Axis();
-			Axis axisY = new Axis().setHasLines(true);
-			axisX.setName(getString(R.string.chart_axis_date));
-			axisY.setName(getString(R.string.chart_axis_datavolume));
-
-			axisX.setHasTiltedLabels(true);
-			axisX.setMaxLabelChars(5);
-
-			List<AxisValue> axisValues;
-
-			axisValues = new ArrayList<AxisValue>();
-			for (int i = 0; i < mUsageData.size(); ++i) {
-				day = mUsageData.get(i);
-				axisValues.add(new AxisValue((float) i, day.date.substring(5).toCharArray()));
-			}
-
-			axisX.setValues(axisValues);
-
-
-			// Update car graph:
-
-			columns = new ArrayList<Column>();
-			for (int i = 0; i < mUsageData.size(); ++i) {
-
-				day = mUsageData.get(i);
-
-				values = new ArrayList<SubcolumnValue>();
-				values.add(new SubcolumnValue(
-						Math.round(day.carTxBytes / 100) / 10,
-						ChartUtils.COLOR_BLUE));
-				values.add(new SubcolumnValue(
-						Math.round(day.carRxBytes / 100) / 10,
-						ChartUtils.COLOR_GREEN));
-
-				Column column = new Column(values);
-				column.setHasLabels(true);
-				column.setHasLabelsOnlyForSelected(true);
-				columns.add(column);
-			}
-
-			mChartDataCar = new ColumnChartData(columns);
-			mChartDataCar.setStacked(true);
-			mChartDataCar.setAxisXBottom(axisX);
-			mChartDataCar.setAxisYLeft(axisY);
-
-			// Load data into chart view:
-			mChartViewCar = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_car);
-			mChartViewCar.setColumnChartData(mChartDataCar);
-			mChartViewCar.setZoomType(ZoomType.HORIZONTAL);
-			mChartViewCar.setValueSelectionEnabled(true);
-
-
-			// Update app graph:
-
-			columns = new ArrayList<Column>();
-			for (int i = 0; i < mUsageData.size(); ++i) {
-
-				day = mUsageData.get(i);
-
-				values = new ArrayList<SubcolumnValue>();
-				values.add(new SubcolumnValue(
-						Math.round(day.appTxBytes / 100) / 10,
-						ChartUtils.COLOR_BLUE));
-				values.add(new SubcolumnValue(
-						Math.round(day.appRxBytes / 100) / 10,
-						ChartUtils.COLOR_GREEN));
-
-				Column column = new Column(values);
-				column.setHasLabels(true);
-				column.setHasLabelsOnlyForSelected(true);
-				columns.add(column);
-			}
-
-			mChartDataApp = new ColumnChartData(columns);
-			mChartDataApp.setStacked(true);
-			mChartDataApp.setAxisXBottom(axisX);
-			mChartDataApp.setAxisYLeft(axisY);
-
-			// Load data into chart view:
-			mChartViewApp = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_app);
-			mChartViewApp.setColumnChartData(mChartDataApp);
-			mChartViewApp.setZoomType(ZoomType.HORIZONTAL);
-			mChartViewApp.setValueSelectionEnabled(true);
-
-
-			// Hide progress bar:
-			progressBarLayer.setVisibility(View.INVISIBLE);
+		axisValues = new ArrayList<AxisValue>();
+		for (int i = 0; i < mUsageData.size(); ++i) {
+			day = mUsageData.get(i);
+			axisValues.add(new AxisValue((float) i, day.date.substring(5).toCharArray()));
 		}
 
+		axisX.setValues(axisValues);
+
+
+		// Update car graph:
+
+		columns = new ArrayList<Column>();
+		for (int i = 0; i < mUsageData.size(); ++i) {
+
+			day = mUsageData.get(i);
+
+			values = new ArrayList<SubcolumnValue>();
+			values.add(new SubcolumnValue(
+					Math.round(day.carTxBytes / 100) / 10,
+					ChartUtils.COLOR_BLUE));
+			values.add(new SubcolumnValue(
+					Math.round(day.carRxBytes / 100) / 10,
+					ChartUtils.COLOR_GREEN));
+
+			Column column = new Column(values);
+			column.setHasLabels(true);
+			column.setHasLabelsOnlyForSelected(true);
+			columns.add(column);
+		}
+
+		mChartDataCar = new ColumnChartData(columns);
+		mChartDataCar.setStacked(true);
+		mChartDataCar.setAxisXBottom(axisX);
+		mChartDataCar.setAxisYLeft(axisY);
+
+		// Load data into chart view:
+		mChartViewCar = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_car);
+		mChartViewCar.setColumnChartData(mChartDataCar);
+		mChartViewCar.setZoomType(ZoomType.HORIZONTAL);
+		mChartViewCar.setValueSelectionEnabled(true);
+
+
+		// Update app graph:
+
+		columns = new ArrayList<Column>();
+		for (int i = 0; i < mUsageData.size(); ++i) {
+
+			day = mUsageData.get(i);
+
+			values = new ArrayList<SubcolumnValue>();
+			values.add(new SubcolumnValue(
+					Math.round(day.appTxBytes / 100) / 10,
+					ChartUtils.COLOR_BLUE));
+			values.add(new SubcolumnValue(
+					Math.round(day.appRxBytes / 100) / 10,
+					ChartUtils.COLOR_GREEN));
+
+			Column column = new Column(values);
+			column.setHasLabels(true);
+			column.setHasLabelsOnlyForSelected(true);
+			columns.add(column);
+		}
+
+		mChartDataApp = new ColumnChartData(columns);
+		mChartDataApp.setStacked(true);
+		mChartDataApp.setAxisXBottom(axisX);
+		mChartDataApp.setAxisYLeft(axisY);
+
+		// Load data into chart view:
+		mChartViewApp = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_app);
+		mChartViewApp.setColumnChartData(mChartDataApp);
+		mChartViewApp.setZoomType(ZoomType.HORIZONTAL);
+		mChartViewApp.setValueSelectionEnabled(true);
 
 	}
 

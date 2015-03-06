@@ -165,7 +165,7 @@
     <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
     <string name="err_param_not_editable">Sorry, dieser Parameter ist nicht editierbar!</string>
 
-    <string name="msg_retrieving_data">Empfange Daten&#8230;</string>
+    <string name="msg_retrieving_data">Rufe Daten ab&#8230;</string>
     <string formatted="false" name="cellular_usage_info_car">Fahrzeug: %.1f MB/Monat (%d Tage)</string>
     <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/Monat (%d Tage)</string>
     <string name="chart_axis_date">Datum</string>
