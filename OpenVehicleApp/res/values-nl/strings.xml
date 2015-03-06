@@ -3,7 +3,7 @@
     <string name="app_name">Open Vehicle</string>
     <string name="Loading">Even geduld aub</string>
     <string name="Settings">Instellingen</string>
-    <string name="Range" formatted="false">Bereik: %s (%s estimated)</string>
+    <string name="Range" formatted="false">Bereik: %s (%s geschat)</string>
     <string name="LastUpdated" formatted="false">Bijgewerkt: %1$tD %1$tT</string>
     <string name="SOC">%s%%</string>
     <string name="AddCar">+</string>
@@ -42,10 +42,10 @@
     <string name="Wakeup">Wakker Maken</string>
     <string name="Add">Toevoegen</string>
     <string name="Battery">Batterij</string>
-    <string name="Car">Wagen</string>
+    <string name="Car">Voertuig</string>
     <string name="Location">Locatie</string>
     <string name="Messages">Berichten</string>
-    <string name="Amps">Amps</string>
+    <string name="Amps">Ampère</string>
     <string name="Close">Sluiten</string>
     <string name="Features">Functies</string>
     <string name="Parameters">Parameters</string>
@@ -57,9 +57,9 @@
     <string name="Server">Server</string>
     <string name="App">App</string>
     
-    <string name="lb_wakeup_car">Wagen Wakker Maken</string>
-    <string name="lb_unlock_car">Wagen Openen</string>
-    <string name="lb_lock_car">Wagen Sluiten</string>
+    <string name="lb_wakeup_car">Voertuig Wakker Maken</string>
+    <string name="lb_unlock_car">Voertuig Openen</string>
+    <string name="lb_lock_car">Voertuig Sluiten</string>
     <string name="lb_valet_mode">Valet Mode</string>
     <string name="lb_valet_mode_on">Valet Aan</string>
     <string name="lb_valet_mode_off">Valet Uit</string>
@@ -76,7 +76,7 @@
     <string name="lb_slide_choice_vehicle">Schuif voor voertuigkeuze</string>
     <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
     <string name="lb_cellular_usage">Mobiel Gebruik</string>
-    <string name="lb_reset_ovms_module">Reset OVMS Module</string>
+    <string name="lb_reset_ovms_module">Herstart OVMS Module</string>
     <string name="lb_center_map">Kaart Centreren</string>
     <string name="lb_ft_digital_speedo">#%d: Digitale Snelheidsmeter</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
@@ -92,7 +92,7 @@
 
     <string name="lb_cp_registered_telephone">#%d: Geregistreerde Telefoon</string>
     <string name="lb_cp_module_password">#%d: Module Wachtwoord</string>
-    <string name="lb_cp_miles_km">#%d: Miles/Km</string>
+    <string name="lb_cp_miles_km">#%d: Mijl/Km</string>
     <string name="lb_cp_notifications">#%d: Meldingen</string>
     <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
     <string name="lb_cp_cellular_network_apn">#%d: Mobiel Netwerk APN</string>
@@ -100,7 +100,7 @@
     <string name="lb_cp_cellular_network_password">#%d: Mobiel Netwerk Wachtwoord</string>
     <string name="lb_cp_vehicle_id">#%d: Voertuig ID</string>
     <string name="lb_cp_server_password">#%d: Server Wachtwoord</string>
-    <string name="lb_cp_paranoid_mode">#%d: Paranoid Mode</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoïde Mode</string>
     <string name="lb_cp_social_group_1">#%d: Sociale Groep #1</string>
     <string name="lb_cp_social_group_2">#%d: Sociale Groep #2</string>
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
@@ -125,12 +125,12 @@
     <string name="msg_charger_perform">Frequent gebruik van Prestatie Mode zal de levensduur van de batterij verminderen!</string>
     <string name="msg_wakeup_car">Wakker maken Voertuig&#8230;</string>
     <string name="msg_issuing_homelink">Uitvoeren Homelink Commando&#8230;</string>
-    <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
+    <string name="msg_setting_charge_mc">Instellen van Laad Mode and Stroom&#8230;</string>
     <string name="msg_setting_charge_m">Instellen van Laad Mode&#8230;</string>
-    <string name="msg_setting_charge_c">Instellen van oplaad stroom&#8230;</string>
+    <string name="msg_setting_charge_c">Instellen van Laad stroom&#8230;</string>
     <string name="msg_starting_charge">Laden Starten&#8230;</string>
     <string name="msg_stopping_charge">Laden Stoppen&#8230;</string>
-    <string name="msg_rebooting_car_module">Rebooten Voertuig Module&#8230;</string>
+    <string name="msg_rebooting_car_module">Herstarten Voertuig Module&#8230;</string>
     <string name="msg_please_enter_value">AUB voer een correcte waarde in</string>
     <string name="msg_invalid_name">Uw gebruikersnaam moet langer zijn dan 3 karakters en kan geen speciale karakters bevatten.</string>
     <string name="msg_invalid_passwd">Uw wachtwoord moet tussen de %1$d en %2$d karakters lang zijn.</string>
@@ -160,7 +160,7 @@
     <string name="min1">1 min</string>
     <string name="justnow">zojuist</string>
     <string name="mph">mph</string>
-    <string name="kph">kph</string>
+    <string name="kph">km/u</string>
     <string name="slidetocharge">SCHUIF om te\nLADEN</string>
     <string name="timedcharge">GEPLAND LADEN</string>
     <string name="pushnotifications">Push Notificaties</string>
