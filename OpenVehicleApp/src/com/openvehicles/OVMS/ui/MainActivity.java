@@ -214,28 +214,57 @@ public class MainActivity extends ApiActivity implements
 		}
 	};
 
+
+	private AlertDialog mApiErrorDialog;
+	private String mApiErrorMessage;
+
 	private final BroadcastReceiver mApiEventReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+
 			if (intent.getSerializableExtra("onServerSocketError") != null) {
+
 				setSupportProgressBarIndeterminateVisibility(false);
 
-				new AlertDialog.Builder(MainActivity.this)
-						.setTitle(R.string.Error)
-						.setMessage(intent.getStringExtra("message"))
-						.setPositiveButton(android.R.string.ok, null).show();
+				// check if this message needs to be displayed:
+				String message = intent.getStringExtra("message");
+				if (mApiErrorDialog == null || (mApiErrorDialog != null &&
+						(!mApiErrorDialog.isShowing()
+								|| !message.equals(mApiErrorMessage)))) {
+
+					mApiErrorDialog = new AlertDialog.Builder(MainActivity.this)
+							.setTitle(R.string.Error)
+							.setMessage(message)
+							.setPositiveButton(android.R.string.ok, null)
+							.show();
+
+					mApiErrorMessage = message;
+				}
 			}
+
 			if (intent.getBooleanExtra("onLoginBegin", false)) {
+
 				setSupportProgressBarIndeterminateVisibility(true);
+
+				// observe for login success:
 				ApiObservable.get().addObserver(mApiObserver);
 			}
+
 		}
 	};
 
 	private ApiObserver mApiObserver = new ApiObserver() {
 		@Override
 		public void update(CarData pCarData) {
+			// data update implies login successful => hide progress:
 			setSupportProgressBarIndeterminateVisibility(false);
+
+			// ...and hide error dialog:
+			if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
+				mApiErrorDialog.hide();
+			}
+
+			// done waiting for login:
 			ApiObservable.get().deleteObserver(this);
 		}
 
@@ -243,6 +272,7 @@ public class MainActivity extends ApiActivity implements
 		public void onServiceAvailable(ApiService pService) {
 		}
 	};
+
 
 	private class TabInfo {
 		public final int title_res_id, icon_res_id;
