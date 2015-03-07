@@ -33,11 +33,6 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
 
-		// cancel Android system notification:
-		NotificationManager mNotificationManager = (NotificationManager) getActivity()
-				.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancelAll();
-
 		return mListView;
 	}
 	
@@ -45,6 +40,16 @@ public class NotificationsFragment extends BaseFragment implements OnItemClickLi
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 		initUi(getActivity());
+	}
+
+	@Override
+	public void onStart() {
+		super.onStart();
+
+		// cancel Android system notification:
+		NotificationManager mNotificationManager = (NotificationManager) getActivity()
+				.getSystemService(Context.NOTIFICATION_SERVICE);
+		mNotificationManager.cancelAll();
 	}
 
 	@Override

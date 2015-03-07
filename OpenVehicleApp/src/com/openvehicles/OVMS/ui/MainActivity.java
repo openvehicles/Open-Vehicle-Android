@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui;
 
 import java.util.UUID;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -97,6 +98,13 @@ public class MainActivity extends ApiActivity implements
 				@Override
 				public void onPageSelected(int position) {
 					actionBar.setSelectedNavigationItem(position);
+
+					// cancel system notifications on page "Messages":
+					if (position == 3) {
+						NotificationManager mNotificationManager = (NotificationManager)
+								getSystemService(Context.NOTIFICATION_SERVICE);
+						mNotificationManager.cancelAll();
+					}
 				}
 			});
 

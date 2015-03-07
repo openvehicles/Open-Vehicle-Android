@@ -15,7 +15,8 @@ import android.util.Log;
 public class OVMSNotifications {
 	private static final String TAG = "OVMSNotifications";
 	private static final String SETTINGS_FILENAME = "OVMSSavedNotifications.obj";
-	
+	private static final int MAX_SIZE = 200;
+
 	public ArrayList<NotificationData> notifications;
 	private Context mContext;
 	
@@ -29,6 +30,7 @@ public class OVMSNotifications {
 			notifications = (ArrayList<NotificationData>) is.readObject();
 			is.close();
 			Log.d(TAG, String.format("Loaded %s saved notifications.", notifications.size()));
+			removeOldNotifications();
 		} catch (Exception e) {
 			//e.printStackTrace();
 			Log.e(TAG, e.getMessage());
@@ -57,7 +59,17 @@ public class OVMSNotifications {
 		}
 
 		notifications.add(newNotify);
+		removeOldNotifications();
 		return true;
+	}
+
+	private void removeOldNotifications() {
+		if (notifications.size() > MAX_SIZE) {
+			while (notifications.size() > MAX_SIZE) {
+				notifications.remove(0);
+			}
+			Log.d(TAG, "removeOldNotifications: new size=" + notifications.size());
+		}
 	}
 	
 	public void save() {
