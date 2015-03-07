@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListenner;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
@@ -36,6 +37,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	private CarData mCarData;
 
 	private AlertDialog chargerDialog;
+	private ProgressOverlay progressOverlay;
 
 	private boolean collectResults = false;
 
@@ -336,17 +338,21 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 											InfoFragment.this);
 								}
 							}
-						}).show();
+						})
+				.show();
 	}
 
 	// Charger settings for Renault Twizy:
 	// 	(charge alert setup)
 	private void chargerSettingRenaultTwizy() {
 
-		// open dialog:
+		// create & open dialog:
 
 		View content = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dlg_charger_twizy, null);
+
+		progressOverlay = new ProgressOverlay(LayoutInflater.from(getActivity()), (ViewGroup) content);
+		progressOverlay.show();
 
 		chargerDialog = new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting_twizy)
@@ -372,8 +378,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 										String.format("204,%d,%d", suffRange, suffSOC),
 										InfoFragment.this);
 							}
-						}).show();
-
+						})
+				.show();
 
 		// request missing data:
 		if (maxRange == 0) {
@@ -400,8 +406,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		if (chargerDialog != null && maxRange != 0 && etrAtSOC != 0) {
 
-			LinearLayout progressLayer = (LinearLayout) chargerDialog.findViewById(R.id.progress_layer);
-			if (progressLayer != null && progressLayer.getVisibility() != View.GONE) {
+			if (progressOverlay.isVisible()) {
 
 				// add distance units to range label:
 				TextView lbRange = (TextView) chargerDialog.findViewById(R.id.lb_sufficient_range);
@@ -424,7 +429,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 				// hide progress bar if all results collected:
 				if (collectResults == false) {
-					progressLayer.setVisibility(View.GONE);
+					progressOverlay.hide();
 				}
 			}
 		}

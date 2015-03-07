@@ -22,7 +22,7 @@ public class ProgressOverlay {
 
 	public ProgressOverlay(LayoutInflater inflater, ViewGroup rootView) {
 
-		mProgressLayer = (LinearLayout) inflater.inflate(R.layout.progress_layer, null);
+		mProgressLayer = (LinearLayout) inflater.inflate(R.layout.progress_layer, rootView, false);
 		mProgressLabel = (TextView) mProgressLayer.findViewById(R.id.progress_label);
 		mProgressBarDeterminate = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_determinate);
 		mProgressBarIndeterminate = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_indeterminate);
@@ -71,6 +71,10 @@ public class ProgressOverlay {
 		mProgressBarDeterminate.setVisibility(View.GONE);
 		mProgressBarIndeterminate.setVisibility(View.GONE);
 		mProgressLayer.setVisibility(View.GONE);
+	}
+
+	public boolean isVisible() {
+		return (mProgressLayer.getVisibility() == View.VISIBLE);
 	}
 
 }

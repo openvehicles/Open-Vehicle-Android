@@ -63,42 +63,5 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/progress_layer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#dd000000"
-        android:clickable="true"
-        android:visibility="visible"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:minHeight="300dp">
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/msg_getting_charge_alerts"
-                android:id="@+id/textView11"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="10dp"
-                android:textAppearance="@android:style/TextAppearance.Medium"/>
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:indeterminate="true"
-                android:indeterminateOnly="true"
-                android:clickable="true"/>
-        </LinearLayout>
-
-    </LinearLayout>
-
 </FrameLayout>
 
