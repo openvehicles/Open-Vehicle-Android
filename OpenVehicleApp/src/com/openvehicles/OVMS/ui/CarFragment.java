@@ -15,13 +15,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListenner {
+public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListener {
 	private static final String TAG = "CarFragment";
 
 	private CarData mCarData;

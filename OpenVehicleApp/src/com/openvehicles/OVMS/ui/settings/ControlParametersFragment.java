@@ -15,13 +15,13 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class ControlParametersFragment extends BaseFragment implements OnResultCommandListenner, OnItemClickListener {
+public class ControlParametersFragment extends BaseFragment implements OnResultCommandListener, OnItemClickListener {
 	private ControlParametersAdapter mAdapter;
 	private ListView mListView;
 	private int mEditPosition;
@@ -155,7 +155,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 				int fm = Integer.parseInt(result[3]);
 				String fv = result[4];
 
-				stepProgressOverlay(fn+1, fm);
+				stepProgressOverlay(fn + 1, fm);
 
 				if (fn < ControlParametersAdapter.PARAM_FEATURE_S) {
 					mAdapter.setParam(fn, fv);

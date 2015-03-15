@@ -16,13 +16,13 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class FeaturesFragment extends BaseFragment implements OnResultCommandListenner, OnItemClickListener {
+public class FeaturesFragment extends BaseFragment implements OnResultCommandListener, OnItemClickListener {
 	private FeaturesAdapter mAdapter;
 	private ListView mListView;
 	private int mEditPosition;

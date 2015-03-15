@@ -13,14 +13,13 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 import com.openvehicles.OVMS.ui.utils.Ui;
@@ -31,7 +30,7 @@ import com.openvehicles.OVMS.ui.witdet.SlideNumericView;
 import com.openvehicles.OVMS.ui.witdet.SwitcherView;
 
 public class InfoFragment extends BaseFragment implements OnClickListener,
-		OnResultCommandListenner {
+		OnResultCommandListener {
 	private static final String TAG = "InfoFragment";
 
 	private CarData mCarData;

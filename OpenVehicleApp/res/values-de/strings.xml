@@ -5,7 +5,7 @@
     <string name="Settings">Einstellungen</string>
     <string name="Range" formatted="false">Reichweite: %s (%s geschätzt)</string>
     <string name="LastUpdated" formatted="false">Letztes Update: %1$tD %1$tT</string>
-    <string name="SOC">%s%%</string>
+    <string formatted="false" name="SOC">%s%%</string>
     <string name="AddCar">+</string>
     <string name="Cancel">Abbrechen</string>
     <string name="Delete">Entfernen</string>
@@ -35,7 +35,7 @@
     <string name="DefaultMode">STANDARD</string>
     <string name="ChargingOverlay">Laden</string>
     <string name="BatteryOverlay">Batterie</string>
-    <string name="EstimatedShort">...GESCHÄTZT</string>
+    <string name="EstimatedShort">&#8230;GESCHÄTZT</string>
     <string name="IdealShort">REICHWEITE IDEAL</string>
     <string name="BatteryText">Batterie</string>
     <string name="Homelink">Homelink</string>
@@ -58,6 +58,7 @@
     <string name="GMC">GSM</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
+    <string name="CAC">Kapazität</string>
 
     <string name="lb_wakeup_car">Auto aufwecken</string>
 
@@ -141,6 +142,7 @@
     <string name="msg_getting_charge_alerts">Rufe Lade-Benachrichtigungen vom Modul ab&#8230;</string>
     <string name="msg_setting_charge_alerts">Setze Lade-Benachrichtigungen&#8230;</string>
 
+    <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_charger_perform">Regelmäßige Verwendung des Performance-Modus\nreduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_wakeup_car">Wecke auto auf&#8230;</string>
@@ -166,6 +168,7 @@
     <string name="err_param_not_editable">Sorry, dieser Parameter ist nicht editierbar!</string>
 
     <string name="msg_retrieving_data">Rufe Daten ab&#8230;</string>
+    <string name="msg_processing_data">Verarbeite Daten&#8230;</string>
     <string formatted="false" name="cellular_usage_info_car">Fahrzeug: %.1f MB/Monat (%d Tage)</string>
     <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/Monat (%d Tage)</string>
     <string name="chart_axis_date">Datum</string>
@@ -181,7 +184,7 @@
     <string name="min1">1 Minute</string>
     <string name="justnow">Gerade eben</string>
     <string name="mph">mph</string>
-    <string name="kph">kmh</string>
+    <string name="kph">km/h</string>
     <string name="slidetocharge">SLIDE TO\nCHARGE</string>
     <string name="timedcharge">GEPLANTE LADUNG</string>
     <string name="pushnotifications">Push-Benachrichtigungen</string>
@@ -201,6 +204,8 @@
     <string name="textPROFILE">PROFIL</string>
     <string name="textAMBIENT">AUSSEN</string>
     <string name="text12VBATT">12V BATT</string>
+    <string name="textMOTOR">MOTOR</string>
+    <string name="textPEM">PEM</string>
 
     <string-array name="en_charger">
         <item>Standard</item>
@@ -216,5 +221,63 @@
     <string name="mi_map_settings">Einstellungen</string>
 
     <string name="connections">Lade-Anschlüsse</string>
+
+    <string name="logs_title">Diagnose-Logs</string>
+    <string name="logs_btn_get">Abrufen</string>
+    <string name="logs_btn_reset">Löschen</string>
+
+    <string name="logs_lb_alerts">Alarm</string>
+    <string name="logs_lb_counter">Zähler</string>
+    <string name="logs_lb_events">Logbuch</string>
+    <string name="logs_lb_faults">Fehler</string>
+    <string name="logs_lb_minmax">MinMax</string>
+
+    <string name="logs_th_code">Code</string>
+    <string name="logs_th_description">Beschreibung</string>
+    <string name="logs_th_keytime">Laufzeit</string>
+    <string name="logs_th_lasttime">zuletzt</string>
+    <string name="logs_th_firsttime">zuerst</string>
+    <string name="logs_th_count">Zähler</string>
+    <string name="logs_th_data" formatted="false">Daten%d</string>
+    <string name="logs_th_sensor">Messung</string>
+    <string name="logs_th_user">Benutzer</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+
+    <string-array name="logs_th_sensornames">
+        <item>Batteriespannung min (V)</item>
+        <item>Batteriespannung max (V)</item>
+        <item>Kondensatorspg. min (V)</item>
+        <item>Kondensatorspg. max (V)</item>
+        <item>Motorstrom min (A)</item>
+        <item>Motorstrom max (A)</item>
+        <item>Geschwindigkeit min (U/min)</item>
+        <item>Geschwindigkeit max (U/min)</item>
+        <item>SEVCON-Temperatur min (°C)</item>
+        <item>SEVCON-Temperatur max (°C)</item>
+    </string-array>
+
+    <string name="logs_fmt_listinfo" formatted="false">Stand %s // Laufzeit %s</string>
+    <string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string>
+
+    <string name="logs_msg_query_alerts">Alarme anfordern&#8230;</string>
+    <string name="logs_msg_query_faults">Fehler anfordern&#8230;</string>
+    <string name="logs_msg_query_events">Logbuch anfordern&#8230;</string>
+    <string name="logs_msg_query_counter">Zähler anfordern&#8230;</string>
+    <string name="logs_msg_query_minmax">Min/Max anfordern&#8230;</string>
+
+    <string name="logs_msg_fetch_keytime">Laufzeit abrufen&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Alarme abrufen&#8230;</string>
+    <string name="logs_msg_fetch_faults">Fehler abrufen&#8230;</string>
+    <string name="logs_msg_fetch_events">Logbuch abrufen&#8230;</string>
+    <string name="logs_msg_fetch_counter">Zähler abrufen&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Min/Max abrufen&#8230;</string>
+
+    <string name="logs_msg_reset_faults">Fehler löschen&#8230;</string>
+    <string name="logs_msg_reset_events">Logbuch löschen&#8230;</string>
+    <string name="logs_msg_reset_counter">Zähler löschen&#8230;</string>
+    <string name="logs_msg_reset_minmax">Min/Max löschen&#8230;</string>
+
+    <string name="hint_sevcon_offline">\n(Hinweis: &#8230;B = SEVCON ausgeschaltet)</string>
+
 
 </resources>

@@ -9,7 +9,7 @@ import android.widget.Toast;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
@@ -26,7 +26,7 @@ import lecho.lib.hellocharts.model.SubcolumnValue;
 import lecho.lib.hellocharts.util.ChartUtils;
 import lecho.lib.hellocharts.view.ColumnChartView;
 
-public class CellularStatsFragment extends BaseFragment implements OnResultCommandListenner {
+public class CellularStatsFragment extends BaseFragment implements OnResultCommandListener {
 	private static final String TAG = "CellularStatsFragment";
 
 	private class UsageData {

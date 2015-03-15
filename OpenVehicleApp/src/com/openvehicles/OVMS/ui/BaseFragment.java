@@ -9,7 +9,7 @@ import com.actionbarsherlock.app.SherlockFragment;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 
@@ -42,11 +42,28 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 			mProgressOverlay.show();
 	}
 
+	// show/switch progress overlay in indeterminate mode (spinner icon):
+	public void showProgressOverlay(String message) {
+		if (mProgressOverlay != null) {
+			mProgressOverlay.setLabel(message);
+			mProgressOverlay.show();
+		}
+	}
+
 	// show/switch progress overlay in determinate mode (bar),
 	//	hide overlay if maxPos reached:
 	public void stepProgressOverlay(int pos, int maxPos) {
 		if (mProgressOverlay != null)
 			mProgressOverlay.step(pos, maxPos);
+	}
+
+	// show/switch progress overlay in determinate mode (bar),
+	//	hide overlay if maxPos reached:
+	public void stepProgressOverlay(String message, int pos, int maxPos) {
+		if (mProgressOverlay != null) {
+			mProgressOverlay.setLabel(message);
+			mProgressOverlay.step(pos, maxPos);
+		}
 	}
 
 	// hide progress overlay:
@@ -108,12 +125,12 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 	}
 
 	public void sendCommand(int pResIdMessage, String pCommand,
-							OnResultCommandListenner pOnResultCommandListenner) {
-		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListenner);
+							OnResultCommandListener pOnResultCommandListener) {
+		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListener);
 	}
 
 	public void sendCommand(String pMessage, String pCommand,
-							OnResultCommandListenner pOnResultCommandListenner) {
+							OnResultCommandListener pOnResultCommandListener) {
 
 		ApiService service = getService();
 		if (service == null)
@@ -128,15 +145,15 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 		}
 
 		// pass on to API service:
-		service.sendCommand(pMessage, pCommand, pOnResultCommandListenner);
+		service.sendCommand(pMessage, pCommand, pOnResultCommandListener);
 	}
 
 	public void sendCommand(String pCommand,
-							OnResultCommandListenner pOnResultCommandListenner) {
+							OnResultCommandListener pOnResultCommandListener) {
 		ApiService service = getService();
 		if (service == null)
 			return;
-		service.sendCommand(pCommand, pOnResultCommandListenner);
+		service.sendCommand(pCommand, pOnResultCommandListener);
 	}
 
 	public void changeCar(CarData pCarData) {

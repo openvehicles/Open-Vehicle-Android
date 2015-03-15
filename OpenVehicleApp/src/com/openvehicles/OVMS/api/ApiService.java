@@ -18,7 +18,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
     private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
     private ApiTask mApiTask;
-	private OnResultCommandListenner mOnResultCommandListenner;
+	private OnResultCommandListener mOnResultCommandListener;
 	
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -67,27 +67,27 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		mApiTask.execute();
 	}
 	
-	public void sendCommand(int pResIdMessage, String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
-		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListenner);
+	public void sendCommand(int pResIdMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
+		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListener);
 	}
 
-	public void sendCommand(String pMessage, String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
+	public void sendCommand(String pMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
 		if (mApiTask == null) return;
 
-		mOnResultCommandListenner = pOnResultCommandListenner;
+		mOnResultCommandListener = pOnResultCommandListener;
 		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
 		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
 	}
 	
-	public boolean sendCommand(String pCommand, OnResultCommandListenner pOnResultCommandListenner) {
+	public boolean sendCommand(String pCommand, OnResultCommandListener pOnResultCommandListener) {
 		if (mApiTask == null || TextUtils.isEmpty(pCommand)) return false;
 		
-		mOnResultCommandListenner = pOnResultCommandListenner;
+		mOnResultCommandListener = pOnResultCommandListener;
 		return mApiTask.sendCommand(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
 	}
 	
 	public void cancelCommand() {
-		mOnResultCommandListenner = null;
+		mOnResultCommandListener = null;
 	}
 
 	@Override
@@ -109,8 +109,8 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		if (TextUtils.isEmpty(pCmd)) return;
 		String[] data = pCmd.split(",\\s*");
 		
-		if (mOnResultCommandListenner != null) {
-			mOnResultCommandListenner.onResultCommand(data);
+		if (mOnResultCommandListener != null) {
+			mOnResultCommandListener.onResultCommand(data);
 			return;
 		}
 	}

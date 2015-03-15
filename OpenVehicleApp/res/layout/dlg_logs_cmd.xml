@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content">
+
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tbAlerts"
+            android:textOff="@string/logs_lb_alerts"
+            android:textOn="@string/logs_lb_alerts"
+            android:checked="false"/>
+
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tbFaults"
+            android:textOff="@string/logs_lb_faults"
+            android:textOn="@string/logs_lb_faults"/>
+
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tbEvents"
+            android:textOff="@string/logs_lb_events"
+            android:textOn="@string/logs_lb_events"/>
+
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tbCounter"
+            android:textOff="@string/logs_lb_counter"
+            android:textOn="@string/logs_lb_counter"/>
+
+        <ToggleButton
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/tbMinMax"
+            android:textOff="@string/logs_lb_minmax"
+            android:textOn="@string/logs_lb_minmax"/>
+
+    </LinearLayout>
+
+</LinearLayout>

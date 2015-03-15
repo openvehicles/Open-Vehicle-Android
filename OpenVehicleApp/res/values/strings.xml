@@ -169,6 +169,7 @@
     <string name="err_param_not_editable">Sorry, this parameter is not editable!</string>
 
     <string name="msg_retrieving_data">Retrieving data&#8230;</string>
+    <string name="msg_processing_data">Processing data&#8230;</string>
     <string formatted="false" name="cellular_usage_info_car">Car: %.1f MB/month (%d days)</string>
     <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/month (%d days)</string>
     <string name="chart_axis_date">Date</string>
@@ -237,7 +238,65 @@
     <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
 
     <!-- OVMS Google Play Release -->
-    <string name="map_api_key_debug">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+    <string name="map_api_key_debug" translatable="false">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+
     <string name="connections">Connections</string>
+
+    <string name="logs_title">Diagnostic logs</string>
+    <string name="logs_btn_get">Get logs</string>
+    <string name="logs_btn_reset">Reset logs</string>
+
+    <string name="logs_lb_alerts">Alerts</string>
+    <string name="logs_lb_faults">Faults</string>
+    <string name="logs_lb_events">Events</string>
+    <string name="logs_lb_counter">Counter</string>
+    <string name="logs_lb_minmax">MinMax</string>
+
+    <string name="logs_th_code">Code</string>
+    <string name="logs_th_description">Description</string>
+    <string name="logs_th_keytime">KeyTime</string>
+    <string name="logs_th_lasttime">LastTime</string>
+    <string name="logs_th_firsttime">FirstTime</string>
+    <string name="logs_th_count">Count</string>
+    <string name="logs_th_data" formatted="false">Data%d</string>
+    <string name="logs_th_sensor">Sensor</string>
+    <string name="logs_th_user">User</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+
+    <string-array name="logs_th_sensornames">
+        <item>Battery voltage min (V)</item>
+        <item>Battery voltage max (V)</item>
+        <item>Capacitor voltage min (V)</item>
+        <item>Capacitor voltage max (V)</item>
+        <item>Motor current min (A)</item>
+        <item>Motor current max (A)</item>
+        <item>Motor speed min (rpm)</item>
+        <item>Motor speed max (rpm)</item>
+        <item>SEVCON temperature min (°C)</item>
+        <item>SEVCON temperature max (°C)</item>
+    </string-array>
+
+    <string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string>
+    <string name="logs_fmt_listinfo" formatted="false">Last fetched %s // key time %s</string>
+
+    <string name="logs_msg_query_alerts">Query alerts&#8230;</string>
+    <string name="logs_msg_query_faults">Query faults&#8230;</string>
+    <string name="logs_msg_query_events">Query events&#8230;</string>
+    <string name="logs_msg_query_counter">Query counter&#8230;</string>
+    <string name="logs_msg_query_minmax">Query min/max&#8230;</string>
+
+    <string name="logs_msg_fetch_keytime">Fetch key time&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Fetch alerts&#8230;</string>
+    <string name="logs_msg_fetch_faults">Fetch faults&#8230;</string>
+    <string name="logs_msg_fetch_events">Fetch events&#8230;</string>
+    <string name="logs_msg_fetch_counter">Fetch counter&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Fetch min/max&#8230;</string>
+
+    <string name="logs_msg_reset_faults">Reset faults&#8230;</string>
+    <string name="logs_msg_reset_events">Reset events&#8230;</string>
+    <string name="logs_msg_reset_counter">Reset counter&#8230;</string>
+    <string name="logs_msg_reset_minmax">Reset min/max&#8230;</string>
+
+    <string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string>
 
 </resources>

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.OnResultCommandListenner;
+import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
@@ -25,7 +25,7 @@ import com.openvehicles.OVMS.utils.ConnectionList.Con;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class ControlFragment extends BaseFragment implements OnClickListener,
-		OnResultCommandListenner, Con {
+		OnResultCommandListener, Con {
 	ConnectionList connectionList;
 	private int mEditPosition;
 	private CarData mCarData;
@@ -55,6 +55,13 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 		Ui.setOnClick(pRootView, R.id.btn_connections, this);
 		Ui.setOnClick(pRootView, R.id.btn_cellular_usage, this);
 		Ui.setOnClick(pRootView, R.id.btn_reset_ovms_module, this);
+
+		// diag logs only available on Renault Twizy (up to now):
+		if (mCarData.car_type.equals("RT")) {
+			Ui.setOnClick(pRootView, R.id.btn_diag_logs, this);
+		} else {
+			pRootView.findViewById(R.id.btn_diag_logs).setVisibility(View.GONE);
+		}
 
 		ussdCmd = "";
 	}
@@ -108,6 +115,11 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 				break;
 			case R.id.btn_cellular_usage:
 				activity.setNextFragment(CellularStatsFragment.class);
+				break;
+			case R.id.btn_diag_logs:
+				args = new Bundle();
+				args.putInt("position", mEditPosition);
+				activity.setNextFragment(LogsFragment.class, args);
 				break;
 		}
 	}
