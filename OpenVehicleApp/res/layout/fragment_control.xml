@@ -43,14 +43,14 @@
         android:id="@+id/btn_cellular_usage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="10dp"
         android:text="@string/lb_cellular_usage" />
 
     <Button
         android:id="@+id/btn_reset_ovms_module"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:text="@string/lb_reset_ovms_module" />
 
 </LinearLayout>

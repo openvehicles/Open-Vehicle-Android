@@ -150,10 +150,10 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		
 		switch (resCode) {
 		case 0:
-			if (result.length > 4) {
+			if (result.length >= 4) {
 				int fn = Integer.parseInt(result[2]);
 				int fm = Integer.parseInt(result[3]);
-				String fv = result[4];
+				String fv = (result.length > 4) ? result[4] : "";
 
 				stepProgressOverlay(fn + 1, fm);
 

@@ -26,6 +26,7 @@ import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
+import com.openvehicles.OVMS.ui.settings.ControlFragment;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
@@ -91,21 +92,22 @@ public class SettingsFragment extends BaseFragment implements
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		switch (view.getId()) {
-		case R.id.btn_edit:
-			edit(position);
-			//Log.d("CarEditorFragment", "sel_vehicle_label=" + itttl.sel_vehicle_label);
-			//appPrefes.SaveData("sel_vehicle_label", itttl.sel_vehicle_label);
-			return;
-		case R.id.btn_info:
-			info(position);
-			return;
-		default:
-			CarData carData = (CarData) parent.getAdapter().getItem(position);
-			CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
-			appPrefes.SaveData("sel_vehicle_label", carData.sel_vehicle_label);
-			appPrefes.SaveData("autotrack", "on");
-			appPrefes.SaveData("Id", database.getConnectionFilter(carData.sel_vehicle_label));
-			changeCar(carData);
+			case R.id.btn_edit:
+				edit(position);
+				return;
+			case R.id.btn_control:
+				control(position);
+				return;
+			case R.id.btn_info:
+				info(position);
+				return;
+			default:
+				CarData carData = (CarData) parent.getAdapter().getItem(position);
+				CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
+				appPrefes.SaveData("sel_vehicle_label", carData.sel_vehicle_label);
+				appPrefes.SaveData("autotrack", "on");
+				appPrefes.SaveData("Id", database.getConnectionFilter(carData.sel_vehicle_label));
+				changeCar(carData);
 		}
 	}
 
@@ -113,6 +115,13 @@ public class SettingsFragment extends BaseFragment implements
 		Bundle args = new Bundle();
 		args.putInt("position", pPosition);
 		BaseFragmentActivity.show(getActivity(), CarEditorFragment.class, args,
+				Configuration.ORIENTATION_UNDEFINED);
+	}
+
+	private void control(int pPosition) {
+		Bundle args = new Bundle();
+		args.putInt("position", pPosition);
+		BaseFragmentActivity.show(getActivity(), ControlFragment.class, args,
 				Configuration.ORIENTATION_UNDEFINED);
 	}
 
@@ -157,15 +166,18 @@ public class SettingsFragment extends BaseFragment implements
 
 			ImageButton btnEdit = (ImageButton) convertView
 					.findViewById(R.id.btn_edit);
+			ImageButton btnControl = (ImageButton) convertView
+					.findViewById(R.id.btn_control);
 			ImageButton btnInfo = (ImageButton) convertView
 					.findViewById(R.id.btn_info);
 			btnEdit.setOnClickListener(this);
+			btnControl.setOnClickListener(this);
 			btnInfo.setOnClickListener(this);
 			btnEdit.setTag(position);
+			btnControl.setTag(position);
 			btnInfo.setTag(position);
 
 			CarData it = mItems.get(position);
-//			itttl = it;
 			ImageView iv = (ImageView) convertView.findViewById(R.id.img_car);
 			iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(),
 					it.sel_vehicle_image));
@@ -182,6 +194,7 @@ public class SettingsFragment extends BaseFragment implements
 			if (mListView.isItemChecked(position)) {
 				convertView.setBackgroundColor(0x8033B5E5);
 				btnInfo.setVisibility(View.VISIBLE);
+				btnControl.setVisibility(View.VISIBLE);
 				iv.setVisibility(View.VISIBLE);
 				iv.setImageResource(Ui.getDrawableIdentifier(
 						parent.getContext(), "signal_strength_"
@@ -190,6 +203,7 @@ public class SettingsFragment extends BaseFragment implements
 				convertView.setBackgroundColor(0);
 				iv.setVisibility(View.INVISIBLE);
 				btnInfo.setVisibility(View.INVISIBLE);
+				btnControl.setVisibility(View.INVISIBLE);
 			}
 			return convertView;
 		}
