@@ -455,7 +455,7 @@ public class LogsFragment extends BaseFragment
 				content = layoutInflater.inflate(R.layout.dlg_logs_cmd, null);
 				content.findViewById(R.id.tbAlerts).setVisibility(View.GONE);
 				new AlertDialog.Builder(getActivity())
-						.setTitle(R.string.logs_btn_get)
+						.setTitle(R.string.logs_btn_reset)
 						.setView(content)
 						.setNegativeButton(R.string.Cancel, null)
 						.setPositiveButton(android.R.string.ok,
