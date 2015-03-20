@@ -66,6 +66,17 @@
     <string name="lb_enter_pin">PIN Invoeren</string>
     <string name="lb_enter_passwd">Wachtwoord Invoeren</string>
     <string name="lb_enter_value">Waarde Invoeren</string>
+    
+    <string name="lb_lock_mode_twizy">Snelheidslimiet (kph):</string> 
+    <string name="lb_lock_car_twizy">Stel snelheidslimiet in</string> 
+    <string name="lb_unlock_car_twizy">Wis snelheidslimiet</string> 
+    <string name="lb_valet_mode_twizy">Afstandslimiet (km):</string> 
+    <string name="lb_valet_mode_on_twizy">Stel afstandslimiet in</string> 
+    <string name="lb_valet_mode_off_twizy">Wis afstandslimiet</string> 
+    <string name="lb_valet_mode_extend_twizy">Sta +1km toe</string> 
+    <string name="lb_unvalet_unlock_twizy">Wis afstands+snelheidslimiet</string> 
+
+    
     <string name="lb_wrning_charger">OPGEPAST \ Verkeerde lader instellingen kunnen de elektrische systemen beschadigen!</string>
     <string name="lb_charger_setting">Lader Instellingen</string>
     <string name="lb_communications_problem">Communicatie Probleem</string>
@@ -145,6 +156,7 @@
     <string name="err_unimplemented_operation">Niet geïmplementeerde operatie</string>
 
     <string name="msg_retrieving_data">Ophalen gegevens&#8230;</string>
+    <string name="msg_processing_data">Verwerken gegevens&#8230;</string>
     <string formatted="false" name="cellular_usage_info_car">Voertuig: %.1f MB/maand (%d dagen)</string>
     <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/maand (%d dagen)</string>
     <string name="chart_axis_date">Datum</string>
@@ -166,6 +178,10 @@
     <string name="pushnotifications">Push Notificaties</string>
     <string name="pushnotifications_welcome">Push notificaties voor het geregistreerde voertuig worden hier gearchiveerd.</string>
     <string formatted="false" name="state_charging">LADEN\n%s %s</string>
+    <string formatted="false" name="state_topping_off">TOPPING OFF\n%s %s</string> 
+    <string formatted="false" name="state_done">Gereed\n%s %s</string> 
+    <string formatted="false" name="state_stopped">Gestopt\n%s %s</string> 
+
     <string formatted="false" name="info_etr_full">100%%: ~%s</string>
     <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
     <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
@@ -174,6 +190,12 @@
     <string name="textPEM">PEM</string>
     <string name="textBATTERY">BATTERIJ</string>
     <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">PROFILE</string> 
+    <string name="textAMBIENT">OMGEVING</string> 
+    <string name="text12VBATT">12V BATT</string> 
+    <string name="Profile">Profiel</string> 
+    <string name="Default">Standaard</string> 
+
 
     <string-array name="en_charger">
         <item>Standaard</item>
@@ -181,6 +203,58 @@
         <item>Bereik</item>
         <item>Prestatie</item>
     </string-array>
+
+<string name="logs_title">Diagnostisch log</string> 
+<string name="logs_btn_get">Logs ophalen</string> 
+<string name="logs_btn_reset">Logs herstellen</string> 
+<string name="logs_lb_alerts">Waarschuwingen</string> 
+<string name="logs_lb_faults">Fouten</string> 
+<string name="logs_lb_events">Gebeurtenissen</string> 
+<string name="logs_lb_counter">Teller</string> 
+<string name="logs_lb_minmax">MinMax</string> 
+<string name="logs_th_code">Code</string> 
+<string name="logs_th_description">Omschrijving</string> 
+<string name="logs_th_keytime">KeyTime</string> 
+<string name="logs_th_lasttime">LastTime</string> 
+<string name="logs_th_firsttime">FirstTime</string> 
+<string name="logs_th_count">Aantal</string> 
+<string name="logs_th_data" formatted="false">Data%d</string> 
+<string name="logs_th_sensor">Sensor</string> 
+<string name="logs_th_user">Gebruiker</string> 
+<string name="logs_th_sevcon">SEVCON</string> 
+<string-array name="logs_th_sensornames"> 
+	<item>Batterij voltage min (V)</item> 
+        <item>Batterij voltage max (V)</item> 
+        <item>Condensator voltage min (V)</item> 
+        <item>Condensator voltage max (V)</item> 
+        <item>Motor stroom min (A)</item> 
+        <item>Motor stroom max (A)</item> 
+        <item>Motor snelheid min (rpm)</item> 
+        <item>Motor snelheid max (rpm)</item> 
+        <item>SEVCON temperatuur min (°C)</item> 
+        <item>SEVCON temperatuur max (°C)</item> 
+</string-array> 
+
+<string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string> 
+<string name="logs_fmt_listinfo" formatted="false">Laatst opgehaald %s // key time %s</string> 
+<string name="logs_msg_query_alerts">Waarschuwingen opvragen&#8230;</string> 
+<string name="logs_msg_query_faults">Fouten opvragen&#8230;</string> 
+<string name="logs_msg_query_events">Gebeurtenissen opvragen&#8230;</string> 
+<string name="logs_msg_query_counter">Teller opvragen&#8230;</string> 
+<string name="logs_msg_query_minmax">Min/max opvragen&#8230;</string> 
+<string name="logs_msg_fetch_keytime">Fetch key tijd&#8230;</string> 
+<string name="logs_msg_fetch_alerts">Waarschuwingen ophalen&#8230;</string> 
+<string name="logs_msg_fetch_faults">Fouten ophalen&#8230;</string> 
+<string name="logs_msg_fetch_events">Gebeurtenissen ophalen&#8230;</string> 
+<string name="logs_msg_fetch_counter">Teller ophalen&#8230;</string> 
+<string name="logs_msg_fetch_minmax">Min/max ophalen&#8230;</string> 
+<string name="logs_msg_reset_faults">Reset fouten&#8230;</string> 
+<string name="logs_msg_reset_events">Reset gebeurtenissen&#8230;</string> 
+<string name="logs_msg_reset_counter">Reset teller&#8230;</string> 
+<string name="logs_msg_reset_minmax">Reset min/max&#8230;</string> 
+<string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string> 
+
+
     
 </resources>
 
