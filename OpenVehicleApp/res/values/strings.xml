@@ -299,4 +299,7 @@
 
     <string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string>
 
+    <string name="notifications_hint_cmdinput">SMS / MMI command</string>
+    <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
+
 </resources>

@@ -279,5 +279,7 @@
 
     <string name="hint_sevcon_offline">\n(Hinweis: &#8230;B = SEVCON ausgeschaltet)</string>
 
+    <string name="notifications_hint_cmdinput">SMS/MMI-Kommando</string>
+    <string name="err_failed_smscmd">Fehler: unbekanntes Kommando / keine Authorisierung</string>
 
 </resources>

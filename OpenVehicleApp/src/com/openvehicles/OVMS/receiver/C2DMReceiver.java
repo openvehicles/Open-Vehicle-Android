@@ -91,7 +91,6 @@ public class C2DMReceiver extends BroadcastReceiver {
 		OVMSNotifications savedList = new OVMSNotifications(context);
 		boolean is_new = savedList.addNotification(contentTitle.toString(), contentText.toString());
 		if (is_new) {
-			savedList.save();
 
 			// try to find the correct icon for this car
 			int icon = 0;

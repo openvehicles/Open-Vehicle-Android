@@ -7,24 +7,35 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
-import com.testflightapp.lib.core.StringUtils;
+import com.openvehicles.OVMS.utils.NotificationData;
+import com.openvehicles.OVMS.utils.OVMSNotifications;
 
-import java.util.HashMap;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class Database extends SQLiteOpenHelper {
 	private static final String TAG = "Database";
+	private static final int SCHEMA_VERSION = 5;
 
-	Context c;
+	Context context;
 	SQLiteDatabase db;
+	public SimpleDateFormat isoDateTime;
 
 	public Database(Context context) {
-		super(context, "sampledatabase", null, 4);
-		c = context;
+		super(context, "sampledatabase", null, SCHEMA_VERSION);
+		this.context = context;
+		this.isoDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 	}
 
 	public void open() {
-		db = this.getWritableDatabase();
+		if (db == null)
+			db = this.getWritableDatabase();
 	}
 
 	public void beginWrite() {
@@ -70,6 +81,9 @@ public class Database extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+		this.db = db;
+
 		Log.i(TAG, "Database upgrade from version " + oldVersion + " to version " + newVersion);
 
 		if (oldVersion < 2) {
@@ -126,7 +140,52 @@ public class Database extends SQLiteOpenHelper {
 			db.execSQL("DELETE FROM Connection");
 			db.execSQL("DELETE FROM latlngdetail");
 		}
+
+		if (oldVersion < 5) {
+			// Version 5:
+
+			// create Notifications table:
+			db.execSQL("CREATE TABLE IF NOT EXISTS Notification(" +
+					"nID INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"nType TEXT, nTimestamp TEXT, nTitle TEXT, nMessage TEXT)");
+
+			// migrate Notifications from file storage to table:
+			ArrayList<NotificationData> notifications;
+			try {
+				String filename = "OVMSSavedNotifications.obj";
+				Log.d(TAG, "Migrating saved notifications list from internal storage file: " + filename);
+
+				// read file:
+				FileInputStream fis = context.openFileInput(filename);
+				ObjectInputStream is = new ObjectInputStream(fis);
+				notifications = (ArrayList<NotificationData>) is.readObject();
+				is.close();
+				Log.d(TAG, String.format("Loaded %d saved notifications.", notifications.size()));
+
+				// copy to db:
+				for (int i=0; i < notifications.size(); i++) {
+					addNotification(notifications.get(i));
+				}
+				Log.d(TAG, String.format("Added %d notifications to table.", notifications.size()));
+
+				// done, remove file:
+				context.deleteFile(filename);
+
+			} catch (Exception e) {
+				Log.e(TAG, e.getMessage());
+			}
+
+		}
+
+		this.db = null;
 	}
+
+
+	@Override
+	public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+		// NOP = allow (to be able to redo upgrades for development)
+	}
+
 
 	public void insert_mapdetails(ChargePoint cp) {
 		try {
@@ -459,6 +518,60 @@ public class Database extends SQLiteOpenHelper {
 		open();
 		String deleteSQL = "delete from producttable";
 		db.execSQL(deleteSQL);
+	}
+
+
+	public void addNotification(NotificationData notificationData) {
+		open();
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("nType", notificationData.Type);
+		contentValues.put("nTimestamp", isoDateTime.format(notificationData.Timestamp));
+		contentValues.put("nTitle", notificationData.Title);
+		contentValues.put("nMessage", notificationData.Message);
+		db.insert("Notification", null, contentValues);
+	}
+
+	public void removeNotification(NotificationData notificationData) {
+		open();
+		db.delete("Notification", "nID=" + notificationData.ID, null);
+	}
+
+	public int removeOldNotifications(int keepSize) {
+		int deletedRows = 0;
+		open();
+		Cursor maxIdCursor = db.rawQuery("SELECT MAX(nID) AS maxID FROM Notifications", null);
+		if (maxIdCursor.moveToFirst()) {
+			long maxId = maxIdCursor.getLong(maxIdCursor.getColumnIndex("maxID"));
+			deletedRows = db.delete("Notification", "nID <= " + (maxId - keepSize), null);
+		}
+		return deletedRows;
+	}
+
+	public Cursor getNotifications() {
+		open();
+		Cursor cursor = db.rawQuery("SELECT * FROM Notification ORDER BY nID", null);
+		return cursor;
+	}
+
+	public NotificationData getNextNotification(Cursor cursor) {
+		if (cursor == null || !cursor.moveToNext())
+			return null;
+
+		Date timestamp;
+		try {
+			timestamp = isoDateTime.parse(cursor.getString(cursor.getColumnIndex("nTimestamp")));
+		} catch (Exception e) {
+			timestamp = new Date();
+		}
+
+		NotificationData data = new NotificationData(
+				cursor.getLong(cursor.getColumnIndex("nID")),
+				cursor.getInt(cursor.getColumnIndex("nType")),
+				timestamp,
+				cursor.getString(cursor.getColumnIndex("nTitle")),
+				cursor.getString(cursor.getColumnIndex("nMessage")));
+
+		return data;
 	}
 
 

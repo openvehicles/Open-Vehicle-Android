@@ -22,6 +22,7 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.Con;
+import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class ControlFragment extends BaseFragment implements OnClickListener,
@@ -30,6 +31,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	private int mEditPosition;
 	private CarData mCarData;
 	private String ussdCmd;
+	private OVMSNotifications ovmsNotifications;
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -89,11 +91,27 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 						"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
 							@Override
 							public void onAction(String pData) {
+
 								if (TextUtils.isEmpty(pData))
 									return;
 								ussdCmd = pData;
-								sendCommand(R.string.lb_mmi_ussd_code, "41,"
-										+ pData, ControlFragment.this);
+
+								Context context = getActivity();
+
+								if (ovmsNotifications == null)
+									ovmsNotifications = new OVMSNotifications(context);
+
+								boolean is_new = ovmsNotifications.addNotification(
+										NotificationData.TYPE_COMMAND,
+										mCarData.sel_vehicleid + ": " + ussdCmd,
+										ussdCmd);
+								if (is_new) {
+									// signal App to reload notifications:
+									Intent uiNotify = new Intent(context.getPackageName() + ".Notification");
+									context.sendBroadcast(uiNotify);
+								}
+
+								sendCommand(R.string.lb_mmi_ussd_code, "41," + pData, ControlFragment.this);
 							}
 						});
 				break;
@@ -141,12 +159,15 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 					// only process second cmd result carrying data:
 					if (result.length >= 3) {
 						// add MMI/USSD result to Notifications:
-						OVMSNotifications savedList = new OVMSNotifications(context);
-						boolean is_new = savedList.addNotification(
-								mCarData.sel_vehicleid + " " + cmdMessage,
-								ussdCmd + " =>\n" + result[2]);
+
+						if (ovmsNotifications == null)
+							ovmsNotifications = new OVMSNotifications(context);
+
+						boolean is_new = ovmsNotifications.addNotification(
+								NotificationData.TYPE_USSD,
+								mCarData.sel_vehicleid + ": " + ussdCmd,
+								result[2]);
 						if (is_new) {
-							savedList.save();
 
 							// signal App to reload notifications:
 							Intent uiNotify = new Intent(context.getPackageName() + ".Notification");

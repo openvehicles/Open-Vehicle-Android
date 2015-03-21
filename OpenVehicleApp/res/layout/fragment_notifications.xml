@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ListView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/listView"
+        android:layout_gravity="center_horizontal"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_above="@+id/imageView"
+        android:layout_alignParentRight="true"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:id="@+id/imageView"
+        android:src="@drawable/abs__list_divider_holo_dark"
+        android:layout_above="@+id/cmdInput"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:scaleType="fitXY"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="text|textImeMultiLine|textAutoComplete|textAutoCorrect"
+        android:ems="10"
+        android:id="@+id/cmdInput"
+        android:editable="true"
+        android:minLines="2"
+        android:hint="@string/notifications_hint_cmdinput"
+        android:typeface="monospace"
+        android:maxLength="160"
+        android:imeOptions="actionSend"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>
