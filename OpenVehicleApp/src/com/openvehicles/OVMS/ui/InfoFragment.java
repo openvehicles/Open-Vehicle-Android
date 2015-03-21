@@ -35,20 +35,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 	private CarData mCarData;
 
-	private AlertDialog chargerDialog;
-	private ProgressOverlay progressOverlay;
-
-	private boolean collectResults = false;
-
-	public int maxRange;
-	public int suffRange;
-	public int suffSOC;
-	public int etrAtSOC;
-	public int etrSuffRange;
-	public int etrSuffSOC;
-	public int etrFull;
-
-
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,9 +76,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			}
 		});
 
-		// request new ETR data:
-		etrAtSOC = 0;
-
 		return rootView;
 	}
 
@@ -110,12 +93,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		// update UI:
 		updateLastUpdatedView(pCarData);
 		updateCarInfoView(pCarData);
-
-		// Twizy and new SOC?
-		if (mCarData.car_type.equals("RT") && (mCarData.car_soc_raw != etrAtSOC)) {
-			// get max range, charge alerts + etr update:
-			sendCommand("203", InfoFragment.this);
-		}
+		updateChargeAlerts();
 	}
 
 	@Override
@@ -169,6 +147,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		chargerSetting();
 	}
 
+
 	@Override
 	public void onResultCommand(String[] result) {
 		if (result.length <= 1)
@@ -180,64 +159,9 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		switch (resCode) {
 			case 0: // ok
-
-				if (mCarData.car_type.equals("RT") && (command == 201 || command == 202)) {
-					// Renault Twizy: 201=QueryMaxRange / 202=SetMaxRange result
-					if (result.length < 3)
-						return;
-
-					// get result data:
-					maxRange = Integer.parseInt(result[2]);
-
-					// update UI:
-					if (collectResults == true) {
-						collectResults = false;
-						sendCommand("203", InfoFragment.this);
-					} else {
-						updateChargeAlerts();
-					}
-
-					// inform user about Set success:
-					if (command == 202) {
-						Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
-								Toast.LENGTH_SHORT).show();
-					}
-				}
-
-				else if (mCarData.car_type.equals("RT") && (command == 203 || command == 204)) {
-					// Renault Twizy: 203=QueryChargeAlerts / 204=SetChargeAlerts result
-					if (result.length < 7)
-						return;
-
-					// get result data:
-					suffRange = Integer.parseInt(result[2]);
-					suffSOC = Integer.parseInt(result[3]);
-					etrSuffRange = Integer.parseInt(result[4]);
-					etrSuffSOC = Integer.parseInt(result[5]);
-					etrFull = Integer.parseInt(result[6]);
-					etrAtSOC = mCarData.car_soc_raw;
-
-					// update UI:
-					if (collectResults == true) {
-						collectResults = false;
-						sendCommand("201", InfoFragment.this);
-					} else {
-						updateChargeAlerts();
-					}
-
-					// inform user about Set success:
-					if (command == 204) {
-						Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
-								Toast.LENGTH_SHORT).show();
-					}
-				}
-
-				else {
-					Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
-							Toast.LENGTH_SHORT).show();
-				}
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
+						Toast.LENGTH_SHORT).show();
 				break;
-
 			case 1: // failed
 				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_failed, result[2]),
 						Toast.LENGTH_SHORT).show();
@@ -251,8 +175,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						Toast.LENGTH_SHORT).show();
 				break;
 		}
-
 	}
+
 
 	private void startCharge() {
 		sendCommand(R.string.msg_starting_charge, "11", this);
@@ -347,15 +271,29 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		// create & open dialog:
 
-		View content = LayoutInflater.from(getActivity()).inflate(
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dlg_charger_twizy, null);
 
-		progressOverlay = new ProgressOverlay(LayoutInflater.from(getActivity()), (ViewGroup) content);
-		progressOverlay.show();
+		// add distance units to range label:
+		TextView lbRange = (TextView) dialogView.findViewById(R.id.lb_sufficient_range);
+		lbRange.setText(getString(R.string.lb_sufficient_range, mCarData.car_distance_units));
 
-		chargerDialog = new AlertDialog.Builder(getActivity())
+		// set range:
+		SlideNumericView snvRange = (SlideNumericView) dialogView.findViewById(R.id.snv_sufficient_range);
+		if (snvRange != null) {
+			snvRange.init(0, mCarData.car_max_idealrange_raw, 1);
+			snvRange.setValue(mCarData.car_chargelimit_rangelimit_raw);
+		}
+
+		// set SOC:
+		SlideNumericView snvSOC = (SlideNumericView) dialogView.findViewById(R.id.snv_sufficient_soc);
+		if (snvSOC != null) {
+			snvSOC.setValue(mCarData.car_chargelimit_soclimit);
+		}
+
+		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting_twizy)
-				.setView(content)
+				.setView(dialogView)
 				.setNegativeButton(R.string.Cancel, null)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
@@ -379,68 +317,23 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 							}
 						})
 				.show();
-
-		// request missing data:
-		if (maxRange == 0) {
-			collectResults = true;
-			sendCommand("201", InfoFragment.this);
-		}
-		else if (etrAtSOC == 0) {
-			collectResults = true;
-			sendCommand("203", InfoFragment.this);
-		}
-
-		// ...or display directly:
-		if (collectResults == false) {
-			updateChargeAlerts();
-		}
-
 	}
 
 
-	// load ChargeAlerts data into UI:
+	// load ChargeAlerts / ETR data into UI:
 	public void updateChargeAlerts() {
-
-		// update dialog if open:
-
-		if (chargerDialog != null && maxRange != 0 && etrAtSOC != 0) {
-
-			if (progressOverlay.isVisible()) {
-
-				// add distance units to range label:
-				TextView lbRange = (TextView) chargerDialog.findViewById(R.id.lb_sufficient_range);
-				lbRange.setText(getString(R.string.lb_sufficient_range, mCarData.car_distance_units));
-
-				// set range:
-				SlideNumericView snvRange = (SlideNumericView) chargerDialog
-						.findViewById(R.id.snv_sufficient_range);
-				if (snvRange != null) {
-					snvRange.init(0, maxRange, 1);
-					snvRange.setValue(suffRange);
-				}
-
-				// set SOC:
-				SlideNumericView snvSOC = (SlideNumericView) chargerDialog
-						.findViewById(R.id.snv_sufficient_soc);
-				if (snvSOC != null) {
-					snvSOC.setValue(suffSOC);
-				}
-
-				// hide progress bar if all results collected:
-				if (collectResults == false) {
-					progressOverlay.hide();
-				}
-			}
-		}
-
-
-		// update main UI:
 
 		String infoEtr = "";
 		TextView textView;
 		boolean etrVisible = false;
 
-		if (etrSuffRange != 0) {
+		int etrFull = mCarData.car_chargefull_minsremaining;
+		int suffSOC = mCarData.car_chargelimit_soclimit;
+		int etrSuffSOC = mCarData.car_chargelimit_minsremaining_soc;
+		int suffRange = mCarData.car_chargelimit_rangelimit_raw;
+		int etrSuffRange = mCarData.car_chargelimit_minsremaining_range;
+
+		if (etrSuffRange > 0) {
 			String infoEtrRange = getString(R.string.info_etr_suffrange,
 					suffRange, mCarData.car_distance_units,
 					String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60));
@@ -449,7 +342,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			infoEtr += infoEtrRange;
 		}
 
-		if (etrSuffSOC != 0) {
+		if (etrSuffSOC > 0) {
 			String infoEtrSOC = getString(R.string.info_etr_suffsoc,
 					suffSOC,
 					String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60));
@@ -472,7 +365,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		infoEtr = "";
 
-		if (etrFull != 0) {
+		if (etrFull > 0) {
 			String infoEtrFull = getString(R.string.info_etr_full,
 					String.format("%02d:%02d", etrFull / 60, etrFull % 60));
 			if (infoEtr.length() > 0)

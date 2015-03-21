@@ -405,6 +405,25 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			if (dataParts.length >= 19) {
 				mCarData.car_CAC = Double.parseDouble(dataParts[18]);
 			}
+			if (dataParts.length >= 27) {
+				mCarData.car_chargefull_minsremaining = Integer.parseInt(dataParts[19]);
+				mCarData.car_chargelimit_minsremaining = Integer.parseInt(dataParts[20]);
+				mCarData.car_chargelimit_rangelimit_raw = Integer.parseInt(dataParts[21]);
+				mCarData.car_chargelimit_rangelimit = String.format("%d%s",
+						mCarData.car_chargelimit_rangelimit_raw, mCarData.car_distance_units);
+				mCarData.car_chargelimit_soclimit = Integer.parseInt(dataParts[22]);
+				mCarData.car_coolingdown = Integer.parseInt(dataParts[23]);
+				mCarData.car_cooldown_tbattery = Integer.parseInt(dataParts[24]);
+				mCarData.car_cooldown_timelimit = Integer.parseInt(dataParts[25]);
+				mCarData.car_chargeestimate = Integer.parseInt(dataParts[26]);
+			}
+			if (dataParts.length >= 30) {
+				mCarData.car_chargelimit_minsremaining_range = Integer.parseInt(dataParts[27]);
+				mCarData.car_chargelimit_minsremaining_soc = Integer.parseInt(dataParts[28]);
+				mCarData.car_max_idealrange_raw = Integer.parseInt(dataParts[29]);
+				mCarData.car_max_idealrange = String.format("%d%s",
+						mCarData.car_max_idealrange_raw, mCarData.car_distance_units);
+			}
 
 			Log.v(TAG, "Notify Vehicle Status Update: " + mCarData.sel_vehicleid);
 			
