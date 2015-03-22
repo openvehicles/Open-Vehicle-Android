@@ -152,7 +152,7 @@
     <string name="err_connection_lost">OVMS Server Verbinding Verloren</string>
     <string name="err_check_following">AUB het volgende:\n1. OVMS Server adres\n2. Uw voertuig ID en wachtwoorden</string>
     <string name="err_failed">Mislukt: %s</string>
-    <string name="err_unsupported_operation">Niet gesteunde operatie</string>
+    <string name="err_unsupported_operation">Niet ondersteunde operatie</string>
     <string name="err_unimplemented_operation">Niet geïmplementeerde operatie</string>
 
     <string name="msg_retrieving_data">Ophalen gegevens&#8230;</string>
@@ -190,7 +190,7 @@
     <string name="textPEM">PEM</string>
     <string name="textBATTERY">BATTERIJ</string>
     <string name="textHOMELINK">HOMELINK</string>
-    <string name="textPROFILE">PROFILE</string> 
+    <string name="textPROFILE">PROFIEL</string> 
     <string name="textAMBIENT">OMGEVING</string> 
     <string name="text12VBATT">12V BATT</string> 
     <string name="Profile">Profiel</string> 
@@ -214,11 +214,11 @@
 <string name="logs_lb_minmax">MinMax</string> 
 <string name="logs_th_code">Code</string> 
 <string name="logs_th_description">Omschrijving</string> 
-<string name="logs_th_keytime">KeyTime</string> 
-<string name="logs_th_lasttime">LastTime</string> 
-<string name="logs_th_firsttime">FirstTime</string> 
+<string name="logs_th_keytime">SleutelTijd</string> 
+<string name="logs_th_lasttime">LaatsteTijd</string> 
+<string name="logs_th_firsttime">EersteTijd</string> 
 <string name="logs_th_count">Aantal</string> 
-<string name="logs_th_data" formatted="false">Data%d</string> 
+<string name="logs_th_data" formatted="false">Gegevens%d</string> 
 <string name="logs_th_sensor">Sensor</string> 
 <string name="logs_th_user">Gebruiker</string> 
 <string name="logs_th_sevcon">SEVCON</string> 
@@ -254,7 +254,8 @@
 <string name="logs_msg_reset_minmax">Reset min/max&#8230;</string> 
 <string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string> 
 
-
+<string name="notifications_hint_cmdinput">SMS / MMI commando</string>
+<string name="err_failed_smscmd">Fout: onbekend commando / autorisatie fout</string>
     
 </resources>
 
