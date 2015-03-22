@@ -34,8 +34,7 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public void open() {
-		if (db == null)
-			db = this.getWritableDatabase();
+		db = this.getWritableDatabase();
 	}
 
 	public void beginWrite() {
@@ -81,8 +80,6 @@ public class Database extends SQLiteOpenHelper {
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
-		this.db = db;
 
 		Log.i(TAG, "Database upgrade from version " + oldVersion + " to version " + newVersion);
 
@@ -164,7 +161,7 @@ public class Database extends SQLiteOpenHelper {
 
 				// copy to db:
 				for (int i=0; i < notifications.size(); i++) {
-					addNotification(notifications.get(i));
+					addNotificationInt(notifications.get(i));
 				}
 				Log.d(TAG, String.format("Added %d notifications to table.", notifications.size()));
 
@@ -177,7 +174,6 @@ public class Database extends SQLiteOpenHelper {
 
 		}
 
-		this.db = null;
 	}
 
 
@@ -523,6 +519,10 @@ public class Database extends SQLiteOpenHelper {
 
 	public void addNotification(NotificationData notificationData) {
 		open();
+		addNotificationInt(notificationData);
+	}
+
+	private void addNotificationInt(NotificationData notificationData) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("nType", notificationData.Type);
 		contentValues.put("nTimestamp", isoDateTime.format(notificationData.Timestamp));
