@@ -8,7 +8,8 @@
 	<com.openvehicles.OVMS.ui.witdet.ScaleLayout android:id="@+id/scaleLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_marginTop="8dp" >
+		android:layout_margin="8dp"
+        >
 
 		<ImageView
 			android:id="@+id/tabCarImageCarOutline"
@@ -211,14 +212,33 @@
 
 <!--              android:layout_x="162px" -->
 
-		<TextView
+        <TextView
+            android:id="@+id/tabCarTextOdometer"
+            android:layout_width="212px"
+            android:layout_height="44px"
+            android:layout_x="162px"
+            android:layout_y="170px"
+            android:text="123456.7km"
+            android:textSize="25px"
+            android:gravity="center"
+            android:textColor="@color/abs__bright_foreground_holo_dark"
+            android:singleLine="false"
+            android:fontFamily="sans-serif-condensed"
+            />
+
+        <TextView
 			android:id="@+id/tabCarTextSpeed"
 			android:layout_width="212px"
 			android:layout_height="44px"
-			android:layout_x="240px"
-			android:layout_y="200px"
-			android:text="0kph"
-			android:textSize="30px" />
+			android:layout_x="162px"
+			android:layout_y="210px"
+			android:text="123kph"
+			android:textSize="32px"
+            android:gravity="center"
+            android:textColor="@color/abs__holo_blue_light"
+            android:textStyle="bold"
+            android:fontFamily="sans-serif-condensed"
+            />
 
 		<!-- OnClick -->
 

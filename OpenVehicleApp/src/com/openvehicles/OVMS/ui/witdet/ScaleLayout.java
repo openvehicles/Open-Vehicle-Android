@@ -24,7 +24,7 @@ public class ScaleLayout extends ViewGroup {
 
     public ScaleLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-		mPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics());
+		mPadding = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 0, getResources().getDisplayMetrics());
     }
     
     public float getScale() {

@@ -508,9 +508,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					}
 				
 				mCarData.car_tripmeter_raw = Integer.parseInt(dataParts[6]);
-				mCarData.car_tripmeter = String.format("%d%s",mCarData.car_tripmeter_raw,mCarData.car_distance_units);
+				mCarData.car_tripmeter = String.format("%.1f%s",(float)mCarData.car_tripmeter_raw/10,mCarData.car_distance_units);
 				mCarData.car_odometer_raw = Integer.parseInt(dataParts[7]);
-				mCarData.car_odometer = String.format("%d%s",mCarData.car_odometer_raw,mCarData.car_distance_units);
+				mCarData.car_odometer = String.format("%.1f%s",(float)mCarData.car_odometer_raw/10,mCarData.car_distance_units);
 				mCarData.car_speed_raw = Integer.parseInt(dataParts[8]);
 				mCarData.car_speed = String.format("%d%s", mCarData.car_speed_raw,mCarData.car_speed_units);
 				

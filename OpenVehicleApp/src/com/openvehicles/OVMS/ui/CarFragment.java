@@ -467,6 +467,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			}
 		}
 
+		// Odometer
+		tv = (TextView) findViewById(R.id.tabCarTextOdometer);
+		tv.setText(pCarData.car_odometer);
+
 		// Speed
 		tv = (TextView) findViewById(R.id.tabCarTextSpeed);
 		if (!pCarData.car_started) tv.setText("");
