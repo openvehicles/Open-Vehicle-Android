@@ -52,9 +52,12 @@ public class Database extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(TAG, "Database creation");
 
-		db.execSQL("CREATE TABLE IF NOT EXISTS mapdetails(cpid INTEGER PRIMARY KEY," +
-				"lat text, lng text, title text, optr text, status text, usage text," +
-				"AddressLine1 text, numberofpoint TEXT)");
+		db.execSQL("CREATE TABLE mapdetails(cpid INTEGER PRIMARY KEY," +
+				"Latitude TEXT, Longitude TEXT, Title TEXT," +
+				"OperatorInfo TEXT, StatusType TEXT, UsageType TEXT," +
+				"AddressLine1 TEXT, RelatedURL TEXT, UsageCost TEXT," +
+				"AccessComments TEXT, GeneralComments TEXT," +
+				"NumberOfPoints TEXT)");
 
 		db.execSQL("CREATE TABLE if not exists company(id INTEGER PRIMARY KEY AUTOINCREMENT,userid TEXT,instance TEXT,companyname TEXT)");
 
@@ -76,6 +79,11 @@ public class Database extends SQLiteOpenHelper {
 				"conTypeTitle TEXT, conLevelTitle TEXT)");
 		db.execSQL("CREATE INDEX conCp ON Connection (conCpId)");
 		db.execSQL("CREATE INDEX conType ON Connection (conTypeId)");
+
+		// create Notifications table:
+		db.execSQL("CREATE TABLE IF NOT EXISTS Notification(" +
+				"nID INTEGER PRIMARY KEY AUTOINCREMENT," +
+				"nType TEXT, nTimestamp TEXT, nTitle TEXT, nMessage TEXT)");
 	}
 
 	@Override
