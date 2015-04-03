@@ -3,6 +3,7 @@ package com.openvehicles.OVMS.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -18,9 +19,13 @@ import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.settings.ControlFragment;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
@@ -80,6 +85,19 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	}
 
 	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.battery_options, menu);
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		if (mCarData != null && mCarData.car_type != null) {
+			menu.findItem(R.id.mi_battery_stats).setVisible(mCarData.car_type.equals("RT"));
+		}
+	}
+
+	@Override
 	public void onDestroyView() {
 		cancelCommand();
 		super.onDestroyView();
@@ -90,6 +108,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		mCarData = pCarData;
 
+		getSherlockActivity().invalidateOptionsMenu();
+
 		// update UI:
 		updateLastUpdatedView(pCarData);
 		updateCarInfoView(pCarData);
@@ -99,6 +119,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
+		setHasOptionsMenu(true);
 
 		findViewById(R.id.tabInfoTextSOC).setOnClickListener(this);
 		findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this);
@@ -140,6 +162,19 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			}
 		});
 
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.mi_battery_stats:
+				Bundle args = new Bundle();
+				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, args,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+			default:
+				return false;
+		}
 	}
 
 	@Override

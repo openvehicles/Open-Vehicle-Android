@@ -58,19 +58,16 @@ public class NotificationsFragment extends BaseFragment
 	}
 	
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		super.onActivityCreated(savedInstanceState);
-		initUi(getActivity());
-	}
-
-	@Override
-	public void onStart() {
-		super.onStart();
+	public void onResume() {
+		super.onResume();
 
 		// cancel Android system notification:
 		NotificationManager mNotificationManager = (NotificationManager) getActivity()
 				.getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancelAll();
+
+		// update list:
+		update();
 	}
 
 	@Override

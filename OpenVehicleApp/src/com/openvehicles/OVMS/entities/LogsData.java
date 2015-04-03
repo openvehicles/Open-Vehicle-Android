@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -236,7 +235,7 @@ public class LogsData {
 
 			CmdSeries.Cmd cmd = cmdSeries.get(i);
 
-			if (cmd.key != 32)
+			if (cmd.commandCode != 32)
 				continue;
 			
 			for (int resNr=0; resNr < cmd.results.size(); resNr++) {

@@ -505,8 +505,8 @@ public class LogsFragment extends BaseFragment
 
 
 	@Override
-	public void onCmdSeriesProgress(String message, int pos, int posCnt) {
-		stepProgressOverlay(message, pos, posCnt);
+	public void onCmdSeriesProgress(String message, int pos, int posCnt, int step, int stepCnt) {
+		stepProgressOverlay(message, pos, posCnt, step, stepCnt);
 	}
 
 

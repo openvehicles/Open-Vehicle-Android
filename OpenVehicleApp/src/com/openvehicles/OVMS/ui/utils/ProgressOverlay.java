@@ -18,7 +18,8 @@ public class ProgressOverlay implements View.OnClickListener {
 
 	private LinearLayout mProgressLayer;
 	private TextView mProgressLabel;
-	private ProgressBar mProgressBarDeterminate;
+	private ProgressBar mProgressBarStep;
+	private ProgressBar mProgressBarSubStep;
 	private ProgressBar mProgressBarIndeterminate;
 	private Button mProgressCancel;
 
@@ -32,8 +33,11 @@ public class ProgressOverlay implements View.OnClickListener {
 
 		mProgressLayer = (LinearLayout) inflater.inflate(R.layout.progress_layer, rootView, false);
 		mProgressLabel = (TextView) mProgressLayer.findViewById(R.id.progress_label);
-		mProgressBarDeterminate = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_determinate);
+
+		mProgressBarStep = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_determinate);
+		mProgressBarSubStep = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_substep);
 		mProgressBarIndeterminate = (ProgressBar) mProgressLayer.findViewById(R.id.progress_bar_indeterminate);
+
 		mProgressCancel = (Button) mProgressLayer.findViewById(R.id.progress_cancel);
 		mProgressCancel.setOnClickListener(this);
 
@@ -54,24 +58,37 @@ public class ProgressOverlay implements View.OnClickListener {
 
 	// show indeterminate progress spinner icon:
 	public void show() {
-		mProgressBarDeterminate.setVisibility(View.GONE);
+		mProgressBarStep.setVisibility(View.GONE);
+		mProgressBarSubStep.setVisibility(View.GONE);
 		mProgressBarIndeterminate.setVisibility(View.VISIBLE);
+
 		mProgressCancel.setVisibility((mListener != null) ? View.VISIBLE : View.GONE);
 		mProgressLayer.bringToFront();
 		mProgressLayer.setVisibility(View.VISIBLE);
 	}
 
 	// show determinate progress bar:
-	//   (closes if pos == maxPos)
-	public void step(int pos, int maxPos) {
+	//   closes if pos == maxPos
+	//   shows sub step bar if step < stepCnt
+	public void step(int pos, int maxPos, int step, int stepCnt) {
 		if (maxPos > 0 && pos == maxPos) {
 			hide();
 		}
 		else {
-			mProgressBarDeterminate.setMax(maxPos);
-			mProgressBarDeterminate.setProgress(pos);
-			mProgressBarDeterminate.setVisibility(View.VISIBLE);
+			mProgressBarStep.setMax(maxPos);
+			mProgressBarStep.setProgress(pos);
+			mProgressBarStep.setVisibility(View.VISIBLE);
+
+			if (step < stepCnt) {
+				mProgressBarSubStep.setMax(stepCnt);
+				mProgressBarSubStep.setProgress(step);
+				mProgressBarSubStep.setVisibility(View.VISIBLE);
+			} else {
+				mProgressBarSubStep.setVisibility(View.GONE);
+			}
+
 			mProgressBarIndeterminate.setVisibility(View.GONE);
+
 			mProgressCancel.setVisibility((mListener != null) ? View.VISIBLE : View.GONE);
 			mProgressLayer.bringToFront();
 			mProgressLayer.setVisibility(View.VISIBLE);
@@ -80,7 +97,8 @@ public class ProgressOverlay implements View.OnClickListener {
 
 	// hide:
 	public void hide() {
-		mProgressBarDeterminate.setVisibility(View.GONE);
+		mProgressBarStep.setVisibility(View.GONE);
+		mProgressBarSubStep.setVisibility(View.GONE);
 		mProgressBarIndeterminate.setVisibility(View.GONE);
 		mProgressCancel.setVisibility(View.GONE);
 		mProgressLayer.setVisibility(View.GONE);

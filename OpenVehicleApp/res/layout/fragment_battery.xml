@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <view
+        class="com.github.mikephil.charting.charts.CandleStickChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chart_cells"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"/>
+
+    <view
+        class="com.github.mikephil.charting.charts.LineChart"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/chart_pack"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="1"
+        />
+
+    <SeekBar
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/seek_pack"
+        android:layout_gravity="center_horizontal"
+        />
+
+</LinearLayout>

@@ -282,4 +282,21 @@
     <string name="notifications_hint_cmdinput">SMS/MMI-Kommando</string>
     <string name="err_failed_smscmd">Fehler: unbekanntes Kommando / keine Authorisierung</string>
 
+    <string name="battery_title">Akku-Statistik</string>
+    <string name="battery_menu">Optionen</string>
+    <string name="battery_btn_get_data">Daten abrufen</string>
+    <string name="battery_btn_reset_view">Zoom rücksetzen</string>
+    <string name="battery_chk_volt">Zeige Spg.</string>
+    <string name="battery_chk_temp">Zeige Temp.</string>
+    <string name="battery_msg_loading_data">Lade Daten&#8230;</string>
+    <string name="battery_msg_get_status">Akkustatus anfordern&#8230;</string>
+    <string name="battery_msg_get_battpack">Empfange Pack-Daten&#8230;</string>
+    <string name="battery_msg_get_battcell">Empfange Zellen-Daten&#8230;</string>
+    <string name="battery_pack_description">Paketverlauf</string>
+    <string name="battery_cell_description">Zellenstatus</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_volt">Spg. (V)</string>
+    <string name="battery_data_volt_min">min. Spg. (V)</string>
+    <string name="battery_data_temp">Temp. (°C)</string>
+
 </resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/battery_menu"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_more"
+          android:title="@string/battery_menu">
+
+        <menu>
+
+            <item android:id="@+id/mi_get_data"
+              android:showAsAction="ifRoom"
+              android:title="@string/battery_btn_get_data"
+              android:icon="@android:drawable/stat_sys_download" />
+
+            <item android:id="@+id/mi_reset_view"
+                  android:showAsAction="ifRoom"
+                  android:icon="@android:drawable/ic_menu_mylocation"
+                  android:title="@string/battery_btn_reset_view"/>
+
+            <group android:checkableBehavior="all">
+
+                <item android:id="@+id/mi_chk_volt"
+                      android:showAsAction="ifRoom"
+                      android:title="@string/battery_chk_volt"/>
+
+                <item android:id="@+id/mi_chk_temp"
+                      android:showAsAction="ifRoom"
+                      android:title="@string/battery_chk_temp"/>
+
+            </group>
+
+        </menu>
+    </item>
+
+</menu>

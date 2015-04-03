@@ -19,7 +19,7 @@ import java.util.ArrayList;
  * The Listener can react to progress and finish events.
  * Return code -1 on finish means execution was cancelled.
  *
- * See LogsFragment for a complete usage example.
+ * See LogsFragment and BatteryFragment for complete usage examples.
  *
  */
 public class CmdSeries implements OnResultCommandListener {
@@ -28,7 +28,7 @@ public class CmdSeries implements OnResultCommandListener {
 	private transient static final Context context = BaseApp.getApp();
 
 	public interface Listener {
-		void onCmdSeriesProgress(String message, int pos, int posCnt);
+		void onCmdSeriesProgress(String message, int pos, int posCnt, int step, int stepCnt);
 		void onCmdSeriesFinish(CmdSeries cmdSeries, int returnCode);
 	}
 
@@ -37,8 +37,7 @@ public class CmdSeries implements OnResultCommandListener {
 		private CmdSeries series;
 		public String message;
 		public String command;
-
-		public int key;
+		public int commandCode;
 		public int returnCode;
 		public ArrayList<String[]> results;
 
@@ -84,6 +83,8 @@ public class CmdSeries implements OnResultCommandListener {
 		Cmd cmd = new Cmd(this);
 		cmd.message = pMessage;
 		cmd.command = pCommand;
+		String code = pCommand.split(",", 2)[0];
+		cmd.commandCode = Integer.parseInt(code);
 		cmdList.add(cmd);
 		return this; // for daisy chaining
 	}
@@ -124,7 +125,7 @@ public class CmdSeries implements OnResultCommandListener {
 		if (cmd != null) {
 			// send next command:
 			Log.v(TAG, "executeNext: " + cmd.message + ": cmd=" + cmd.command);
-			mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt());
+			mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), 0, 0);
 			mService.sendCommand(cmd.command, this);
 		}
 		else {
@@ -140,27 +141,28 @@ public class CmdSeries implements OnResultCommandListener {
 		if (result.length < 2)
 			return;
 
-		int key = Integer.parseInt(result[0]);
+		int commandCode = Integer.parseInt(result[0]);
 		int returnCode = Integer.parseInt(result[1]);
 
+		// check command:
 		Cmd cmd = getCurrent();
 		if (cmd == null) {
 			// we're not active, cancel subscription:
 			mService.cancelCommand();
 			return;
-		} else if (!cmd.command.startsWith(key + ",")) {
+		} else if (cmd.commandCode != commandCode) {
 			// not for us:
 			return;
 		}
 
-		cmd.key = key;
+		// store result:
 		cmd.returnCode = returnCode;
 		cmd.results.add(result);
 
-		Log.v(TAG, "onResult: " + cmd.message + " / key=" + cmd.key
+		Log.v(TAG, "onResult: " + cmd.message + " / key=" + cmd.commandCode
 				+ " => returnCode=" + cmd.returnCode);
 
-		if (key == 30 || key == 31 || key == 32) {
+		if (commandCode == 30 || commandCode == 31 || commandCode == 32) {
 			// multiple result command:
 
 			if (result[2].equals("No historical data available")) {
@@ -169,7 +171,7 @@ public class CmdSeries implements OnResultCommandListener {
 
 			} else if (returnCode != 0) {
 				// error: stop execution
-				Log.e(TAG, "ABORT: cmd failed: key=" + cmd.key + " => returnCode=" + cmd.returnCode);
+				Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
 				mService.cancelCommand();
 				mListener.onCmdSeriesFinish(this, returnCode);
 
@@ -180,12 +182,15 @@ public class CmdSeries implements OnResultCommandListener {
 				if (recNr == recCnt) {
 					// got all records
 					executeNext();
+				} else {
+					// update progress sub step:
+					mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), recNr, recCnt);
 				}
 			}
 
 		} else if (returnCode != 0) {
 			// single result command error: stop execution
-			Log.e(TAG, "ABORT: cmd failed: key=" + cmd.key + " => returnCode=" + cmd.returnCode);
+			Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
 			mService.cancelCommand();
 			mListener.onCmdSeriesFinish(this, returnCode);
 

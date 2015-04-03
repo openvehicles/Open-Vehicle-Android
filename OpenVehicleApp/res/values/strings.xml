@@ -302,4 +302,22 @@
     <string name="notifications_hint_cmdinput">SMS / MMI command</string>
     <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
 
+
+    <string name="battery_title">Battery history</string>
+    <string name="battery_menu">Options</string>
+    <string name="battery_btn_get_data">Get data</string>
+    <string name="battery_btn_reset_view">Reset zoom</string>
+    <string name="battery_chk_volt">Show Volt</string>
+    <string name="battery_chk_temp">Show Temp</string>
+    <string name="battery_msg_loading_data">Loading data&#8230;</string>
+    <string name="battery_msg_get_status">Requesting battery status&#8230;</string>
+    <string name="battery_msg_get_battpack">Retrieving pack data&#8230;</string>
+    <string name="battery_msg_get_battcell">Retrieving cell data&#8230;</string>
+    <string name="battery_pack_description">Pack history</string>
+    <string name="battery_cell_description">Cell status</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_volt">Volt (V)</string>
+    <string name="battery_data_volt_min">Volt min (V)</string>
+    <string name="battery_data_temp">Temp (°C)</string>
+
 </resources>

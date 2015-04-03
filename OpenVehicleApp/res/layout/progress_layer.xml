@@ -54,6 +54,17 @@
             android:clickable="true"
             android:visibility="visible"/>
 
+        <ProgressBar
+            style="@style/Widget.Sherlock.Light.ProgressBar.Horizontal"
+            android:id="@+id/progress_bar_substep"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:indeterminate="false"
+            android:minHeight="20dip"
+            android:clickable="true"
+            android:visibility="visible"/>
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

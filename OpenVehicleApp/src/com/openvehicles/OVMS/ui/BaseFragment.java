@@ -53,16 +53,24 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 	// show/switch progress overlay in determinate mode (bar),
 	//	hide overlay if maxPos reached:
 	public void stepProgressOverlay(int pos, int maxPos) {
-		if (mProgressOverlay != null)
-			mProgressOverlay.step(pos, maxPos);
+		stepProgressOverlay(pos, maxPos, 0, 0);
 	}
 
 	// show/switch progress overlay in determinate mode (bar),
+	//  with optional sub step progress (if stepCnt > 0)
 	//	hide overlay if maxPos reached:
-	public void stepProgressOverlay(String message, int pos, int maxPos) {
+	public void stepProgressOverlay(int pos, int maxPos, int step, int stepCnt) {
+		if (mProgressOverlay != null)
+			mProgressOverlay.step(pos, maxPos, step, stepCnt);
+	}
+
+	// show/switch progress overlay in determinate mode (bar),
+	//  with optional sub step progress (if stepCnt > 0)
+	//	hide overlay if maxPos reached:
+	public void stepProgressOverlay(String message, int pos, int maxPos, int step, int stepCnt) {
 		if (mProgressOverlay != null) {
 			mProgressOverlay.setLabel(message);
-			mProgressOverlay.step(pos, maxPos);
+			mProgressOverlay.step(pos, maxPos, step, stepCnt);
 		}
 	}
 
