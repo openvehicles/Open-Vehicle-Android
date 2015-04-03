@@ -15,33 +15,41 @@
 
         <TextView
             android:id="@+id/cellular_usage_info_car"
-            style="@style/TextValue"
             android:layout_width="match_parent"
             android:text="Car:"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size"/>
 
-        <lecho.lib.hellocharts.view.ColumnChartView
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/cellular_usage_chart_car"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-        </lecho.lib.hellocharts.view.ColumnChartView>
+        </com.github.mikephil.charting.charts.BarChart>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:id="@+id/imageView2"
+            android:src="@drawable/abs__list_divider_holo_dark"
+            android:layout_above="@+id/cmdInput"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
+            android:scaleType="fitXY"/>
 
         <TextView
-            style="@style/TextValue"
             android:id="@+id/cellular_usage_info_app"
             android:layout_width="match_parent"
             android:text="App:"
             android:layout_height="wrap_content"
             android:textSize="@dimen/text_size"/>
 
-        <lecho.lib.hellocharts.view.ColumnChartView
+        <com.github.mikephil.charting.charts.BarChart
             android:id="@+id/cellular_usage_chart_app"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1">
-        </lecho.lib.hellocharts.view.ColumnChartView>
+        </com.github.mikephil.charting.charts.BarChart>
     </LinearLayout>
 
 </RelativeLayout>

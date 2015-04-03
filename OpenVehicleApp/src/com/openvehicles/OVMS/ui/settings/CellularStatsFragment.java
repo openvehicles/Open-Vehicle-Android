@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui.settings;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,17 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.actionbarsherlock.app.SherlockFragmentActivity;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+
+import com.github.mikephil.charting.utils.ValueFormatter;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -15,19 +27,20 @@ import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import lecho.lib.hellocharts.gesture.ZoomType;
-import lecho.lib.hellocharts.model.Axis;
-import lecho.lib.hellocharts.model.AxisValue;
-import lecho.lib.hellocharts.model.Column;
-import lecho.lib.hellocharts.model.ColumnChartData;
-import lecho.lib.hellocharts.model.SubcolumnValue;
-import lecho.lib.hellocharts.util.ChartUtils;
-import lecho.lib.hellocharts.view.ColumnChartView;
+
 
 public class CellularStatsFragment extends BaseFragment implements OnResultCommandListener {
 	private static final String TAG = "CellularStatsFragment";
+
+
+	// chart colors:
+
+	private static final int COLOR_TX = Color.parseColor("#33B5E5");
+	private static final int COLOR_RX = Color.parseColor("#99CC00");
+
+
+	// data model:
 
 	private class UsageData {
 		public String date;
@@ -58,16 +71,95 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 	private long carTotalBytes;
 	private long appTotalBytes;
 
+	// UI:
+	BarChart mChartViewCar;
+	BarChart mChartViewApp;
+
 	// system services:
 	private ApiService mService;
 
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
 		createProgressOverlay(inflater, container, true);
-		return inflater.inflate(R.layout.fragment_cellular_stats, null);
+
+		View rootView = inflater.inflate(R.layout.fragment_cellular_stats, null);
+
+
+		//
+		// setup car chart:
+		//
+
+		XAxis xAxis;
+		YAxis yAxis;
+
+		mChartViewCar = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_car);
+		mChartViewCar.setDescription("");
+		mChartViewCar.setMaxVisibleValueCount(30);
+		mChartViewCar.setDrawValuesForWholeStack(false);
+		mChartViewCar.setPinchZoom(false);
+		mChartViewCar.setDrawBarShadow(false);
+		mChartViewCar.setDrawValueAboveBar(true);
+		mChartViewCar.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
+		mChartViewCar.setDrawGridBackground(false);
+		mChartViewCar.setDrawBorders(true);
+
+		xAxis = mChartViewCar.getXAxis();
+		xAxis.setTextColor(Color.WHITE);
+		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+		yAxis = mChartViewCar.getAxisLeft();
+		yAxis.setTextColor(Color.WHITE);
+		yAxis.setGridColor(Color.LTGRAY);
+		yAxis.setValueFormatter(new ValueFormatter() {
+			@Override
+			public String getFormattedValue(float v) {
+				return String.format("%.0f", v);
+			}
+		});
+
+		yAxis = mChartViewCar.getAxisRight();
+		yAxis.setEnabled(false);
+
+
+		//
+		// setup app chart:
+		//
+
+		mChartViewApp = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_app);
+		mChartViewApp.setDescription("");
+		mChartViewApp.setMaxVisibleValueCount(30);
+		mChartViewApp.setDrawValuesForWholeStack(false);
+		mChartViewApp.setPinchZoom(false);
+		mChartViewApp.setDrawBarShadow(false);
+		mChartViewApp.setDrawValueAboveBar(true);
+		mChartViewApp.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
+		mChartViewApp.setDrawGridBackground(false);
+		mChartViewApp.setDrawBorders(true);
+
+		xAxis = mChartViewApp.getXAxis();
+		xAxis.setTextColor(Color.WHITE);
+		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+
+		yAxis = mChartViewApp.getAxisLeft();
+		yAxis.setTextColor(Color.WHITE);
+		yAxis.setGridColor(Color.LTGRAY);
+		yAxis.setValueFormatter(new ValueFormatter() {
+			@Override
+			public String getFormattedValue(float v) {
+				return String.format("%.0f", v);
+			}
+		});
+
+		yAxis = mChartViewApp.getAxisRight();
+		yAxis.setEnabled(false);
+
+
+		return rootView;
 	}
-	
+
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
@@ -75,16 +167,19 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		activity.setTitle(R.string.CellularStats);
 	}
 
+
 	@Override
 	public void onServiceAvailable(ApiService pService) {
 		mService = pService;
 	}
+
 
 	@Override
 	public void update(CarData pCarData) {
 		// called after login / if new data is available
 		requestData();
 	}
+
 
 	// request data from server:
 	public void requestData() {
@@ -198,16 +293,11 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		// Data ready: show results
 
-		View rootView = getView();
-
-		ColumnChartView mChartViewCar;
-		ColumnChartData mChartDataCar;
-		ColumnChartView mChartViewApp;
-		ColumnChartData mChartDataApp;
-
 		int days = mUsageData.size();
 		float carMBPerMonth = carTotalBytes / days * 30 / 1000000;
 		float appMBPerMonth = appTotalBytes / days * 30 / 1000000;
+
+		View rootView = getView();
 
 		Ui.setValue(rootView, R.id.cellular_usage_info_car, getString(R.string.cellular_usage_info_car,
 				carMBPerMonth, days));
@@ -215,98 +305,81 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 				appMBPerMonth, days));
 
 
-		// Update graphs:
+		// Update charts:
 
 		UsageData day;
-		List<Column> columns;
-		List<SubcolumnValue> values;
 
+		ArrayList<String> xValues = new ArrayList<String>();
+		ArrayList<BarEntry> carValues = new ArrayList<BarEntry>();
+		ArrayList<BarEntry> appValues = new ArrayList<BarEntry>();
 
-		// Create axes:
-
-		Axis axisX = new Axis();
-		Axis axisY = new Axis().setHasLines(true);
-		axisX.setName(getString(R.string.chart_axis_date));
-		axisY.setName(getString(R.string.chart_axis_datavolume));
-
-		axisX.setHasTiltedLabels(true);
-		axisX.setMaxLabelChars(5);
-
-		List<AxisValue> axisValues;
-
-		axisValues = new ArrayList<AxisValue>();
 		for (int i = 0; i < mUsageData.size(); ++i) {
 			day = mUsageData.get(i);
-			axisValues.add(new AxisValue((float) i, day.date.substring(5).toCharArray()));
-		}
-
-		axisX.setValues(axisValues);
-
-
-		// Update car graph:
-
-		columns = new ArrayList<Column>();
-		for (int i = 0; i < mUsageData.size(); ++i) {
-
-			day = mUsageData.get(i);
-
-			values = new ArrayList<SubcolumnValue>();
-			values.add(new SubcolumnValue(
+			xValues.add(day.date.substring(5));
+			carValues.add(new BarEntry(new float[] {
 					Math.round(day.carTxBytes / 100) / 10,
-					ChartUtils.COLOR_BLUE));
-			values.add(new SubcolumnValue(
-					Math.round(day.carRxBytes / 100) / 10,
-					ChartUtils.COLOR_GREEN));
-
-			Column column = new Column(values);
-			column.setHasLabels(true);
-			column.setHasLabelsOnlyForSelected(true);
-			columns.add(column);
-		}
-
-		mChartDataCar = new ColumnChartData(columns);
-		mChartDataCar.setStacked(true);
-		mChartDataCar.setAxisXBottom(axisX);
-		mChartDataCar.setAxisYLeft(axisY);
-
-		// Load data into chart view:
-		mChartViewCar = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_car);
-		mChartViewCar.setColumnChartData(mChartDataCar);
-		mChartViewCar.setZoomType(ZoomType.HORIZONTAL);
-		mChartViewCar.setValueSelectionEnabled(true);
-
-
-		// Update app graph:
-
-		columns = new ArrayList<Column>();
-		for (int i = 0; i < mUsageData.size(); ++i) {
-
-			day = mUsageData.get(i);
-
-			values = new ArrayList<SubcolumnValue>();
-			values.add(new SubcolumnValue(
+					Math.round(day.carRxBytes / 100) / 10
+					}, i));
+			appValues.add(new BarEntry(new float[] {
 					Math.round(day.appTxBytes / 100) / 10,
-					ChartUtils.COLOR_BLUE));
-			values.add(new SubcolumnValue(
-					Math.round(day.appRxBytes / 100) / 10,
-					ChartUtils.COLOR_GREEN));
-
-			Column column = new Column(values);
-			column.setHasLabels(true);
-			column.setHasLabelsOnlyForSelected(true);
-			columns.add(column);
+					Math.round(day.appRxBytes / 100) / 10
+					}, i));
 		}
 
-		mChartDataApp = new ColumnChartData(columns);
-		mChartDataApp.setStacked(true);
-		mChartDataApp.setAxisXBottom(axisX);
-		mChartDataApp.setAxisYLeft(axisY);
 
-		// Load data into chart view:
-		mChartViewApp = (ColumnChartView) rootView.findViewById(R.id.cellular_usage_chart_app);
-		mChartViewApp.setColumnChartData(mChartDataApp);
-		mChartViewApp.setZoomType(ZoomType.HORIZONTAL);
-		mChartViewApp.setValueSelectionEnabled(true);
+		BarDataSet dataSet;
+		BarData data;
+		ArrayList<BarDataSet> dataSets;
+		Legend legend;
+		int stackColors[] = { COLOR_TX, COLOR_RX };
+		String stackLabels[] = { "Tx", "Rx" };
+
+		// ...car chart:
+
+		dataSet = new BarDataSet(carValues, getString(R.string.chart_axis_datavolume));
+		dataSet.setColors(stackColors);
+		dataSet.setStackLabels(stackLabels);
+		dataSets = new ArrayList<BarDataSet>();
+		dataSets.add(dataSet);
+
+		data = new BarData(xValues, dataSets);
+		//data.setValueTextColor(Color.WHITE);
+		//data.setValueTextSize(9f);
+		data.setDrawValues(false);
+
+		mChartViewCar.setData(data);
+		mChartViewCar.zoom(3.5f, 1f, 0f, 0f);
+		mChartViewCar.moveViewToX(mUsageData.size() - 1);
+
+		legend = mChartViewCar.getLegend();
+		legend.setTextColor(Color.WHITE);
+		legend.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+
+		mChartViewCar.invalidate();
+
+
+		// ...app chart:
+
+		dataSet = new BarDataSet(appValues, getString(R.string.chart_axis_datavolume));
+		dataSet.setColors(stackColors);
+		dataSet.setStackLabels(stackLabels);
+		dataSets = new ArrayList<BarDataSet>();
+		dataSets.add(dataSet);
+
+		data = new BarData(xValues, dataSets);
+		//data.setValueTextColor(Color.WHITE);
+		//data.setValueTextSize(9f);
+		data.setDrawValues(false);
+
+		mChartViewApp.setData(data);
+		mChartViewApp.zoom(3.5f, 1f, 0f, 0f);
+		mChartViewApp.moveViewToX(mUsageData.size()-1);
+
+		legend = mChartViewApp.getLegend();
+		legend.setTextColor(Color.WHITE);
+		legend.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+
+		mChartViewApp.invalidate();
 
 	}
 
