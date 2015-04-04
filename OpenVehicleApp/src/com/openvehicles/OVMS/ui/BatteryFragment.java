@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -312,6 +313,14 @@ public class BatteryFragment
 			case R.id.mi_reset_view:
 				packChart.fitScreen();
 				cellChart.fitScreen();
+				break;
+
+			case R.id.mi_help:
+				new AlertDialog.Builder(getActivity())
+						.setTitle(R.string.battery_btn_help)
+						.setMessage(Html.fromHtml(getString(R.string.battery_help)))
+						.setPositiveButton(android.R.string.ok, null)
+						.show();
 				break;
 
 			case R.id.mi_chk_volt:

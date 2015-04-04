@@ -307,6 +307,7 @@
     <string name="battery_menu">Options</string>
     <string name="battery_btn_get_data">Get data</string>
     <string name="battery_btn_reset_view">Reset zoom</string>
+    <string name="battery_btn_help">Info</string>
     <string name="battery_chk_volt">Show Volt</string>
     <string name="battery_chk_temp">Show Temp</string>
     <string name="battery_msg_loading_data">Loading data&#8230;</string>
@@ -319,5 +320,45 @@
     <string name="battery_data_volt">Volt (V)</string>
     <string name="battery_data_volt_min">Volt min (V)</string>
     <string name="battery_data_temp">Temp (°C)</string>
+    <string name="battery_help"><![CDATA[
+ 		<h1>Battery history</h1>
+
+		<h2>Basics</h2>
+		<p>The <b>firmware version</b> needs to support the <b>battery monitor</b> feature.
+		The charts are based on the record types <tt>RT-PWR-BattPack</tt> and <tt>RT-PWR-BattCell</tt>
+		(see Manual). The server will keep these for <b>24h</b>.</p>
+		<p>The <b>measurement resolution</b> is 5 mV on voltage and 1 °C on temperature.
+		The Twizy battery pack consists of 42 cells with layout 14S3P, distributed to 7 modules.
+		The system supports only distinct measurements of the 14 3P bundle voltages and the
+		7 module temperatures.</p>
+
+		<h2>Packet history</h2>
+		<p>The packet chart only displays times with data, so excludes inactive parking times.</p>
+		<p>The module sends updates to the server every <b>~60 seconds</b> during driving or
+		charging (while network/server connection is available). Extremes and max standard deviations
+		are collected continuously, current values are those at the time of the update sent.</p>
+		<p>On <b>switch on</b> of the Twizy and <b>start of charging</b>, the collected values
+		are reset, so at the end of a usage section these show the overall extremes that occurred
+		during a usage section.</p>
+		<p><u><b>Tipp</b></u>: to follow the minimum voltage line, click on it to highlight an entry,
+		then use the seek bar to move the marker.</p>
+
+		<h2>Cell status</h2>
+		<p>
+		&nbsp;&bull; lower end = minimum value<br>
+		&nbsp;&bull; upper end = current value (+text)<br>
+		&nbsp;&bull; filled box = bad<br>
+		&nbsp;&bull; bigger box = more deviation
+		</p>
+		<p>It\'s a candle stick chart. The <b>maximum value</b> shown is the
+		current value (<tt>volt_act</tt> / <tt>temp_act</tt>), the <b>minimum value</b> is
+		the smallest value measured (<tt>volt_min</tt> / <tt>temp_min</tt>) within the
+		current usage section.</p>
+		<p>The candle height reflects the <b>maximum deviation</b> measured.
+		A filled candle is used to display a "bad" deviation, i.e. higher
+		<b>voltage breakdown</b> or higher <b>temperature rise</b>.</p>
+		<p><u><b>Tipp</b></u>: to compare voltage details, select a cell and zoom in vertically
+		until you can clearly read the deviations of the other cells from the selection marker.</p>
+    ]]></string>
 
 </resources>

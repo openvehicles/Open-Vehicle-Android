@@ -30,6 +30,11 @@
 
             </group>
 
+            <item android:id="@+id/mi_help"
+                  android:showAsAction="never"
+                  android:icon="@android:drawable/ic_menu_help"
+                  android:title="@string/battery_btn_help"/>
+
         </menu>
     </item>
 

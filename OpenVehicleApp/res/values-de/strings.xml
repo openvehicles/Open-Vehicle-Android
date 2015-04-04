@@ -286,6 +286,7 @@
     <string name="battery_menu">Optionen</string>
     <string name="battery_btn_get_data">Daten abrufen</string>
     <string name="battery_btn_reset_view">Zoom rücksetzen</string>
+    <string name="battery_btn_help">Info</string>
     <string name="battery_chk_volt">Zeige Spg.</string>
     <string name="battery_chk_temp">Zeige Temp.</string>
     <string name="battery_msg_loading_data">Lade Daten&#8230;</string>
@@ -298,5 +299,50 @@
     <string name="battery_data_volt">Spg. (V)</string>
     <string name="battery_data_volt_min">min. Spg. (V)</string>
     <string name="battery_data_temp">Temp. (°C)</string>
+    <string name="battery_help"><![CDATA[
+        <h1>Akku-Statistik</h1>
+
+        <h2>Grundlage</h2>
+        <p>Die installierte <b>Firmware-Version</b> muss den <b>Batteriemonitor</b> enthalten.
+        Datenbasis sind die vom Batteriemonitor an den Server gesendeten Datensätze
+        <tt>RT-PWR-BattPack</tt> und <tt>RT-PWR-BattCell</tt> (siehe Manual). Die Haltezeit
+        der Daten auf dem Server beträgt <b>24h</b>.</p>
+        <p>Die <b>Messauflösung</b> beträgt 5 mV bei der Spannung und 1 °C bei der Temperatur.
+        Der Twizy hat einen Akku mit 42 Zellen im Layout 14S3P, verteilt auf 7 Module.
+        Systembedingt stehen nur die Spannungen der 14 3er-Bündel und die Temperaturen
+        der 7 Module einzeln zur Verfügung.</p>
+
+        <h2>Paketverlauf</h2>
+        <p>Der Paketverlauf zeigt nur die Zeitpunkte mit Daten an, also nicht die reinen
+        Parkzeiten.</p>
+        <p>Das Modul sendet während der Fahrt und beim Laden alle ca. <b>60 Sekunden</b>
+        ein Update an den Server (sofern eine Datenverbindung besteht). Die Extremwerte und
+        Maximal-Abweichungen werden laufend gesammelt, die aktuellen Werte sind der Stand
+        beim Senden des Updates.</p>
+        <p>Jeweils beim <b>Einschalten</b> des Twizy und beim Start der <b>Ladung</b> werden
+        die Sammelwerte zurückgesetzt, zum Ende eines Nutzungsabschnitts entsprechen diese
+        also den insgesamt darin aufgetretenen Extremwerten.</p>
+        <p><u><b>Tipp</b></u>: um den Verlauf der Minimalspannung zu verfolgen klick die Linie im
+        Paket-Chart an und verwende dann den Schieberegler um die Markierung auf der Linie
+        zu verschieben.</p>
+
+        <h2>Zellenstatus</h2>
+        <p>
+        &nbsp;&bull; unteres Ende = Minimalwert<br>
+        &nbsp;&bull; oberes Ende = aktueller Wert (+Text)<br>
+        &nbsp;&bull; gefüllter Kasten = schlecht<br>
+        &nbsp;&bull; größerer Kasten = stärkere Abweichung
+        </p>
+        <p>Das Chart ist ein Kerzendiagramm. Der dargestellte <b>Maximalwert</b> ist der
+        aktuelle Wert (<tt>volt_act</tt> / <tt>temp_act</tt>), der <b>Minimalwert</b> der
+        kleinste gemessene Wert (<tt>volt_min</tt> / <tt>temp_min</tt>) im aktuellen
+        Nutzungsabschnitt.</p>
+        <p>Die Höhe der Kerze stellt die maximale gemessene <b>Standardabweichung</b> dar.
+        Eine gefüllte Kerze bedeutet eine "schlechte" Abweichung, d.h. stärkerer
+        <b>Spannungseinbruch</b> oder stärkere <b>Erwärmung</b>.</p>
+        <p><u><b>Tipp</b></u>: die Spannungslagen kann man gut im Detail vergleichen wenn man
+        eine Zelle anwählt und den vertikalen Zoom so weit hochzieht, dass man die
+        Abweichungen der anderen Zellen von der Auswahl-Markierung ablesen kann.</p>
+    ]]></string>
 
 </resources>
