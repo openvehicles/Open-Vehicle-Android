@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui;
 
 import android.app.AlertDialog;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -18,6 +19,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.CandleData;
@@ -28,7 +30,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.renderer.ViewPortHandler;
+import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.github.mikephil.charting.utils.Highlight;
 import com.github.mikephil.charting.utils.ValueFormatter;
 import com.openvehicles.OVMS.R;
@@ -60,6 +62,8 @@ public class BatteryFragment
 	private static final String TAG = "BatteryFragment";
 
 	// data set colors:
+
+	private static final int COLOR_SECTION = Color.parseColor("#FFDDDD");
 
 	private static final int COLOR_SOC_LINE = Color.parseColor("#A04455FF");
 	private static final int COLOR_SOC_TEXT = Color.parseColor("#AAAAFF");
@@ -490,7 +494,7 @@ public class BatteryFragment
 			return;
 
 		ArrayList<BatteryData.PackStatus> packHistory = batteryData.packHistory;
-		BatteryData.PackStatus packStatus;
+		BatteryData.PackStatus packStatus, lastStatus;
 		SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
 
 
@@ -501,18 +505,37 @@ public class BatteryFragment
 		// create value arrays:
 
 		ArrayList<String> xValues = new ArrayList<String>();
+		ArrayList<LimitLine> xSections = new ArrayList<LimitLine>();
 		ArrayList<Entry> socValues = new ArrayList<Entry>();
 		ArrayList<Entry> voltValues = new ArrayList<Entry>();
 		ArrayList<Entry> voltMinValues = new ArrayList<Entry>();
 		ArrayList<Entry> tempValues = new ArrayList<Entry>();
 
+		lastStatus = null;
+
 		for (int i = 0; i < packHistory.size(); i++) {
+
 			packStatus = packHistory.get(i);
+
 			xValues.add(timeFmt.format(packStatus.timeStamp));
+
 			socValues.add(new Entry(packStatus.soc, i));
 			voltValues.add(new Entry(packStatus.volt, i));
 			voltMinValues.add(new Entry(packStatus.voltMin, i));
 			tempValues.add(new Entry(packStatus.temp, i));
+
+			// add section markers:
+			if (packStatus.isNewSection(lastStatus)) {
+				LimitLine l = new LimitLine(i);
+				l.setLabel(timeFmt.format(packStatus.timeStamp));
+				l.setLabelPosition(LimitLine.LimitLabelPosition.POS_RIGHT);
+				l.setTextColor(Color.WHITE);
+				l.setTextStyle(Paint.Style.FILL);
+				l.enableDashedLine(3f, 2f, 0f);
+				xSections.add(l);
+			}
+
+			lastStatus = packStatus;
 		}
 
 
@@ -569,7 +592,15 @@ public class BatteryFragment
 		data.setValueTextSize(9f);
 
 		packChart.setData(data);
+
+		XAxis xAxis = packChart.getXAxis();
+		xAxis.removeAllLimitLines();
+		for (int i=0; i < xSections.size(); i++) {
+			xAxis.addLimitLine(xSections.get(i));
+		}
+
 		packChart.getLegend().setTextColor(Color.WHITE);
+
 		packChart.invalidate();
 
 	}
@@ -611,41 +642,9 @@ public class BatteryFragment
 
 		// center highlight in chart viewport:
 		LineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
-		centerChartViewTo(packChart, index, dataSet.getYValForXIndex(index),
+		packChart.centerViewTo(index, dataSet.getYValForXIndex(index),
 				dataSet.getAxisDependency());
 
-	}
-
-
-	/**
-	 * This will move the center of the chart viewport to the specified x-index and y-value.
-	 * (Template: BarLineChartBase.moveViewTo)
-	 *
-	 * @param chart - the chart to center
-	 * @param xIndex
-	 * @param yValue
-	 * @param axis - which axis should be used as a reference for the y-axis
-	 */
-	public void centerChartViewTo(BarLineChartBase chart, int xIndex, float yValue, YAxis.AxisDependency axis) {
-
-		ViewPortHandler mViewPortHandler = chart.getViewPortHandler();
-
-		float valsInView = ((axis == YAxis.AxisDependency.LEFT)
-				? chart.getAxisLeft().mAxisRange
-				: chart.getAxisRight().mAxisRange)
-				/ mViewPortHandler.getScaleY();
-
-		float xsInView =
-				chart.getXAxis().getValues().size()
-						/ mViewPortHandler.getScaleX();
-
-		float[] pts = new float[] {
-				xIndex - xsInView / 2f,
-				yValue + valsInView / 2f
-		};
-
-		chart.getTransformer(axis).pointValuesToPixel(pts);
-		mViewPortHandler.centerViewPort(pts, chart);
 	}
 
 

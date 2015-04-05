@@ -38,6 +38,12 @@ public class BatteryData {
 		public long maxDrivePwr, maxRecupPwr;
 		public ArrayList<CellStatus> cells;
 
+		public boolean isNewSection(PackStatus previous) {
+			return ((previous != null) &&
+					(voltMin > previous.voltMin
+							|| tempMin > previous.tempMin
+							|| socMax < previous.socMax));
+		}
 	}
 
 	static public class CellStatus {
