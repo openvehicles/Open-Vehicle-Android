@@ -15,6 +15,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
  * Created by balzer on 07.03.15.
@@ -229,7 +230,8 @@ public class LogsData {
 		int recNr, recCnt;
 		String recType, timeStamp;
 		int entryNr;
-		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat serverTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		serverTime.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		for (int i=0; i < cmdSeries.size(); i++) {
 
@@ -261,7 +263,7 @@ public class LogsData {
 						keyTime.keyHour = Integer.parseInt(result[7]);
 						keyTime.keyMinSec = Integer.parseInt(result[8]);
 						try {
-							keyTime.timeStamp = isoFormat.parse(timeStamp);
+							keyTime.timeStamp = serverTime.parse(timeStamp);
 						} catch (Exception e) {
 							keyTime.timeStamp = new Date();
 						}

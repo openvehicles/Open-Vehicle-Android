@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 
 /**
@@ -124,7 +125,8 @@ public class BatteryData {
 		int recNr, recCnt;
 		String recType;
 		Date timeStamp;
-		SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		SimpleDateFormat serverTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		serverTime.setTimeZone(TimeZone.getTimeZone("UTC"));
 
 		PackStatus packStatus = null;
 		ArrayList<CellStatus> cells = null;
@@ -171,7 +173,7 @@ public class BatteryData {
 					recNr = Integer.parseInt(result[2]);
 					recCnt = Integer.parseInt(result[3]);
 					recType = result[4];
-					timeStamp = isoFormat.parse(result[5]);
+					timeStamp = serverTime.parse(result[5]);
 
 					Log.v(TAG, "processing recType " + recType + " entryNr " + recNr + "/" + recCnt);
 
