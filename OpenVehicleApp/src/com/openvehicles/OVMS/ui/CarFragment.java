@@ -1,12 +1,13 @@
 package com.openvehicles.OVMS.ui;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
+//import android.view.Menu;
+//import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -14,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.Menu;
+import com.actionbarsherlock.view.MenuInflater;
+import com.actionbarsherlock.view.MenuItem;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
@@ -25,6 +30,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	private static final String TAG = "CarFragment";
 
 	private CarData mCarData;
+	Menu optionsMenu;
+	AppPrefes appPrefes;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -32,6 +39,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// init car data:
 		mCarData = CarsStorage.get().getSelectedCarData();
 
+		appPrefes = new AppPrefes(getActivity(), "ovms");
+		
 		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_car, null);
 
@@ -46,8 +55,41 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			if (label != null)
 				label.setText(R.string.textPROFILE);
 		}
+		
+		setHasOptionsMenu(true);
 
 		return rootView;
+	}
+	
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
+		inflater.inflate(R.menu.car_details_options, menu);
+
+		optionsMenu = menu;
+
+		// set checkbox:
+		optionsMenu.findItem(R.id.mi_show_farhenheit)
+				.setChecked(appPrefes.getData("showfahrenheit").equals("on"));
+	}
+
+ 	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+
+		int menuId = item.getItemId();
+		boolean newState = !item.isChecked();
+
+		switch(menuId) {
+
+			case R.id.mi_show_farhenheit:
+				appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
+				item.setChecked(newState);
+//				after(false);
+				break;
+
+		}
+
+		return false;
 	}
 	
 	@Override
@@ -198,7 +240,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	}
 	
 	@Override
-	public boolean onContextItemSelected(MenuItem item) {
+	public boolean onContextItemSelected(android.view.MenuItem item) {
 		switch (item.getItemId()) {
 		case MI_WAKEUP:
 			sendCommand(R.string.msg_wakeup_car, "18", this);			

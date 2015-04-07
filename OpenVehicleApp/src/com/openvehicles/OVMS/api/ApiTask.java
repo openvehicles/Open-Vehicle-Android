@@ -26,6 +26,7 @@ import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
+import com.luttu.AppPrefes;
 
 public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private static final String TAG = "ApiTask";
@@ -39,6 +40,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private final OnUpdateStatusListener mListener;
 	private final Random sRnd = new Random();
 	private boolean isShuttingDown = false;
+	AppPrefes appPrefes;
 
 	private enum MsgType {
 		msgUpdate, msgError, msgCommand, msgLoginBegin, msgLoginComplete
@@ -283,6 +285,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		
 		char code = msg.charAt(0);
 		String cmd = msg.substring(1);
+		
+		appPrefes = new AppPrefes(mContext, "ovms");
 
 		if (code == 'E') {
 			// We have a paranoid mode message
@@ -494,7 +498,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_temp_pem_raw = Integer.parseInt(dataParts[3]);
 				mCarData.car_temp_motor_raw = Integer.parseInt(dataParts[4]);
 				mCarData.car_temp_battery_raw = Integer.parseInt(dataParts[5]);
-				if (mCarData.car_distance_units_raw.equals("M"))
+				if (appPrefes.getData("showfahrenheit").equals("on"))
 					{
 					mCarData.car_temp_pem = String.format("%.0f\u00B0F",(mCarData.car_temp_pem_raw*(9.0/5.0))+32.0);
 					mCarData.car_temp_motor = String.format("%.0f\u00B0F",(mCarData.car_temp_motor_raw*(9.0/5.0))+32.0);
@@ -521,7 +525,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					mCarData.car_parked_time = new Date((new Date()).getTime() - mCarData.car_parking_timer_raw * 1000);
 
 					mCarData.car_temp_ambient_raw = Integer.parseInt(dataParts[10]);
-					if (mCarData.car_distance_units_raw.equals("M"))
+					if (appPrefes.getData("showfahrenheit").equals("on"))
 						mCarData.car_temp_ambient = String.format("%.0f\u00B0F",(mCarData.car_temp_ambient_raw*(9.0/5.0))+32.0);
 					else
 						mCarData.car_temp_ambient = String.format("%d\u00B0C",mCarData.car_temp_ambient_raw);
@@ -629,7 +633,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				mCarData.car_tpms_fr_p = String.format("%.1f%s",mCarData.car_tpms_fr_p_raw, "psi"); 
 				mCarData.car_tpms_rl_p = String.format("%.1f%s",mCarData.car_tpms_rl_p_raw, "psi"); 
 				mCarData.car_tpms_rr_p = String.format("%.1f%s",mCarData.car_tpms_rr_p_raw, "psi"); 
-				if (mCarData.car_distance_units_raw.equals("M"))
+				if (appPrefes.getData("showfahrenheit").equals("on"))
 					{
 					mCarData.car_tpms_fl_t = String.format("%.0f%s",(mCarData.car_tpms_fl_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
 					mCarData.car_tpms_fr_t = String.format("%.0f%s",(mCarData.car_tpms_fr_t_raw*(9.0/5.0))+32.0, "\u00B0F"); 
