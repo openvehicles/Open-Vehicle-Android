@@ -340,7 +340,7 @@
 		<p>On <b>switch on</b> of the Twizy and <b>start of charging</b>, the collected values
 		are reset, so at the end of a usage section these show the overall extremes that occurred
 		during a usage section.</p>
-		<p><u><b>Tipp</b></u>: to follow the minimum voltage line, click on it to highlight an entry,
+		<p><u><b>Hint</b></u>: to follow the minimum voltage line, click on it to highlight an entry,
 		then use the seek bar to move the marker.</p>
 
 		<h2>Cell status</h2>
@@ -357,7 +357,7 @@
 		<p>The candle height reflects the <b>maximum deviation</b> measured.
 		A filled candle is used to display a "bad" deviation, i.e. higher
 		<b>voltage breakdown</b> or higher <b>temperature rise</b>.</p>
-		<p><u><b>Tipp</b></u>: to compare voltage details, select a cell and zoom in vertically
+		<p><u><b>Hint</b></u>: to compare voltage details, select a cell and zoom in vertically
 		until you can clearly read the deviations of the other cells from the selection marker.</p>
     ]]></string>
 
