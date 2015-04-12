@@ -256,6 +256,66 @@
 
 <string name="notifications_hint_cmdinput">SMS / MMI commando</string>
 <string name="err_failed_smscmd">Fout: onbekend commando / autorisatie fout</string>
+
+<string name="battery_title">Batterij geschiedenis</string> 
+<string name="battery_menu">Opties</string> 
+<string name="battery_btn_get_data">Haal gegevens op</string> 
+<string name="battery_btn_reset_view">Herstel zoom</string> 
+<string name="battery_btn_help">Help</string>
+<string name="battery_chk_volt">Geef Voltage weer</string> 
+<string name="battery_chk_temp">Geef Temperatuur weer</string> 
+<string name="battery_msg_loading_data">Gegevens laden&#8230;</string> 
+<string name="battery_msg_get_status">Opvragen batterij status&#8230;</string> 
+<string name="battery_msg_get_battpack">Opvragen pakket gegevens&#8230;</string> 
+<string name="battery_msg_get_battcell">Opvragen cel gegevens&#8230;</string> 
+<string name="battery_pack_description">Pakket geschiedenis</string> 
+<string name="battery_cell_description">Cel status</string> 
+<string name="battery_data_soc">SOC (%)</string> 
+<string name="battery_data_volt">Volt (V)</string> 
+<string name="battery_data_volt_min">Volt min (V)</string> 
+<string name="battery_data_temp">Temperatuur (°C)</string> 
+
+ <string name="battery_help"><![CDATA[
+ 		<h1>Batterij geschiedenis</h1>
+
+		<h2>Basics</h2>
+		<p>De <b>firmware versie</b> moet de <b>batterij monitor</b> feature ondersteunen.
+		De grafieken zijn gebaseerd op de record typen <tt>RT-PWR-BattPack</tt> en <tt>RT-PWR-BattCell</tt>
+		(zie Handleiding). De server bewaart deze voor <b>24 uur</b>.</p>
+		<p>De <b>meetwaarderesolutie</b> is 5 mV voor het voltage en 1 °C voor de temperatuur.
+		Het Twizy batterij pakket bestaat uit 42 cellen met layout 14S3P, verdeeld over 7 modulen.
+		Het systeem ondersteunt alleen de metingen van de 14 3P bundel voltages en de temperatuur van de 7 modulen.
+		</p>
+
+		<h2>Pakket history</h2>
+		<p>De pakket grafiek geeft alleen tijden met data weer en sluit hiermee inactieve parkeertijden uit.</p>
+		<p>De module stuurt tijdens het rijden en laden elke <b>60 seconden</b> updates naar de server (wanneer netwerk/server connectie beschikbaar is).
+		Extremen en max standaard deviaties worden voortdurend verzameld, actuele waarden zijn de waarden die gelden op het moment dat de update verzonden is.</p>
+		
+		<p>Zodra de Twizy  <b>aan gezet </b>wordt en bij de <b>start van het laden</b> worden de verzamelde waarden teruggezet, 
+		zodat aan het eind van een gebruikssectie de algemene extremen weergegeven worden van die betreffende sectie.</p>
+		<p><u><b>Tip</b></u>:Om de minimale voltage lijn te volgen, klik er op om te markeren en gebruik de zoekbalk om te positie te verplaatsen.</p>
+
+		<h2>Cel status</h2>
+		<p>
+		&nbsp;&bull; onderkant = minimale waarde<br>
+		&nbsp;&bull; bovenkant = huidige waarde (+tekst)<br>
+		&nbsp;&bull; gevulde box = slecht<br>
+		&nbsp;&bull; grotere box = grotere deviatie
+		</p>
+		<p>Het is een  candlestick grafiek. De <b>maximale waarde</b> die wordt weergegeven is de huidige waarde (<tt>volt_act</tt> / <tt>temp_act</tt>), de <b>minimale waarde</b> is
+		de kleinst gemeten waarde (<tt>volt_min</tt> / <tt>temp_min</tt>) binnen de huidige gebuikssessie.</p>
+		<p>De kaarshoogte reflecteerd de <b>maximale gemeten deviatie</b>.
+		Een gevulde kaars is een  "slechte" deviatie, bijvoorbeeld hogere
+		<b>voltage afname</b> of  hogere <b>temperatuursstijging</b>.</p>
+		<p><u><b>Tip</b></u>: Om voltage details te vergelijken, selecteer een  cel en zoom vertikaal in 
+		totdat de deviaties van de andere cellen duidelijk te lezen zijn.</p>
+    ]]></string>
+
+
+
+
+
     
 </resources>
 

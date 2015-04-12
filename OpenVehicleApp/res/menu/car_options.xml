@@ -6,4 +6,11 @@
           android:icon="@drawable/ic_action_chart"
           android:showAsAction="always"/>
 
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/mi_show_fahrenheit"
+            android:showAsAction="never"
+            android:title="@string/mi_car_details_temp" android:checked="false" android:checkable="true"/>
+    </group>
+
 </menu>
