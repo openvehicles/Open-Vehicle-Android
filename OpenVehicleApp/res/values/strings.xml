@@ -227,6 +227,8 @@
     <string name="mi_map_filter_connections">My plugs</string>
     <string name="mi_map_filter_range">My range</string>
     <string name="mi_map_settings">Settings</string>
+    
+    <string name="mi_car_details_temp">Fahrenheit</string>
 
     <string name="cargroup_title">Car groups</string>
     <string name="cargroup_name_hint">Group name</string>

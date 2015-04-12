@@ -219,6 +219,8 @@
     <string name="mi_map_filter_connections">Meine Anschlüsse</string>
     <string name="mi_map_filter_range">Meine Reichweite</string>
     <string name="mi_map_settings">Einstellungen</string>
+    
+    <string name="mi_car_details_temp">Fahrenheit</string>
 
     <string name="connections">Lade-Anschlüsse</string>
 
