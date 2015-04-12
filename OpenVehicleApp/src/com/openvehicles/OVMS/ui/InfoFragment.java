@@ -81,6 +81,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			}
 		});
 
+		setHasOptionsMenu(true);
+
 		return rootView;
 	}
 

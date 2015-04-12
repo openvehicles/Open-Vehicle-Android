@@ -361,4 +361,35 @@
 		until you can clearly read the deviations of the other cells from the selection marker.</p>
     ]]></string>
 
+
+    <string name="power_title">Power history</string>
+    <string name="power_menu">Options</string>
+    <string name="power_btn_get_data">Get data</string>
+    <string name="power_btn_reset_view">Reset zoom</string>
+    <string name="power_btn_help">Info</string>
+    <string name="power_chk_energy">Show energy</string>
+    <string name="power_chk_power">Show power</string>
+    <string name="power_msg_loading_data">Loading&#8230;</string>
+    <string name="power_msg_getting_gpslog">Retrieving GPS log&#8230;</string>
+
+    <string name="power_trip_description">Trip</string>
+    <string name="power_data_altitude">Altitude (m)</string>
+    <string name="power_data_speed">Speed (%1$s)</string>
+
+    <string name="power_power_description">Power (W)</string>
+    <string name="power_data_pwr_min">Min</string>
+    <string name="power_data_pwr_max">Max</string>
+    <string name="power_data_pwr_avg">Avg</string>
+
+    <string name="power_energy_description">Energy</string>
+    <string name="power_data_energy_used">Used (Wh)</string>
+    <string name="power_data_energy_recd">Recovered (Wh)</string>
+    <string name="power_data_energy_avg">Avg (Wh/%1$s)</string>
+
+    <string name="power_help"><![CDATA[
+ 		<h1>Power history</h1>
+ 		<p>TODO</p>
+    ]]></string>
+
+
 </resources>

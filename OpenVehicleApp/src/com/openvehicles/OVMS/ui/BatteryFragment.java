@@ -33,6 +33,7 @@ import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.github.mikephil.charting.utils.Highlight;
 import com.github.mikephil.charting.utils.ValueFormatter;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.BatteryData;
 import com.openvehicles.OVMS.entities.CarData;
@@ -62,8 +63,6 @@ public class BatteryFragment
 	private static final String TAG = "BatteryFragment";
 
 	// data set colors:
-
-	private static final int COLOR_SECTION = Color.parseColor("#FFDDDD");
 
 	private static final int COLOR_SOC_LINE = Color.parseColor("#A04455FF");
 	private static final int COLOR_SOC_TEXT = Color.parseColor("#AAAAFF");
@@ -95,9 +94,7 @@ public class BatteryFragment
 	private int highlightSetNr = -1;
 	private String highlightSetLabel = "";
 
-	private CheckBox chkVolt;
 	private boolean mShowVolt = true;
-	private CheckBox chkTemp;
 	private boolean mShowTemp = false;
 
 
@@ -107,6 +104,7 @@ public class BatteryFragment
 
 	private CarData mCarData;
 	private CmdSeries cmdSeries;
+	private AppPrefes appPrefes;
 
 
 	@Override
@@ -115,6 +113,16 @@ public class BatteryFragment
 		// Init data storage:
 
 		batteryData = new BatteryData();
+
+
+		// Load prefs:
+
+		appPrefes = new AppPrefes(getActivity(), "ovms");
+
+		mShowVolt = appPrefes.getData("battery_show_volt").equals("on");
+		mShowTemp = appPrefes.getData("battery_show_temp").equals("on");
+		if (!mShowVolt && !mShowTemp)
+			mShowVolt = true;
 
 
 		// Setup UI:
@@ -309,8 +317,8 @@ public class BatteryFragment
 			case R.id.mi_get_data:
 				cmdSeries = new CmdSeries(getService(), BatteryFragment.this)
 						.add(R.string.battery_msg_get_status, "206") // ensure non-empty history
-						.add(R.string.battery_msg_get_battpack, "32,RT-PWR-BattPack")
-						.add(R.string.battery_msg_get_battcell, "32,RT-PWR-BattCell")
+						.add(R.string.battery_msg_get_battpack, "32,RT-BAT-P")
+						.add(R.string.battery_msg_get_battcell, "32,RT-BAT-C")
 						.start();
 				break;
 
@@ -467,6 +475,11 @@ public class BatteryFragment
 	 */
 	private void dataFilterChanged() {
 
+		// save prefs:
+		appPrefes.SaveData("battery_show_volt", mShowVolt ? "on" : "off");
+		appPrefes.SaveData("battery_show_temp", mShowTemp ? "on" : "off");
+
+		// check data status:
 		if (!isPackValid())
 			return;
 

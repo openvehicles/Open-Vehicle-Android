@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@+id/power_menu"
+          android:showAsAction="ifRoom|withText"
+          android:icon="@android:drawable/ic_menu_more"
+          android:title="@string/power_menu">
+
+        <menu>
+
+            <item android:id="@+id/mi_get_data"
+              android:showAsAction="ifRoom"
+              android:title="@string/power_btn_get_data"
+              android:icon="@android:drawable/stat_sys_download" />
+
+            <item android:id="@+id/mi_reset_view"
+                  android:showAsAction="ifRoom"
+                  android:icon="@android:drawable/ic_menu_mylocation"
+                  android:title="@string/power_btn_reset_view"/>
+
+            <group android:checkableBehavior="all">
+
+                <item android:id="@+id/mi_chk_energy"
+                      android:showAsAction="ifRoom"
+                      android:title="@string/power_chk_energy"/>
+
+                <item android:id="@+id/mi_chk_power"
+                      android:showAsAction="ifRoom"
+                      android:title="@string/power_chk_power"/>
+
+            </group>
+
+            <item android:id="@+id/mi_help"
+                  android:showAsAction="never"
+                  android:icon="@android:drawable/ic_menu_help"
+                  android:title="@string/power_btn_help"/>
+
+        </menu>
+    </item>
+
+</menu>

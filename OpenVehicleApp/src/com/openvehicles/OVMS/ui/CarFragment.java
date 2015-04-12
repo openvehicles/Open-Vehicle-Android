@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.actionbarsherlock.view.MenuInflater;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
@@ -47,9 +49,39 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				label.setText(R.string.textPROFILE);
 		}
 
+		setHasOptionsMenu(true);
+
 		return rootView;
 	}
-	
+
+
+	@Override
+	public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.car_options, menu);
+	}
+
+	@Override
+	public void onPrepareOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		if (mCarData != null && mCarData.car_type != null) {
+			menu.findItem(R.id.mi_power_stats).setVisible(mCarData.car_type.equals("RT"));
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.mi_power_stats:
+				Bundle args = new Bundle();
+				BaseFragmentActivity.show(getActivity(), PowerFragment.class, args,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+			default:
+				return false;
+		}
+	}
+
+
 	@Override
 	public void update(CarData pCarData) {
 		mCarData = pCarData;

@@ -147,9 +147,9 @@ public class BatteryData {
 				continue;
 
 			// init:
-			if (cmd.command.equals("32,RT-PWR-BattPack")) {
+			if (cmd.command.equals("32,RT-BAT-P")) {
 				packHistory.clear();
-			} else if (cmd.command.equals("32,RT-PWR-BattCell")) {
+			} else if (cmd.command.equals("32,RT-BAT-C")) {
 				// check BattPack result:
 				if (packHistory.size() == 0)
 					continue;
@@ -183,26 +183,26 @@ public class BatteryData {
 
 					Log.v(TAG, "processing recType " + recType + " entryNr " + recNr + "/" + recCnt);
 
-					if (recType.equals("RT-PWR-BattPack")) {
+					if (recType.equals("RT-BAT-P")) {
 						try {
 							// create record:
 							packStatus = new PackStatus();
 							packStatus.timeStamp = timeStamp;
-							packStatus.voltAlert = Integer.parseInt(result[9]);
-							packStatus.tempAlert = Integer.parseInt(result[10]);
-							packStatus.soc = (float) Integer.parseInt(result[11]) / 100;
-							packStatus.socMin = (float) Integer.parseInt(result[12]) / 100;
-							packStatus.socMax = (float) Integer.parseInt(result[13]) / 100;
-							packStatus.volt = (float) Integer.parseInt(result[14]) / 100;
-							packStatus.voltMin = (float) Integer.parseInt(result[16]) / 100;
-							packStatus.voltMax = (float) Integer.parseInt(result[18]) / 100;
-							packStatus.temp = Integer.parseInt(result[20]);
-							packStatus.tempMin = Integer.parseInt(result[21]);
-							packStatus.tempMax = Integer.parseInt(result[22]);
-							packStatus.voltDevMax = (float) Integer.parseInt(result[23]) / 100;
-							packStatus.tempDevMax = Integer.parseInt(result[24]);
-							packStatus.maxDrivePwr = Integer.parseInt(result[25]);
-							packStatus.maxRecupPwr = Integer.parseInt(result[26]);
+							packStatus.voltAlert = Integer.parseInt(result[7]);
+							packStatus.tempAlert = Integer.parseInt(result[8]);
+							packStatus.soc = (float) Integer.parseInt(result[9]) / 100;
+							packStatus.socMin = (float) Integer.parseInt(result[10]) / 100;
+							packStatus.socMax = (float) Integer.parseInt(result[11]) / 100;
+							packStatus.volt = (float) Integer.parseInt(result[12]) / 10;
+							packStatus.voltMin = (float) Integer.parseInt(result[13]) / 10;
+							packStatus.voltMax = (float) Integer.parseInt(result[14]) / 10;
+							packStatus.temp = Integer.parseInt(result[15]);
+							packStatus.tempMin = Integer.parseInt(result[16]);
+							packStatus.tempMax = Integer.parseInt(result[17]);
+							packStatus.voltDevMax = (float) Integer.parseInt(result[18]) / 100;
+							packStatus.tempDevMax = Integer.parseInt(result[19]);
+							packStatus.maxDrivePwr = Integer.parseInt(result[20]) * 100;
+							packStatus.maxRecupPwr = Integer.parseInt(result[21]) * 100;
 
 							// store record:
 							packHistory.add(packStatus);
@@ -211,13 +211,14 @@ public class BatteryData {
 							// invalid record: skip
 							Log.e(TAG, "BattPack skip: " + e.getMessage());
 						}
-					} else if (recType.equals("RT-PWR-BattCell")) {
+					} else if (recType.equals("RT-BAT-C")) {
 						try {
 
 							nrCell = Integer.parseInt(result[6]);
 
 							// Pack record(s) complete?
-							// (while handles Pack records without Cell records)
+							// (while handles Pack records without Cell records,
+							//  3000 ms covers server timestamp offsets for cells)
 							while ((timeStamp.getTime() - packStatus.timeStamp.getTime()) > 3000) {
 								// set pack cells:
 								packStatus.cells = new ArrayList<CellStatus>(cells);
@@ -232,16 +233,16 @@ public class BatteryData {
 
 							// create new record:
 							cellStatus = new CellStatus();
-							cellStatus.voltAlert = Integer.parseInt(result[8]);
-							cellStatus.tempAlert = Integer.parseInt(result[9]);
-							cellStatus.volt = (float) Integer.parseInt(result[10]) / 1000;
-							cellStatus.voltMin = (float) Integer.parseInt(result[11]) / 1000;
-							cellStatus.voltMax = (float) Integer.parseInt(result[12]) / 1000;
-							cellStatus.voltDevMax = (float) Integer.parseInt(result[13]) / 1000;
-							cellStatus.temp = Integer.parseInt(result[14]);
-							cellStatus.tempMin = Integer.parseInt(result[15]);
-							cellStatus.tempMax = Integer.parseInt(result[16]);
-							cellStatus.tempDevMax = Integer.parseInt(result[17]);
+							cellStatus.voltAlert = Integer.parseInt(result[7]);
+							cellStatus.tempAlert = Integer.parseInt(result[8]);
+							cellStatus.volt = (float) Integer.parseInt(result[9]) / 1000;
+							cellStatus.voltMin = (float) Integer.parseInt(result[10]) / 1000;
+							cellStatus.voltMax = (float) Integer.parseInt(result[11]) / 1000;
+							cellStatus.voltDevMax = (float) Integer.parseInt(result[12]) / 1000;
+							cellStatus.temp = Integer.parseInt(result[13]);
+							cellStatus.tempMin = Integer.parseInt(result[14]);
+							cellStatus.tempMax = Integer.parseInt(result[15]);
+							cellStatus.tempDevMax = Integer.parseInt(result[16]);
 
 							// store record:
 							cells.set(nrCell-1, cellStatus);
@@ -259,7 +260,7 @@ public class BatteryData {
 			}
 
 			// no more results: finish
-			if (cmd.command.equals("32,RT-PWR-BattCell")) {
+			if (cmd.command.equals("32,RT-BAT-C")) {
 				try {
 					// set last cell collection into remaining pack records:
 					while (nrPack < packHistory.size()) {
