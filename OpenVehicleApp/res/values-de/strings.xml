@@ -59,6 +59,7 @@
     <string name="Server">Server</string>
     <string name="App">App</string>
     <string name="CAC">Kapazität</string>
+    <string name="Options">Optionen</string>
 
     <string name="lb_wakeup_car">Auto aufwecken</string>
 

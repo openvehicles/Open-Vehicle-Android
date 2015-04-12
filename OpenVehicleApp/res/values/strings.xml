@@ -60,6 +60,7 @@
     <string name="Info12V">12V</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
+    <string name="Options">Options</string>
 
     <string name="lb_wakeup_car">Wakeup Car</string>
 
