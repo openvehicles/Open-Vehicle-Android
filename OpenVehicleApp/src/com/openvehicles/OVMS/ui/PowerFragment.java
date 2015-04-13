@@ -337,6 +337,8 @@ public class PowerFragment
 		// get data of current car:
 		mCarData = CarsStorage.get().getSelectedCarData();
 
+		getSherlockActivity().invalidateOptionsMenu();
+
 		// schedule data loader:
 		showProgressOverlay(getString(R.string.power_msg_loading_data));
 		mHandler.postDelayed(new Runnable() {
