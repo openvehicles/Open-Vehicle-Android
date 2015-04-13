@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuInflater;
 import com.actionbarsherlock.view.MenuItem;
+import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
@@ -68,6 +69,8 @@ public class PowerFragment
 	// data storage:
 
 	private GPSLogData logData;
+
+	private ArrayList<GPSLogData.Entry> chartEntries;
 
 
 	// user interface:
@@ -303,12 +306,26 @@ public class PowerFragment
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+
 		inflater.inflate(R.menu.power_chart_options, menu);
+
 		optionsMenu = menu;
+
+		// configure checkbox items:
 		optionsMenu.findItem(R.id.mi_chk_power).setChecked(mShowPower);
 		optionsMenu.findItem(R.id.mi_chk_energy).setChecked(mShowEnergy);
 	}
 
+	@Override
+	public void onPrepareOptionsMenu(Menu menu) {
+		if (mCarData != null) {
+			// insert user distance units into menu titles:
+			optionsMenu.findItem(R.id.mi_power_zoom5).setTitle(
+					getString(R.string.power_btn_zoom5, mCarData.car_distance_units));
+			optionsMenu.findItem(R.id.mi_power_zoom10).setTitle(
+					getString(R.string.power_btn_zoom10, mCarData.car_distance_units));
+		}
+	}
 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -350,13 +367,21 @@ public class PowerFragment
 				cmdSeries = new CmdSeries(getService(), this)
 						.add(R.string.power_msg_getting_gpslog, "32,RT-GPS-Log")
 						.start();
-				break;
+				return true;
+
+			case R.id.mi_power_zoom5:
+				zoomOdometerRange(5);
+				return true;
+
+			case R.id.mi_power_zoom10:
+				zoomOdometerRange(10);
+				return true;
 
 			case R.id.mi_reset_view:
 				tripChart.fitScreen();
 				powerChart.fitScreen();
 				energyChart.fitScreen();
-				break;
+				return true;
 
 			case R.id.mi_help:
 				new AlertDialog.Builder(getActivity())
@@ -364,7 +389,7 @@ public class PowerFragment
 						.setMessage(Html.fromHtml(getString(R.string.power_help)))
 						.setPositiveButton(android.R.string.ok, null)
 						.show();
-				break;
+				return true;
 
 			case R.id.mi_chk_power:
 				mShowPower = newState;
@@ -374,7 +399,7 @@ public class PowerFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
-				break;
+				return true;
 
 			case R.id.mi_chk_energy:
 				mShowEnergy = newState;
@@ -384,11 +409,11 @@ public class PowerFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
-				break;
+				return true;
 
 		}
 
-		return false;
+		return super.onOptionsItemSelected(item);
 	}
 
 
@@ -520,6 +545,8 @@ public class PowerFragment
 		// Create value arrays:
 		//
 
+		chartEntries = new ArrayList<GPSLogData.Entry>();
+
 		ArrayList<String> xValues = new ArrayList<String>();
 		ArrayList<LimitLine> xSections = new ArrayList<LimitLine>();
 
@@ -549,6 +576,9 @@ public class PowerFragment
 
 			// check data distance from ref:
 			if (entry.isNewTimePoint(refEntry)) {
+
+				// X axis to log entry association:
+				chartEntries.add(entry);
 
 				//xLabel = String.format("%.0f", entry.getOdometer(units));
 				xLabel = timeFmt.format(entry.timeStamp);
@@ -776,6 +806,50 @@ public class PowerFragment
 
 	}
 
+
+	/**
+	 * Zoom to odometer range
+	 *
+	 * @param size -- size of range in user units (km/mi)
+	 */
+	private void zoomOdometerRange(int size) {
+
+		int start = 0, end = chartEntries.size()-1;
+		GPSLogData.Entry entry;
+		float odoEnd = 0;
+
+		// find last drive entry:
+
+		for (int i = chartEntries.size()-1; i >= 0; i--) {
+			entry = chartEntries.get(i);
+			if (entry.getOpStatus() == 1) {
+				odoEnd = entry.getOdometer(mCarData.car_distance_units_raw);
+				end = i;
+				break;
+			}
+		}
+
+		// find entry for (odoEnd - size):
+
+		for (int i = end-1; i >= 0; i--) {
+			entry = chartEntries.get(i);
+			if (entry.getOdometer(mCarData.car_distance_units_raw) <= (odoEnd - size)) {
+				start = i;
+				break;
+			}
+		}
+
+		// zoom charts:
+
+		float scaleX = (float) chartEntries.size() / (end - start + 1);
+
+		for (BarLineChartBase chart : new BarLineChartBase[] { tripChart, powerChart, energyChart } ) {
+			chart.fitScreen();
+			chart.zoom(scaleX, 1f, chart.getWidth() / 2f, chart.getHeight() / 2f);
+			chart.moveViewToX(start);
+		}
+
+	}
 
 }
 

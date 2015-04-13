@@ -328,7 +328,7 @@
 
 		<h2>Basics</h2>
 		<p>The <b>firmware version</b> needs to support the <b>battery monitor</b> feature.
-		The charts are based on the record types <tt>RT-PWR-BattPack</tt> and <tt>RT-PWR-BattCell</tt>
+		The charts are based on the record types <tt>RT-BAT-P</tt> and <tt>RT-BAT-C</tt>
 		(see Manual). The server will keep these for <b>24h</b>.</p>
 		<p>The <b>measurement resolution</b> is 5 mV on voltage and 1 °C on temperature.
 		The Twizy battery pack consists of 42 cells with layout 14S3P, distributed to 7 modules.
@@ -369,6 +369,8 @@
     <string name="power_menu">Options</string>
     <string name="power_btn_get_data">Get data</string>
     <string name="power_btn_reset_view">Reset zoom</string>
+    <string name="power_btn_zoom5">Last 5 %1$s</string>
+    <string name="power_btn_zoom10">Last 10 %1$s</string>
     <string name="power_btn_help">Info</string>
     <string name="power_chk_energy">Show energy</string>
     <string name="power_chk_power">Show power</string>
@@ -389,9 +391,50 @@
     <string name="power_data_energy_recd">Recovered (Wh)</string>
     <string name="power_data_energy_avg">Avg (Wh/%1$s)</string>
 
-    <string name="power_help"><![CDATA[
- 		<h1>Power history</h1>
- 		<p>TODO</p>
+    <string name="power_help" formatted="false"><![CDATA[
+        <h1>Power history</h1>
+
+        <h2>Basics</h2>
+        <p>The charts are based on the <tt>RT-GPS-Log</tt> records (see manual). The
+        server will keep these for <b>24h</b>.</p>
+        <p>The GPS log is updated <b>once per minute</b> by default. This can be raised
+        to <b>every 5 seconds</b>
+        by setting the streaming mode (feature #8) to 2.</p>
+        <p>The <b>altitude</b> measurement depends on the <b>GPS signal</b>. The other
+        measurements do not depend on GPS.</p>
+        <p><u>Note</u>: power and energy measurements are an interpretation of
+        undocumented CAN bus data, that may be incorrect and/or incomplete (see
+        manual).</p>
+
+        <h2>Trip</h2>
+        <p>The chart displays the <b>altitude</b> (GPS) and the <b>average speed</b> of
+        the trip. Inclines and high speeds result in high energy usage.</p>
+        <p>The vertical marker lines show the beginnings of <b>usage sections</b>
+        (driving / charging) along with their respective odometer values.</p>
+
+        <h2>Power</h2>
+        <p>The filled area displays the maximum and minimum <b>electrical power</b> (at
+        the battery) per <b>time section</b>, negative power =
+        recuperation/charging.</p>
+        <p>The red line shows the <b>average power</b> derived from the energy usage of
+        the <b>time section</b>.</p>
+        <p><u>Info</u>: the <b>mechanical motor power</b> calculates as <i>electrical
+        power x efficiency(controller+motor)</i>.
+        Combined efficiency is around ~75% to 95% depending on the current load
+        situation, ~90% on average.</p>
+
+        <h2>Energy usage</h2>
+        <p>The filled area displays the maximum and minimum <b>energy usage/gain</b> (at
+        the battery) per <b>time section</b>, negative usage =
+        recuperation/charging.</p>
+        <p>The yellow line shows the effective <b>energy consumption per km/Mi</b>
+        derived from the total energy usage and the distance driven. This is the higher,
+        the more energy is used and the less distance has been driven on a time
+        section.</p>
+        <p><u>Info</u>: total <b>usable capacity</b> of the battery is around <b>6100
+        Wh</b>. On charging, the energy stored calculates as <i>energy delivered x
+        efficiency(charger+battery)</i>. Combined charging efficiency will normally be
+        ~92%.</p>
     ]]></string>
 
 

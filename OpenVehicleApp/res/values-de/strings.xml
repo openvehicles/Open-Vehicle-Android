@@ -308,7 +308,7 @@
         <h2>Grundlage</h2>
         <p>Die installierte <b>Firmware-Version</b> muss den <b>Batteriemonitor</b> enthalten.
         Datenbasis sind die vom Batteriemonitor an den Server gesendeten Datensätze
-        <tt>RT-PWR-BattPack</tt> und <tt>RT-PWR-BattCell</tt> (siehe Manual). Die Haltezeit
+        <tt>RT-BAT-P</tt> und <tt>RT-BAT-C</tt> (siehe Manual). Die Haltezeit
         der Daten auf dem Server beträgt <b>24h</b>.</p>
         <p>Die <b>Messauflösung</b> beträgt 5 mV bei der Spannung und 1 °C bei der Temperatur.
         Der Twizy hat einen Akku mit 42 Zellen im Layout 14S3P, verteilt auf 7 Module.
@@ -347,5 +347,82 @@
         eine Zelle anwählt und den vertikalen Zoom so weit hochzieht, dass man die
         Abweichungen der anderen Zellen von der Auswahl-Markierung ablesen kann.</p>
     ]]></string>
+
+
+    <string name="power_title">Energie-Statistik</string>
+    <string name="power_menu">Optionen</string>
+    <string name="power_btn_get_data">Daten abrufen</string>
+    <string name="power_btn_reset_view">Zoom rücksetzen</string>
+    <string name="power_btn_zoom5">Letzte 5 %1$s</string>
+    <string name="power_btn_zoom10">Letzte 10 %1$s</string>
+    <string name="power_btn_help">Info</string>
+    <string name="power_chk_energy">Zeige Energie</string>
+    <string name="power_chk_power">Zeige Leistung</string>
+    <string name="power_msg_loading_data">Lade Daten&#8230;</string>
+    <string name="power_msg_getting_gpslog">Empfange GPS-Log&#8230;</string>
+
+    <string name="power_trip_description">Strecke</string>
+    <string name="power_data_altitude">Höhe (m)</string>
+    <string name="power_data_speed">Geschwindigkeit (%1$s)</string>
+
+    <string name="power_power_description">Leistung (W)</string>
+    <string name="power_data_pwr_min">Min.</string>
+    <string name="power_data_pwr_max">Max.</string>
+    <string name="power_data_pwr_avg">Durchschnitt</string>
+
+    <string name="power_energy_description">Energie</string>
+    <string name="power_data_energy_used">Verbrauch (Wh)</string>
+    <string name="power_data_energy_recd">Ertrag (Wh)</string>
+    <string name="power_data_energy_avg">Durchschnitt (Wh/%1$s)</string>
+
+    <string name="power_help" formatted="false"><![CDATA[
+        <h1>Energie-Statistik</h1>
+
+        <h2>Grundlage</h2>
+        <p>Datenbasis sind die vom Modul an den Server gesendeten Datensätze
+        <tt>RT-GPS-Log</tt> (siehe Manual). Die Haltezeit der Daten auf dem Server
+        beträgt <b>24h</b>.</p>
+        <p>Das GPS-Log wird im Standardfall <b>1x pro Minute</b> geschrieben. Das
+        Intervall kann durch Aktivierung des Streaming-Modus 2 (Feature #8) auf <b>5
+        Sekunden</b> erhöht werden.</p>
+        <p>Die <b>Höhenmessung</b> ist vom <b>GPS-Empfang</b> abhängig. Die anderen
+        Messwerte benötigen kein GPS-Signal.</p>
+        <p><u>Hinweis</u>: bei den Leistungs- und Energiemesswerten handelt es sich um
+        eine Interpretation der undokumentierten CAN-Daten, die evtl. ungenau oder
+        unvollständig ist (siehe Manual).</p>
+
+        <h2>Streckenverlauf</h2>
+        <p>Das Chart zeigt den Verlauf der <b>Höhe</b> (GPS) sowie der gefahrenen
+        <b>Durchschnittsgeschwindigkeit</b> an. Steigungen und hohe Geschwindigkeiten
+        wirken sich negativ auf den Verbrauch aus.</p>
+        <p>Die vertikalen roten Linien in den drei Charts zeigen die
+        <b>Nutzungsabschnitte</b> (Fahrten / Ladungen) mit den jeweiligen
+        Odometerständen an.</p>
+
+        <h2>Leistung</h2>
+        <p>Der gefüllte Bereich stellt die maximale und minimale <b>elektrische
+        Leistung</b> (ab Akku) pro <b>Zeitabschnitt</b> dar, negative Leistung =
+        Rekuperation/Ladung.</p>
+        <p>Die rote Linie zeigt die ermittelte <b>Durchschnittsleistung</b> auf Basis
+        des Energieverbrauchs des <b>Zeitabschnitts</b> an.</p>
+        <p><u>Info</u>: die <b>mechanische Motorleistung</b> ergibt sich aus
+        <i>elektrischer Leistung x Wirkungsgrad(Controller+Motor)</i>.
+        Je nach aktuellem Arbeitspunkt liegt der kombinierte Wirkungsgrad zwischen ~75%
+        und ~95%, im Schnitt bei ~90%.</p>
+
+        <h2>Energieverbrauch</h2>
+        <p>Der gefüllte Bereich stellt den maximalen und minimalen
+        <b>Energieverbrauch</b> (ab Akku) pro <b>Zeitabschnitt</b> dar, negativer
+        Verbrauch = Rekuperation/Ladung.</p>
+        <p>Die gelbe Linie zeigt den aus dem Gesamtverbrauch und der zurückgelegten
+        Strecke hochgerechneten <b>Kilometer- bzw. Meilenverbrauch des
+        Wegabschnitts</b> an. Dieser ist um so höher je mehr Energie verbraucht und je
+        weniger Strecke in dem Zeitabschnitt zurückgelegt wurde.</p>
+        <p><u>Info</u>: die gesamte <b>nutzbare Kapazität</b> des Akkus liegt bei rund
+        <b>6.100 Wh</b>. Bei der Aufladung ergibt sich die gespeicherte Energie aus
+        <i>zugeführter Energie x Wirkungsgrad(Ladegerät+Akku)</i>, i.d.R. liegt der
+        kombinierte Wirkungsgrad hier bei ~92%.</p>
+    ]]></string>
+
 
 </resources>

@@ -320,12 +320,12 @@ public class BatteryFragment
 						.add(R.string.battery_msg_get_battpack, "32,RT-BAT-P")
 						.add(R.string.battery_msg_get_battcell, "32,RT-BAT-C")
 						.start();
-				break;
+				return true;
 
 			case R.id.mi_reset_view:
 				packChart.fitScreen();
 				cellChart.fitScreen();
-				break;
+				return true;
 
 			case R.id.mi_help:
 				new AlertDialog.Builder(getActivity())
@@ -333,7 +333,7 @@ public class BatteryFragment
 						.setMessage(Html.fromHtml(getString(R.string.battery_help)))
 						.setPositiveButton(android.R.string.ok, null)
 						.show();
-				break;
+				return true;
 
 			case R.id.mi_chk_volt:
 				mShowVolt = newState;
@@ -343,7 +343,7 @@ public class BatteryFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
-				break;
+				return true;
 
 			case R.id.mi_chk_temp:
 				mShowTemp = newState;
@@ -353,11 +353,11 @@ public class BatteryFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
-				break;
+				return true;
 
 		}
 
-		return false;
+		return super.onOptionsItemSelected(item);
 	}
 
 

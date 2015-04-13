@@ -109,7 +109,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	@Override
 	public void update(CarData pCarData) {
 		mCarData = pCarData;
-		
+
+		getSherlockActivity().invalidateOptionsMenu();
+
 		updateLastUpdatedView(pCarData);
 		updateCarBodyView(pCarData);
 	}
