@@ -527,20 +527,15 @@ public class Database extends SQLiteOpenHelper {
 
 	public void addNotification(NotificationData notificationData) {
 		open();
-		addNotificationInt(notificationData);
-	}
-	private void addNotificationInt(NotificationData notificationData) {
 		addNotificationInt(notificationData, db);
 	}
-	
+
 	private void addNotificationInt(NotificationData notificationData, SQLiteDatabase db) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("nType", notificationData.Type);
 		contentValues.put("nTimestamp", isoDateTime.format(notificationData.Timestamp));
 		contentValues.put("nTitle", notificationData.Title);
 		contentValues.put("nMessage", notificationData.Message);
-		if(db == null)
-			throw new NullPointerException( "Open database first." );
 		db.insert("Notification", null, contentValues);
 	}
 
