@@ -291,9 +291,9 @@ La batterie de traction du Twizy se compose de 42 cellules organisées en 14S3P,
 Le système ne supporte les mesures indépendantes que des tensions des 42 ensembles et des températures des 7 modules</p>
 
 <h2>Historique des données</h2>
-<p>L'historique des données n'inclus que les périodes pendant lesquelles des données ont été reçues, ce qui exclu les périodes de stationnement</p>
-<p>Le module envoie des mises à jour au serveur toutes les <b>60 secondes</b> environ durant les périodes de charge ou de conduite (tant qu'une connexion au réseau est disponible). Les valeurs extrêmes et déviations sont collectées en continu, les valeurs de courant sont celles au moment de l'envoi de la mise à jour.</p>
-<p>À <b>l\'allumage</b> du Twizy et au <b>début de charge</b>, les valeurs collectées sont réinitialisées de façon à ce que les valeurs extrêmes soient celle de la période d'utilisation concernée.</p>
+<p>L\'historique des données n\'inclus que les périodes pendant lesquelles des données ont été reçues, ce qui exclu les périodes de stationnement</p>
+<p>Le module envoie des mises à jour au serveur toutes les <b>60 secondes</b> environ durant les périodes de charge ou de conduite (tant qu\'une connexion au réseau est disponible). Les valeurs extrêmes et déviations sont collectées en continu, les valeurs de courant sont celles au moment de l\'envoi de la mise à jour.</p>
+<p>À <b>l\'allumage</b> du Twizy et au <b>début de charge</b>, les valeurs collectées sont réinitialisées de façon à ce que les valeurs extrêmes soient celle de la période d\'utilisation concernée.</p>
 <p><u><b>Astuce</b></u>: pour suivre la courbe de tension minimale, cliquez dessus pour afficher une donnée, puis utilisez la barre de recherche pour déplacer le pointeur.</p>
 
 <h2>Statut des cellules</h2>
@@ -303,12 +303,12 @@ Le système ne supporte les mesures indépendantes que des tensions des 42 ensem
 &nbsp;&bull; carré rempli = mauvais<br>
 &nbsp;&bull; carré plus gros = plus de déviation
 </p>
-<p>C'est un graphique en chandeliers. La <b>valeur maximale</b> affichée est la valeur courante (<tt>volt_act</tt> / <tt>temp_act</tt>), la <b>valeur minimale</b> est
-la plus basse des valeurs mesurée (<tt>volt_min</tt> / <tt>temp_min</tt>) pendant la période d'utilisation.</p>
+<p>C\'est un graphique en chandeliers. La <b>valeur maximale</b> affichée est la valeur courante (<tt>volt_act</tt> / <tt>temp_act</tt>), la <b>valeur minimale</b> est
+la plus basse des valeurs mesurée (<tt>volt_min</tt> / <tt>temp_min</tt>) pendant la période d\'utilisation.</p>
 <p>La hauteur de la chandelle reflète la <b>déviation maximale</b> mesurée.
 Une chandelle pleine représente une "mauvaise" déviation, i.e. plus forte
 <b>chute de tension</b> ou <b>montée en température</b>.</p>
-<p><u><b>Astuce</b></u>: pour comparer les détails de tensions, sélectionnez une cellule et zoomez verticalement jusqu'à ce que vous puissiez lire clairement les déviations des autres cellules de la sélection.</p>    ]]></string>
+<p><u><b>Astuce</b></u>: pour comparer les détails de tensions, sélectionnez une cellule et zoomez verticalement jusqu\'à ce que vous puissiez lire clairement les déviations des autres cellules de la sélection.</p>    ]]></string>
   <string name="power_title">Historique de puissance</string>
   <string name="power_menu">Options</string>
   <string name="power_btn_get_data">Récupérer les données</string>
@@ -339,28 +339,28 @@ Une chandelle pleine représente une "mauvaise" déviation, i.e. plus forte
 <p>Le journal des positions GPS est mis à jour <b>une fois par minute</b> par défaut. Ce réglage peut être modifié à <b>une fois toutes les 5 secondes</b>
 en activant le mode streaming (régler le marqueur de fonctionnalité #8 à 2).</p>
 <p>Les mesures d\'<b>altitude</b> dépendent du <b>signal GPS</b>. Les autres mesures ne dépendent pas du GPS.</p>
-<p><u>Note</u>: les mesures de puissance et d'énergie sont une extrapolation 
+<p><u>Note</u>: les mesures de puissance et d\'énergie sont une extrapolation
 de données non documentées circulant sur le bus CAN, qui peuvent être incomplètes et/ou incorrectes (voir documentation).</p>
 
 <h2>Trajet</h2>
 <p>Le graphique affiche l\'<b>altitude</b> (GPS) et la <b>vitesse moyenne</b> du
-trajet. Les côtes et hautes vitesses provoquent une consommation d'énergie plus élevée.</p>
-<p>Les marqueurs verticaux indiquent le début de chaque <b>période d'usage</b>
-(conduite / charge) associées à la valeur de l'odomètre au moment qu'ils indiquent.</p>
+trajet. Les côtes et hautes vitesses provoquent une consommation d\'énergie plus élevée.</p>
+<p>Les marqueurs verticaux indiquent le début de chaque <b>période d\'usage</b>
+(conduite / charge) associées à la valeur de l\'odomètre au moment qu\'ils indiquent.</p>
 
 <h2>Puissance</h2>
-<p>La surface pleine indique la <b>puissance électrique</b> maximale et minimale (au niveau de la batterie) par <b>période de temps</b>, une valeur négative indique une récupération d'énergie ou une période de charge.</p>
-<p>La ligne rouge indique la <b>puissance moyenne</b> dérivée de la consommation d'énergie de la <b>période de temps</b>.</p>
+<p>La surface pleine indique la <b>puissance électrique</b> maximale et minimale (au niveau de la batterie) par <b>période de temps</b>, une valeur négative indique une récupération d\'énergie ou une période de charge.</p>
+<p>La ligne rouge indique la <b>puissance moyenne</b> dérivée de la consommation d\'énergie de la <b>période de temps</b>.</p>
 <p><u>Info</u>: la <b>puissance mécanique au moteur</b> se calcule ainsi : <i>puissance électrique * efficacité (contrôleur+moteur)</i>.
-L'efficacité combinée est comprise entre ~75% à 95% en fonction des conditions de roulage
-, pour une valeur moyenne de l'ordre de ~90%.</p>
+L\'efficacité combinée est comprise entre ~75% à 95% en fonction des conditions de roulage
+, pour une valeur moyenne de l\'ordre de ~90%.</p>
 
 <h2>Consommation énergétique</h2>
-<p>La surface pleine indique la <b>consommation ou récupération d'énergie</b> maximale et minimale (au niveau de la batterie) par <b>période de temps</b>, une valeur négative indique une récupération d'énergie ou une période de charge.</p>
+<p>La surface pleine indique la <b>consommation ou récupération d\'énergie</b> maximale et minimale (au niveau de la batterie) par <b>période de temps</b>, une valeur négative indique une récupération d\'énergie ou une période de charge.</p>
 <p>La ligne jaune indique la <b>consommation par km/Mi</b>
-dérivée de la consommation totale et de la distance parcourue. Une valeur élevée correspond à une plus forte consommation d'énergie et/ou une plus faible distance parcourue sur une période de temps.</p>
-<p><u>Info</u>: la <b>capacité utilisable</b> totale de la batterie est d'approximativement <b>6100
-Wh</b>. Lors de la charge, l'énergie stockée est calculée ainsi : <i>énergie fournie (à la prise) x
-efficacité (chargeur+batterie)</i>. L'efficacité combinée de la charge devrait être de
+dérivée de la consommation totale et de la distance parcourue. Une valeur élevée correspond à une plus forte consommation d\'énergie et/ou une plus faible distance parcourue sur une période de temps.</p>
+<p><u>Info</u>: la <b>capacité utilisable</b> totale de la batterie est d\'approximativement <b>6100
+Wh</b>. Lors de la charge, l\'énergie stockée est calculée ainsi : <i>énergie fournie (à la prise) x
+efficacité (chargeur+batterie)</i>. L\'efficacité combinée de la charge devrait être de
 ~92%.</p>    ]]></string>
 </resources>
