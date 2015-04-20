@@ -7,7 +7,11 @@
     <string name="LastUpdated" formatted="false">mise à jour: %1$tF %1$tT</string>
     <string name="SOC">%s%%</string>
     <string name="AddCar">+</string>
+<!-- Use android.R.string.cancel istead R.string.Cancel
+	Use "@android:string/cancel" istead "@string/Cancel"
+
     <string name="Cancel">Annuler</string>
+-->
     <string name="Delete">Supprimer</string>
     <string name="Save">Enregister</string>
     <string name="Send">Envoyer</string>
@@ -19,8 +23,12 @@
     <string name="UserPass">Mot de passe utilisateur(Mode Paranoïa)</string>
     <string name="Quit">Quitter l\'application</string>
     <string name="Edit">Modifier</string>
+<!-- Use android.R.string.yes istead R.string.Yes
+	Use "@android:string/yes" istead "@string/Yes"
+	
     <string name="Yes">Oui</string>
     <string name="No">Non</string>
+-->
     <string name="ClearNotifications">Effacer les notifications</string>
     <string name="VehicleImage">Image du véhicule</string>
     <string name="btnAddCar">Ajouter</string>

@@ -263,7 +263,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting)
 				.setView(content)
-				.setNegativeButton(R.string.Cancel, null)
+				.setNegativeButton(android.R.string.cancel, null)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 							@Override
@@ -329,7 +329,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting_twizy)
 				.setView(dialogView)
-				.setNegativeButton(R.string.Cancel, null)
+				.setNegativeButton(android.R.string.cancel, null)
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 							@Override

@@ -7,7 +7,11 @@
     <string name="LastUpdated" formatted="false">Oppdatert: %1$tD %1$tT</string>
     <string name="SOC">%s%%</string>
     <string name="AddCar">+</string>
+<!-- Use android.R.string.cancel istead R.string.Cancel
+	Use "@android:string/cancel" istead "@string/Cancel"
+
     <string name="Cancel">Avbryt</string>
+-->
     <string name="Delete">Slett</string>
     <string name="Save">Lagre</string>
     <string name="Send">Send</string>
@@ -19,8 +23,12 @@
     <string name="UserPass">Bruker Passord (Paranoid Modus)</string>
     <string name="Quit">Avslutt Program</string>
     <string name="Edit">Redigere</string>
+<!-- Use android.R.string.yes istead R.string.Yes
+	Use "@android:string/yes" istead "@string/Yes"
+	
     <string name="Yes">Ja</string>
     <string name="No">Nei</string>
+-->
     <string name="ClearNotifications">Slett Melding</string>
     <string name="VehicleImage">Kjøretøybilde</string>
     <string name="btnAddCar">Legg Til Bil</string>

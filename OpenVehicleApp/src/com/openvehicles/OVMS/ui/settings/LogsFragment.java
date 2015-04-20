@@ -390,7 +390,7 @@ public class LogsFragment extends BaseFragment
 				new AlertDialog.Builder(getActivity())
 						.setTitle(R.string.logs_btn_get)
 						.setView(content)
-						.setNegativeButton(R.string.Cancel, null)
+						.setNegativeButton(android.R.string.cancel, null)
 						.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 									@Override
@@ -457,7 +457,7 @@ public class LogsFragment extends BaseFragment
 				new AlertDialog.Builder(getActivity())
 						.setTitle(R.string.logs_btn_reset)
 						.setView(content)
-						.setNegativeButton(R.string.Cancel, null)
+						.setNegativeButton(android.R.string.cancel, null)
 						.setPositiveButton(android.R.string.ok,
 								new DialogInterface.OnClickListener() {
 									@Override

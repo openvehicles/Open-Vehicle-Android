@@ -96,8 +96,8 @@ public class CarEditorFragment extends SherlockFragment {
 	private void delete() {
 		new AlertDialog.Builder(getActivity())
 			.setMessage(R.string.msg_delete_this_car)
-			.setNegativeButton(R.string.No, null)
-			.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
+			.setNegativeButton(android.R.string.no, null)
+			.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
 					CarsStorage.get().getStoredCars().remove(mEditPosition);

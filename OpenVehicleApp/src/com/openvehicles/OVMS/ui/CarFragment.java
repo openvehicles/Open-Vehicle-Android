@@ -177,7 +177,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					break; // no wakeup support for Twizy
 				menu.setHeaderTitle(R.string.lb_wakeup_car);
 				menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
-				menu.add(R.string.Cancel);
+				menu.add(android.R.string.cancel);
 				break;
 
 			case R.id.tabCarImageHomelink:
@@ -192,7 +192,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				menu.add(0, MI_HL_01, 0, "1");
 				menu.add(0, MI_HL_02, 0, "2");
 				menu.add(0, MI_HL_03, 0, "3");
-				menu.add(R.string.Cancel);
+				menu.add(android.R.string.cancel);
 				break;
 		}
 	}

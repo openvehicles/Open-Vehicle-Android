@@ -54,7 +54,7 @@ public final class Ui {
 		AlertDialog dialog = new AlertDialog.Builder(pContext)
 			.setMessage(pTitle)
 			.setView(view)
-			.setNegativeButton(R.string.Cancel, null)
+			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(pButtonResId, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
@@ -90,7 +90,7 @@ public final class Ui {
 		AlertDialog dialog = new AlertDialog.Builder(pContext)
 			.setMessage(pTitle)
 			.setView(view)
-			.setNegativeButton(R.string.Cancel, null)
+			.setNegativeButton(android.R.string.cancel, null)
 			.setPositiveButton(pButtonResId, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {

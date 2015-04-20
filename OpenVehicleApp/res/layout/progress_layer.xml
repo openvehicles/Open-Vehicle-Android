@@ -68,7 +68,7 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/Cancel"
+            android:text="@android:string/cancel"
             android:id="@+id/progress_cancel"
             android:layout_gravity="center_horizontal"
             />

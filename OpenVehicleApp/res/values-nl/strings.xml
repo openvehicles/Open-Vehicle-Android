@@ -7,7 +7,11 @@
     <string name="LastUpdated" formatted="false">Bijgewerkt: %1$tD %1$tT</string>
     <string name="SOC">%s%%</string>
     <string name="AddCar">+</string>
+<!-- Use android.R.string.cancel istead R.string.Cancel
+	Use "@android:string/cancel" istead "@string/Cancel"
+
     <string name="Cancel">Annuleren</string>
+-->
     <string name="Delete">Verwijderen</string>
     <string name="Save">Bewaren</string>
     <string name="Send">Zenden</string>
@@ -19,8 +23,12 @@
     <string name="UserPass">Gebruikerswachtwoord (Paranoid Mode)</string>
     <string name="Quit">Verlaat Applicatie</string>
     <string name="Edit">Wijzigen</string>
+<!-- Use android.R.string.yes istead R.string.Yes
+	Use "@android:string/yes" istead "@string/Yes"
+	
     <string name="Yes">Ja</string>
     <string name="No">Nee</string>
+-->
     <string name="ClearNotifications">Verwijder Merdingen</string>
     <string name="VehicleImage">Voertuig Afbeelding</string>
     <string name="btnAddCar">Voertuig Toevoegen</string>

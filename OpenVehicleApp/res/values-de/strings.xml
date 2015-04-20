@@ -7,7 +7,11 @@
     <string name="LastUpdated" formatted="false">Letztes Update: %1$tD %1$tT</string>
     <string formatted="false" name="SOC">%s%%</string>
     <string name="AddCar">+</string>
+<!-- Use android.R.string.cancel istead R.string.Cancel
+	Use "@android:string/cancel" istead "@string/Cancel"
+
     <string name="Cancel">Abbrechen</string>
+-->
     <string name="Delete">Entfernen</string>
     <string name="Save">Speichern</string>
     <string name="Send">Absenden</string>
@@ -19,8 +23,12 @@
     <string name="UserPass">Benutzer Passwort (Paranoid Modus)</string>
     <string name="Quit">App beenden</string>
     <string name="Edit">Bearbeiten</string>
+<!-- Use android.R.string.yes istead R.string.Yes
+	Use "@android:string/yes" istead "@string/Yes"
+	
     <string name="Yes">Ja</string>
     <string name="No">Nein</string>
+-->
     <string name="ClearNotifications">Benachrichtigungen löschen</string>
     <string name="VehicleImage">Fahrzeug-Bild</string>
     <string name="btnAddCar">Auto hinzufügen</string>
