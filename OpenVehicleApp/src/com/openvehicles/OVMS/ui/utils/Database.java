@@ -169,7 +169,7 @@ public class Database extends SQLiteOpenHelper {
 
 				// copy to db:
 				for (int i=0; i < notifications.size(); i++) {
-					addNotificationInt(notifications.get(i));
+					addNotificationInt(notifications.get(i), db);
 				}
 				Log.d(TAG, String.format("Added %d notifications to table.", notifications.size()));
 
@@ -529,8 +529,11 @@ public class Database extends SQLiteOpenHelper {
 		open();
 		addNotificationInt(notificationData);
 	}
-
 	private void addNotificationInt(NotificationData notificationData) {
+		addNotificationInt(notificationData, db);
+	}
+	
+	private void addNotificationInt(NotificationData notificationData, SQLiteDatabase db) {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("nType", notificationData.Type);
 		contentValues.put("nTimestamp", isoDateTime.format(notificationData.Timestamp));
