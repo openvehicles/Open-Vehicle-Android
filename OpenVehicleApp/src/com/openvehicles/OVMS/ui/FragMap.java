@@ -46,7 +46,8 @@ import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
-		afterasytask, OnClickListener, Settings.UpdateMap {
+		afterasytask, OnClickListener, Settings.UpdateMap,
+		pl.mg6.android.maps.extensions.GoogleMap.OnMyLocationButtonClickListener {
 	private static final String TAG = "FragMap";
 
 	private GoogleMap map;
@@ -95,6 +96,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.setOnInfoWindowClickListener(this);
     	map.getUiSettings().setRotateGesturesEnabled(false); // Disable two-finger rotation gesture
 		map.moveCamera(CameraUpdateFactory.zoomTo(15));
+        map.setMyLocationEnabled(true);
+        map.setOnMyLocationButtonClickListener(this);
 		// setUpClusteringViews();
 
 		setHasOptionsMenu(true);
@@ -344,9 +347,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				Configuration.ORIENTATION_UNDEFINED);
 	}
 
+	private static LatLng mlatLng;
 
 	@Override
 	public void update(CarData pCarData) {
+		mlatLng = new LatLng(pCarData.car_latitude, pCarData.car_longitude);
 		mCarData = pCarData;
 		update();
 	}
@@ -462,5 +467,17 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		// update markers:
 		after(false);
 	}
+	
+    @Override
+    public boolean onMyLocationButtonClick() {
+    	
+		if(mlatLng != null)
+			map.moveCamera(CameraUpdateFactory.newLatLngZoom(mlatLng, 18));
+//		else Toast.makeText(getActivity(), R.string.Undefined_location, Toast.LENGTH_SHORT).show();//Location of a vehicle is not defined
+    	
+        // Return false so that we don't consume the event and the default behavior still occurs
+        // (the camera animates to the user's current position).
+        return true;//false;
+    }
 
 }
