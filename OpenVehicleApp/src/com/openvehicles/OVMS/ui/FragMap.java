@@ -393,10 +393,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (flag) {
 			map.moveCamera(CameraUpdateFactory.newLatLngZoom(MELBOURNE, 15));
 			flag = false;
-		} else if (autotrack) {
+		}
+/*		
+		else if (autotrack) {
 			map.moveCamera(CameraUpdateFactory.newLatLng(MELBOURNE));
 		}
-
+*/
 		// update range circles:
 
 		Log.i(TAG, "update: adding range circles:"
