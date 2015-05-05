@@ -83,9 +83,8 @@ import com.openvehicles.OVMS.utils.OnClickPositiveButton;
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		afterasytask, OnClickListener, Settings.UpdateMap
 		, UpdateclustLoggedPath
-		, pl.mg6.android.maps.extensions.GoogleMap.OnMyLocationButtonClickListener
 		, pl.mg6.android.maps.extensions.GoogleMap.OnMapClickListener
-{
+		, pl.mg6.android.maps.extensions.GoogleMap.OnMyLocationButtonClickListener {
 	private static final String TAG = "FragMap";
 
 	private String mstrError;
@@ -1038,6 +1037,7 @@ calendar.get(Calendar.HOUR_OF_DAY);
         map.setOnMyLocationButtonClickListener(this);
 		map.moveCamera(CameraUpdateFactory.zoomTo(15));
         map.setOnMapClickListener(this);
+		map.setOnMyLocationButtonClickListener(this);
         
         //I see
         //
@@ -2168,7 +2168,6 @@ Log.d(TAG, MyElement.getName() + " exit");
 	public void update(CarData pCarData) {
 		Log.d(TAG, "Car on map: " + pCarData.car_latitude + " lng"
 				+ pCarData.car_longitude);
-		
 		mlatLng = new LatLng(pCarData.car_latitude, pCarData.car_longitude);
 		mCarData = pCarData;
 		update();
@@ -2341,10 +2340,7 @@ Log.d(TAG, MyElement.getName() + " exit");
     public boolean onMyLocationButtonClick() {
     	
 		if(mlatLng != null)
-		{
-//			map.moveCamera(CameraUpdateFactory.newLatLngZoom(mlatLng, 18));
 			map.moveCamera(CameraUpdateFactory.newLatLng(mlatLng));
-		}
 		else Toast.makeText(getActivity(), R.string.Undefined_location, Toast.LENGTH_SHORT).show();//Location of a vehicle is not defined
 		
         // Return false so that we don't consume the event and the default behavior still occurs
