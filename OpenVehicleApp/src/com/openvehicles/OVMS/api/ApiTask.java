@@ -21,11 +21,14 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
+import com.openvehicles.OVMS.utils.MyElement;
+import com.openvehicles.OVMS.utils.MyException;
 
 public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private static final String TAG = "ApiTask";
@@ -35,13 +38,20 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private PrintWriter mOutputstream;
 	private BufferedReader mInputstream;
 	private boolean isLoggedIn = false;
+	
+	//for debugging
+	private int mnRetrieve24hourLogData = 0;
+	
 	private final CarData mCarData;
 	private final OnUpdateStatusListener mListener;
 	private final Random sRnd = new Random();
-	private boolean isShuttingDown = false;
+	
+	//I think, I can use AsyncTask.isCancelled() function instead isShuttingDown. I need to test it.
+	//Andrej
+	private boolean isShuttingDown = true;
 
 	private enum MsgType {
-		msgUpdate, msgError, msgCommand, msgLoginBegin, msgLoginComplete
+		msgUpdate, msgError, msgErrorToast, msgCommand, msgCommandRetrieve24hourLogData, msgLoginBegin, msgLoginComplete
 	}
 	
 	public ApiTask(CarData pCarData, OnUpdateStatusListener pListener) {
@@ -56,9 +66,11 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	
 	@Override
 	protected void onProgressUpdate(Object... pParam) {
+//Log.d("MyLine", MyElement.getName() + " mListener = " + mListener + " state = " + (MsgType) pParam[0]);
 		if (mListener == null) return;
 		
 		MsgType state = (MsgType) pParam[0];
+//Log.d("MyLine", MyElement.getName() + " state = " + state);
 		switch (state) {
 		case msgUpdate:
 			mListener.onUpdateStatus();
@@ -72,70 +84,98 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		case msgError:
 			mListener.onServerSocketError((Throwable)pParam[1]);
 			break;
+		case msgErrorToast:
+			mListener.onServerSocketErrorToast((Throwable)pParam[1]);
+			break;
 		case msgCommand:
 			mListener.onResultCommand((String)pParam[1]);
+			break;
+		case msgCommandRetrieve24hourLogData:
+			mListener.onResultCommandRetrieve24hourLogData((String)pParam[1]);
+			
+			mnRetrieve24hourLogData--;
+//Log.d("MyLine", MyElement.getName() + " mnRetrieve24hourLogData = " + mnRetrieve24hourLogData);
+			
 			break;
 		}
 	}
 
 	@Override
 	protected Void doInBackground(Void... params) {
-		String rx, msg;
-
-		while (!isShuttingDown) {
+		boolean boToast = false;
+		while(true)
+		{
 			try {
-				// (re-)open socket connection
-				connInit();
-
+				connInit(boToast);
+				if(mSocket == null)
+					return null;
+	
+				String rx, msg;
 				while (mSocket.isConnected()) {
-					// read & decrypt message
+					if (!mInputstream.ready()) {
+						String strError = "Read from " + mCarData.sel_server + " faled! Input stream is not ready."; 
+						Log.e(TAG, MyElement.getName() + " " + strError);
+						publishProgress(MsgType.msgError, new Exception(strError));
+						mSocket.close();
+						mSocket = null;
+						return null;
+					}
 					rx = mInputstream.readLine().trim();
 					msg = new String(mRxCipher.update(Base64.decode(rx, 0))).trim();
 					Log.d(TAG, String.format("RX: %s (%s)", msg, rx));
-
-					if (msg.substring(0, 5).equals("MP-0 ")) {
-						// is valid message (for protocol version 0):
-						handleMessage(msg.substring(5));
+	//if(msg.contains("c33,"))
+	//	Log.d("MyLine", String.format("RX: %s (%s)", msg, rx));
+					
+					int start = 5;//the offset of the first character of the command
+					if(msg.length() <= start)
+					{
+						String strError = " msg.length() <= " + start + " msg:" + msg + "\n\nProbably connection to server was lost. Ignore this response.";
+						Log.e("MyLine", MyElement.getName() + strError);
+					}
+					if (msg.substring(0, start).equals("MP-0 ")) {
+						
+						handleMessage(msg.substring(start));
 					} else {
 						Log.d(TAG, "Unknown protection scheme");
-						// sleep for 100 ms to prevent DoS by invalid data
-						try {
-							Thread.sleep(100);
-						} catch (InterruptedException e) {
-							// ignore
-						}
 					}
+					// short pause after receiving message
+					try {
+						Thread.sleep(100, 0);
+					} catch (InterruptedException e) {}
 				}
-
-				// reconnect if not shutting down:
-				continue;
-
 			} catch (SocketException e) {
 				// connection lost, attempt to reconnect
+				Log.e("MyLine", MyElement.getName() + " SocketException: " + e.getMessage());
 				try {
+if(mnRetrieve24hourLogData != 0)
+{
+	//throw new MyException(MyElement.getName() + " mnRetrieve24hourLogData != 0");
+	Log.d("MyLine", MyElement.getName() + " mnRetrieve24hourLogData = " + mnRetrieve24hourLogData);
+}
 					mSocket.close();
 					mSocket = null;
 				} catch (Exception ex) {
-					// ignore
 				}
-				continue;
-
+				if (!isShuttingDown)
+				{
+					publishProgress(MsgType.msgErrorToast, e);
+//					connInit();
+				}
+				else break;
 			} catch (IOException e) {
-				// reader closed or I/O error
+				Log.e("MyLine", MyElement.getName() + " IOException: " + e.getMessage());
 				e.printStackTrace();
 				publishProgress(MsgType.msgError, e);
 				break;
-
 			} catch (Exception e) {
-				// other error
+				Log.e("MyLine", MyElement.getName() + " Exception: " + e.getMessage());
 				e.printStackTrace();
-				publishProgress(MsgType.msgError, e);
-				break;
-
+//				break;
 			}
+			boToast = true;
 		}
 
-		Log.d(TAG, "Terminating AsyncTask");
+		Log.d("MyLine", MyElement.getName() + " exit.");
 		return null;
 	}
 	
@@ -145,6 +185,12 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		Log.d(TAG, msg);
 	}
 
+	//For debugging
+	public void socketClose() throws IOException
+	{
+		mSocket.close();
+	}
+	
 	public void connClose() {
 		try {
 			Log.d(TAG, "connClose() requested");
@@ -164,15 +210,33 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			return false;
 		}
 
-		try {
-			mOutputstream.println(Base64.encodeToString(mTxCipher.update(command.getBytes()), Base64.NO_WRAP));
-		} catch (Exception e) {
-			publishProgress(MsgType.msgError, e);
+		AsyncTask.Status status = getStatus();
+		String strError;
+		switch(status)
+		{
+		case PENDING://Indicates that the task has not been executed yet.
+			strError = "task has not been executed yet";
+			break;
+		case RUNNING://Indicates that the task is running.
+			try {
+				mOutputstream.println(Base64.encodeToString(mTxCipher.update(command.getBytes()), Base64.NO_WRAP));
+			} catch (Exception e) {
+				publishProgress(MsgType.msgError, e);
+			}
+			return true;
+		case FINISHED://Indicates that {@link AsyncTask#onPostExecute} has finished.
+			strError = "task has finished";
+			break;
+		default:
+			strError = "unknown task status: " + status;
+			break;
 		}
-		return true;
+		throw new MyException(MyElement.getName() + " Invalid status of ApiTask: " + strError);
+//		return true;
 	}
 	
-	private void connInit() {
+	private void connInit(boolean boToast)
+	{
 		isLoggedIn = false;
 		publishProgress(MsgType.msgLoginBegin);
 		
@@ -191,89 +255,136 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		}
 
 		byte[] client_token = client_tokenString.getBytes();
-		try {
-			Mac client_hmac = Mac.getInstance("HmacMD5");
-			javax.crypto.spec.SecretKeySpec sk = new javax.crypto.spec.SecretKeySpec(
-					shared_secret.getBytes(), "HmacMD5");
-			client_hmac.init(sk);
-			byte[] hashedBytes = client_hmac.doFinal(client_token);
-			String client_digest = Base64.encodeToString(hashedBytes, Base64.NO_WRAP);
-
-			mSocket = new Socket(mCarData.sel_server, 6867);
-
-			mOutputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
-			Log.d(TAG, String.format("TX: MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
-
-			mOutputstream.println(String.format("MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
-
-			mInputstream = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
-
-			// get server welcome message
-			String[] serverWelcomeMsg = null;
+		while(true)
+		{
+			String strError;
 			try {
-				serverWelcomeMsg = mInputstream.readLine().trim().split("[ ]+");
-			} catch (Exception e) {
-				Log.e(TAG, "ERROR response server welcome message", e);
-				publishProgress(MsgType.msgError, e);
+				if(isCancelled())
+					return;
+				Mac client_hmac = Mac.getInstance("HmacMD5");
+				javax.crypto.spec.SecretKeySpec sk = new javax.crypto.spec.SecretKeySpec(
+						shared_secret.getBytes(), "HmacMD5");
+				client_hmac.init(sk);
+				byte[] hashedBytes = client_hmac.doFinal(client_token);
+				String client_digest = Base64.encodeToString(hashedBytes, Base64.NO_WRAP);
+	
+				mSocket = new Socket(mCarData.sel_server, 6867);
+	
+				mOutputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
+				Log.d(TAG, String.format("TX: MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
+	
+				mOutputstream.println(String.format("MP-A 0 %s %s %s", client_tokenString, client_digest, vehicleID));
+	
+				mInputstream = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+	
+				// get server welcome message
+/*				
+				if (!mInputstream.ready()) {
+					strError = "Open " + mCarData.sel_server + " faled! Input stream is not ready."; 
+					Log.e("MyLine", MyElement.getName() + " " + strError);
+					publishProgress(MsgType.msgError, new Exception(strError));
+					mSocket.close();
+					mSocket = null;
+					return;
+				}
+*/				
+				String[] serverWelcomeMsg = null;
+				try {
+					String strLine = mInputstream.readLine();
+					if(strLine == null)
+					{
+						strError = "ERROR response server welcome message. Inputstream.readLine() == null";
+						Log.e("MyLine", MyElement.getName() + strError);
+						publishProgress(MsgType.msgError, new Exception(strError));
+						mSocket.close();
+						mSocket = null;
+						return;
+						
+					}
+					serverWelcomeMsg = strLine.trim().split("[ ]+");
+				} catch (Exception e) {
+					Log.e("MyLine", MyElement.getName() + "ERROR response server welcome message", e);
+					publishProgress(MsgType.msgError, e);
+					mSocket.close();
+					mSocket = null;
+					return;
+				}
+				Log.d(TAG, String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1],
+						serverWelcomeMsg[2], serverWelcomeMsg[3]));
+	//Log.d("MyLine", String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1], serverWelcomeMsg[2], serverWelcomeMsg[3]));
+	
+				String server_tokenString = serverWelcomeMsg[2];
+				byte[] server_token = server_tokenString.getBytes();
+				byte[] server_digest = Base64.decode(serverWelcomeMsg[3], 0);
+	
+				if (!Arrays.equals(client_hmac.doFinal(server_token), server_digest)) {
+					// server hash failed
+					Log.d(TAG, String.format(
+							"Server authentication failed. Expected %s Got %s",
+							Base64.encodeToString(client_hmac
+									.doFinal(serverWelcomeMsg[2].getBytes()),
+									Base64.NO_WRAP), serverWelcomeMsg[3]));
+				} else {
+					Log.d(TAG, "Server authentication OK.");
+				}
+	
+				// generate client_key
+				String server_client_token = server_tokenString + client_tokenString;
+				byte[] client_key = client_hmac.doFinal(server_client_token.getBytes());
+	
+				Log.d(TAG, String.format("Client version of the shared key is %s - (%s) %s",
+						server_client_token, toHex(client_key).toLowerCase(),
+						Base64.encodeToString(client_key, Base64.NO_WRAP)));
+	
+				// generate ciphers
+				mRxCipher = Cipher.getInstance("RC4");
+				mRxCipher.init(Cipher.DECRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
+	
+				mTxCipher = Cipher.getInstance("RC4");
+				mTxCipher.init(Cipher.ENCRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
+	
+				// prime ciphers
+				String primeData = "";
+				for (int cnt = 0; cnt < 1024; cnt++) primeData += "0";
+	
+				mRxCipher.update(primeData.getBytes());
+				mTxCipher.update(primeData.getBytes());
+	
+				Log.i(TAG, String.format("Connected to %s. Ciphers initialized. Listening...", mCarData.sel_server));
+	
+				//OLD loginComplete();
+				isLoggedIn = true;
+				if(boToast)
+					publishProgress(MsgType.msgLoginComplete);
 				return;
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+//				publishProgress(boToast ? MsgType.msgErrorToast : MsgType.msgError, e);
+				strError = e.getMessage();
+			} catch (IOException e) {
+				e.printStackTrace();
+//				publishProgress(boToast ? MsgType.msgErrorToast : MsgType.msgError, e);
+				strError = e.getMessage();
+			} catch (NullPointerException e) {
+				// notifyServerSocketError(e);
+				e.printStackTrace();
+				strError = e.getMessage();
+			} catch (Exception e) {
+				e.printStackTrace();
+				strError = e.getMessage();
 			}
-			Log.d(TAG, String.format("RX: %s %s %s %s", serverWelcomeMsg[0], serverWelcomeMsg[1],
-					serverWelcomeMsg[2], serverWelcomeMsg[3]));
-
-			String server_tokenString = serverWelcomeMsg[2];
-			byte[] server_token = server_tokenString.getBytes();
-			byte[] server_digest = Base64.decode(serverWelcomeMsg[3], 0);
-
-			if (!Arrays.equals(client_hmac.doFinal(server_token), server_digest)) {
-				// server hash failed
-				Log.d(TAG, String.format(
-						"Server authentication failed. Expected %s Got %s",
-						Base64.encodeToString(client_hmac
-								.doFinal(serverWelcomeMsg[2].getBytes()),
-								Base64.NO_WRAP), serverWelcomeMsg[3]));
-			} else {
-				Log.d(TAG, "Server authentication OK.");
+			publishProgress(boToast ? MsgType.msgErrorToast : MsgType.msgError, new Exception(strError));
+			boToast = true;
+//			mSocket.close();
+			mSocket = null;
+			Log.e("MyLine", MyElement.getName() + strError);
+			try {
+				Thread.sleep(10000, 0);//Wait ten seconds and try to connect again
+			} catch (InterruptedException e)
+			{
+				Log.e("MyLine", MyElement.getName() + e.getMessage());
 			}
-
-			// generate client_key
-			String server_client_token = server_tokenString + client_tokenString;
-			byte[] client_key = client_hmac.doFinal(server_client_token.getBytes());
-
-			Log.d(TAG, String.format("Client version of the shared key is %s - (%s) %s",
-					server_client_token, toHex(client_key).toLowerCase(),
-					Base64.encodeToString(client_key, Base64.NO_WRAP)));
-
-			// generate ciphers
-			mRxCipher = Cipher.getInstance("RC4");
-			mRxCipher.init(Cipher.DECRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
-
-			mTxCipher = Cipher.getInstance("RC4");
-			mTxCipher.init(Cipher.ENCRYPT_MODE, new javax.crypto.spec.SecretKeySpec(client_key, "RC4"));
-
-			// prime ciphers
-			String primeData = "";
-			for (int cnt = 0; cnt < 1024; cnt++) primeData += "0";
-
-			mRxCipher.update(primeData.getBytes());
-			mTxCipher.update(primeData.getBytes());
-
-			Log.i(TAG, String.format("Connected to %s. Ciphers initialized. Listening...", mCarData.sel_server));
-
-			//OLD loginComplete();
-			isLoggedIn = true;
-			publishProgress(MsgType.msgLoginComplete);
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-			publishProgress(MsgType.msgError, e);
-		} catch (IOException e) {
-			e.printStackTrace();
-			publishProgress(MsgType.msgError, e);
-		} catch (NullPointerException e) {
-			// notifyServerSocketError(e);
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		} 
+		}
 	}
 	
 	private void handleMessage(String msg) {
@@ -405,25 +516,6 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			if (dataParts.length >= 19) {
 				mCarData.car_CAC = Double.parseDouble(dataParts[18]);
 			}
-			if (dataParts.length >= 27) {
-				mCarData.car_chargefull_minsremaining = Integer.parseInt(dataParts[19]);
-				mCarData.car_chargelimit_minsremaining = Integer.parseInt(dataParts[20]);
-				mCarData.car_chargelimit_rangelimit_raw = Integer.parseInt(dataParts[21]);
-				mCarData.car_chargelimit_rangelimit = String.format("%d%s",
-						mCarData.car_chargelimit_rangelimit_raw, mCarData.car_distance_units);
-				mCarData.car_chargelimit_soclimit = Integer.parseInt(dataParts[22]);
-				mCarData.car_coolingdown = Integer.parseInt(dataParts[23]);
-				mCarData.car_cooldown_tbattery = Integer.parseInt(dataParts[24]);
-				mCarData.car_cooldown_timelimit = Integer.parseInt(dataParts[25]);
-				mCarData.car_chargeestimate = Integer.parseInt(dataParts[26]);
-			}
-			if (dataParts.length >= 30) {
-				mCarData.car_chargelimit_minsremaining_range = Integer.parseInt(dataParts[27]);
-				mCarData.car_chargelimit_minsremaining_soc = Integer.parseInt(dataParts[28]);
-				mCarData.car_max_idealrange_raw = Integer.parseInt(dataParts[29]);
-				mCarData.car_max_idealrange = String.format("%d%s",
-						mCarData.car_max_idealrange_raw, mCarData.car_distance_units);
-			}
 
 			Log.v(TAG, "Notify Vehicle Status Update: " + mCarData.sel_vehicleid);
 			
@@ -508,9 +600,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					}
 				
 				mCarData.car_tripmeter_raw = Integer.parseInt(dataParts[6]);
-				mCarData.car_tripmeter = String.format("%.1f%s",(float)mCarData.car_tripmeter_raw/10,mCarData.car_distance_units);
+				mCarData.car_tripmeter = String.format("%d%s",mCarData.car_tripmeter_raw,mCarData.car_distance_units);
 				mCarData.car_odometer_raw = Integer.parseInt(dataParts[7]);
-				mCarData.car_odometer = String.format("%.1f%s",(float)mCarData.car_odometer_raw/10,mCarData.car_distance_units);
+				mCarData.car_odometer = String.format("%d%s",mCarData.car_odometer_raw,mCarData.car_distance_units);
 				mCarData.car_speed_raw = Integer.parseInt(dataParts[8]);
 				mCarData.car_speed = String.format("%d%s", mCarData.car_speed_raw,mCarData.car_speed_units);
 				
@@ -551,12 +643,6 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					dataField = Integer.parseInt(dataParts[15]);
 					mCarData.car_doors4_raw = dataField;
 					mCarData.car_alarm_sounding = ((dataField & 0x02) == 0x02);
-				}
-				if (dataParts.length >= 18) {
-					mCarData.car_12vline_ref = Double.parseDouble(dataParts[16]);
-					dataField = Integer.parseInt(dataParts[17]);
-					mCarData.car_doors5_raw = dataField;
-					mCarData.car_charging_12v = ((dataField & 0x10) == 0x10);
 				}
 
 				publishProgress(MsgType.msgUpdate);
@@ -661,7 +747,15 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		}
 		case 'c': {
 			Log.i(TAG, "c MSG Validated");
-			publishProgress(MsgType.msgCommand, cmd);
+			MsgType msgType = MsgType.msgCommand;
+			if(cmd.indexOf("33,") == 0)
+				//cmd = "33,0,58,223,L,2014-11-13 03:35:52,47.288552,-123.054592,165,25,1,120"
+				msgType = MsgType.msgCommandRetrieve24hourLogData;
+			
+			mnRetrieve24hourLogData++;
+//Log.d("MyLine", MyElement.getName() + " mnRetrieve24hourLogData = " + mnRetrieve24hourLogData);
+
+			publishProgress(msgType, cmd);
 			break;
 		}
 		
@@ -676,7 +770,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	public interface OnUpdateStatusListener {
 		public void onUpdateStatus();
 		public void onServerSocketError(Throwable e);
+		public void onServerSocketErrorToast(Throwable e);
 		public void onResultCommand(String pCmd);
+		public void onResultCommandRetrieve24hourLogData(String pCmd);
 		public void onLoginBegin();
 		public void onLoginComplete();
 	}

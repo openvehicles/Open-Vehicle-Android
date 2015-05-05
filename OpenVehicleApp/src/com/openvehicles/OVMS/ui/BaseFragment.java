@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui;
 
 import android.app.Activity;
 import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -12,6 +13,7 @@ import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
+import com.openvehicles.OVMS.utils.MyElement;
 
 import java.util.HashMap;
 
@@ -80,6 +82,9 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 			mProgressOverlay.hide();
 	}
 
+	private static final String TAG = "OVMS";
+	
+	private BaseApi mBaseApi;
 
 	@Override
 	public void onStart() {
@@ -132,9 +137,38 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 		return getView().findViewById(pResId);
 	}
 
+	// Commands and expected responses for message types "C" and "c".
+	// See "Commands and Expected Responses" header of the
+	// https://github.com/openvehicles/Open-Vehicle-Monitoring-System/blob/master/docs/OVMS_Protocol.docx
+	// for details. 
 	public void sendCommand(int pResIdMessage, String pCommand,
 							OnResultCommandListener pOnResultCommandListener) {
 		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListener);
+		try
+		{
+			if(mBaseApi == null)
+				mBaseApi = new BaseApi();
+			mBaseApi.sendCommand(pResIdMessage, pCommand, pOnResultCommandListener);
+		}
+		catch (Exception e)
+		{
+			Log.e(TAG, MyElement.getName() + " " + e);
+		}
+	}
+	
+	// Commands and expected responses for retrieve 24 hour log data
+	public void sendCommandRetrieve24hourLogData(int pResIdMessage, String pCommand,
+			OnResultCommandListener pOnResultCommandListener) {
+		try
+		{
+			if(mBaseApi == null)
+				mBaseApi = new BaseApi();
+			mBaseApi.sendCommandRetrieve24hourLogData(pResIdMessage, pCommand, pOnResultCommandListener);
+		}
+		catch (Exception e)
+		{
+			Log.e(TAG, MyElement.getName() + " " + e);
+		}
 	}
 
 	public void sendCommand(String pMessage, String pCommand,
@@ -172,10 +206,12 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 	}
 
 	public ApiService getService() {
-		Activity activity = getActivity();
+//		Activity activity = getActivity();
+		Activity activity = BaseApi.getActivity();
 		if (activity instanceof ApiActivity) {
 			return ((ApiActivity) activity).getService();
 		}
+		Log.e("MyLine", MyElement.getName() + " return null");
 		return null;
 	}
 

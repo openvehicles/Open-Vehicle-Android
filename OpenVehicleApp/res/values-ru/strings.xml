@@ -1,0 +1,414 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Мой автомобиль</string>
+    <string name="Loading">Пожалуйста подождите</string>
+    <string name="Settings">Настройки</string>
+    <string name="Range" formatted="false">Диапазон: %s (%s приблизительно)</string>
+    <string name="LastUpdated" formatted="false">Обновлено: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+<!-- Use android.R.string.cancel istead R.string.Cancel
+	Use "@android:string/cancel" istead "@string/Cancel"
+
+    <string name="Cancel">Отменить</string>
+-->
+    <string name="Delete">Удалить</string>
+    <string name="Save">Сохранить</string>
+    <string name="Send">Отправить</string>
+    <string name="Error">Ошибка</string>
+    <string name="Set">Настройка</string>
+    <string name="Control">Управление</string>
+    <string name="ServerNameOrIP">Адрес сервера (Имя или IP)</string>
+    <string name="NetPass">Пароль сервера</string>
+    <string name="UserPass">Пароль пользователя (Режим недоверия)</string>
+    <string name="Quit">Выйти из приожения</string>
+    <string name="Edit">Редактировать</string>
+<!-- Use android.R.string.yes istead R.string.Yes
+	Use "@android:string/yes" istead "@string/Yes"
+	
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+-->
+    <string name="ClearNotifications">Очистить уведомления</string>
+    <string name="VehicleImage">Изображение автомобиля</string>
+    <string name="btnAddCar">Добавить машину</string>
+    <string name="btnCenterMap">Центр карты</string>
+    <string name="ImageParking">Парковка автомобиля</string>
+    <string name="SysWarning">Системное сообщение</string>
+    <string name="LockIdle">Замок автомобиля</string>
+    <string name="SignalStrength">Уровень сигнала</string>
+    <string name="ChargerPlug">Разъем зарядного устройства</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
+    <string name="DefaultMode">ОБЫЧНЫЙ</string>
+    <string name="ChargingOverlay">Зарядка</string>
+    <string name="BatteryOverlay">Аккумулятор</string>
+    <string name="EstimatedShort">ПРЕДПОЛ. ДАЛЬН.</string>
+    <string name="IdealShort">ИДЕАЛ. ДАЛЬН.</string>
+    <string name="BatteryText">Аккумулятор</string>
+    <string name="Homelink">Главная ссылка</string>
+    <string name="Profile">Профиль</string>
+    <string name="Default">По умолчанию</string>
+    <string name="Wakeup">Пробуждение</string>
+    <string name="Add">Добавить</string>
+    <string name="Battery">Аккумулятор</string>
+    <string name="Car">Автомобиль</string>
+    <string name="Location">Расположение</string>
+    <string name="Messages">Сообщения</string>
+    <string name="Amps">Ампер</string>
+    <string name="Close">Закрыть</string>
+    <string name="Features">Особенности</string>
+    <string name="Parameters">Параметры</string>
+    <string name="CellularStats">Статистика использования сотового телефона</string>
+    <string name="Vehicle">Автомобиль</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Тип</string>
+    <string name="GMC">GSM</string>
+    <string name="CAC">CAC</string>
+    <string name="Info12V">12В</string>
+    <string name="Server">Сервер</string>
+    <string name="App">Приложение</string>
+    
+    <!-- Map menu items -->
+    <string name="Autotrack">Автотрек</string>
+    <string name="Filtered_stations">Отфильтровать станции</string>
+    <string name="Only_show_stations_in_range">Только cтанции в диапазоне</string>
+    <string name="Track">Маршрут</string>
+    <string name="Start_track">Записать маршрут</string>
+    <string name="Stop_track">Остановить запись маршрута</string>
+    <string name="My_tracks">Мои маршруты</string>
+    <string name="Options">Опции</string>
+<!--     <string name="Turn_logged_path">Показать маршрут %s</string> -->
+    <string name="Turn_logged_path">Показать маршрут</string>
+    
+    <string name="ON">ВКЛ.</string>
+    <string name="OFF">ВЫКЛ.</string>
+    <string name="Invalid_server_C33">Время ожидания ответа сервера истекло. Возможно Ваш OVMS сервер не поддерживает команду C33 \"Retrieve 24-hour log data\". Пожалуйста установите другой сервер в настройках Вашего автомобиля. Вы хотите изменить настройки автомобиля?</string>
+    <string name="Invalid_server_C33_response">Получить маршрут не удалось!\nОшибка: \"%s\".\nВозможно Ваш OVMS сервер не поддерживает команду C33 \"Retrieve 24-hour log data\". Пожалуйста установите другой сервер в настройках Вашего автомобиля. Вы хотите изменить настройки автомобиля?</string>
+    <string name="Last_logged_path_record">Последняя точка маршрута</string>
+    <string name="Logged_path_progress">Получение маршрута</string>
+    <string name="CHARGING_STATIONS">Зарядные станции</string>
+    <string name="Open_Charge_Map">Показать зарядные станции</string>
+    <string name="Clustering">Зона отобр.</string>
+    <string name="LOGGED_PATH">Маршрут</string>
+    <string name="Show_logged_path">Показать маршрут</string>
+    <string name="Clustering_logged_path">Подавл. шума GPS</string>
+    <string name="EditText_logged_path">Минимальное расстояние между точками расположения автомобиля в метрах. Пожалуйста увеличте минимальное расстояние, если вы хотите увидеть маршрут более гладким. Уменьшите минимальное расстояние, если вы хотите увидеть маршрут точнее. Тогда маршрут будет более неровным из за того, что будет заметна неточность GPS.</string>
+    <string name="Meters">метров</string>
+    <string name="Enter_distance">Пожалуйста, введите минимальное расстояние между точками маршрута от 0 до 120 метров</string>
+    <string name="Undefined_location">Расположение автомобиля не определено</string>
+    <string name="Speed">Скорость</string>
+    <string name="Distance">Пройдено</string>
+    <string name="TimeFromStart">Время</string>
+    <string name="Latitude">Широта</string>
+    <string name="Longitude">Долгота</string>
+    <string name="Edit_car_settings">Вы хотите изменить настройки автомобиля?</string>
+    <string name="Login_complete">Успешный вход в OVMS сервер</string>
+    <string name="Retrieve_24_Hour_Log_Data_again">Получить маршрут не удалось!\n\n%s\n\nВозможно соединение с OVMS сервером неустойчиво.\n\nПопробовать еще раз?</string>
+    <string name="Under_constraction">В разработке</string>
+    
+    <!-- Map types -->
+    <string name="None">Не выбран</string>
+    <string name="Normal">Обычный</string>
+    <string name="Hybrid">Гибрид</string>
+    <string name="Satellite">Спутник</string>
+    <string name="Terrain">Ландшафт</string>
+    
+    <string name="lb_wakeup_car">Разбудить автомобиль</string>
+    <string name="lb_lock_car">Закрыть автомобиль</string>
+    <string name="lb_unlock_car">Открыть автомобиль</string>
+    <string name="lb_valet_mode">Режим парковки</string>
+    <string name="lb_valet_mode_on">На парковке</string>
+    <string name="lb_valet_mode_off">Не на парковке</string>
+    
+    <string name="lb_lock_mode_twizy">Ограничение максимальной скорости (км/час):</string>
+    <string name="lb_lock_car_twizy">Установка предела скорости</string>
+    <string name="lb_unlock_car_twizy">Снять предел скорости</string>
+    <string name="lb_valet_mode_twizy">Ограничение длинны поездки (км):</string>
+    <string name="lb_valet_mode_on_twizy">Установить динну поездки</string>
+    <string name="lb_valet_mode_off_twizy">Снять предел динны поездки</string>
+    <string name="lb_valet_mode_extend_twizy">Разрешить +1км</string>
+    <string name="lb_unvalet_unlock_twizy">Отменить ограничения длинны поездки и скорости</string>
+
+    <string name="lb_enter_pin">Введите PIN</string>
+    <string name="lb_enter_passwd">Введите пароль</string>
+    <string name="lb_enter_value">Введите значение</string>
+    <string name="lb_wrning_charger">ВНИМАНИЕ\nНеправильные настройки зарядного устройства могут привести к повреждению электрических систем!</string>
+    <string name="lb_charger_setting">Настройка зарядного устройства</string>
+    <string name="lb_communications_problem">Проблема связи</string>
+    <string name="lb_vehicle_id">Идент. авто</string>
+    <string name="lb_vehicle_label">Марка автомобиля</string>
+    <string name="lb_server_passwd">Пароль OVMS сервера</string>
+    <string name="lb_module_passwd">Пароль OVMS модуля</string>
+    <string name="lb_slide_choice_vehicle">Выберите Ваш автомобиль</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD код</string>
+    <string name="lb_cellular_usage">Использование сотового телефона</string>
+    <string name="lb_reset_ovms_module">Сброс OVMS модуля</string>
+    <string name="lb_center_map">Переместить карту</string>
+    <string name="lb_ft_digital_speedo">#%d: Цифровой спидометр</string>
+    <string name="lb_ft_gps_stream">#%d: GPS данные</string>
+    <string name="lb_ft_minimum_soc">#%d: Минимальный SOC</string>
+    <string name="lb_ft_car_bits">#%d: Автомобильных битов</string>
+    <string name="lb_ft_can_write">#%d: МОЖЕТ записать</string>
+    <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown порог</string>
+    <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown компенсация</string>
+    <string name="lb_ft_rt_suffsoc">#%d: Достаточный SOC</string>
+    <string name="lb_ft_rt_suffrange">#%d: Достаточный диапазон</string>
+    <string name="lb_ft_rt_maxrange">#%d: Максимальный идеальный диапазон</string>
+
+    <string name="lb_cp_registered_telephone">#%d: Зарегистрированный телефон</string>
+    <string name="lb_cp_module_password">#%d: Пароль модуля</string>
+    <string name="lb_cp_miles_km">#%d: Мили/Км</string>
+    <string name="lb_cp_notifications">#%d: Уведомления</string>
+    <string name="lb_cp_ovms_server_ip">#%d: IP OVMS сервера</string>
+    <string name="lb_cp_cellular_network_apn">#%d: APN мобильной сети</string>
+    <string name="lb_cp_cellular_network_user">#%d: Польз. моб. сети</string>
+    <string name="lb_cp_cellular_network_password">#%d: Пароль мобильной сети</string>
+    <string name="lb_cp_vehicle_id">#%d: Идентификатор автомобиля</string>
+    <string name="lb_cp_server_password">#%d: Пароль сервера</string>
+    <string name="lb_cp_paranoid_mode">#%d: Режим защиты от слежки</string>
+    <string name="lb_cp_social_group_1">#%d: Социальная группа #1</string>
+    <string name="lb_cp_social_group_2">#%d: Социальная группа #2</string>
+    <string name="lb_cp_gsmlock">#%d: GSM закрыт</string>
+    <string name="lb_cp_vehicle_type">#%d: Тип автомобиля</string>
+    <string name="lb_cp_cooldown">#%d: Охлаждение</string>
+    <string name="lb_cp_timezone">#%d: Часовой пояс</string>
+    <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
+    <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
+    <string name="lb_cp_acc3">#%d: ACC #3 (base64)</string>
+    <string name="lb_cp_acc4">#%d: ACC #4 (base64)</string>
+
+    <string name="lb_cp_rt_profile">#%d: Активный профиль</string>
+    <string name="lb_cp_rt_profile1">#%d: Профиль #1 (бинарный)</string>
+    <string name="lb_cp_rt_profile2">#%d: Профиль #2 (бинарный)</string>
+    <string name="lb_cp_rt_profile3">#%d: Профиль #3 (бинарный)</string>
+
+    <string name="lb_ovms_firmware">OVMS прошивка:</string>
+    <string name="lb_vehicle_info">Информация об автомобиле</string>
+    
+    <string name="lb_charger_setting_twizy">Оповещения зарядки</string>
+    <string name="lb_charger_setting_twizy_hint">Подсказка: установить на ноль, чтобы отключить сигнализацию.</string>
+    <string name="lb_sufficient_soc">Достаточный SOC (%)</string>
+    <string name="lb_sufficient_range">Достаточный диапазон (%s)</string>
+    <string name="msg_getting_charge_alerts">Получение оповещений зарядки от модуля&#8230;</string>
+    <string name="msg_setting_charge_alerts">Установка оповещений зарядки&#8230;</string>
+
+    <string name="msg_ok">OK</string>
+    <string name="msg_charger_range">Режим диапазона ограничения мощности\nЧастое использование уменьшает срок службы батареи</string>
+    <string name="msg_charger_perform">Частое использование эффективного режима\nуменьшает срок службы батареи.</string>
+    <string name="msg_wakeup_car">Разбудить автомобиль&#8230;</string>
+    <string name="msg_issuing_homelink">Выдать команду Homelink&#8230;</string>
+    <string name="msg_setting_charge_mc">Установка режима зарядки и тока&#8230;</string>
+    <string name="msg_setting_charge_m">Установка режима зарядки&#8230;</string>
+    <string name="msg_setting_charge_c">Установка тока заряда&#8230;</string>
+    <string name="msg_starting_charge">Запуск зарядки&#8230;</string>
+    <string name="msg_stopping_charge">Остановка зарядки&#8230;</string>
+    <string name="msg_rebooting_car_module">Перезапуск автомобильного модуля&#8230;</string>
+    <string name="msg_please_enter_value">Пожалуйста введите правильное значеник</string>
+    <string name="msg_invalid_name">Ваще имя должно быть больше 3 символов и не может содержать специальные символы.</string>
+    <string name="msg_invalid_passwd">Ваш пароль должен быть длинной между %1$d и %2$d символами.</string>
+    <string name="msg_invalid_id_already_registered">Идентификатор автомобиля %s уже зарегистрирован. Пожалуйста введите другой.</string>
+    <string name="msg_delete_this_car">Удалить этот автомобиль?</string>
+    <string name="msg_mmi_ssd_code">Введите MMI/USSD код, нажмите ОТПРАВИТЬ что бы отправить этот код мобильному провайдеру Вашего автомобиля</string>
+    
+    <string name="err_connection_lost">Соединение с сервером OVMS потеряно</string>
+    <string name="err_check_following">Пожалуйста проверьте следующее:\n1. Интернет соединение\n2. Адрес OVMS сервера\n3. Идентификатор и пароль Вашего автомобиля</string>
+    <string name="err_failed">Не удалось: %s</string>
+    <string name="err_unsupported_operation">Операция не поддерживается</string>
+    <string name="err_unimplemented_operation">Операция не реализована</string>
+    <string name="err_param_not_editable">Извините, этот параметр невозможно редактировать!</string>
+
+    <string name="msg_retrieving_data">Получение данных&#8230;</string>
+    <string name="msg_processing_data">Обработка данных&#8230;</string>
+    <string formatted="false" name="cellular_usage_info_car">Автомобиль: %.1f MB/месяц (%d дней)</string>
+    <string formatted="false" name="cellular_usage_info_app">Приложение: %.1f MB/месяц (%d дней)</string>
+    <string name="chart_axis_date">Дата</string>
+    <string name="chart_axis_datavolume">Объем (KB)</string>
+
+    <string formatted="false" name="lb_chargepoint_conn_level">Уровень #%d</string>
+    <string formatted="false" name="lb_chargepoint_conn_type">Тип соединения #%d</string>
+    
+    <string name="live">в прямом эфире</string>
+    <string name="ndays">%d дней</string>
+    <string name="nhours">%d часов</string>
+    <string name="nmins">%d минут</string>
+    <string name="min1">1 мин</string>
+    <string name="justnow">прямо сейчас</string>
+    <string name="mph">миль/час</string>
+    <string name="kph">км/час</string>
+    <string name="miles">миль</string>
+    <string name="kilometers">км</string>
+    <string name="slidetocharge">ВСТАВЬТЕ ДЛЯ\nЗАРЯДКИ</string>
+    <string name="timedcharge">ТАЙМЕР ЗАРЯДКИ</string>
+    <string name="pushnotifications">Push Notifications</string>
+    <string name="pushnotifications_welcome">Здесь заархивированы уведомления, полученные для Ваших зарегистрированных автомобилей.</string>
+    
+<!--    <string formatted="false" name="charging">ЗАРЯДКА\n%s %s</string> -->
+    <string formatted="false" name="state_charging">ЗАРЯДКА\n%s %s</string>
+    <string formatted="false" name="state_topping_off">TOPPING OFF\n%s %s</string>
+    <string formatted="false" name="state_done">ЗАВЕРШЕНО\n%s %s</string>
+    <string formatted="false" name="state_stopped">ОСТАНОВЛЕНО\n%s %s</string>
+
+    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
+    
+    <string name="textMOTOR">МОТОР</string>
+    <string name="textPEM">PEM</string>
+    <string name="textBATTERY">БАТАРЕЯ</string>
+    <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">ПРОФИЛЬ</string>
+    <string name="textAMBIENT">AMBIENT</string>
+    <string name="text12VBATT">БАТАРЕЯ 12В</string>
+    
+    <string-array name="en_charger">
+    	<item>Стандартное</item>
+        <item>Хранение</item>
+        <item>Диапазон</item>
+        <item>Выполнить</item>
+    </string-array>
+    
+    <string-array name="ocm_options_maxresults">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+    </string-array>
+
+    <string name="mi_map_options">Опции</string>
+    <string name="mi_map_autotrack">Автом. прослеживание</string>
+    <string name="mi_map_filter_connections">Мои штекеры</string>
+    <string name="mi_map_filter_range">Мой диапазон</string>
+    <string name="mi_map_settings">Настройки</string>
+
+    <string name="cargroup_title">Группы автомобилей</string>
+    <string name="cargroup_name_hint">Название группы</string>
+
+    <!-- OVMS Debug
+    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->  
+
+    <!-- OVMS Release
+    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
+
+    <!-- OVMS Google Play Release -->
+    <string name="map_api_key_debug">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+    <string name="connections">Соединения</string>
+
+    <string name="logs_title">Журналы диагностики</string>
+    <string name="logs_btn_get">Получить журналы</string>
+    <string name="logs_btn_reset">Сбросить журналы</string>
+
+    <string name="logs_lb_alerts">Предупреждения</string>
+    <string name="logs_lb_faults">Ошибки</string>
+    <string name="logs_lb_events">События</string>
+    <string name="logs_lb_counter">Счетчик</string>
+    <string name="logs_lb_minmax">МинМакс</string>
+
+    <string name="logs_th_code">Код</string>
+    <string name="logs_th_description">Описание</string>
+    <string name="logs_th_keytime">Ключевой момент (KeyTime)</string>
+    <string name="logs_th_lasttime">Последний момент</string>
+    <string name="logs_th_firsttime">Первый момент</string>
+    <string name="logs_th_count">Количество</string>
+    <string name="logs_th_data" formatted="false">Данные%d</string>
+    <string name="logs_th_sensor">Датчик</string>
+    <string name="logs_th_user">Пользователь</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+
+    <string-array name="logs_th_sensornames">
+        <item>Минимальное напряжение батареи (В)</item>
+        <item>Максимальное напряжение батареи (В)</item>
+        <item>Минимальное напряжение конденсатора (В)</item>
+        <item>Максимальное напряжение конденсатора (В)</item>
+        <item>Минимальный ток двигателя (А)</item>
+        <item>Максимальный ток двигателя (А)</item>
+        <item>Минимальная скорость двигатаеля (об./мин.)</item>
+        <item>Максимальная скорость двигатаеля (об./мин.)</item>
+        <item>Минимальная температура SEVCON (Â°C)</item>
+        <item>Максимальная температура SEVCON (Â°C)</item>
+    </string-array>
+
+    <string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string>
+    <string name="logs_fmt_listinfo" formatted="false">Последнее получение %s // key time %s</string>
+
+    <string name="logs_msg_query_alerts">Запрос оповещений&#8230;</string>
+    <string name="logs_msg_query_faults">Запрос ошибок&#8230;</string>
+    <string name="logs_msg_query_events">Запрос событий&#8230;</string>
+    <string name="logs_msg_query_counter">Запрос счетчика&#8230;</string>
+    <string name="logs_msg_query_minmax">Запрос мин./макс.&#8230;</string>
+
+    <string name="logs_msg_fetch_keytime">Получить key time&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Получить оповещения&#8230;</string>
+    <string name="logs_msg_fetch_faults">Получить ошибки&#8230;</string>
+    <string name="logs_msg_fetch_events">Получить события&#8230;</string>
+    <string name="logs_msg_fetch_counter">Получить счетчик&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Получить мин./макс.&#8230;</string>
+
+    <string name="logs_msg_reset_faults">СброситьReset ошибки&#8230;</string>
+    <string name="logs_msg_reset_events">СброситьReset события&#8230;</string>
+    <string name="logs_msg_reset_counter">СброситьReset счетчик&#8230;</string>
+    <string name="logs_msg_reset_minmax">СброситьReset мин./макс.&#8230;</string>
+
+    <string name="hint_sevcon_offline">\n(Подсказка: &#8230;B = SEVCON отсоединен)</string>
+
+    <string name="notifications_hint_cmdinput">SMS / MMI команда</string>
+    <string name="err_failed_smscmd">Ошибка: неизвестная команда / ошибка аутентификации</string>
+
+
+    <string name="battery_title">История батареи</string>
+    <string name="battery_menu">Опции</string>
+    <string name="battery_btn_get_data">Получить данные</string>
+    <string name="battery_btn_reset_view">Сбросить масштаб</string>
+    <string name="battery_btn_help">Информация</string>
+    <string name="battery_chk_volt">Показать напряжение</string>
+    <string name="battery_chk_temp">Показать температуру</string>
+    <string name="battery_msg_loading_data">Загрузка данных&#8230;</string>
+    <string name="battery_msg_get_status">Получение состояния батареи&#8230;</string>
+    <string name="battery_msg_get_battpack">Получение данных пакета батареи&#8230;</string>
+    <string name="battery_msg_get_battcell">Получение данных банки батареи&#8230;</string>
+    <string name="battery_pack_description">Исторя пакета</string>
+    <string name="battery_cell_description">Состояние банки батареи</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_volt">Вольт (В)</string>
+    <string name="battery_data_volt_min">Мин. вольт (В)</string>
+    <string name="battery_data_temp">Температура (Â°C)</string>
+    <string name="battery_help"><![CDATA[
+ 		<h1>История батареи</h1>
+
+		<h2>Основы</h2>
+		<p> <b> Версия прошивки </b> должна поддерживать функции <b> монитора батареи </b>.
+		Диаграммы на основе типов записей <tt>RT-PWR-BattPack</tt> и <tt>RT-PWR-BattCell</tt>
+		(См. руководство). Сервер будет хранить их в течении <b> 24 час. </b>. </p>
+		<p><b>Точность измерения</b> 5 ​​мВ по напряжению и 1 Â ° C по температуре.
+		Аккумулятор Twizy состоит из 42 банок со схемой (layout) 14S3P, распределенных в 7 модулях.
+		Система поддерживает измерение только 14 3P напряжений и 7 измерений температуры модуля.</p>
+
+		<h2> История пакета </h2>
+		<p>График пакета отображает только время с данными, и исключает неактивное время парковки. </p>
+		<p>Модуль отправляет обновления на сервер каждые <b>~60 секунд</b> во время вождения или зарядки
+		(при наличии сети и соединения с сервером).
+		Экстремумы и максимальные стандартные отклонения собираются постоянно, текущие значения те, которые отправлены во время обновления. </p>
+		<p>При включени <b>переключателя на</b> Twizy и <b>начала зарядки</b>,
+		передыдущие значения сбрасываются, так что в конце интервала использования они показывают общие экстремальные значения,
+		которые произошли во время использования. </p>
+		<p><u><b>Tipp</b></u>: Проследите линию минимального напряжения, нажмите на нее, чтобы выделить запись,
+		а затем используйте панель поиска, чтобы переместить маркер</p>.
+
+		<h2> Состояние банки</h2>
+		<p>
+		&nbsp;&bull; lower end = минимальное значение<br>
+		&nbsp;&bull; upper end = текущее значение (+текст)<br>
+		&nbsp;&bull; filled box = плохо<br>
+		&nbsp;&bull; bigger box = большее отклонение
+		</p>
+		<p> Это подсветка (candle stick) диаграммы. <b>Максимальное значение это</b> текущее значение (<tt>volt_act</tt> / <tt>temp_act</tt>),
+		<b>Минимальное значение</b> это наименьшее измеренное значение (<tt>volt_min</tt> / <tt>temp_min</tt>)
+		в текущем интервале использования.</p>
+		<p>Высота подсветки (candle height) отражает измеренное <b>максимальное отклонение</b>.
+		Заполнение подсветки (filled candle) используется для отображения «плохого» отклонения, т.е. выше <b>напряжения пробоя</b> или
+		<b>повышение температуры выше допустимой</b>.
+		</p>
+		<p><u><b>Tipp</b></u>: Для сравнения напряжений выделите банку и увеличте вертикально,
+		пока вы не можете четко прочитать отклонения других банок от выбранного маркера.</p>
+    ]]></string>
+</resources>

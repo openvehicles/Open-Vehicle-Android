@@ -3,6 +3,7 @@ package com.openvehicles.OVMS.ui;
 import java.util.UUID;
 import android.app.AlertDialog;
 import android.app.NotificationManager;
+import android.app.Activity;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.actionbarsherlock.app.ActionBar;
 import com.actionbarsherlock.view.Window;
@@ -36,7 +38,12 @@ import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
 import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.ConnectionList;
+import com.openvehicles.OVMS.utils.MyAlertDialog;
+import com.openvehicles.OVMS.utils.MyElement;
+import com.openvehicles.OVMS.utils.OnCancelEvent;
+import com.openvehicles.OVMS.utils.OnClickPositiveButton;
 import com.openvehicles.OVMS.utils.ConnectionList.Con;
+import com.openvehicles.OVMS.utils.MyException;
 
 public class MainActivity extends ApiActivity implements
 		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
@@ -49,6 +56,83 @@ public class MainActivity extends ApiActivity implements
 	Database database;
 	public static UpdateLocation updateLocation;
 	public GetMapDetails getMapDetails;
+	private MyAlertDialog malertDialogServerSocketError = null;
+	
+	//Fragment identifier
+	public enum PagerAdapterItems
+	{
+		battery
+		, car
+		, location_map
+		, email
+		, settings
+	}
+	
+	private Fragment getFragment(String strFragmentName)
+	{
+    	for(int location = 0; location < getSupportFragmentManager().getFragments().size(); location++)
+    	{
+    		Fragment fragment = getSupportFragmentManager().getFragments().get(location);
+    		if(fragment.getClass().getSimpleName().contains(strFragmentName))
+    			return fragment;
+    	}
+    	return null;
+	}
+	
+	public FragMap getFragMap()
+	{
+		return (FragMap)getFragment("FragMap");
+	}
+	
+	// Called when the user clicks the Next button in the FragMap fragment
+	public void NexpLocation(View view) {
+		getFragMap().NexpLocation();
+	}
+		
+	
+	// Called when the user clicks the Previous button in the FragMap fragment
+	public void PrevLocation(View view) {
+		getFragMap().PrevLocation();
+	}
+	
+	//Call this function if you want to change fragment from program
+	public void ChangePagerAdapterItem(
+			PagerAdapterItems pagerAdapterItem//Fragment identifier
+			)
+	{
+		String strClassName = "";
+		switch(pagerAdapterItem)
+		{
+		case battery:
+			strClassName = "InfoFragment";
+			break;
+		case car:
+			strClassName = "CarFragment";
+			break;
+		case location_map:
+			strClassName = "FragMap";
+			break;
+		case email:
+			strClassName = "NotificationsFragment";
+			break;
+		case settings:
+			strClassName = "SettingsFragment";
+			break;
+		default: throw new MyException(MyElement.getName() + " failed! Unknown pagerAdapterItem");
+		}
+		int position = -1;
+		for(int i = 0; i < 5; i++)
+		{
+			if(strClassName.contentEquals(mPagerAdapter.getItem(i).getClass().getSimpleName()))
+			{
+				position = i;
+				break;
+			}
+		}
+		if(position == -1)
+			throw new MyException(MyElement.getName() + " failed! position == -1");		
+		getSupportActionBar().setSelectedNavigationItem(position);
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -144,6 +228,8 @@ public class MainActivity extends ApiActivity implements
 			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
 		}
 		onNewIntent(getIntent());
+		
+		BaseApi.SetMainActivity(this);
 	}
 
 	@Override
@@ -163,6 +249,20 @@ public class MainActivity extends ApiActivity implements
 		super.onDestroy();
 	}
 
+	private boolean mboPause = true;
+	
+	@Override
+	protected void onResume() {
+		mboPause = false;
+		super.onResume();
+	}
+	
+	@Override
+	protected void onPause() {
+		mboPause = true;
+		super.onPause();
+	}
+	
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
 		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
@@ -221,7 +321,7 @@ public class MainActivity extends ApiActivity implements
 	private final BroadcastReceiver mApiEventReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
+/*
 			if (intent.getSerializableExtra("onServerSocketError") != null) {
 
 				setSupportProgressBarIndeterminateVisibility(false);
@@ -241,7 +341,68 @@ public class MainActivity extends ApiActivity implements
 					mApiErrorMessage = message;
 				}
 			}
-
+*/
+			String strServerSocketError = "onServerSocketError";
+			if (intent.getSerializableExtra(strServerSocketError) != null) {
+				setSupportProgressBarIndeterminateVisibility(false);
+				Throwable e = (Throwable)(intent.getSerializableExtra(strServerSocketError));
+				malertDialogServerSocketError = new MyAlertDialog(MainActivity.this
+            			, e.getMessage()//error
+							+ "\n\n" + intent.getStringExtra("message")
+							+ "\n\n" + getString(R.string.Edit_car_settings) //Do you want to edit the car\'s settings?
+            			, new OnClickPositiveButton()
+			            	{
+					            @Override
+					            public void onClick()
+					            	{
+					            		//Open the Settings fragment
+					            		MainActivity.this.ChangePagerAdapterItem(MainActivity.PagerAdapterItems.settings);
+					            	}
+			            	}
+		    			, new OnCancelEvent()
+			            	{
+					            @Override
+					            public void OnCancel()
+					            	{
+					            		malertDialogServerSocketError = null;
+					            	}
+			            	}
+	        	);
+			}
+			String strServerSocketErrorToast = "onServerSocketErrorToast";
+			if (intent.getSerializableExtra(strServerSocketErrorToast) != null) {
+				Log.e("MyLine", MyElement.getName() + (String)(intent.getStringExtra(strServerSocketErrorToast)));
+				setSupportProgressBarIndeterminateVisibility(false);
+				String strError = intent.getStringExtra(strServerSocketErrorToast);
+				
+				if((malertDialogServerSocketError == null) && (!mboPause))
+					Toast.makeText(MainActivity.this, strError, Toast.LENGTH_SHORT).show();
+				
+				FragMap fragMap = getFragMap();
+				if(fragMap != null)
+				{
+					fragMap.onServerSocketError(strError);
+				}
+			}
+			String strLoginComplete = "onLoginComplete";
+			if (intent.getSerializableExtra(strLoginComplete) != null) {
+				String strMessage = getString(R.string.Login_complete);//Login to OVMS server completed
+				Log.d("MyLine", MyElement.getName() + " " + strMessage);
+				Toast.makeText(MainActivity.this, strMessage, Toast.LENGTH_SHORT).show();
+				
+				FragMap fragMap = getFragMap();
+				if(fragMap != null)
+				{
+					fragMap.onLoginComplete();
+				}
+				
+				if(malertDialogServerSocketError != null)
+				{
+					malertDialogServerSocketError.cancel();
+					malertDialogServerSocketError = null;
+				}
+			}
+			
 			if (intent.getBooleanExtra("onLoginBegin", false)) {
 
 				setSupportProgressBarIndeterminateVisibility(true);
@@ -469,7 +630,6 @@ public class MainActivity extends ApiActivity implements
 			} else {
 				getMapDetails.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 			}
-
 		}
 
 	}

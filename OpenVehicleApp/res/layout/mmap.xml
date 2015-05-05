@@ -1,8 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/graphMap"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
+	<RelativeLayout
+	    android:id="@+id/graphParent"
+	    android:layout_width="match_parent"
+	    android:layout_height="100dp"
+	    android:orientation="vertical" >
+
+		<LinearLayout
+		    android:id="@+id/graph"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_alignParentLeft="true"
+		    android:layout_alignParentStart="true"
+		    android:layout_toLeftOf="@+id/graphButtons"
+		    android:layout_toStartOf="@+id/graphButtons"
+		    android:orientation="horizontal" >
+
+		</LinearLayout>
+
+		<RelativeLayout
+		    android:id="@+id/graphButtons"
+		    android:layout_width="50dp"
+		    android:layout_height="match_parent"
+		    android:layout_alignParentRight="true"
+		    android:layout_alignParentEnd="true"
+		    android:layout_alignParentTop="true"
+		    android:orientation="horizontal" >
+
+			<Button
+			    android:id="@+id/buttonNexpLocation"
+			    android:layout_width="wrap_content"
+			    android:layout_height="50dp"
+			    android:layout_alignParentLeft="true"
+			    android:layout_alignParentRight="true"
+			    android:layout_alignParentStart="true"
+			    android:layout_alignParentEnd="true"
+			    android:enabled="false"
+			    android:onClick="NexpLocation"
+			    android:scaleType="fitXY"
+			    android:text="@string/right_arrow" />
+						
+			<Button
+			    android:id="@+id/ButtonPrevLocation"
+			    android:layout_width="wrap_content"
+			    android:layout_height="50dp"
+			    android:layout_below="@+id/buttonNexpLocation"
+			    android:layout_centerHorizontal="true"
+			    android:scaleType="fitXY"
+			    android:enabled="false"
+			    android:onClick="PrevLocation"
+			    android:text="@string/left_arrow" />
+
+		</RelativeLayout>
+
+	</RelativeLayout>
     <fragment
         android:id="@+id/mmap"
         android:name="pl.mg6.android.maps.extensions.SupportMapFragment"

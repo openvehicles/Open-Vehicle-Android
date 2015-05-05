@@ -68,7 +68,51 @@
     <string name="Info12V">12V</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
-
+    
+    <!-- Map menu items -->
+    <string name="Track">Track</string>
+    <string name="Autotrack">Autotrack</string>
+    <string name="Filtered_stations">Filtered Stations</string>
+    <string name="Only_show_stations_in_range">Only show Stations in range</string>
+    <string name="Start_track">Start track</string>
+    <string name="Stop_track">Stop track</string>
+    <string name="My_tracks">My tracks</string>
+    <string name="Options">Options</string>
+    <string name="Turn_logged_path">Logged Path</string>
+    
+    <string name="ON">ON</string>
+    <string name="OFF">OFF</string>
+    <string name="Invalid_server_C33">Server response timeout. Probably your OVMS server is not supports the C33 \"Retrieve 24-hour log data\" command. Please choice another server in the car\'s settings. Do you want to edit the car\'s settings?</string>
+    <string name="Invalid_server_C33_response">Retrieve the logged path failed!\nError: \"%s\".\nProbably your OVMS server is not supports the C33 \"Retrieve 24-hour log data\" command. Please choice another server in the car\'s settings. Do you want to edit the car\'s settings?</string>
+    <string name="Last_logged_path_record">Last record of the logged path</string>
+    <string name="Logged_path_progress">Logged path progress</string>
+    <string name="CHARGING_STATIONS">CHARGING STATIONS</string>
+    <string name="Open_Charge_Map">Open Charge Map</string>
+    <string name="Clustering">Clustering</string>
+    <string name="LOGGED_PATH">LOGGED PATH</string>
+    <string name="Show_logged_path">Show Logged Path</string>
+    <string name="Clustering_logged_path">Clustering</string>
+    <string name="EditText_logged_path">Minimum distance between car\'s location points in meters. Please increase minimum distance if you want see the logged path smoother. Decrease minimum distance if you want see the logged path more accuracy.</string>
+    <string name="Meters">meters</string>
+    <string name="Enter_distance">Please enter minimum distance from 0 to 120 meters</string>
+    <string name="Undefined_location">Location of a vehicle is not defined</string>
+    <string name="Speed">Speed</string>
+    <string name="Distance">Distance</string>
+    <string name="TimeFromStart">Time</string>
+    <string name="Latitude">Latitude</string>
+    <string name="Longitude">Longitude</string>
+    <string name="Edit_car_settings">Do you want to edit the cars settings?</string>
+    <string name="Login_complete">Login to OVMS server completed</string>
+    <string name="Retrieve_24_Hour_Log_Data_again">Retrieve the logged path failed!\n\n%s\n\nProbably connecting to OVMS server is unstable.\n\nTry to retrieve again?</string>
+    <string name="Under_constraction">Under Constraction</string>
+        
+    <!-- Map types -->
+    <string name="None">None</string>
+    <string name="Normal">Normal</string>
+    <string name="Hybrid">Hybrid</string>
+    <string name="Satellite">Satellite</string>
+    <string name="Terrain">Terrain</string>
+    
     <string name="lb_wakeup_car">Wakeup Car</string>
 
     <string name="lb_lock_car">Lock Car</string>
@@ -170,7 +214,7 @@
     <string name="msg_mmi_ssd_code">Enter MMI/USSD Code, then tap SEND to transmit the code to your vehicle\'s cellular provider</string>
     
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
-    <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
+    <string name="err_check_following">Please check the following:\n1. Internet connection. \n2. OVMS Server address\n3. Your vehicle ID and passwords</string>
     <string name="err_failed">Failed: %s</string>
     <string name="err_unsupported_operation">Unsupported operation</string>
     <string name="err_unimplemented_operation">Unimplemented operation</string>
@@ -194,6 +238,8 @@
     <string name="justnow">just now</string>
     <string name="mph">mph</string>
     <string name="kph">kph</string>
+    <string name="miles">miles</string>
+    <string name="kilometers">km</string>
     <string name="slidetocharge">SLIDE TO\nCHARGE</string>
     <string name="timedcharge">TIMED CHARGE</string>
     <string name="pushnotifications">Push Notifications</string>
@@ -368,5 +414,11 @@
 		<p><u><b>Tipp</b></u>: to compare voltage details, select a cell and zoom in vertically
 		until you can clearly read the deviations of the other cells from the selection marker.</p>
     ]]></string>
-
+    <!-- Arrows http://www.fileformat.info/info/unicode/char/search.htm?q=arrow&preview=entity -->
+    <string name="left_arrow">\u2190</string>
+    <string name="right_arrow">\u2192</string>
+    
+    <!-- Degree http://www.fileformat.info/info/unicode/char/search.htm?q=degree&preview=entity -->
+    <string name="Degree">\u00B0</string>
+    
 </resources>

@@ -12,20 +12,24 @@ import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.ApiService.ApiBinder;
 
 public class ApiActivity extends SherlockFragmentActivity {
-	private ApiService mApiService;
+	private static ApiService mApiService;
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
-        bindService(new Intent(this, ApiService.class), mConnection, Context.BIND_AUTO_CREATE);
+		if(mApiService == null)
+			bindService(new Intent(this, ApiService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	@Override
 	protected void onStop() {
+/*
+		 * Currently service is not disconnected never, because I do not know where to do it		
 		if (mApiService != null) {
         	unbindService(mConnection);
         	mApiService = null;
         }
+*/        
 		super.onStop();
 	}
 	

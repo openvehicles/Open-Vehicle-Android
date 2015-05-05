@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.FrameLayout;
 
 import com.openvehicles.OVMS.R;
@@ -16,6 +17,11 @@ public class BaseFragmentActivity extends ApiActivity {
 	private static final String EXT_FRAGMENT_CLASS_NAME = "ext_fragmentclassname";
 	private static final String EXT_ONLY_ORIENTATION = "ext_only_orientation";
 	private static final String EXT_FOR_RESULT = "ext_for_result";
+	
+	// Called when the user clicks the Default button in the map Settings fragment
+	public void defaultSettings(View view) {
+		((Settings)getCurrentFragment()).Default();
+	}
 	
 	public static void show(Context pContext, Class<? extends Fragment> pClazz,
 			Bundle pArgs, int pOnlyOrientation) {

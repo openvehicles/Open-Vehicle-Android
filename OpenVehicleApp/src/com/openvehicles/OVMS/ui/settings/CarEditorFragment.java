@@ -22,6 +22,7 @@ import com.actionbarsherlock.view.MenuItem;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.validators.PasswdValidator;
@@ -29,7 +30,9 @@ import com.openvehicles.OVMS.ui.validators.StringValidator;
 import com.openvehicles.OVMS.ui.validators.ValidationException;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class CarEditorFragment extends SherlockFragment {
+//I use BaseFragment instead SherlockFragment because I need to access to ApiService for reconnecting to server after editing of the car
+public class CarEditorFragment extends BaseFragment//SherlockFragment
+{
 	private CarData mCarData;
 	private boolean isSelectedCar;
 	private int mEditPosition;
@@ -137,6 +140,8 @@ public class CarEditorFragment extends SherlockFragment {
 			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 16));
 			mCarData.sel_server = Ui.getValidValue(rootView, R.id.txt_server_address, new StringValidator());
 			mCarData.sel_vehicle_image = sAvailableColors[mGalleryCar.getSelectedItemPosition()];
+
+			getService().reconnectToServer();
 
 		} catch (ValidationException e) {
 			Log.e("Validation", e.getMessage(), e);

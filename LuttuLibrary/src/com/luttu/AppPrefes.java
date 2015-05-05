@@ -43,5 +43,23 @@ public class AppPrefes {
 		prefsEditor.commit();
 	}
 
+	/****
+	 * 
+	 * IsTrue() get the boolean value from the preference
+	 * 
+	 * */
+	public boolean IsTrue(String key, boolean defValue) {
+		boolean res = appSharedPrefs.getBoolean(key, defValue);
+		return res;
+	}
+	/****
+	 * 
+	 * SaveBoolean() save the boolean value to the preference
+	 * 
+	 * */
+	public void SaveBoolean(String key, boolean boValue) {
+		prefsEditor.putBoolean(key, boValue);
+		prefsEditor.commit();
+	}
 	
 }
