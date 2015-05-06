@@ -2340,7 +2340,10 @@ Log.d(TAG, MyElement.getName() + " exit");
     public boolean onMyLocationButtonClick() {
     	
 		if(mlatLng != null)
+		{
+//			map.moveCamera(CameraUpdateFactory.newLatLngZoom(mlatLng, 18));
 			map.moveCamera(CameraUpdateFactory.newLatLng(mlatLng));
+		}
 		else Toast.makeText(getActivity(), R.string.Undefined_location, Toast.LENGTH_SHORT).show();//Location of a vehicle is not defined
 		
         // Return false so that we don't consume the event and the default behavior still occurs
