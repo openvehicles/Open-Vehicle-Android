@@ -38,6 +38,10 @@
                       android:showAsAction="ifRoom"
                       android:title="@string/power_chk_power"/>
 
+                <item android:id="@+id/mi_chk_liveupdate"
+                      android:showAsAction="ifRoom"
+                      android:title="@string/power_chk_liveupdate"/>
+
             </group>
 
             <item android:id="@+id/mi_help"

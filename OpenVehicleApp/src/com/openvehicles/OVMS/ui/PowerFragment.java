@@ -85,6 +85,7 @@ public class PowerFragment
 
 	private boolean mShowPower = true;
 	private boolean mShowEnergy = true;
+	private boolean mLiveUpdate = false;
 
 
 	// system services:
@@ -112,6 +113,7 @@ public class PowerFragment
 		mShowEnergy = appPrefes.getData("power_show_energy").equals("on");
 		if (!mShowPower && !mShowEnergy)
 			mShowPower = true;
+		mLiveUpdate = appPrefes.getData("power_liveupdate").equals("on");
 
 
 		// Setup UI:
@@ -411,6 +413,12 @@ public class PowerFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
+				return true;
+
+			case R.id.mi_chk_liveupdate:
+				mLiveUpdate = newState;
+				appPrefes.SaveData("power_liveupdate", mLiveUpdate ? "on" : "off");
+				item.setChecked(newState);
 				return true;
 
 		}
@@ -850,6 +858,18 @@ public class PowerFragment
 			chart.zoom(scaleX, 1f, chart.getWidth() / 2f, chart.getHeight() / 2f);
 			chart.moveViewToX(start);
 		}
+
+	}
+
+
+	/**
+	 * Live update function
+	 *
+	 */
+
+	public void doLiveUpdate() {
+
+
 
 	}
 
