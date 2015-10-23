@@ -27,18 +27,44 @@ public class CmdSeries implements OnResultCommandListener {
 
 	private transient static final Context context = BaseApp.getApp();
 
+
 	public interface Listener {
+		/**
+		 * Progress callback.
+		 *
+		 * @param message -- user message for current command
+		 * @param pos -- position of current command
+		 * @param posCnt -- size of command series
+		 * @param step -- on multiple results: record position (else 0)
+		 * @param stepCnt -- on multiple results: record count (else 0)
+		 */
 		void onCmdSeriesProgress(String message, int pos, int posCnt, int step, int stepCnt);
+
+		/**
+		 * Success / abort callback.
+		 *
+		 * @param cmdSeries -- the series
+		 * @param returnCode -- last result code or -1 on abort
+		 */
 		void onCmdSeriesFinish(CmdSeries cmdSeries, int returnCode);
 	}
 
 
+	/**
+	 * Single command entry of the series
+	 */
 	public class Cmd {
 		private CmdSeries series;
+
+		/** User message & command specification */
 		public String message;
 		public String command;
 		public int commandCode;
+
+		/** Last return code */
 		public int returnCode;
+
+		/** All results collected */
 		public ArrayList<String[]> results;
 
 		public Cmd(CmdSeries series) {
@@ -62,6 +88,12 @@ public class CmdSeries implements OnResultCommandListener {
 	private int current;
 
 
+	/**
+	 * Create new CmdSeries
+	 *
+	 * @param pService -- the ApiService (i.e. getService())
+	 * @param pListener -- the Listener (optional)
+	 */
 	public CmdSeries(ApiService pService, Listener pListener) {
 		mService = pService;
 		mListener = pListener;
@@ -79,6 +111,19 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
+	/**
+	 * Add a command to be executed to the series.
+	 * The command will be added at the end.
+	 *
+	 * Example:
+	 * 		CmdSeries series = new CmdSeries(...)
+	 * 			.add("Setting feature #8 to 1...", "2,8,1")
+	 * 			.add("Setting param #11 to abc...", "4,11,abc");
+	 *
+	 * @param pMessage -- user message to display & log
+	 * @param pCommand -- command string
+	 * @return -- CmdSeries for daisy chaining
+	 */
 	public CmdSeries add(String pMessage, String pCommand) {
 		Cmd cmd = new Cmd(this);
 		cmd.message = pMessage;
@@ -94,6 +139,11 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
+	/**
+	 * Get current command.
+	 *
+	 * @return -- current command or null if series is not running
+	 */
 	public Cmd getCurrent() {
 		if (current >= 0 && current < cmdList.size())
 			return cmdList.get(current);
@@ -102,12 +152,22 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
+	/**
+	 * Advance execution to next command in series.
+	 *
+	 * @return -- next command or null if end of series
+	 */
 	public Cmd getNext() {
 		current += 1;
 		return getCurrent();
 	}
 
 
+	/**
+	 * Start execution of series at first command scheduled.
+	 *
+	 * @return -- this CmdSeries for daisy chaining
+	 */
 	public CmdSeries start() {
 		Log.v(TAG, "started");
 		current = -1;
@@ -116,6 +176,10 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
+	/**
+	 * Execution handler: sends the current command to the server.
+	 *  The command position in the series is told to the listener as the main progress.
+	 */
 	private void executeNext() {
 		if (mService == null || !mService.isLoggedIn())
 			return;
@@ -125,16 +189,30 @@ public class CmdSeries implements OnResultCommandListener {
 		if (cmd != null) {
 			// send next command:
 			Log.v(TAG, "executeNext: " + cmd.message + ": cmd=" + cmd.command);
-			mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), 0, 0);
+			if (mListener != null)
+				mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), 0, 0);
 			mService.sendCommand(cmd.command, this);
 		}
 		else {
 			// series finished:
-			mListener.onCmdSeriesFinish(this, 0);
+			if (mListener != null)
+				mListener.onCmdSeriesFinish(this, 0);
 		}
 	}
 
 
+	/**
+	 * Result handler. Adds a cmd result matching the current command
+	 * 	to the command results. On success, the next command will be executed,
+	 *  on failure the series aborts.
+	 *
+	 * Commands 30-32: multiple results are handled by checking the
+	 * 	result records count and position. Error "no historical messages"
+	 *  is handled as a normal result (no failure = no abort). The record
+	 *  count/position are told to the listener as sub step progress.
+	 *
+	 * @param result -- return string received from server
+	 */
 	@Override
 	public void onResultCommand(String[] result) {
 
@@ -173,7 +251,8 @@ public class CmdSeries implements OnResultCommandListener {
 				// error: stop execution
 				Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
 				mService.cancelCommand();
-				mListener.onCmdSeriesFinish(this, returnCode);
+				if (mListener != null)
+					mListener.onCmdSeriesFinish(this, returnCode);
 
 			} else {
 				// success: check record count
@@ -184,7 +263,8 @@ public class CmdSeries implements OnResultCommandListener {
 					executeNext();
 				} else {
 					// update progress sub step:
-					mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), recNr, recCnt);
+					if (mListener != null)
+						mListener.onCmdSeriesProgress(cmd.message, cmd.pos(), cmd.posCnt(), recNr, recCnt);
 				}
 			}
 
@@ -192,7 +272,8 @@ public class CmdSeries implements OnResultCommandListener {
 			// single result command error: stop execution
 			Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
 			mService.cancelCommand();
-			mListener.onCmdSeriesFinish(this, returnCode);
+			if (mListener != null)
+				mListener.onCmdSeriesFinish(this, returnCode);
 
 		} else {
 			// single result command success:
@@ -202,25 +283,43 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
+	/**
+	 * Cancel series execution. Pending results will be ignored.
+	 * 	Triggers Listener callback onCmdSeriesFinish with result code -1.
+	 */
 	public void cancel() {
 		Log.v(TAG, "cancelled");
 		mService.cancelCommand();
-		mListener.onCmdSeriesFinish(this, -1);
+		if (mListener != null)
+			mListener.onCmdSeriesFinish(this, -1);
 	}
 
 
+	/**
+	 * Get return code of current command
+	 * @return -- command return code (0..3)
+	 */
 	public int getReturnCode() {
 		Cmd cmd = getCurrent();
 		return (cmd != null) ? cmd.returnCode : 0;
 	}
 
 
+	/**
+	 * Get user message for current command
+	 * @return -- message string
+	 */
 	public String getMessage() {
 		Cmd cmd = getCurrent();
 		return (cmd != null) ? cmd.message : "";
 	}
 
 
+	/**
+	 * Get optional error detail string returned by the module if available.
+	 *  (On return code 1-3 the command may supply a detail message, see protocol)
+	 * @return -- error detail description or ""
+	 */
 	public String getErrorDetail() {
 		Cmd cmd = getCurrent();
 		if (cmd == null)
