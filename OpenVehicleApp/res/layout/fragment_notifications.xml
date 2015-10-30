@@ -20,7 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:id="@+id/imageView"
-        android:src="@drawable/abs__list_divider_holo_dark"
+        android:src="@drawable/bg_bar_toast"
         android:layout_above="@+id/cmdInput"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"

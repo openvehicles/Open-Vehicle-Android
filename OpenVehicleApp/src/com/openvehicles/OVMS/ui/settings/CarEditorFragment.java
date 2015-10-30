@@ -15,13 +15,14 @@ import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.validators.PasswdValidator;
@@ -29,7 +30,7 @@ import com.openvehicles.OVMS.ui.validators.StringValidator;
 import com.openvehicles.OVMS.ui.validators.ValidationException;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class CarEditorFragment extends SherlockFragment {
+public class CarEditorFragment extends BaseFragment {
 	private CarData mCarData;
 	private boolean isSelectedCar;
 	private int mEditPosition;
@@ -43,7 +44,7 @@ public class CarEditorFragment extends SherlockFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_action_edit);		
+		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_edit);
 		
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
@@ -155,7 +156,7 @@ public class CarEditorFragment extends SherlockFragment {
 	
 	private void approveCarData() {
 		View rootView = getView();
-		getSherlockActivity().setTitle(mCarData.sel_vehicleid);
+		getCompatActivity().setTitle(mCarData.sel_vehicleid);
 		Ui.setValue(rootView, R.id.txt_vehicle_id, mCarData.sel_vehicleid);
 		Ui.setValue(rootView, R.id.txt_vehicle_label, mCarData.sel_vehicle_label);
 		Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);

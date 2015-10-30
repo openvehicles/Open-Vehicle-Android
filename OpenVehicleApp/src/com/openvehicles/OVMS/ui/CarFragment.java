@@ -6,8 +6,6 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
-//import android.view.Menu;
-//import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -15,9 +13,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -63,7 +62,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 
 	@Override
-	public void onCreateOptionsMenu(com.actionbarsherlock.view.Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.car_options, menu);
 
 		optionsMenu = menu;
@@ -74,7 +73,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	}
 
 	@Override
-	public void onPrepareOptionsMenu(com.actionbarsherlock.view.Menu menu) {
+	public void onPrepareOptionsMenu(Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		if (mCarData != null && mCarData.car_type != null) {
 			menu.findItem(R.id.mi_power_stats).setVisible(mCarData.car_type.equals("RT"));
@@ -82,7 +81,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(com.actionbarsherlock.view.MenuItem item) {
+	public boolean onOptionsItemSelected(MenuItem item) {
 
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
@@ -110,7 +109,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	public void update(CarData pCarData) {
 		mCarData = pCarData;
 
-		getSherlockActivity().invalidateOptionsMenu();
+		getCompatActivity().invalidateOptionsMenu();
 
 		updateLastUpdatedView(pCarData);
 		updateCarBodyView(pCarData);

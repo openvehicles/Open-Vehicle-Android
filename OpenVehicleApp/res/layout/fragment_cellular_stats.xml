@@ -31,10 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:id="@+id/imageView2"
-            android:src="@drawable/abs__list_divider_holo_dark"
-            android:layout_above="@+id/cmdInput"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
+            android:src="@drawable/bg_bar_toast"
             android:scaleType="fitXY"/>
 
         <TextView

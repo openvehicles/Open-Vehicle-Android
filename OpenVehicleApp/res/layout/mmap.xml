@@ -3,9 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    <fragment
+
+    <FrameLayout
         android:id="@+id/mmap"
-        android:name="pl.mg6.android.maps.extensions.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

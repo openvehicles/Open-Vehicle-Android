@@ -2,12 +2,11 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -163,7 +162,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		SherlockFragmentActivity activity = getSherlockActivity(); 
+		FragmentActivity activity = getCompatActivity();
 		activity.setTitle(R.string.CellularStats);
 	}
 

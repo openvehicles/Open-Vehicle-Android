@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -49,7 +49,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		SherlockFragmentActivity activity = getSherlockActivity();
+		FragmentActivity activity = getActivity();
 		activity.setTitle(R.string.Features);
 	}
 

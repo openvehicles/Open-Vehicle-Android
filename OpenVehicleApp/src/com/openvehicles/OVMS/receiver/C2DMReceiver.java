@@ -11,14 +11,17 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
+
 
 public class C2DMReceiver extends BroadcastReceiver {
 	private static String KEY = "C2DM";
@@ -100,22 +103,28 @@ public class C2DMReceiver extends BroadcastReceiver {
 			if (icon == 0)
 				icon = android.R.drawable.ic_lock_idle_alarm;
 
-			// create Notification:
-			long when = System.currentTimeMillis();
-			Notification notification = new Notification(icon, tickerText, when);
-			notification.flags = Notification.FLAG_AUTO_CANCEL;
-			notification.defaults = Notification.DEFAULT_LIGHTS | Notification.DEFAULT_SOUND | Notification.DEFAULT_VIBRATE;
+			// create Notification builder:
+			NotificationCompat.Builder mBuilder =
+					(NotificationCompat.Builder) new NotificationCompat.Builder(context)
+							.setAutoCancel(true)
+							.setDefaults(Notification.DEFAULT_ALL)
+							.setSmallIcon(icon)
+							.setContentTitle(contentTitle)
+							.setContentText(contentText);
 
+			// add Intents:
 			Intent notificationIntent = new Intent(context, MainActivity.class);
 			notificationIntent.putExtra("onNotification", true);
 			PendingIntent launchOVMSIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-			notification.setLatestEventInfo(context, contentTitle, contentText, launchOVMSIntent);
-			context.sendBroadcast(notificationIntent);
+			mBuilder.setContentIntent(launchOVMSIntent);
+
+			// ?
+			//context.sendBroadcast(notificationIntent);
 
 			// announce Notification via Android system:
-			String ns = Context.NOTIFICATION_SERVICE;
-			NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(ns);
-			mNotificationManager.notify(1, notification);
+			NotificationManager mNotificationManager =
+					(NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(1, mBuilder.build());
 
 			// update UI:
 			Log.d("C2DM", "Notifications: sending Intent: " + context.getPackageName() + ".Notification");

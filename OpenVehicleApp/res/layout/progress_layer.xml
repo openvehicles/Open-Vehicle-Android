@@ -15,7 +15,7 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@color/abs__bright_foreground_disabled_holo_light"
+        android:background="@color/background_floating_material_dark"
         android:paddingLeft="20dip"
         android:paddingRight="20dip"
         android:layout_margin="20dip"
@@ -30,11 +30,11 @@
             android:text="@string/msg_retrieving_data"
             android:layout_gravity="center_horizontal"
             android:layout_marginBottom="10dp"
-            android:textAppearance="@android:style/TextAppearance.Medium.Inverse"/>
+            android:textAppearance="@color/primary_text_default_material_dark"/>
 
         <ProgressBar
             android:id="@+id/progress_bar_indeterminate"
-            style="@style/Widget.Sherlock.Light.ProgressBar"
+            style="@style/Widget.AppCompat.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -45,7 +45,7 @@
 
         <ProgressBar
             android:id="@+id/progress_bar_determinate"
-            style="@style/Widget.Sherlock.Light.ProgressBar.Horizontal"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
@@ -55,7 +55,7 @@
             android:visibility="visible"/>
 
         <ProgressBar
-            style="@style/Widget.Sherlock.Light.ProgressBar.Horizontal"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:id="@+id/progress_bar_substep"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

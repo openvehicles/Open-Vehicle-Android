@@ -357,7 +357,7 @@ public class LogsFragment extends BaseFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		getSherlockActivity().setTitle(R.string.logs_title);
+		getCompatActivity().setTitle(R.string.logs_title);
 
 		// get data of car to edit:
 		mEditPosition = getArguments().getInt("position", -1);
@@ -684,7 +684,7 @@ public class LogsFragment extends BaseFragment
 
 			if (isHeader) {
 				row.setBackgroundResource(
-						R.drawable.abs__list_selector_background_transition_holo_light);
+						R.drawable.abc_list_selector_background_transition_holo_light);
 			}
 
 			LinearLayout.LayoutParams layout;

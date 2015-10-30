@@ -1,11 +1,12 @@
 package com.openvehicles.OVMS.ui;
 
 import android.app.Activity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.app.SherlockFragment;
+import android.support.v4.app.Fragment;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
@@ -15,7 +16,7 @@ import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 
 import java.util.HashMap;
 
-public class BaseFragment extends SherlockFragment implements ApiObserver {
+public class BaseFragment extends Fragment implements ApiObserver {
 
 	public HashMap<String, String> mSentCommandMessage;
 
@@ -177,6 +178,10 @@ public class BaseFragment extends SherlockFragment implements ApiObserver {
 			return ((ApiActivity) activity).getService();
 		}
 		return null;
+	}
+
+	public AppCompatActivity getCompatActivity() {
+		return (AppCompatActivity) getActivity();
 	}
 
 }

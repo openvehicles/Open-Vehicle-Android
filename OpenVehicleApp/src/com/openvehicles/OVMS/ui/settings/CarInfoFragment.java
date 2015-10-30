@@ -4,12 +4,13 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
@@ -27,7 +28,7 @@ public class CarInfoFragment extends BaseFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		SherlockFragmentActivity activity = getSherlockActivity(); 
+		AppCompatActivity activity = getCompatActivity();
 		
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_about);
 		activity.setTitle(R.string.lb_vehicle_info);

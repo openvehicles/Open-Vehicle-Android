@@ -374,7 +374,6 @@
     <string name="power_btn_help">Info</string>
     <string name="power_chk_energy">Show energy</string>
     <string name="power_chk_power">Show power</string>
-    <string name="power_chk_liveupdate">Live update</string>
     <string name="power_msg_loading_data">Loading&#8230;</string>
     <string name="power_msg_getting_gpslog">Retrieving GPS log&#8230;</string>
 

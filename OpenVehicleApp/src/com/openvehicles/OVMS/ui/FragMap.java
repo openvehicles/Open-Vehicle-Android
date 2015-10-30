@@ -3,14 +3,15 @@ package com.openvehicles.OVMS.ui;
 import java.text.DecimalFormat;
 import java.util.List;
 
-import pl.mg6.android.maps.extensions.CircleOptions;
-import pl.mg6.android.maps.extensions.ClusterGroup;
-import pl.mg6.android.maps.extensions.ClusteringSettings;
-import pl.mg6.android.maps.extensions.GoogleMap;
-import pl.mg6.android.maps.extensions.GoogleMap.OnInfoWindowClickListener;
-import pl.mg6.android.maps.extensions.Marker;
-import pl.mg6.android.maps.extensions.MarkerOptions;
-import pl.mg6.android.maps.extensions.SupportMapFragment;
+import com.androidmapsextensions.CircleOptions;
+import com.androidmapsextensions.ClusterGroup;
+import com.androidmapsextensions.ClusteringSettings;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.OnMapReadyCallback;
+import com.androidmapsextensions.SupportMapFragment;
 
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -21,18 +22,19 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -46,10 +48,12 @@ import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
-		afterasytask, OnClickListener, Settings.UpdateMap {
+		afterasytask, OnClickListener, Settings.UpdateMap, OnMapReadyCallback {
 	private static final String TAG = "FragMap";
 
+	private SupportMapFragment fragment;
 	private GoogleMap map;
+
 	Database database;
 	String slat, slng;
 	AppPrefes appPrefes;
@@ -66,10 +70,52 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	static int maxrange = 160;
 	static String distance_units = "KM";
 
+	List<Marker> lis;
+
 	public interface UpdateLocation {
 		public void updatelocation();
 	}
 
+
+	// getMap: Initialize the map fragment
+	// 	see: http://developer.android.com/about/versions/android-4.2.html#NestedFragments
+	// 	and: https://developers.google.com/android/reference/com/google/android/gms/maps/SupportMapFragment
+	private void getMap() {
+
+		FragmentManager fm = getChildFragmentManager();
+
+		fragment = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
+		if (fragment == null) {
+			Log.d(TAG, "getMap: create newInstance()");
+			fragment = SupportMapFragment.newInstance();
+			fm.beginTransaction().replace(R.id.mmap, fragment).commit();
+		}
+		Log.d(TAG, "getMap: fragment=" + fragment);
+
+		if (fragment != null) {
+			fragment.getExtendedMapAsync(this);
+		}
+	}
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		map = googleMap;
+		Log.d(TAG, "getMap/onMapReady: map=" + map);
+
+		map.setClustering(new ClusteringSettings().clusterOptionsProvider(
+				new DemoClusterOptionsProvider(getResources()))
+				.addMarkersDynamically(true));
+
+		map.setOnInfoWindowClickListener(this);
+
+		map.getUiSettings().setRotateGesturesEnabled(false); // disable two-finger rotation gesture
+		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
+		//map.getUiSettings().setMyLocationButtonEnabled(true);
+
+		map.moveCamera(CameraUpdateFactory.zoomTo(15)); // init zoom level
+
+		update();
+	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -85,19 +131,13 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		database = new Database(getActivity());
 
-		FragmentManager fm = getActivity().getSupportFragmentManager();
-		SupportMapFragment f = (SupportMapFragment) fm
-				.findFragmentById(R.id.mmap);
-		map = f.getExtendedMap();
-		map.setClustering(new ClusteringSettings().clusterOptionsProvider(
-				new DemoClusterOptionsProvider(getResources()))
-				.addMarkersDynamically(true));
-		map.setOnInfoWindowClickListener(this);
-    	map.getUiSettings().setRotateGesturesEnabled(false); // Disable two-finger rotation gesture
-		map.moveCamera(CameraUpdateFactory.zoomTo(15));
-		// setUpClusteringViews();
+		//FragmentManager fm = getCompatActivity().getSupportFragmentManager();
+		//FragmentManager fm = getChildFragmentManager();
+		//SupportMapFragment f = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
+		getMap();
 
 		setHasOptionsMenu(true);
+
 		flag = true;
 
 		// get config:
@@ -107,42 +147,43 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	@Override
-	public void updateClustering(int clusterSizeIndex, boolean enabled) {
-		ClusteringSettings clusteringSettings = new ClusteringSettings();
-		clusteringSettings.addMarkersDynamically(true);
-		if (enabled) {
-			after(false);
-			clusteringSettings
-					.clusterOptionsProvider(new DemoClusterOptionsProvider(
-							getResources()));
+	public void onResume() {
+		super.onResume();
+		getMap();
+	}
 
-			double clusterSize = CLUSTER_SIZES[clusterSizeIndex];
-			clusteringSettings.clusterSize(clusterSize);
-		} else {
-			lis = map.getMarkers();
-			for (int i = 0; i < lis.size(); i++) {
-				Marker carmarker = lis.get(i);
-				int j = carmarker.getClusterGroup();
-				if (j == -1) {
-					lis.remove(i);
-				} else {
-					carmarker.remove();
-				}
+	@Override
+	public void onDestroyView() {
+		try {
+			flag = true;
+
+			/*
+			Fragment fragment = getChildFragmentManager().findFragmentById(R.id.mmap);
+			Log.d(TAG, "onDestroyView: fragment=" + fragment);
+			FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+			ft.remove(fragment);
+			ft.commitAllowingStateLoss();
+			*/
+
+			/*
+			FragmentManager fm = getChildFragmentManager();
+			SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
+			Log.d(TAG, "onDestroyView: fragment=" + fragment);
+
+			if (fragment != null) {
+				fm.beginTransaction().remove(fragment).commit();
+				Log.d(TAG, "onDestroyView: fragment removed");
 			}
+			*/
+
+			database.close();
+
+		} catch (Exception e) {
+			// nop
 		}
-		map.setClustering(clusteringSettings);
+		super.onDestroyView();
 	}
 
-
-	List<Marker> lis;
-
-	private void replacefragment(Fragment frag) {
-		// TODO Auto-generated method stub
-		FragmentTransaction ft = getActivity().getSupportFragmentManager()
-				.beginTransaction();
-		ft.replace(R.id.fm, frag);
-		ft.commit();
-	}
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -200,20 +241,38 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 
 	@Override
-	public void onDestroyView() {
-		try {
-			flag = true;
-			SupportMapFragment fragment = ((SupportMapFragment) getFragmentManager()
-					.findFragmentById(R.id.mmap));
-			FragmentTransaction ft = getActivity().getSupportFragmentManager()
-					.beginTransaction();
-			ft.remove(fragment);
-			ft.commit();
-			database.close();
-		} catch (Exception e) {
+	public void updateClustering(int clusterSizeIndex, boolean enabled) {
+
+		if (map == null)
+			return;
+
+		ClusteringSettings clusteringSettings = new ClusteringSettings();
+		clusteringSettings.addMarkersDynamically(true);
+
+		if (enabled) {
+			after(false);
+			clusteringSettings
+					.clusterOptionsProvider(new DemoClusterOptionsProvider(
+							getResources()));
+
+			double clusterSize = CLUSTER_SIZES[clusterSizeIndex];
+			clusteringSettings.clusterSize(clusterSize);
+		} else {
+			lis = map.getMarkers();
+			for (int i = 0; i < lis.size(); i++) {
+				Marker carmarker = lis.get(i);
+				int j = carmarker.getClusterGroup();
+				if (j == -1) {
+					lis.remove(i);
+				} else {
+					carmarker.remove();
+				}
+			}
 		}
-		super.onDestroyView();
+
+		map.setClustering(clusteringSettings);
 	}
+
 
 	private void direction() {
 		// TODO Auto-generated method stub
@@ -243,6 +302,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	// after fetch value from server
 	@Override
 	public void after(boolean clearmap) {
+
+		if (map == null)
+			return;
 
 		Log.d(TAG, "after: clearmap=" + clearmap);
 
@@ -356,6 +418,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		if (mCarData == null)
 			return;
+		if (map == null)
+			return;
 
 		// get last known car position:
 
@@ -412,6 +476,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	// draw circle in a map
 	private void addCircles(int rd1, int rd2) {
+		if (map == null)
+			return;
+
 		float strokeWidth = getResources().getDimension(
 				R.dimen.circle_stroke_width);
 		CircleOptions options = new CircleOptions().strokeWidth(strokeWidth)

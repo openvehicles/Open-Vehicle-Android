@@ -19,9 +19,10 @@ import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
@@ -110,7 +111,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		mCarData = pCarData;
 
-		getSherlockActivity().invalidateOptionsMenu();
+		getCompatActivity().invalidateOptionsMenu();
 
 		// update UI:
 		updateLastUpdatedView(pCarData);

@@ -221,7 +221,7 @@
             android:text="123456.7km"
             android:textSize="25px"
             android:gravity="center"
-            android:textColor="@color/abs__bright_foreground_holo_dark"
+            android:textColor="#0099cc"
             android:singleLine="false"
             android:fontFamily="sans-serif-condensed"
             />
@@ -235,7 +235,7 @@
 			android:text="123kph"
 			android:textSize="32px"
             android:gravity="center"
-            android:textColor="@color/abs__holo_blue_light"
+            android:textColor="#0099cc"
             android:textStyle="bold"
             android:fontFamily="sans-serif-condensed"
             />

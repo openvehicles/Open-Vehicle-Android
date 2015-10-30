@@ -21,12 +21,15 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.actionbarsherlock.app.ActionBar;
-import com.actionbarsherlock.view.Window;
+import android.support.v7.app.ActionBar;
+
 import com.luttu.AppPrefes;
+
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
@@ -54,11 +57,9 @@ public class MainActivity extends ApiActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+
 		appPrefes = new AppPrefes(this, "ovms");
 		database = new Database(this);
-
-		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-		setSupportProgressBarIndeterminateVisibility(false);
 
 		// OCM init:
 		updateLocation = this;
@@ -83,6 +84,14 @@ public class MainActivity extends ApiActivity implements
 
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
+		actionBar.setDisplayShowHomeEnabled(true);
+
+		// Progress bar init:
+		ProgressBar progressBar = new ProgressBar(this);
+		progressBar.setVisibility(View.GONE);
+		progressBar.setIndeterminate(true);
+		actionBar.setDisplayShowCustomEnabled(true);
+		actionBar.setCustomView(progressBar);
 
 		mPagerAdapter = new MainPagerAdapter(
 				new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
@@ -169,6 +178,11 @@ public class MainActivity extends ApiActivity implements
 		getSupportActionBar().setIcon(ti.icon_res_id);
 		mViewPager.setCurrentItem(itemPosition, false);
 		return true;
+	}
+
+	@Override
+	public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
+		getSupportActionBar().getCustomView().setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
 	private final Runnable mC2DMRegistrationID = new Runnable() {
@@ -299,8 +313,8 @@ public class MainActivity extends ApiActivity implements
 
 	private static class NavAdapter extends ArrayAdapter<TabInfo> {
 		public NavAdapter(Context context, TabInfo[] objects) {
-			super(context, R.layout.sherlock_spinner_item, objects);
-			setDropDownViewResource(R.layout.sherlock_spinner_dropdown_item);
+			super(context, android.R.layout.simple_spinner_item, objects);
+			setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
 		}
 
 		@Override

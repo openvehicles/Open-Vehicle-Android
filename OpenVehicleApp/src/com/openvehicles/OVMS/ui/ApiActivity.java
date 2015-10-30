@@ -6,12 +6,13 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 
-import com.actionbarsherlock.app.SherlockFragmentActivity;
+import android.support.v7.app.AppCompatActivity;
+
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.ApiService.ApiBinder;
 
-public class ApiActivity extends SherlockFragmentActivity {
+public class ApiActivity extends AppCompatActivity {
 	private ApiService mApiService;
 	
 	@Override

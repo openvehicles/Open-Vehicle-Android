@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.SeekBar;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -282,8 +283,8 @@ public class BatteryFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		getSherlockActivity().setTitle(R.string.battery_title);
-		getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
+		getCompatActivity().setTitle(R.string.battery_title);
+		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
 
 		// get data of current car:
 		mCarData = CarsStorage.get().getSelectedCarData();

@@ -13,9 +13,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuInflater;
-import com.actionbarsherlock.view.MenuItem;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
@@ -85,7 +86,6 @@ public class PowerFragment
 
 	private boolean mShowPower = true;
 	private boolean mShowEnergy = true;
-	private boolean mLiveUpdate = false;
 
 
 	// system services:
@@ -113,7 +113,6 @@ public class PowerFragment
 		mShowEnergy = appPrefes.getData("power_show_energy").equals("on");
 		if (!mShowPower && !mShowEnergy)
 			mShowPower = true;
-		mLiveUpdate = appPrefes.getData("power_liveupdate").equals("on");
 
 
 		// Setup UI:
@@ -333,13 +332,13 @@ public class PowerFragment
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
-		getSherlockActivity().setTitle(R.string.power_title);
-		getSherlockActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
+		getCompatActivity().setTitle(R.string.power_title);
+		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
 
 		// get data of current car:
 		mCarData = CarsStorage.get().getSelectedCarData();
 
-		getSherlockActivity().invalidateOptionsMenu();
+		getCompatActivity().invalidateOptionsMenu();
 
 		// schedule data loader:
 		showProgressOverlay(getString(R.string.power_msg_loading_data));
@@ -413,12 +412,6 @@ public class PowerFragment
 				}
 				item.setChecked(newState);
 				dataFilterChanged();
-				return true;
-
-			case R.id.mi_chk_liveupdate:
-				mLiveUpdate = newState;
-				appPrefes.SaveData("power_liveupdate", mLiveUpdate ? "on" : "off");
-				item.setChecked(newState);
 				return true;
 
 		}
@@ -858,18 +851,6 @@ public class PowerFragment
 			chart.zoom(scaleX, 1f, chart.getWidth() / 2f, chart.getHeight() / 2f);
 			chart.moveViewToX(start);
 		}
-
-	}
-
-
-	/**
-	 * Live update function
-	 *
-	 */
-
-	public void doLiveUpdate() {
-
-
 
 	}
 
