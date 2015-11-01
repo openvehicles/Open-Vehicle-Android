@@ -13,12 +13,12 @@
     <permission
         android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
         android:protectionLevel="signature" />
-
     <uses-permission android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE" />
 
     <!-- This app has permission to register and receive message -->
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -42,7 +42,6 @@
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -60,26 +59,27 @@
             android:name="com.openvehicles.OVMS.api.ApiService"
             android:enabled="true" />
 
-        <!-- Only C2DM servers can send messages for the app. If permission is not set - any other app can generate it -->
         <receiver
-            android:name=".receiver.C2DMReceiver"
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
             android:permission="com.google.android.c2dm.permission.SEND" >
-
-            <!-- Receive the actual message -->
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
-
-                <category android:name="com.openvehicles.OVMS" />
-            </intent-filter>
-            <!-- Receive the registration id -->
-            <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.REGISTRATION" />
-
                 <category android:name="com.openvehicles.OVMS" />
             </intent-filter>
         </receiver>
 
+        <service
+            android:name=".receiver.GCMReceiver"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
         <uses-library android:name="com.google.android.maps" />
+
     </application>
 
 </manifest>

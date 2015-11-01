@@ -1,7 +1,7 @@
 package com.openvehicles.OVMS.ui;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -271,7 +271,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface pDlg, int pWhich) {
-								Dialog dlg = (Dialog) pDlg;
+								AppCompatDialog dlg = (AppCompatDialog) pDlg;
 								SwitcherView sw = (SwitcherView) dlg
 										.findViewById(R.id.sv_state);
 								SlideNumericView snv = (SlideNumericView) dlg
@@ -337,7 +337,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface pDlg, int pWhich) {
-								Dialog dlg = (Dialog) pDlg;
+								AppCompatDialog dlg = (AppCompatDialog) pDlg;
 
 								SlideNumericView snvRange = (SlideNumericView) dlg
 										.findViewById(R.id.snv_sufficient_range);

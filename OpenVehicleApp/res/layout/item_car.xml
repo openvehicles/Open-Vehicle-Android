@@ -9,12 +9,14 @@
 	    android:textAppearance="?android:textAppearanceMedium"/>
 
     <ImageView android:id="@+id/img_car"
-        android:layout_width="wrap_content" android:layout_height="match_parent"
+        android:layout_width="match_parent" android:layout_height="match_parent"
         android:adjustViewBounds="true"
         android:layout_below="@id/txt_title"
         android:layout_marginRight="8dp"
         android:layout_toLeftOf="@+id/menu"
-        android:scaleType="fitStart"/>
+        android:scaleType="fitCenter"
+
+               android:layout_centerHorizontal="true"/>
     <!-- android:src="@drawable/car_default" -->
 
     <ImageView android:id="@+id/img_signal_rssi"

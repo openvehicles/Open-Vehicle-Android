@@ -1,9 +1,8 @@
 package com.openvehicles.OVMS.ui;
 
 import java.util.UUID;
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -21,13 +20,14 @@ import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import android.support.v7.app.ActionBar;
 
+import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.android.gms.iid.InstanceID;
 import com.luttu.AppPrefes;
 
 import com.openvehicles.OVMS.R;
@@ -45,7 +45,6 @@ public class MainActivity extends ApiActivity implements
 		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
 	private static final String TAG = "MainActivity";
 
-	private final Handler mC2dmHandler = new Handler();
 	private ViewPager mViewPager;
 	private MainPagerAdapter mPagerAdapter;
 	AppPrefes appPrefes;
@@ -121,37 +120,10 @@ public class MainActivity extends ApiActivity implements
 		actionBar.setListNavigationCallbacks(
 				new NavAdapter(this, mPagerAdapter.getTabInfoItems()), this);
 
-		// check for C2DM registration
-		// Restore saved registration id
-		SharedPreferences settings = getSharedPreferences("C2DM", 0);
-		String registrationID = settings.getString("RegID", "");
-		if (registrationID.length() == 0) {
-			Log.d(TAG, "C2DM: Doing first time registration.");
+		// schedule GCM registration:
+		mGcmHandler.postDelayed(mGcmDoRegistration, 2000);
 
-			// No C2DM ID available. Register now.
-			// ProgressDialog progress = ProgressDialog.show(this,
-			// "Push Notification Network", "Sending one-time registration...");
-			Intent intent = new Intent(
-					"com.google.android.c2dm.intent.REGISTER");
-			intent.putExtra("app",
-					PendingIntent.getBroadcast(this, 0, new Intent(), 0)); // boilerplate
-			intent.putExtra("sender", "openvehicles@gmail.com");
-			startService(intent);
-			// progress.dismiss();
-
-			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
-
-			/*
-			 * unregister Intent unregIntent = new
-			 * Intent("com.google.android.c2dm.intent.UNREGISTER");
-			 * unregIntent.putExtra("app", PendingIntent.getBroadcast(this, 0,
-			 * new Intent(), 0)); startService(unregIntent);
-			 */
-		} else {
-			Log.d(TAG, "C2DM: Loaded Saved C2DM registration ID: "
-					+ registrationID);
-			mC2dmHandler.postDelayed(mC2DMRegistrationID, 2000);
-		}
+		// process Activity startup intent:
 		onNewIntent(getIntent());
 	}
 
@@ -185,45 +157,93 @@ public class MainActivity extends ApiActivity implements
 		getSupportActionBar().getCustomView().setVisibility(visible ? View.VISIBLE : View.GONE);
 	}
 
-	private final Runnable mC2DMRegistrationID = new Runnable() {
+
+	// GCM push notification registration:
+	// 	- register with GCM hub
+	//	- create UUID for this device
+	//	- subscribe at OVMS server
+	private final Handler mGcmHandler = new Handler();
+	private final Runnable mGcmDoRegistration = new Runnable() {
+		private AsyncTask<Void, Void, Void> getTokenTask;
+
 		public void run() {
-			// check if tcp connection is still active (it may be closed as the
-			// user leaves the program)
-			ApiService service = getService();
-			if (service == null || !service.isLoggedIn())
-				return;
 
-			SharedPreferences settings = getSharedPreferences("C2DM", 0);
+			SharedPreferences settings = getSharedPreferences("GCM", 0);
 			String registrationID = settings.getString("RegID", "");
-			String uuid;
+			boolean retry = true;
 
-			if (!settings.contains("UUID")) {
-				// generate a new UUID
-				uuid = UUID.randomUUID().toString();
-				Editor editor = getSharedPreferences("C2DM",
-						Context.MODE_PRIVATE).edit();
-				editor.putString("UUID", uuid);
-				editor.commit();
+			// get/create GCM registration ID:
+			if (registrationID.length() == 0) {
 
-				Log.d(TAG, "C2DM: Generated New C2DM UUID: " + uuid);
+				// may block, needs to be done in sub task:
+
+				if (getTokenTask != null && getTokenTask.getStatus() == AsyncTask.Status.FINISHED)
+					getTokenTask = null; // failed, retry
+
+				if (getTokenTask == null) {
+					getTokenTask = new AsyncTask<Void, Void, Void>() {
+						@Override
+						protected Void doInBackground(Void... params) {
+							try {
+								Log.d(TAG, "GCM: doing first time registration.");
+
+								InstanceID instanceID = InstanceID.getInstance(getBaseContext());
+								String registrationID = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+										GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+
+								Log.i(TAG, "GCM: new registration ID: " + registrationID);
+
+								// store new registration ID:
+								SharedPreferences settings = getSharedPreferences("GCM", 0);
+								Editor editor = settings.edit();
+								editor.putString("RegID", registrationID);
+								editor.commit();
+
+							} catch (Exception e) {
+								Log.e(TAG, "GCM: registration failed", e);
+							}
+							return null;
+						}
+					}.execute();
+				}
+
 			} else {
-				uuid = settings.getString("UUID", "");
-				Log.d(TAG, "C2DM: Loaded Saved C2DM UUID: " + uuid);
+
+				Log.d(TAG, "GCM: using registration ID: " + registrationID);
+
+				// get/create device UUID:
+				String uuid = settings.getString("UUID", "");
+				if (uuid.length() == 0) {
+					uuid = UUID.randomUUID().toString();
+					Editor editor = settings.edit();
+					editor.putString("UUID", uuid);
+					editor.commit();
+					Log.d(TAG, "GCM: generated new UUID: " + uuid);
+				} else {
+					Log.d(TAG, "GCM: using UUID: " + uuid);
+				}
+
+				// subscribe at OVMS server:
+				ApiService service = getService();
+				if (service != null && service.isLoggedIn()) {
+					// MP-0
+					// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
+					CarData carData = service.getCarData();
+					String cmd = String.format("MP-0 p%s,gcm,production,%s,%s,%s",
+							uuid, carData.sel_vehicleid, carData.sel_server_password,
+							registrationID);
+					if (!service.sendCommand(cmd, null)) {
+						Log.w(TAG, "GCM: push subscription failed, scheduling retry");
+					} else {
+						Log.d(TAG, "GCM: push subscription done.");
+						retry = false;
+					}
+				}
 			}
 
-			// MP-0
-			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
-			CarData carData = service.getCarData();
-			String cmd = String.format("MP-0 p%s,c2dm,production,%s,%s,%s",
-					uuid, carData.sel_vehicleid, carData.sel_server_password,
-					registrationID);
-			service.sendCommand(cmd, null);
-
-			if ((registrationID.length() == 0)
-					|| !service.sendCommand(cmd, null)) {
-				// command not successful, reschedule reporting after 5 seconds
-				Log.d(TAG, "C2DM: Reporting C2DM ID failed. Rescheduling.");
-				mC2dmHandler.postDelayed(mC2DMRegistrationID, 5000);
+			if (retry) {
+				// retry after 5 seconds:
+				mGcmHandler.postDelayed(mGcmDoRegistration, 5000);
 			}
 		}
 	};

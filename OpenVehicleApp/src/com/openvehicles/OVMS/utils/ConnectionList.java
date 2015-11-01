@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.app.Dialog;
+import android.support.v7.app.AppCompatDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -105,7 +105,7 @@ public class ConnectionList {
 	public void sublist() {
 		// TODO Auto-generated method stub
 		getlist();
-		Dialog dialog = new Dialog(context);
+		AppCompatDialog dialog = new AppCompatDialog(context);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.connection_list);
 		ArrayAdapter<String> adpt = new ArrayAdapter<String>(context,

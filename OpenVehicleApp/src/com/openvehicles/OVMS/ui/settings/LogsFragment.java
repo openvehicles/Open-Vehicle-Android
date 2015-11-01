@@ -1,7 +1,7 @@
 package com.openvehicles.OVMS.ui.settings;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Typeface;
@@ -395,7 +395,7 @@ public class LogsFragment extends BaseFragment
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface pDlg, int pWhich) {
-										Dialog dlg = (Dialog) pDlg;
+										AppCompatDialog dlg = (AppCompatDialog) pDlg;
 
 										ToggleButton tbAlerts = (ToggleButton) dlg.findViewById(R.id.tbAlerts);
 										ToggleButton tbFaults = (ToggleButton) dlg.findViewById(R.id.tbFaults);
@@ -462,7 +462,7 @@ public class LogsFragment extends BaseFragment
 								new DialogInterface.OnClickListener() {
 									@Override
 									public void onClick(DialogInterface pDlg, int pWhich) {
-										Dialog dlg = (Dialog) pDlg;
+										AppCompatDialog dlg = (AppCompatDialog) pDlg;
 
 										ToggleButton tbFaults = (ToggleButton) dlg.findViewById(R.id.tbFaults);
 										ToggleButton tbEvents = (ToggleButton) dlg.findViewById(R.id.tbEvents);

@@ -221,10 +221,11 @@
             android:text="123456.7km"
             android:textSize="25px"
             android:gravity="center"
-            android:textColor="#0099cc"
+            android:textColor="@color/colorForeground"
             android:singleLine="false"
             android:fontFamily="sans-serif-condensed"
-            />
+			android:typeface="monospace"
+			/>
 
         <TextView
 			android:id="@+id/tabCarTextSpeed"
@@ -235,10 +236,10 @@
 			android:text="123kph"
 			android:textSize="32px"
             android:gravity="center"
-            android:textColor="#0099cc"
+            android:textColor="@color/colorForeground"
             android:textStyle="bold"
             android:fontFamily="sans-serif-condensed"
-            />
+			android:typeface="monospace"/>
 
 		<!-- OnClick -->
 

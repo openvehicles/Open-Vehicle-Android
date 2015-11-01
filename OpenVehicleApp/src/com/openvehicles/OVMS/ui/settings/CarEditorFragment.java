@@ -2,7 +2,7 @@ package com.openvehicles.OVMS.ui.settings;
 
 import java.util.List;
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.os.Bundle;

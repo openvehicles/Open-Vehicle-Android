@@ -1,7 +1,8 @@
 package com.openvehicles.OVMS.ui.utils;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
+import android.support.v7.app.AppCompatDialog;
+import android.support.v7.app.AlertDialog;
+
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
@@ -58,7 +59,7 @@ public final class Ui {
 			.setPositiveButton(pButtonResId, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					EditText etxtPin = (EditText) ((Dialog) dialog).findViewById(R.id.etxt_input_value);
+					EditText etxtPin = (EditText) ((AppCompatDialog) dialog).findViewById(R.id.etxt_input_value);
 					if (pListener != null) pListener.onAction(etxtPin.getText().toString());
 				}
 			})
@@ -67,7 +68,7 @@ public final class Ui {
         dialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-        		EditText et = (EditText)((Dialog) dialog).findViewById(R.id.etxt_input_value);
+        		EditText et = (EditText)((AppCompatDialog) dialog).findViewById(R.id.etxt_input_value);
                 InputMethodManager imm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
                 et.selectAll();
@@ -94,7 +95,7 @@ public final class Ui {
 			.setPositiveButton(pButtonResId, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					EditText etxtPin = (EditText) ((Dialog) dialog).findViewById(R.id.etxt_input_value);
+					EditText etxtPin = (EditText) ((AppCompatDialog) dialog).findViewById(R.id.etxt_input_value);
 					if (pListener != null) pListener.onAction(etxtPin.getText().toString());
 				}
 			})
@@ -103,7 +104,7 @@ public final class Ui {
         dialog.setOnShowListener(new OnShowListener() {
             @Override
             public void onShow(DialogInterface dialog) {
-        		EditText et = (EditText)((Dialog) dialog).findViewById(R.id.etxt_input_value);
+        		EditText et = (EditText)((AppCompatDialog) dialog).findViewById(R.id.etxt_input_value);
                 InputMethodManager imm = (InputMethodManager) et.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(et, InputMethodManager.SHOW_IMPLICIT);
                 et.selectAll();
