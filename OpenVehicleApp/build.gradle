@@ -2,31 +2,20 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'OVMS'
-            storeFile file('/home/balzer/Android/key-dexter.jks')
-            keyPassword 'dee4shi!'
-            storePassword 'dee4shi!'
-        }
-    }
     compileSdkVersion 23
     buildToolsVersion '23.0.1'
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
         minSdkVersion 10
         targetSdkVersion 23
-        signingConfig signingConfigs.config
     }
     buildTypes {
         release {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
-            signingConfig signingConfigs.config
             lintOptions { disable 'MissingTranslation' }
             versionNameSuffix '3.11.0'
         }
         debug {
-            signingConfig signingConfigs.config
             versionNameSuffix '3.11.0'
         }
     }
