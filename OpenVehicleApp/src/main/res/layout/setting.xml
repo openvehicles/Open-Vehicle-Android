@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="fill_parent"
+              android:orientation="vertical"
+              android:weightSum="1">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:stretchColumns="1"
+        android:baselineAligned="true"
+        android:measureWithLargestChild="false"
+        >
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="#e3e3e3"
+            android:orientation="vertical"
+            android:paddingTop="20dip"
+            android:paddingBottom="20dip">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="CHARGING STATIONS"
+                android:textColor="#000"
+                android:textSize="20sp"
+                android:layout_column="0"
+                android:textStyle="bold"
+                android:layout_span="2"
+                android:layout_gravity="center_horizontal"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Enable"
+                android:layout_column="0"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dip"/>
+
+            <CheckBox
+                android:id="@+id/checkbox_cluster"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dip"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Clustering"
+                android:layout_column="0"
+                android:singleLine="false"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dip"/>
+
+            <SeekBar
+                android:id="@+id/seekbar_cluster_size"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:indeterminate="false"
+                android:layout_column="1"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="20dip"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="Max results"
+                android:layout_column="0"
+                android:layout_marginRight="20dip"/>
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/ocm_maxresults"
+                android:layout_column="1"
+                android:layout_marginRight="20dip"
+                android:entries="@array/ocm_options_maxresults"
+                />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dip"
+                android:text="@string/connections"
+                android:id="@+id/btn_connections"
+                android:layout_column="1"/>
+
+        </TableRow>
+
+    </TableLayout>
+
+</LinearLayout>

@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout android:gravity="center" android:descendantFocusability="blocksDescendants" android:layout_width="fill_parent" android:layout_height="wrap_content"
-  xmlns:android="http://schemas.android.com/apk/res/android">
-    <ImageView android:layout_gravity="left" android:id="@id/imgCarEditorCarImage" android:layout_width="150.0dip" android:layout_height="69.0dip" android:scaleType="fitCenter" />
-</LinearLayout>

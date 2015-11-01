@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Vennligst vent</string>
+    <string name="Settings">Innstillinger</string>
+    <string name="Range" formatted="false">Rekkevidde: %s (%s estimert)</string>
+    <string name="LastUpdated" formatted="false">Oppdatert: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Avbryt</string>
+    <string name="Delete">Slett</string>
+    <string name="Save">Lagre</string>
+    <string name="Send">Send</string>
+    <string name="Error">Feil</string>
+    <string name="Set">Angi</string>
+    <string name="Control">Kontroll</string>
+    <string name="ServerNameOrIP">Server Adresse (Domain or IP)</string>
+    <string name="NetPass">Server Passord</string>
+    <string name="UserPass">Bruker Passord (Paranoid Modus)</string>
+    <string name="Quit">Avslutt Program</string>
+    <string name="Edit">Redigere</string>
+    <string name="Yes">Ja</string>
+    <string name="No">Nei</string>
+    <string name="ClearNotifications">Slett Melding</string>
+    <string name="VehicleImage">Kjøretøybilde</string>
+    <string name="btnAddCar">Legg Til Bil</string>
+    <string name="btnCenterMap">Sentrer Kart</string>
+    <string name="ImageParking">Kjøretøy Parkering</string>
+    <string name="SysWarning">System Advarsel</string>
+    <string name="LockIdle">Kjøretøylås</string>
+    <string name="SignalStrength">Signalstyrke</string>
+    <string name="ChargerPlug">Laderplug</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">SLIDE FOR Å\nLADE</string>
+    <string name="DefaultMode">STANDARD</string>
+    <string name="ChargingOverlay">Lader</string>
+    <string name="BatteryOverlay">Batteri</string>
+    <string name="EstimatedShort">ESTIMERT REKEVIDDE</string>
+    <string name="IdealShort">IDEELL REKEVIDDE</string>
+    <string name="BatteryText">Batteri</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Wakeup">Våkne</string>
+    <string name="Add">Legg Til</string>
+    <string name="Battery">Batteri</string>
+    <string name="Car">Bil</string>
+    <string name="Location">Lokasjon</string>
+    <string name="Messages">Meldinger</string>
+    <string name="Amps">Ampere</string>
+    <string name="Close">Lukk</string>
+    <string name="Features">Features</string>
+    <string name="Parameters">Parameter</string>
+    <string name="Vehicle">Kjøretøy</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Type</string>
+    <string name="GMC">GSM</string>
+    <string name="Server">Server</string>
+    <string name="App">App</string>
+
+    <string name="lb_wakeup_car">Aktivere Bil</string>
+    <string name="lb_unlock_car">Lås Opp Bil</string>
+    <string name="lb_lock_car">Lås Bil</string>
+    <string name="lb_valet_mode">Valet Modus</string>
+    <string name="lb_valet_mode_on">Valet På</string>
+    <string name="lb_valet_mode_off">Valet Av</string>
+    <string name="lb_enter_pin">Tast PIN</string>
+    <string name="lb_enter_passwd">Tast passord</string>
+    <string name="lb_enter_value">Angi verdi</string>
+    <string name="lb_wrning_charger">ADVARSEL\nFeil lader innstilling kan skade det elektriske anlegget!</string>
+    <string name="lb_charger_setting">Laderinnstilling</string>
+    <string name="lb_communications_problem">Kommunikasjonsproblem</string>
+    <string name="lb_vehicle_id">KjøretøyID</string>
+    <string name="lb_vehicle_label">Kjøretøy Etikett</string>
+    <string name="lb_server_passwd">OVMS Server Passord</string>
+    <string name="lb_module_passwd">OVMS Modul Passord</string>
+    <string name="lb_slide_choice_vehicle">Slide for å velge kjøretøy</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD Kode</string>
+    <string name="lb_cellular_usage">Mobil Bruk</string>
+    <string name="lb_reset_ovms_module">Reset OVMS Modul</string>
+    <string name="lb_center_map">Sentrer kart</string>
+    <string name="lb_ft_digital_speedo">#%d: Digitalt Speedometer</string>
+    <string name="lb_ft_gps_stream">#%d: GPS Strøm</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_car_bits">#%d: Car Bits</string>
+    <string name="lb_ft_can_write">#%d: CAN Write</string>
+    <string name="lb_cp_registered_telephone">#%d: Registrer Telefon</string>
+    <string name="lb_cp_module_password">#%d: Modul Passord</string>
+    <string name="lb_cp_miles_km">#%d: Miles/Km</string>
+    <string name="lb_cp_notifications">#%d: Melding</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Mobilnettverk APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Mobilnettverk Bruker</string>
+    <string name="lb_cp_cellular_network_password">#%d: Mobilnettverk Passord</string>
+    <string name="lb_cp_vehicle_id">#%d: KjøretøyID</string>
+    <string name="lb_cp_server_password">#%d: Server Passord</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoiamodus</string>
+    <string name="lb_cp_social_group_1">#%d: Sosialgruppe #1</string>
+    <string name="lb_cp_social_group_2">#%d: Sosialgruppe #2</string>
+    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_vehicle_info">Kjøretøyinfo</string>
+
+    <string name="msg_charger_range">Rekkevidde Modus begrenser effekten\nGjentatt bruk vil redusere batteri levetiden</string>
+    <string name="msg_charger_perform">Gjentatt bruk av Performance Modus\nVil redusere batteri levetiden</string>
+    <string name="msg_wakeup_car">Aktiverer Bilen&#8230;</string>
+    <string name="msg_issuing_homelink">Utfører Homelink Kommando&#8230;</string>
+    <string name="msg_setting_charge_mc">Setter Lademodus og Strømstyrke&#8230;</string>
+    <string name="msg_setting_charge_m">Setter Lademodus&#8230;</string>
+    <string name="msg_setting_charge_c">Setter Ladestrøm&#8230;</string>
+    <string name="msg_starting_charge">Starter Lading&#8230;</string>
+    <string name="msg_stopping_charge">Stopper Lading&#8230;</string>
+    <string name="msg_rebooting_car_module">Restarter Bilmodul&#8230;</string>
+    <string name="msg_please_enter_value">Vennligst angi korrekt verdi</string>
+    <string name="msg_invalid_name">Ditt brukernavn må være lenger en 3 tegn og kan ikke inneholde spesialtegn.</string>
+    <string name="msg_invalid_passwd">Ditt passord må være  mellom %1$d og %2$d tegn langt.</string>
+    <string name="msg_invalid_id_already_registered">Kjøretøy ID %s er allerede registrert. Vennligst angi en annen ID.</string>
+    <string name="msg_delete_this_car">Slett denne bilen?</string>
+    <string name="msg_mmi_ssd_code">Angi MMI/USSD Kode, trykk så SEND for å sende koden til ditt kjøretøys mobiloperatør</string>
+
+    <string name="err_connection_lost">Mistet OVMS Server tilkoblingen</string>
+    <string name="err_check_following">Vennligst sjekk følgende:\n1. OVMS Server addresse\n2. Din kjøretøy ID and passord</string>
+    <string name="err_failed">Feilet: %s</string>
+    <string name="err_unsupported_operation">Ustøttet operasjon</string>
+    <string name="err_unimplemented_operation">Uimplementert operasjon</string>
+
+    <string name="live">live</string>
+    <string name="ndays">%d dager</string>
+    <string name="nhours">%d timer</string>
+    <string name="nmins">%d minutter</string>
+    <string name="min1">1 minutt</string>
+    <string name="justnow">nå</string>
+    <string name="mph">mph</string>
+    <string name="kph">km/t</string>
+    <string name="slidetocharge">SLIDE FOR Å\nLADE</string>
+    <string name="timedcharge">TIDSSTYRT LADING</string>
+    <string name="pushnotifications">Push Melding</string>
+    <string name="pushnotifications_welcome">Push meldinger mottatt for ditt registrerte kjøretøy er arkivert her.</string>
+    <string formatted="false" name="state_charging">LADER\n%s %s</string>
+    
+    <string-array name="en_charger">
+        <item>Standard</item>
+        <item>Lagring</item>
+        <item>Rekkevide</item>
+        <item>Perform</item>
+    </string-array>
+
+</resources>
