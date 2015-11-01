@@ -168,9 +168,16 @@ public class MainActivity extends ApiActivity implements
 
 		public void run() {
 
-			SharedPreferences settings = getSharedPreferences("GCM", 0);
-			String registrationID = settings.getString("RegID", "");
 			boolean retry = true;
+
+			SharedPreferences settings = getSharedPreferences("GCM", 0);
+
+			// detect changes in GCM sender ID:
+			String registrationID;
+			if (settings.getString("SenderId", "").equals(getString(R.string.gcm_defaultSenderId)))
+				registrationID = settings.getString("RegID", "");
+			else
+				registrationID = "";
 
 			// get/create GCM registration ID:
 			if (registrationID.length() == 0) {
@@ -188,7 +195,8 @@ public class MainActivity extends ApiActivity implements
 								Log.d(TAG, "GCM: doing first time registration.");
 
 								InstanceID instanceID = InstanceID.getInstance(getBaseContext());
-								String registrationID = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
+								String senderId = getString(R.string.gcm_defaultSenderId);
+								String registrationID = instanceID.getToken(senderId,
 										GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
 
 								Log.i(TAG, "GCM: new registration ID: " + registrationID);
@@ -196,6 +204,7 @@ public class MainActivity extends ApiActivity implements
 								// store new registration ID:
 								SharedPreferences settings = getSharedPreferences("GCM", 0);
 								Editor editor = settings.edit();
+								editor.putString("SenderId", senderId);
 								editor.putString("RegID", registrationID);
 								editor.commit();
 
