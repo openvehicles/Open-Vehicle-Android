@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
-    android:versionCode="20151029"
+    android:versionCode="20151106"
     android:versionName="3.11.0">
 
     <uses-sdk
@@ -71,11 +71,22 @@
         </receiver>
 
         <service
-            android:name=".receiver.GCMReceiver"
+            android:name="com.openvehicles.OVMS.receiver.MyGcmListenerService"
             android:exported="false" >
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
             </intent-filter>
+        </service>
+        <service
+            android:name="com.openvehicles.OVMS.receiver.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name="com.openvehicles.OVMS.receiver.RegistrationIntentService"
+            android:exported="false">
         </service>
 
         <uses-library android:name="com.google.android.maps" />

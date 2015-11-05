@@ -106,7 +106,7 @@ public class ConnectionList {
 		// TODO Auto-generated method stub
 		getlist();
 		AppCompatDialog dialog = new AppCompatDialog(context);
-		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.connection_list);
 		ArrayAdapter<String> adpt = new ArrayAdapter<String>(context,
 				android.R.layout.simple_list_item_checked, al);

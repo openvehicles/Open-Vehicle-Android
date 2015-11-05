@@ -1,7 +1,14 @@
 package com.openvehicles.OVMS.ui;
 
 import java.util.UUID;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
+
 import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -14,9 +21,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,10 +28,11 @@ import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import android.support.v7.app.ActionBar;
-
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
+
 import com.luttu.AppPrefes;
 
 import com.openvehicles.OVMS.R;
@@ -35,22 +40,34 @@ import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.receiver.RegistrationIntentService;
 import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
 import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
 import com.openvehicles.OVMS.ui.utils.Database;
+import com.openvehicles.OVMS.ui.validators.StringValidator;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.Con;
 
+
 public class MainActivity extends ApiActivity implements
 		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
+
 	private static final String TAG = "MainActivity";
+
+	AppPrefes appPrefes;
+	Database database;
+	public String uuid;
 
 	private ViewPager mViewPager;
 	private MainPagerAdapter mPagerAdapter;
-	AppPrefes appPrefes;
-	Database database;
 	public static UpdateLocation updateLocation;
 	public GetMapDetails getMapDetails;
+
+
+	/**
+	 * App lifecycle management:
+	 *
+	 */
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +76,16 @@ public class MainActivity extends ApiActivity implements
 
 		appPrefes = new AppPrefes(this, "ovms");
 		database = new Database(this);
+
+		// get/create App UUID:
+		uuid = appPrefes.getData("UUID");
+		if (uuid.length() == 0) {
+			uuid = UUID.randomUUID().toString();
+			appPrefes.SaveData("UUID", uuid);
+			Log.d(TAG, "generated new UUID: " + uuid);
+		} else {
+			Log.d(TAG, "using UUID: " + uuid);
+		}
 
 		// OCM init:
 		updateLocation = this;
@@ -81,6 +108,11 @@ public class MainActivity extends ApiActivity implements
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
 
+		// check for Google Play Services App:
+		if (!checkPlayServices())
+			finish();
+
+		// configure ActionBar:
 		final ActionBar actionBar = getSupportActionBar();
 		actionBar.setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowHomeEnabled(true);
@@ -102,26 +134,23 @@ public class MainActivity extends ApiActivity implements
 
 		mViewPager.setAdapter(mPagerAdapter);
 		mViewPager.setOnPageChangeListener(
-			new ViewPager.SimpleOnPageChangeListener() {
-				@Override
-				public void onPageSelected(int position) {
-					actionBar.setSelectedNavigationItem(position);
+				new ViewPager.SimpleOnPageChangeListener() {
+					@Override
+					public void onPageSelected(int position) {
+						actionBar.setSelectedNavigationItem(position);
 
-					// cancel system notifications on page "Messages":
-					if (position == 3) {
-						NotificationManager mNotificationManager = (NotificationManager)
-								getSystemService(Context.NOTIFICATION_SERVICE);
-						mNotificationManager.cancelAll();
+						// cancel system notifications on page "Messages":
+						if (position == 3) {
+							NotificationManager mNotificationManager = (NotificationManager)
+									getSystemService(Context.NOTIFICATION_SERVICE);
+							mNotificationManager.cancelAll();
+						}
 					}
-				}
-			});
+				});
 
 		actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 		actionBar.setListNavigationCallbacks(
 				new NavAdapter(this, mPagerAdapter.getTabInfoItems()), this);
-
-		// schedule GCM registration:
-		mGcmHandler.postDelayed(mGcmDoRegistration, 2000);
 
 		// process Activity startup intent:
 		onNewIntent(getIntent());
@@ -129,8 +158,11 @@ public class MainActivity extends ApiActivity implements
 
 	@Override
 	public void onNewIntent(Intent newIntent) {
+		Log.d(TAG, "onNewIntent: " + newIntent.toString());
+
 		super.onNewIntent(newIntent);
 
+		// if launched from notification, switch to messages tab:
 		if (newIntent.getBooleanExtra("onNotification", false)) {
 			onNavigationItemSelected(3, 0);
 		}
@@ -144,13 +176,20 @@ public class MainActivity extends ApiActivity implements
 		super.onDestroy();
 	}
 
+
 	@Override
-	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
-		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
-		getSupportActionBar().setIcon(ti.icon_res_id);
-		mViewPager.setCurrentItem(itemPosition, false);
-		return true;
+	protected void onResume() {
+		super.onResume();
+		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
+				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
 	}
+
+	@Override
+	protected void onPause() {
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
+		super.onPause();
+	}
+
 
 	@Override
 	public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
@@ -158,105 +197,121 @@ public class MainActivity extends ApiActivity implements
 	}
 
 
-	// GCM push notification registration:
-	// 	- register with GCM hub
-	//	- create UUID for this device
-	//	- subscribe at OVMS server
-	private final Handler mGcmHandler = new Handler();
-	private final Runnable mGcmDoRegistration = new Runnable() {
-		private AsyncTask<Void, Void, Void> getTokenTask;
-
-		public void run() {
-
-			boolean retry = true;
-
-			SharedPreferences settings = getSharedPreferences("GCM", 0);
-
-			// detect changes in GCM sender ID:
-			String registrationID;
-			if (settings.getString("SenderId", "").equals(getString(R.string.gcm_defaultSenderId)))
-				registrationID = settings.getString("RegID", "");
-			else
-				registrationID = "";
-
-			// get/create GCM registration ID:
-			if (registrationID.length() == 0) {
-
-				// may block, needs to be done in sub task:
-
-				if (getTokenTask != null && getTokenTask.getStatus() == AsyncTask.Status.FINISHED)
-					getTokenTask = null; // failed, retry
-
-				if (getTokenTask == null) {
-					getTokenTask = new AsyncTask<Void, Void, Void>() {
-						@Override
-						protected Void doInBackground(Void... params) {
-							try {
-								Log.d(TAG, "GCM: doing first time registration.");
-
-								InstanceID instanceID = InstanceID.getInstance(getBaseContext());
-								String senderId = getString(R.string.gcm_defaultSenderId);
-								String registrationID = instanceID.getToken(senderId,
-										GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
-
-								Log.i(TAG, "GCM: new registration ID: " + registrationID);
-
-								// store new registration ID:
-								SharedPreferences settings = getSharedPreferences("GCM", 0);
-								Editor editor = settings.edit();
-								editor.putString("SenderId", senderId);
-								editor.putString("RegID", registrationID);
-								editor.commit();
-
-							} catch (Exception e) {
-								Log.e(TAG, "GCM: registration failed", e);
-							}
-							return null;
-						}
-					}.execute();
-				}
-
+	/**
+	 * Check the device to make sure it has the Google Play Services APK. If
+	 * it doesn't, display a dialog that allows users to download the APK from
+	 * the Google Play Store or enable it in the device's system settings.
+	 */
+	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+	private boolean checkPlayServices() {
+		GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+		int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+		if (resultCode != ConnectionResult.SUCCESS) {
+			if (apiAvailability.isUserResolvableError(resultCode)) {
+				apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+						.show();
 			} else {
-
-				Log.d(TAG, "GCM: using registration ID: " + registrationID);
-
-				// get/create device UUID:
-				String uuid = settings.getString("UUID", "");
-				if (uuid.length() == 0) {
-					uuid = UUID.randomUUID().toString();
-					Editor editor = settings.edit();
-					editor.putString("UUID", uuid);
-					editor.commit();
-					Log.d(TAG, "GCM: generated new UUID: " + uuid);
-				} else {
-					Log.d(TAG, "GCM: using UUID: " + uuid);
-				}
-
-				// subscribe at OVMS server:
-				ApiService service = getService();
-				if (service != null && service.isLoggedIn()) {
-					// MP-0
-					// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
-					CarData carData = service.getCarData();
-					String cmd = String.format("MP-0 p%s,gcm,production,%s,%s,%s",
-							uuid, carData.sel_vehicleid, carData.sel_server_password,
-							registrationID);
-					if (!service.sendCommand(cmd, null)) {
-						Log.w(TAG, "GCM: push subscription failed, scheduling retry");
-					} else {
-						Log.d(TAG, "GCM: push subscription done.");
-						retry = false;
-					}
-				}
+				Log.i(TAG, "This device is not supported.");
+				finish();
 			}
+			return false;
+		}
+		return true;
+	}
 
-			if (retry) {
-				// retry after 5 seconds:
-				mGcmHandler.postDelayed(mGcmDoRegistration, 5000);
+
+	/**
+	 * GCM push notification registration:
+	 * 	- server login => gcmStartRegistration
+	 * 	- gcmStartRegistration invokes RegistrationIntentService for selected car
+	 * 	- RegistrationIntentService invokes mGcmRegistrationBroadcastReceiver on success
+	 * 	- mGcmRegistrationBroadcastReceiver starts GcmDoSubscribe runnable
+	 * 	- GcmDoSubscribe does push subscription (retries if necessary)
+	 */
+
+	private void gcmStartRegistration(CarData pCarData) {
+		//mGcmHandler.postDelayed(mGcmDoRegistration, 2000);
+		String gcmSenderId = getString(R.string.gcm_defaultSenderId); // TODO: config per car
+		Log.d(TAG, "starting RegistrationIntentService for vehicleId=" + pCarData.sel_vehicleid
+				+ ", gcmSenderId=" + gcmSenderId);
+		Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
+		intent.putExtra("ovmsVehicleId", pCarData.sel_vehicleid);
+		intent.putExtra("ovmsGcmSenderId", gcmSenderId);
+		startService(intent);
+	}
+
+	private BroadcastReceiver mGcmRegistrationBroadcastReceiver = new BroadcastReceiver() {
+		private static final String TAG = "mGcmRegReceiver";
+		@Override
+		public void onReceive(Context context, Intent intent) {
+
+			Log.d(TAG, "onReceive intent: " + intent.toString());
+
+			String vehicleId = intent.getStringExtra("ovmsVehicleId");
+			if (vehicleId != null) {
+				Log.d(TAG, "subscribing vehicleId=" + vehicleId);
+				mGcmHandler.post(new GcmDoSubscribe(vehicleId));
 			}
 		}
 	};
 
+	private final Handler mGcmHandler = new Handler();
+
+	private class GcmDoSubscribe implements Runnable {
+		private static final String TAG = "GcmDoSubscribe";
+		private String vehicleId;
+
+		public GcmDoSubscribe(String vehicleId) {
+			this.vehicleId = vehicleId;
+		}
+
+		@Override
+		public void run() {
+
+			Log.d(TAG, "trying to subscribe vehicleId " + vehicleId);
+
+			ApiService service = getService();
+
+			if (service == null) {
+				Log.d(TAG, "ApiService terminated, cancelling");
+				return;
+			} else if (!service.isLoggedIn()) {
+				Log.d(TAG, "ApiService not yet logged in, scheduling retry");
+				mGcmHandler.postDelayed(this, 5000);
+				return;
+			}
+
+			CarData carData = service.getCarData();
+			if (carData == null || !carData.sel_vehicleid.equals(vehicleId)) {
+				Log.d(TAG, "ApiService logged in to vehicleid " + carData.sel_vehicleid + " now, cancelling");
+				return;
+			}
+
+			SharedPreferences settings = getSharedPreferences("GCM." + vehicleId, 0);
+			String gcmToken = settings.getString(RegistrationIntentService.GCM_TOKEN, "");
+			Log.d(TAG, "login OK, subscribing vehicleId " + vehicleId + " on gcmToken " + gcmToken);
+
+			// subscribe at OVMS server:
+			// MP-0
+			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
+			String cmd = String.format("MP-0 p%s,gcm,production,%s,%s,%s",
+					uuid, carData.sel_vehicleid, carData.sel_server_password,
+					gcmToken);
+			if (!service.sendCommand(cmd, null)) {
+				Log.w(TAG, "push subscription failed, scheduling retry");
+				mGcmHandler.postDelayed(this, 5000);
+			} else {
+				Log.d(TAG, "push subscription done.");
+			}
+
+		}
+	}
+
+
+	/**
+	 * ApiService / OVMS server communication:
+	 *
+	 */
 
 	private AlertDialog mApiErrorDialog;
 	private String mApiErrorMessage;
@@ -266,6 +321,7 @@ public class MainActivity extends ApiActivity implements
 		public void onReceive(Context context, Intent intent) {
 
 			if (intent.getSerializableExtra("onServerSocketError") != null) {
+				Log.d(TAG, "mApiEventReceiver: onServerSocketError");
 
 				setSupportProgressBarIndeterminateVisibility(false);
 
@@ -286,6 +342,7 @@ public class MainActivity extends ApiActivity implements
 			}
 
 			if (intent.getBooleanExtra("onLoginBegin", false)) {
+				Log.d(TAG, "mApiEventReceiver: login process started");
 
 				setSupportProgressBarIndeterminateVisibility(true);
 
@@ -299,6 +356,8 @@ public class MainActivity extends ApiActivity implements
 	private ApiObserver mApiObserver = new ApiObserver() {
 		@Override
 		public void update(CarData pCarData) {
+			Log.d(TAG, "mApiObserver: login successful");
+
 			// data update implies login successful => hide progress:
 			setSupportProgressBarIndeterminateVisibility(false);
 
@@ -306,6 +365,9 @@ public class MainActivity extends ApiActivity implements
 			if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
 				mApiErrorDialog.hide();
 			}
+
+			// schedule GCM registration:
+			gcmStartRegistration(pCarData);
 
 			// done waiting for login:
 			ApiObservable.get().deleteObserver(this);
@@ -316,6 +378,11 @@ public class MainActivity extends ApiActivity implements
 		}
 	};
 
+
+	/**
+	 * User interface handling:
+	 *
+	 */
 
 	private class TabInfo {
 		public final int title_res_id, icon_res_id;
@@ -338,6 +405,14 @@ public class MainActivity extends ApiActivity implements
 		public String toString() {
 			return getString(title_res_id);
 		}
+	}
+
+	@Override
+	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
+		getSupportActionBar().setIcon(ti.icon_res_id);
+		mViewPager.setCurrentItem(itemPosition, false);
+		return true;
 	}
 
 	private static class NavAdapter extends ArrayAdapter<TabInfo> {
@@ -392,6 +467,7 @@ public class MainActivity extends ApiActivity implements
 		}
 	}
 
+
 	@Override
 	public void connections(String al, String name) {
 		// TODO Auto-generated method stub
@@ -410,11 +486,7 @@ public class MainActivity extends ApiActivity implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			//Log.d(TAG, "Notifications: received " + intent.toString());
-
-			// show messages list:
-			// ...or better not, as it can interrupt user activity...
-			//onNavigationItemSelected(3, 0);
+			Log.d(TAG, "Notifications: received " + intent.toString());
 
 			// update messages list:
 			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
