@@ -22,12 +22,19 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 
 public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
-    @Override
+	// lock to prevent concurrent uses of OVMSNotifications:
+	// 	(necessary for dupe check)
+	private final ReentrantLock dbAccess = new ReentrantLock();
+
+
+	@Override
     public void onMessageReceived(String from, Bundle data) {
 
         // get notification text:
@@ -42,10 +49,20 @@ public class MyGcmListenerService extends GcmListenerService {
             return;
         }
 
-        // save notification to file:
-        OVMSNotifications savedList = new OVMSNotifications(this);
-        boolean is_new = savedList.addNotification(contentTitle, contentText);
-        if (is_new) {
+        // add notification to database:
+		boolean is_new;
+		dbAccess.lock();
+		try {
+			OVMSNotifications savedList = new OVMSNotifications(this);
+			is_new = savedList.addNotification(contentTitle, contentText);
+		} finally {
+			dbAccess.unlock();
+		}
+
+		if (!is_new) {
+			Log.d(TAG, "message is duplicate => ignore");
+		} else {
+            // add notification to system & UI:
 
             // create App launch Intent:
             Intent notificationIntent = new Intent(this, MainActivity.class);
