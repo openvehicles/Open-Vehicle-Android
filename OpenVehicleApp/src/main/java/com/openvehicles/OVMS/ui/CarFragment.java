@@ -29,6 +29,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	private static final String TAG = "CarFragment";
 
 	private CarData mCarData;
+	private String uiCarType = "";
 	Menu optionsMenu;
 	AppPrefes appPrefes;
 
@@ -43,21 +44,51 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_car, null);
 
-		if (mCarData.car_type.equals("RT")) {
-			// layout changes for Renault Twizy:
-
-			// exchange "Homelink" by "Profile":
-			ImageView icon = (ImageView) rootView.findViewById(R.id.tabCarImageHomelink);
-			if (icon != null)
-				icon.setImageResource(R.drawable.ic_drive_profile);
-			TextView label = (TextView) rootView.findViewById(R.id.txt_homelink);
-			if (label != null)
-				label.setText(R.string.textPROFILE);
-		}
-		
 		setHasOptionsMenu(true);
 
 		return rootView;
+	}
+
+	@Override
+	public void onDestroyView() {
+		super.onDestroyView();
+		uiCarType = "";
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		setupCarType(mCarData);
+	}
+
+
+	/**
+	 * setupCarType: apply car specific UI changes
+	 *
+	 * @param pCarData
+	 */
+	private void setupCarType(CarData pCarData) {
+
+		Log.d(TAG, "updateCarType: old=" + uiCarType + ", new=" + pCarData.car_type);
+		if (uiCarType.equals(pCarData.car_type))
+			return;
+
+		if (pCarData.car_type.equals("RT")) {
+			// UI changes for Renault Twizy:
+
+			// exchange "Homelink" by "Profile":
+			ImageView icon = (ImageView) findViewById(R.id.tabCarImageHomelink);
+			if (icon != null)
+				icon.setImageResource(R.drawable.ic_drive_profile);
+			TextView label = (TextView) findViewById(R.id.txt_homelink);
+			if (label != null)
+				label.setText(R.string.textPROFILE);
+		}
+
+		uiCarType = pCarData.car_type;
+
+		// request menu recreation:
+		getCompatActivity().invalidateOptionsMenu();
 	}
 
 
@@ -70,15 +101,16 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// set checkbox:
 		optionsMenu.findItem(R.id.mi_show_fahrenheit)
 				.setChecked(appPrefes.getData("showfahrenheit").equals("on"));
-	}
 
-	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
-		super.onPrepareOptionsMenu(menu);
-		if (mCarData != null && mCarData.car_type != null) {
-			menu.findItem(R.id.mi_power_stats).setVisible(mCarData.car_type.equals("RT"));
+		if (uiCarType.equals("RT")) {
+			// Menu setup for Renault Twizy:
+			optionsMenu.findItem(R.id.mi_power_stats).setVisible(true);
+		} else {
+			// defaults:
+			optionsMenu.findItem(R.id.mi_power_stats).setVisible(false);
 		}
 	}
+
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -108,9 +140,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	@Override
 	public void update(CarData pCarData) {
 		mCarData = pCarData;
-
-		getCompatActivity().invalidateOptionsMenu();
-
+		setupCarType(pCarData);
 		updateLastUpdatedView(pCarData);
 		updateCarBodyView(pCarData);
 	}
