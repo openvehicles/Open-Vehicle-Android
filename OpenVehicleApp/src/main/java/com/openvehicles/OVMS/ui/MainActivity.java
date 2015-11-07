@@ -230,10 +230,18 @@ public class MainActivity extends ApiActivity implements
 	 */
 
 	private void gcmStartRegistration(CarData pCarData) {
-		//mGcmHandler.postDelayed(mGcmDoRegistration, 2000);
-		String gcmSenderId = getString(R.string.gcm_defaultSenderId); // TODO: config per car
+
+		// get GCM sender ID for car:
+		String gcmSenderId;
+		if (pCarData.sel_gcm_senderid != null && pCarData.sel_gcm_senderid.length() > 0)
+			gcmSenderId = pCarData.sel_gcm_senderid;
+		else
+			gcmSenderId = getString(R.string.gcm_defaultSenderId);
+
 		Log.d(TAG, "starting RegistrationIntentService for vehicleId=" + pCarData.sel_vehicleid
 				+ ", gcmSenderId=" + gcmSenderId);
+
+		// start GCM registration service:
 		Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
 		intent.putExtra("ovmsVehicleId", pCarData.sel_vehicleid);
 		intent.putExtra("ovmsGcmSenderId", gcmSenderId);

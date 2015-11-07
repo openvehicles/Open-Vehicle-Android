@@ -14,6 +14,7 @@ public class CarData implements Serializable {
 	// Selected Vehicle
 
 	public String sel_server = "tmc.openvehicles.com"; // ServerNameOrIP
+	public String sel_gcm_senderid = "";		// GCM sender ID (empty = default OVMS ID)
 	public String sel_vehicleid = "";			// VehicleID
 	public String sel_vehicle_label = "";		// VehicleLabel
 	public String sel_server_password = "";		// NetPass

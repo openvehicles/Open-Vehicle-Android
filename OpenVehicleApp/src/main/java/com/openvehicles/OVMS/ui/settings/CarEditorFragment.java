@@ -137,6 +137,7 @@ public class CarEditorFragment extends BaseFragment {
 			mCarData.sel_server_password = Ui.getValidValue(rootView, R.id.txt_server_passwd, new PasswdValidator(4, 16)); 
 			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 16));
 			mCarData.sel_server = Ui.getValidValue(rootView, R.id.txt_server_address, new StringValidator());
+			mCarData.sel_gcm_senderid = Ui.getValidValue(rootView, R.id.txt_gcm_senderid, new StringValidator());
 			mCarData.sel_vehicle_image = sAvailableColors[mGalleryCar.getSelectedItemPosition()];
 
 		} catch (ValidationException e) {
@@ -162,6 +163,7 @@ public class CarEditorFragment extends BaseFragment {
 		Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);
 		Ui.setValue(rootView, R.id.txt_module_passwd, mCarData.sel_module_password);
 		Ui.setValue(rootView, R.id.txt_server_address, mCarData.sel_server);
+		Ui.setValue(rootView, R.id.txt_gcm_senderid, mCarData.sel_gcm_senderid);
 
 		AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
 		Log.d("CarEditorFragment", "sel_vehicle_label=" + mCarData.sel_vehicle_label);

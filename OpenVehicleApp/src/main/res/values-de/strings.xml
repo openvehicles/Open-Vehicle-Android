@@ -14,7 +14,8 @@
     <string name="Error">Fehler</string>
     <string name="Set">Einstellen</string>
     <string name="Control">Kontrolle</string>
-    <string name="ServerNameOrIP">Server Adresse (Domain oder IP)</string>
+    <string name="ServerNameOrIP">Serveradresse (Domain oder IP)</string>
+    <string name="GcmSenderID">GCM Absenderkennung (leer=Standard)</string>
     <string name="NetPass">Server Passwort</string>
     <string name="UserPass">Benutzer Passwort (Paranoid Modus)</string>
     <string name="Quit">App beenden</string>
@@ -85,9 +86,9 @@
     <string name="lb_charger_setting">Lader-Einstellungen</string>
     <string name="lb_communications_problem">Kommunikationsproblem</string>
     <string name="lb_vehicle_id">Fahrzeug ID</string>
-    <string name="lb_vehicle_label">Fahrzeugbeschreibung</string>
-    <string name="lb_server_passwd">OVMS Server-Passwort</string>
-    <string name="lb_module_passwd">OVMS Modul-Passwort</string>
+    <string name="lb_vehicle_label">Fahrzeugbeschreibung (beliebig)</string>
+    <string name="lb_server_passwd">Fahrzeug Server-Passwort</string>
+    <string name="lb_module_passwd">Modul/SMS-Passwort</string>
     <string name="lb_slide_choice_vehicle">Slide um Fahrzeug auszuwählen</string>
     <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
     <string name="lb_cellular_usage">Datenverbrauch</string>

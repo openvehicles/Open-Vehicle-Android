@@ -11,7 +11,7 @@
 		<EditText android:id="@+id/txt_vehicle_id"
 			android:layout_width="150dp" android:layout_height="wrap_content"
 			android:hint="@string/lb_vehicle_id"
-			android:inputType="textCapCharacters">
+			android:inputType="textNoSuggestions|textCapCharacters">
 	        <requestFocus />
 		</EditText>
 		
@@ -42,8 +42,18 @@
 	        android:hint="@string/ServerNameOrIP"
 	        android:inputType="text"
 	        android:text="tmc.openvehicles.com" />
-	
-	    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+
+		<EditText
+			android:id="@+id/txt_gcm_senderid"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:ems="10"
+			android:hint="@string/GcmSenderID"
+			android:inputType="text"
+			android:layout_gravity="center_horizontal"/>
+
+		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
 	        android:layout_marginTop="8dp"
 	    	android:text="@string/lb_slide_choice_vehicle"/>
 	    
