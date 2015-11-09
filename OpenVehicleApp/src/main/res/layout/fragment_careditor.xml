@@ -50,7 +50,7 @@
 			android:layout_marginTop="8dp"
 			android:ems="10"
 			android:hint="@string/GcmSenderID"
-			android:inputType="text"
+			android:inputType="number"
 			android:layout_gravity="center_horizontal"/>
 
 		<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"

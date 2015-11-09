@@ -134,7 +134,14 @@ public final class Ui {
 			Log.e(TAG, "string: " + e);
 		}
 	}
-	
+
+	public static String getValue(View pRootView, int pId) {
+		String value = null;
+		EditText et = (EditText) pRootView.findViewById(pId);
+		value = et.getText().toString();
+		return value;
+	}
+
 	public static String getValidValue(View pRootView, int pId, Validator pValidator) throws ValidationException {
 		String value = null;
 		EditText et = (EditText) pRootView.findViewById(pId);
