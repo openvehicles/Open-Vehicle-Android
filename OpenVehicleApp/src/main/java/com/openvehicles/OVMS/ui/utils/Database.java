@@ -557,7 +557,7 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getNotifications() {
 		open();
-		Cursor cursor = db.rawQuery("SELECT * FROM Notification ORDER BY nID", null);
+		Cursor cursor = db.rawQuery("SELECT * FROM Notification ORDER BY nTimestamp, nID", null);
 		return cursor;
 	}
 

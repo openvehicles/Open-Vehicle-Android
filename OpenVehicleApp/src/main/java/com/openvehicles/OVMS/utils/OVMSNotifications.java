@@ -4,8 +4,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.TimeZone;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.ui.utils.Database;
@@ -43,7 +45,7 @@ public class OVMSNotifications {
 
 		if (notifications.size() == 0) {
 			// first time: load welcome notification
-			addNotification(
+			addNotification(NotificationData.TYPE_INFO,
 					mContext.getText(R.string.pushnotifications).toString(),
 					mContext.getText(R.string.pushnotifications_welcome).toString());
 		} else {
@@ -54,21 +56,28 @@ public class OVMSNotifications {
 	}
 
 
-	public boolean addNotification(int type, String title, String message) {
+	public boolean addNotification(int type, String title, String message, Date timestamp) {
 
-		NotificationData newNotify = new NotificationData(type, new Date(), title, message);
+		NotificationData newNotify = new NotificationData(type, timestamp, title, message);
 
-		// Check if new notification is a duplicate:
-		if (notifications.size() > 0) {
-			NotificationData lastNotify = notifications.get(notifications.size() - 1);
-			if (newNotify.equals(lastNotify)) {
-				Log.d(TAG, "addNotification: dropping duplicate");
-				return false;
+		// add to array, insert sorted by time, check for dupes:
+		int pos;
+		for (pos = notifications.size(); pos > 0; pos--) {
+			NotificationData old = notifications.get(pos-1);
+			if (old.Timestamp.compareTo(timestamp) <= 0) {
+				// found insert position, check for dupe:
+				if (old.equals(newNotify)) {
+					Log.d(TAG, "addNotification: dropping duplicate");
+					return false;
+				}
+				// ok, insert here:
+				break;
 			}
 		}
+		notifications.add(pos, newNotify);
 
+		// add to database:
 		db.beginWrite();
-		notifications.add(newNotify);
 		db.addNotification(newNotify);
 		removeOldNotifications();
 		db.endWrite(true);
@@ -77,7 +86,12 @@ public class OVMSNotifications {
 	}
 
 
-	public boolean addNotification(String title, String message) {
+	public boolean addNotification(int type, String title, String message) {
+		return addNotification(type, title, message, new Date());
+	}
+
+
+	public boolean addNotification(String title, String message, Date timestamp) {
 
 		// unless a type classification is added to the protocol, we can only
 		// try to derive the type from the text:
@@ -87,7 +101,7 @@ public class OVMSNotifications {
 		else
 			type = NotificationData.TYPE_INFO;
 
-		return addNotification(type, title, message);
+		return addNotification(type, title, message, timestamp);
 	}
 
 

@@ -22,6 +22,9 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
 import java.util.concurrent.locks.ReentrantLock;
 
 
@@ -33,6 +36,18 @@ public class MyGcmListenerService extends GcmListenerService {
 	// 	(necessary for dupe check)
 	private final ReentrantLock dbAccess = new ReentrantLock();
 
+	// timestamp parser:
+	SimpleDateFormat serverTime;
+
+
+	public MyGcmListenerService() {
+
+		super();
+
+		// create timestamp parser:
+		serverTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		serverTime.setTimeZone(TimeZone.getTimeZone("UTC"));
+	}
 
 	@Override
     public void onMessageReceived(String from, Bundle data) {
@@ -40,21 +55,32 @@ public class MyGcmListenerService extends GcmListenerService {
         // get notification text:
         String contentTitle = data.getString("title");
         String contentText = data.getString("message");
+        String contentTime = data.getString("time");
 
         Log.i(TAG, "Notification received from=" + from
-                + ", title=" + contentTitle + ", message=" + contentText);
+                + ", title=" + contentTitle
+                + ", message=" + contentText
+                + ", time=" + contentTime);
 
         if (contentTitle == null || contentText == null) {
             Log.w(TAG, "no title/message => abort");
             return;
         }
 
+		// parse timestamp:
+		Date timeStamp;
+		try {
+			timeStamp = serverTime.parse(contentTime);
+		} catch (Exception e) {
+			timeStamp = new Date();
+		}
+
         // add notification to database:
 		boolean is_new;
 		dbAccess.lock();
 		try {
 			OVMSNotifications savedList = new OVMSNotifications(this);
-			is_new = savedList.addNotification(contentTitle, contentText);
+			is_new = savedList.addNotification(contentTitle, contentText, timeStamp);
 		} finally {
 			dbAccess.unlock();
 		}
