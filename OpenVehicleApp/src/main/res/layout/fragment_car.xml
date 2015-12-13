@@ -225,7 +225,7 @@
             android:singleLine="false"
             android:fontFamily="sans-serif-condensed"
 			android:typeface="monospace"
-			/>
+			style="@style/TabCarTextOverlay"/>
 
         <TextView
 			android:id="@+id/tabCarTextSpeed"
@@ -239,7 +239,11 @@
             android:textColor="@color/colorForeground"
             android:textStyle="bold"
             android:fontFamily="sans-serif-condensed"
-			android:typeface="monospace"/>
+			android:typeface="monospace"
+			android:phoneNumber="true"
+			android:singleLine="false"
+			android:autoText="false"
+			style="@style/TabCarTextOverlay"/>
 
 		<!-- OnClick -->
 

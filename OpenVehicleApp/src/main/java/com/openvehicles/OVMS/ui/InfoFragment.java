@@ -34,6 +34,7 @@ import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
 import com.openvehicles.OVMS.ui.witdet.ScaleLayout;
 import com.openvehicles.OVMS.ui.witdet.SlideNumericView;
 import com.openvehicles.OVMS.ui.witdet.SwitcherView;
+import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class InfoFragment extends BaseFragment implements OnClickListener,
 		OnResultCommandListener {
@@ -45,7 +46,18 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
+
+		// init car data:
+		mCarData = CarsStorage.get().getSelectedCarData();
+
+		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_info, null);
+
+		// set the car background image:
+		ImageView iv = (ImageView) rootView.findViewById(R.id.tabInfoImageCar);
+		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), mCarData.sel_vehicle_image));
+
+		// init ScaleLayout:
 		final ScaleLayout scaleLayout = (ScaleLayout) rootView
 				.findViewById(R.id.scaleLayout);
 		scaleLayout.setOnScale(new Runnable() {
@@ -656,7 +668,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		v.getLayoutParams().width = Math.min(maxWeight, realWeight);
 		v.requestLayout();
 
-		ImageView iv = (ImageView) findViewById(R.id.tabInfoImageCar);
+		ImageView iv = (ImageView) findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(),
 				"signal_strength_" + pCarData.car_gsm_bars));
 

@@ -44,6 +44,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_car, null);
 
+		// set the car background image:
+		ImageView iv = (ImageView) rootView.findViewById(R.id.tabCarImageCarOutline);
+		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_"+mCarData.sel_vehicle_image));
+
 		setHasOptionsMenu(true);
 
 		return rootView;

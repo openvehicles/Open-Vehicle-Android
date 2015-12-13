@@ -48,7 +48,15 @@
         <item name="android:textSize">20px</item>
         <item name="android:gravity">center</item>
     </style>
-    
+
+    <style name="TabCarTextOverlay">
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:shadowColor">#000000</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">3</item>
+    </style>
+
     <style name="TextValue" parent="@android:style/Widget.TextView">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
