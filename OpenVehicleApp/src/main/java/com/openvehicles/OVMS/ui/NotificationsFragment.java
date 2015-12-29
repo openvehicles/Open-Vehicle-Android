@@ -2,6 +2,9 @@ package com.openvehicles.OVMS.ui;
 
 import java.text.SimpleDateFormat;
 
+import android.annotation.TargetApi;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.support.v7.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
@@ -34,7 +37,8 @@ import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 
 public class NotificationsFragment extends BaseFragment
-		implements OnItemClickListener, TextView.OnEditorActionListener, OnResultCommandListener {
+		implements OnItemClickListener, AdapterView.OnItemLongClickListener,
+		TextView.OnEditorActionListener, OnResultCommandListener {
 	private static final String TAG = "NotificationsFragment";
 
 	private ListView mListView;
@@ -50,6 +54,7 @@ public class NotificationsFragment extends BaseFragment
 
 		mListView = (ListView) layout.findViewById(R.id.listView);
 		mListView.setOnItemClickListener(this);
+		mListView.setOnItemLongClickListener(this);
 
 		mCmdInput = (EditText) layout.findViewById(R.id.cmdInput);
 		mCmdInput.setOnEditorActionListener(this);
@@ -105,7 +110,39 @@ public class NotificationsFragment extends BaseFragment
 					.show();
 		}
 	}
-	
+
+
+	@Override
+	@TargetApi(11)
+	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+		Log.d(TAG, "Long click on notification: #" + position);
+
+		// copy message text to clipboard:
+
+		NotificationData data = (NotificationData) parent.getAdapter().getItem(position);
+		String message = data.getMessageFormatted();
+
+		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
+		if (currentApiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+			// Android >= 3.0:
+			android.content.ClipboardManager clipboard =  (android.content.ClipboardManager)
+					getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+			ClipData clip = ClipData.newPlainText("label", message);
+			clipboard.setPrimaryClip(clip);
+		} else {
+			// Android < 3.0:
+			android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
+					getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+			clipboard.setText(message);
+		}
+
+		Toast.makeText(getActivity().getApplicationContext(),
+				R.string.notifications_toast_copied, Toast.LENGTH_SHORT).show();
+
+		return true;
+	}
+
+
 	@Override
 	public void update(CarData pCarData) {
 		/* why should we reload notifications on every cardata update?

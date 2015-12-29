@@ -285,6 +285,7 @@
 
     <string name="notifications_hint_cmdinput">SMS/MMI-Kommando</string>
     <string name="err_failed_smscmd">Fehler: unbekanntes Kommando / keine Authorisierung</string>
+    <string name="notifications_toast_copied">Nachricht wurde in das Clipboard kopiert</string>
 
     <string name="battery_title">Akku-Statistik</string>
     <string name="battery_menu">Optionen</string>

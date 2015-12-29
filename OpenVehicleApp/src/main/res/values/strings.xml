@@ -305,6 +305,7 @@
 
     <string name="notifications_hint_cmdinput">SMS / MMI command</string>
     <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
+    <string name="notifications_toast_copied">Message has been copied to clipboard</string>
 
 
     <string name="battery_title">Battery history</string>
