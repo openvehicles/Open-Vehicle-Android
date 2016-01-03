@@ -601,34 +601,38 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv.setVisibility(View.INVISIBLE);
 	    } else {
 			iv.setVisibility(View.VISIBLE);
-			
-			if (pCarData.car_charge_substate_i_raw == 0x07) {
-				// We need to connect the power cable
-				iv.setImageResource(R.drawable.roadster_outline_cu);
+
+			// Renault Twizy:
+			if (pCarData.car_type.equals("RT")) {
+				iv.setImageResource(R.drawable.ol_car_twizy_chargeport);
 			}
-			else if ((pCarData.car_charge_state_i_raw == 0x0d)||(pCarData.car_charge_state_i_raw == 0x0e)||(pCarData.car_charge_state_i_raw == 0x101)) {
-				// Preparing to charge, timer wait, or fake 'starting' state
-				iv.setImageResource(R.drawable.roadster_outline_ce);
-			}
-			else if ((pCarData.car_charge_state_i_raw == 0x01)||
-					 (pCarData.car_charge_state_i_raw == 0x02)||
-					 (pCarData.car_charge_state_i_raw == 0x0f)||
-					 (pCarData.car_charging)) {
-				// Charging
-				iv.setImageResource(R.drawable.roadster_outline_cp);
-			}
-			else if (pCarData.car_charge_state_i_raw == 0x04) {
-				// Charging done
-				iv.setImageResource(R.drawable.roadster_outline_cd);
-			}
-			else if ((pCarData.car_charge_state_i_raw >= 0x15)&&(pCarData.car_charge_state_i_raw <= 0x19)) {
-				// Stopped
-				iv.setImageResource(R.drawable.roadster_outline_cs);
-			}
+
+			// Tesla Roadster:
 			else {
-				// Fake 0x115 'stopping' state, or something else not understood
-				iv.setImageResource(R.drawable.roadster_outline_cp);
+				if (pCarData.car_charge_substate_i_raw == 0x07) {
+					// We need to connect the power cable
+					iv.setImageResource(R.drawable.roadster_outline_cu);
+				} else if ((pCarData.car_charge_state_i_raw == 0x0d) || (pCarData.car_charge_state_i_raw == 0x0e) || (pCarData.car_charge_state_i_raw == 0x101)) {
+					// Preparing to charge, timer wait, or fake 'starting' state
+					iv.setImageResource(R.drawable.roadster_outline_ce);
+				} else if ((pCarData.car_charge_state_i_raw == 0x01) ||
+						(pCarData.car_charge_state_i_raw == 0x02) ||
+						(pCarData.car_charge_state_i_raw == 0x0f) ||
+						(pCarData.car_charging)) {
+					// Charging
+					iv.setImageResource(R.drawable.roadster_outline_cp);
+				} else if (pCarData.car_charge_state_i_raw == 0x04) {
+					// Charging done
+					iv.setImageResource(R.drawable.roadster_outline_cd);
+				} else if ((pCarData.car_charge_state_i_raw >= 0x15) && (pCarData.car_charge_state_i_raw <= 0x19)) {
+					// Stopped
+					iv.setImageResource(R.drawable.roadster_outline_cs);
+				} else {
+					// Fake 0x115 'stopping' state, or something else not understood
+					iv.setImageResource(R.drawable.roadster_outline_cp);
+				}
 			}
+
 	    }
 	}
 }
