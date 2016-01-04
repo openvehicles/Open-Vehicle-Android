@@ -106,6 +106,7 @@
     <string name="lb_ft_rt_suffsoc">#%d: Ausreichender SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Ausreichende Reichweite</string>
     <string name="lb_ft_rt_maxrange">#%d: Maximale Reichweite</string>
+    <string name="lb_ft_rt_capacity">#%d: Akku-Kapazität (SOH%%)</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
     <string name="lb_cp_module_password">#%d: Module-Passwort</string>

@@ -178,6 +178,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		private static final int FEATURE_SUFFSOC 				= 0x0A; // Charge alert: sufficient SOC
 		private static final int FEATURE_SUFFRANGE 				= 0x0B; // Charge alert: sufficient range
 		private static final int FEATURE_MAXRANGE 				= 0x0C; // Max ideal range (100% SOC)
+		private static final int FEATURE_CAPACITY 				= 0x0D; // Battery capacity average (SOH%)
 
 		// The FEATURE_CARBITS feature is a set of ON/OFF bits to control different
 		// miscelaneous aspects of the system. The following bits are defined:
@@ -224,6 +225,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						return context.getString(R.string.lb_ft_rt_suffrange, position);
 					case FEATURE_MAXRANGE:
 						return context.getString(R.string.lb_ft_rt_maxrange, position);
+					case FEATURE_CAPACITY:
+						return context.getString(R.string.lb_ft_rt_capacity, position);
 
 					case FEATURE_SPEEDO:
 						return String.format("#%d:", position);

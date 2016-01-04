@@ -107,6 +107,7 @@
     <string name="lb_ft_rt_suffsoc">#%d: Sufficient SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Sufficient range</string>
     <string name="lb_ft_rt_maxrange">#%d: Max ideal range</string>
+    <string name="lb_ft_rt_capacity">#%d: Battery capacity (SOH%%)</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>
