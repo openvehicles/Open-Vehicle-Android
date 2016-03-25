@@ -203,6 +203,7 @@
     <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
 
     <string name="textBATTERY">AKKU</string>
+    <string name="textCHARGER">LADER</string>
     <string name="textHOMELINK">HOMELINK</string>
     <string name="textPROFILE">PROFIL</string>
     <string name="textAMBIENT">AUSSEN</string>
@@ -372,6 +373,8 @@
     <string name="power_data_pwr_min">Min.</string>
     <string name="power_data_pwr_max">Max.</string>
     <string name="power_data_pwr_avg">Durchschnitt</string>
+    <string name="power_data_pwr_recuplimit">Reku-Limit</string>
+    <string name="power_data_pwr_drivelimit">Fahr-Limit</string>
 
     <string name="power_energy_description">Energie</string>
     <string name="power_data_energy_used">Verbrauch (Wh)</string>
@@ -405,7 +408,8 @@
         <h2>Leistung</h2>
         <p>Der gefüllte Bereich stellt die maximale und minimale <b>elektrische
         Leistung</b> (ab Akku) pro <b>Zeitabschnitt</b> dar, negative Leistung =
-        Rekuperation/Ladung.</p>
+        Rekuperation/Ladung. Die obere und untere hellrote Linie zeigt die
+        aktuelle Leistungsbegrenzung durch die Batterie bzw. das BMS an.</p>
         <p>Die rote Linie zeigt die ermittelte <b>Durchschnittsleistung</b> auf Basis
         des Energieverbrauchs des <b>Zeitabschnitts</b> an.</p>
         <p><u>Info</u>: die <b>mechanische Motorleistung</b> ergibt sich aus

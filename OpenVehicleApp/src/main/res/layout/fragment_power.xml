@@ -7,7 +7,7 @@
 
     <view
         class="com.github.mikephil.charting.charts.LineChart"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chart_energy"
         android:layout_gravity="center_horizontal"
@@ -15,7 +15,7 @@
 
     <view
         class="com.github.mikephil.charting.charts.LineChart"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chart_power"
         android:layout_gravity="center_horizontal"
@@ -23,7 +23,7 @@
 
     <view
         class="com.github.mikephil.charting.charts.LineChart"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/chart_trip"
         android:layout_gravity="center_horizontal"

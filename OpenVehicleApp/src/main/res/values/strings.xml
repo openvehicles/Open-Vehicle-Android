@@ -206,6 +206,7 @@
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
     <string name="textBATTERY">BATTERY</string>
+    <string name="textCHARGER">CHARGER</string>
     <string name="textHOMELINK">HOMELINK</string>
     <string name="textPROFILE">PROFILE</string>
     <string name="textAMBIENT">AMBIENT</string>
@@ -388,6 +389,8 @@
     <string name="power_data_pwr_min">Min</string>
     <string name="power_data_pwr_max">Max</string>
     <string name="power_data_pwr_avg">Avg</string>
+    <string name="power_data_pwr_recuplimit">Recup Limit</string>
+    <string name="power_data_pwr_drivelimit">Drive Limit</string>
 
     <string name="power_energy_description">Energy</string>
     <string name="power_data_energy_used">Used (Wh)</string>
@@ -417,8 +420,8 @@
 
         <h2>Power</h2>
         <p>The filled area displays the maximum and minimum <b>electrical power</b> (at
-        the battery) per <b>time section</b>, negative power =
-        recuperation/charging.</p>
+        the battery) per <b>time section</b>, negative power = recuperation/charging.
+        The upper &amp; lower light red lines show the <b>battery limits</b>.</p>
         <p>The red line shows the <b>average power</b> derived from the energy usage of
         the <b>time section</b>.</p>
         <p><u>Info</u>: the <b>mechanical motor power</b> calculates as <i>electrical

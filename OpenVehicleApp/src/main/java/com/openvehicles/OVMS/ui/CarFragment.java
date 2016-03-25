@@ -462,7 +462,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			if (pCarData.stale_ambient_temp == DataStale.NoValue) {
 				tv.setText("");
 				tv.setTextColor(0xFF808080);
-			} else if ((pCarData.stale_ambient_temp == DataStale.Stale) || (!pCarData.car_coolingpump_on)) {
+			} else if ((pCarData.stale_ambient_temp == DataStale.Stale)) {
 				tv.setText(pCarData.car_temp_ambient);
 				tv.setTextColor(0xFF808080);
 			} else {
@@ -539,22 +539,27 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
 		TextView motortv = (TextView) findViewById(R.id.tabCarTextMotor);
 		TextView batterytv = (TextView) findViewById(R.id.tabCarTextBattery);
+		TextView chargertv = (TextView) findViewById(R.id.tabCarTextCharger);
 		if (pCarData.stale_car_temps == DataStale.NoValue) {
 			pemtv.setText("");
 			motortv.setText("");
 			batterytv.setText("");
+			chargertv.setText("");
 		} else {
 			pemtv.setText(pCarData.car_temp_pem);
 			motortv.setText(pCarData.car_temp_motor);
 			batterytv.setText(pCarData.car_temp_battery);
-			if ((pCarData.stale_car_temps == DataStale.Stale)||(!pCarData.car_coolingpump_on)) {
+			chargertv.setText(pCarData.car_temp_charger);
+			if (pCarData.stale_car_temps == DataStale.Stale) {
 				pemtv.setTextColor(0xFF808080);
 				motortv.setTextColor(0xFF808080);
 				batterytv.setTextColor(0xFF808080);
+				chargertv.setTextColor(0xFF808080);
 			} else {
 				pemtv.setTextColor(0xFFFFFFFF);
 				motortv.setTextColor(0xFFFFFFFF);
 				batterytv.setTextColor(0xFFFFFFFF);
+				chargertv.setTextColor(0xFFFFFFFF);
 			}
 		}
 

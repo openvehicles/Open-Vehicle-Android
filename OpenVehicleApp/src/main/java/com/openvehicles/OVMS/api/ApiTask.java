@@ -532,7 +532,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					
 					dataField = Integer.parseInt(dataParts[11]);
 					mCarData.car_doors3_raw =  dataField;
-					mCarData.car_coolingpump_on =  ((dataField & 0x02) == 0x02);
+					mCarData.car_awake =  ((dataField & 0x02) == 0x02);
 
 					mCarData.car_stale_car_temps_raw = Integer.parseInt(dataParts[12]);
 					if (mCarData.car_stale_car_temps_raw < 0)
@@ -561,6 +561,15 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					dataField = Integer.parseInt(dataParts[17]);
 					mCarData.car_doors5_raw = dataField;
 					mCarData.car_charging_12v = ((dataField & 0x10) == 0x10);
+				}
+
+				if (dataParts.length >= 19) {
+					mCarData.car_temp_charger_raw = Integer.parseInt(dataParts[18]);
+					if (appPrefes.getData("showfahrenheit").equals("on")) {
+						mCarData.car_temp_charger = String.format("%.0f\u00B0F",(mCarData.car_temp_charger_raw*(9.0/5.0))+32.0);
+					} else {
+						mCarData.car_temp_charger = String.format("%d\u00B0C",mCarData.car_temp_charger_raw);
+					}
 				}
 
 				publishProgress(MsgType.msgUpdate);

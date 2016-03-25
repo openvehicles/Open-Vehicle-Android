@@ -10,14 +10,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.SeekBar;
 
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.github.mikephil.charting.charts.BarLineChartBase;
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.LimitLine;
@@ -30,10 +28,13 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
+import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-import com.github.mikephil.charting.utils.Highlight;
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.BatteryData;
@@ -153,22 +154,21 @@ public class BatteryFragment
 		yAxis = cellChart.getAxisLeft();
 		yAxis.setTextColor(COLOR_VOLT);
 		yAxis.setGridColor(COLOR_VOLT_GRID);
-		yAxis.setStartAtZero(false);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.2f", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.2f", value);
 			}
 		});
+		yAxis.setGranularity(0.01f);
 
 		yAxis = cellChart.getAxisRight();
 		yAxis.setTextColor(COLOR_TEMP);
 		yAxis.setGridColor(COLOR_TEMP_GRID);
-		yAxis.setStartAtZero(false);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.0f", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.0f", value);
 			}
 		});
 
@@ -206,30 +206,29 @@ public class BatteryFragment
 		xAxis.setTextColor(Color.WHITE);
 
 		yAxis = packChart.getAxisLeft();
-		yAxis.setStartAtZero(false);
 		yAxis.setSpaceTop(5f);
 		yAxis.setSpaceBottom(5f);
 		yAxis.setTextColor(COLOR_SOC_TEXT);
 		yAxis.setGridColor(COLOR_SOC_GRID);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.0f%%", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.0f%%", value);
 			}
 		});
 
 		yAxis = packChart.getAxisRight();
-		yAxis.setStartAtZero(false);
 		yAxis.setSpaceTop(15f);
 		yAxis.setSpaceBottom(15f);
 		yAxis.setTextColor(COLOR_VOLT);
 		yAxis.setGridColor(COLOR_VOLT_GRID);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.0f", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.1f", value);
 			}
 		});
+		yAxis.setGranularity(0.1f);
 
 
 		//
@@ -542,7 +541,7 @@ public class BatteryFragment
 			if (packStatus.isNewSection(lastStatus)) {
 				LimitLine l = new LimitLine(i);
 				l.setLabel(timeFmt.format(packStatus.timeStamp));
-				l.setLabelPosition(LimitLine.LimitLabelPosition.POS_RIGHT);
+				l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
 				l.setTextColor(Color.WHITE);
 				l.setTextStyle(Paint.Style.FILL);
 				l.enableDashedLine(3f, 2f, 0f);
@@ -555,7 +554,7 @@ public class BatteryFragment
 
 		// create data sets:
 
-		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+		ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 		LineDataSet dataSet;
 
 		packTempSet = null;
@@ -643,7 +642,7 @@ public class BatteryFragment
 		// determine data set to highlight:
 		if (highlightSetNr == -1) {
 			// get user selection by set label:
-			LineDataSet dataSet = packData.getDataSetByLabel(highlightSetLabel, false);
+			ILineDataSet dataSet = packData.getDataSetByLabel(highlightSetLabel, false);
 			highlightSetNr = packData.getIndexOfDataSet(dataSet);
 		}
 		if (highlightSetNr == -1) {
@@ -655,7 +654,7 @@ public class BatteryFragment
 		packChart.highlightValue(index, highlightSetNr); // does not fire listener event
 
 		// center highlight in chart viewport:
-		LineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
+		ILineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
 		packChart.centerViewTo(index, dataSet.getYValForXIndex(index),
 				dataSet.getAxisDependency());
 
@@ -736,7 +735,7 @@ public class BatteryFragment
 
 		// create data sets:
 
-		ArrayList<CandleDataSet> dataSets = new ArrayList<CandleDataSet>();
+		ArrayList<ICandleDataSet> dataSets = new ArrayList<ICandleDataSet>();
 		CandleDataSet dataSet;
 
 		if (mShowTemp) {
@@ -747,7 +746,7 @@ public class BatteryFragment
 			dataSet.setShadowWidth(4f);
 			dataSet.setValueFormatter(new ValueFormatter() {
 				@Override
-				public String getFormattedValue(float value) {
+				public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
 					return String.format("%.0f", value);
 				}
 			});
@@ -762,7 +761,7 @@ public class BatteryFragment
 			dataSet.setShadowWidth(4f);
 			dataSet.setValueFormatter(new ValueFormatter() {
 				@Override
-				public String getFormattedValue(float value) {
+				public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
 					return String.format("%.3f", value);
 				}
 			});

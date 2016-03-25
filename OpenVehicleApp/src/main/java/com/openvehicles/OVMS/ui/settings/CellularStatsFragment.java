@@ -17,7 +17,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -96,7 +97,6 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		mChartViewCar = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_car);
 		mChartViewCar.setDescription("");
 		mChartViewCar.setMaxVisibleValueCount(30);
-		mChartViewCar.setDrawValuesForWholeStack(false);
 		mChartViewCar.setPinchZoom(false);
 		mChartViewCar.setDrawBarShadow(false);
 		mChartViewCar.setDrawValueAboveBar(true);
@@ -111,10 +111,10 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		yAxis = mChartViewCar.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.0f", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.0f", value);
 			}
 		});
 
@@ -129,7 +129,6 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		mChartViewApp = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_app);
 		mChartViewApp.setDescription("");
 		mChartViewApp.setMaxVisibleValueCount(30);
-		mChartViewApp.setDrawValuesForWholeStack(false);
 		mChartViewApp.setPinchZoom(false);
 		mChartViewApp.setDrawBarShadow(false);
 		mChartViewApp.setDrawValueAboveBar(true);
@@ -144,10 +143,10 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		yAxis = mChartViewApp.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setValueFormatter(new ValueFormatter() {
+		yAxis.setValueFormatter(new YAxisValueFormatter() {
 			@Override
-			public String getFormattedValue(float v) {
-				return String.format("%.0f", v);
+			public String getFormattedValue(float value, YAxis yAxis) {
+				return String.format("%.0f", value);
 			}
 		});
 
@@ -328,7 +327,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		BarDataSet dataSet;
 		BarData data;
-		ArrayList<BarDataSet> dataSets;
+		ArrayList<IBarDataSet> dataSets;
 		Legend legend;
 		int stackColors[] = { COLOR_TX, COLOR_RX };
 		String stackLabels[] = { "Tx", "Rx" };
@@ -338,7 +337,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		dataSet = new BarDataSet(carValues, getString(R.string.chart_axis_datavolume));
 		dataSet.setColors(stackColors);
 		dataSet.setStackLabels(stackLabels);
-		dataSets = new ArrayList<BarDataSet>();
+		dataSets = new ArrayList<IBarDataSet>();
 		dataSets.add(dataSet);
 
 		data = new BarData(xValues, dataSets);
@@ -362,7 +361,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		dataSet = new BarDataSet(appValues, getString(R.string.chart_axis_datavolume));
 		dataSet.setColors(stackColors);
 		dataSet.setStackLabels(stackLabels);
-		dataSets = new ArrayList<BarDataSet>();
+		dataSets = new ArrayList<IBarDataSet>();
 		dataSets.add(dataSet);
 
 		data = new BarData(xValues, dataSets);

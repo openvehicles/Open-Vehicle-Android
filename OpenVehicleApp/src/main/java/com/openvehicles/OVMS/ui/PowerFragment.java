@@ -26,8 +26,9 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
-import com.github.mikephil.charting.utils.ValueFormatter;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
@@ -61,6 +62,8 @@ public class PowerFragment
 	private static final int COLOR_POWER_MIN = Color.parseColor("#FF999999");
 	private static final int COLOR_POWER_MAX = Color.parseColor("#FF999999");
 	private static final int COLOR_POWER_AVG = Color.parseColor("#FFFF0000");
+	private static final int COLOR_POWER_RECUPLIMIT = Color.parseColor("#FFFF7777");
+	private static final int COLOR_POWER_DRIVELIMIT = Color.parseColor("#FFFF7777");
 
 	private static final int COLOR_ENERGY_USED = Color.parseColor("#FF999999");
 	private static final int COLOR_ENERGY_RECD = Color.parseColor("#FF999999");
@@ -135,7 +138,7 @@ public class PowerFragment
 		chart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
 		chart.setDrawGridBackground(false);
 		chart.setDrawBorders(true);
-		chart.setHighlightEnabled(false);
+		chart.setHighlightPerTapEnabled(false);
 
 		xAxis = chart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
@@ -143,13 +146,12 @@ public class PowerFragment
 		yAxis = chart.getAxisLeft(); // altitude
 		yAxis.setTextColor(COLOR_ALTITUDE);
 		yAxis.setGridColor(COLOR_ALTITUDE_GRID);
-		yAxis.setStartAtZero(false);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
 
 		yAxis = chart.getAxisRight(); // speed
 		yAxis.setTextColor(COLOR_SPEED);
 		yAxis.setGridColor(COLOR_SPEED_GRID);
-		yAxis.setStartAtZero(true);
+		yAxis.setAxisMinValue(0f);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
 
 
@@ -162,7 +164,7 @@ public class PowerFragment
 		chart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
 		chart.setDrawGridBackground(false);
 		chart.setDrawBorders(true);
-		chart.setHighlightEnabled(false);
+		chart.setHighlightPerTapEnabled(false);
 
 		xAxis = chart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
@@ -170,26 +172,12 @@ public class PowerFragment
 		yAxis = chart.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setStartAtZero(false);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-		yAxis.setValueFormatter(new ValueFormatter() {
-			@Override
-			public String getFormattedValue(float value) {
-				return String.format("%.0fkW", value / 1000f);
-			}
-		});
 
 		yAxis = chart.getAxisRight();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setStartAtZero(false);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
-		yAxis.setValueFormatter(new ValueFormatter() {
-			@Override
-			public String getFormattedValue(float value) {
-				return String.format("%.0fkW", value / 1000f);
-			}
-		});
 
 
 		//
@@ -201,7 +189,7 @@ public class PowerFragment
 		chart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
 		chart.setDrawGridBackground(false);
 		chart.setDrawBorders(true);
-		chart.setHighlightEnabled(false);
+		chart.setHighlightPerTapEnabled(false);
 
 		xAxis = chart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
@@ -209,13 +197,11 @@ public class PowerFragment
 		yAxis = chart.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setStartAtZero(false);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
 
 		yAxis = chart.getAxisRight();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setStartAtZero(false);
 		yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART);
 
 
@@ -245,6 +231,16 @@ public class PowerFragment
 		public CoupleChartGestureListener(Chart srcChart, Chart[] dstCharts) {
 			this.srcChart = srcChart;
 			this.dstCharts = dstCharts;
+		}
+
+		@Override
+		public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+			// nop
+		}
+
+		@Override
+		public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+			// nop
 		}
 
 		@Override
@@ -559,6 +555,8 @@ public class PowerFragment
 		ArrayList<Entry> pwrMinValues = new ArrayList<Entry>();
 		ArrayList<Entry> pwrMaxValues = new ArrayList<Entry>();
 		ArrayList<Entry> pwrAvgValues = new ArrayList<Entry>();
+		ArrayList<Entry> bmsRecupLimitValues = new ArrayList<Entry>();
+		ArrayList<Entry> bmsDriveLimitValues = new ArrayList<Entry>();
 
 		ArrayList<Entry> energyUseValues = new ArrayList<Entry>();
 		ArrayList<Entry> energyRecValues = new ArrayList<Entry>();
@@ -594,6 +592,8 @@ public class PowerFragment
 				pwrMinValues.add(new Entry(entry.getMinPower(logEntries, refEntry), xIndex));
 				pwrMaxValues.add(new Entry(entry.getMaxPower(logEntries, refEntry), xIndex));
 				pwrAvgValues.add(new Entry(entry.getSegAvgPwr(refEntry), xIndex));
+				bmsRecupLimitValues.add(new Entry(entry.getBmsRecupLimit(logEntries, refEntry), xIndex));
+				bmsDriveLimitValues.add(new Entry(entry.getBmsDriveLimit(logEntries, refEntry), xIndex));
 
 				energyUseValues.add(new Entry(entry.getSegUsedWh(refEntry), xIndex));
 				energyRecValues.add(new Entry(entry.getSegRecdWh(refEntry), xIndex));
@@ -603,7 +603,7 @@ public class PowerFragment
 				if (entry.isSectionStart(refEntry)) {
 					LimitLine l = new LimitLine(xIndex);
 					l.setLabel(String.format("%.0f", entry.getOdometer(units)));
-					l.setLabelPosition(LimitLine.LimitLabelPosition.POS_RIGHT);
+					l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
 					l.setTextColor(Color.WHITE);
 					l.setTextStyle(Paint.Style.FILL);
 					l.enableDashedLine(3f, 2f, 0f);
@@ -623,7 +623,7 @@ public class PowerFragment
 		// Update trip chart:
 		//
 
-		ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
+		ArrayList<ILineDataSet> dataSets = new ArrayList<ILineDataSet>();
 		LineDataSet dataSet;
 
 		dataSet = new LineDataSet(altValues,
@@ -681,7 +681,7 @@ public class PowerFragment
 
 			powerChart.setVisibility(View.VISIBLE);
 
-			dataSets = new ArrayList<LineDataSet>();
+			dataSets = new ArrayList<ILineDataSet>();
 
 			dataSet = new LineDataSet(pwrMinValues,
 					getString(R.string.power_data_pwr_min));
@@ -691,7 +691,7 @@ public class PowerFragment
 			dataSet.setLineWidth(1f);
 			dataSet.setDrawCircles(false);
 			dataSet.setDrawValues(false);
-			dataSet.setDrawCubic(true);
+			dataSet.setDrawCubic(false);
 			dataSets.add(dataSet);
 
 			dataSet = new LineDataSet(pwrMaxValues,
@@ -702,7 +702,7 @@ public class PowerFragment
 			dataSet.setLineWidth(1f);
 			dataSet.setDrawCircles(false);
 			dataSet.setDrawValues(false);
-			dataSet.setDrawCubic(true);
+			dataSet.setDrawCubic(false);
 			dataSets.add(dataSet);
 
 			dataSet = new LineDataSet(pwrAvgValues,
@@ -714,6 +714,28 @@ public class PowerFragment
 			dataSet.setDrawCircles(false);
 			dataSet.setDrawValues(false);
 			dataSet.setDrawCubic(true);
+			dataSets.add(dataSet);
+
+			dataSet = new LineDataSet(bmsRecupLimitValues,
+					getString(R.string.power_data_pwr_recuplimit));
+			dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+			dataSet.setColor(COLOR_POWER_RECUPLIMIT);
+			dataSet.setDrawFilled(false);
+			dataSet.setLineWidth(2f);
+			dataSet.setDrawCircles(false);
+			dataSet.setDrawValues(false);
+			dataSet.setDrawCubic(false);
+			dataSets.add(dataSet);
+
+			dataSet = new LineDataSet(bmsDriveLimitValues,
+					getString(R.string.power_data_pwr_drivelimit));
+			dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+			dataSet.setColor(COLOR_POWER_DRIVELIMIT);
+			dataSet.setDrawFilled(false);
+			dataSet.setLineWidth(2f);
+			dataSet.setDrawCircles(false);
+			dataSet.setDrawValues(false);
+			dataSet.setDrawCubic(false);
 			dataSets.add(dataSet);
 
 
@@ -751,7 +773,7 @@ public class PowerFragment
 
 			energyChart.setVisibility(View.VISIBLE);
 
-			dataSets = new ArrayList<LineDataSet>();
+			dataSets = new ArrayList<ILineDataSet>();
 
 			dataSet = new LineDataSet(energyUseValues,
 					getString(R.string.power_data_energy_used));

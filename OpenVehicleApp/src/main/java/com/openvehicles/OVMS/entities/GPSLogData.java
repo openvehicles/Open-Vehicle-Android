@@ -45,6 +45,14 @@ public class GPSLogData {
 				//  bit 6 = 0x40: 1 = Switch-ON/-OFF phase / 0 = normal operation
 				//  bit 7 = 0x80: 1 = CAN-Bus online (test flag to detect offline)
 
+		// V3.6.0: add BMS power limits [W] and autopower levels [%]
+		public int bmsDriveLimit, bmsRecupLimit;
+		public float autoDriveLevel, autoRecupLevel;
+
+		// V3.6.0: add current min/max
+		public float minCurrent, maxCurrent;
+
+
 		/**
 		 * Get operative status
 		 *
@@ -161,6 +169,31 @@ public class GPSLogData {
 				entry = entries.get(i);
 				if (entry.maxPower > max)
 					max = entry.maxPower;
+			}
+			return max;
+		}
+
+		// bmsDriveLimit & bmsRecupLimit are per GPS log entry instead of cumulative, thus need to be
+		//  scanned for a segment spanning multiple entries:
+
+		public int getBmsRecupLimit(ArrayList<Entry> entries, Entry ref) {
+			int min = 32767;
+			Entry entry;
+			for (int i = entries.indexOf(ref); i <= entries.indexOf(this); i++) {
+				entry = entries.get(i);
+				if (entry.bmsRecupLimit < min)
+					min = entry.bmsRecupLimit;
+			}
+			return min;
+		}
+
+		public int getBmsDriveLimit(ArrayList<Entry> entries, Entry ref) {
+			int max = -32768;
+			Entry entry;
+			for (int i = entries.indexOf(ref); i <= entries.indexOf(this); i++) {
+				entry = entries.get(i);
+				if (entry.bmsDriveLimit > max)
+					max = entry.bmsDriveLimit;
 			}
 			return max;
 		}
@@ -302,6 +335,18 @@ public class GPSLogData {
 							entry.minPower = Integer.parseInt(result[j++]);
 							entry.maxPower = Integer.parseInt(result[j++]);
 							entry.carStatus = Integer.parseInt(result[j++], 16);
+
+							// V3.6 extensions:
+							if (result.length > j) {
+								entry.bmsDriveLimit = Integer.parseInt(result[j++]);
+								entry.bmsRecupLimit = Integer.parseInt(result[j++]);
+								entry.autoDriveLevel = Float.parseFloat(result[j++]);
+								entry.autoRecupLevel = Float.parseFloat(result[j++]);
+							}
+							if (result.length > j) {
+								entry.minCurrent = Float.parseFloat(result[j++]);
+								entry.maxCurrent = Float.parseFloat(result[j++]);
+							}
 
 							// store record:
 							entries.add(entry);

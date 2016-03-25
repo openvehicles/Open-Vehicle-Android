@@ -210,7 +210,22 @@
 			android:text="0°C"
 			android:textStyle="bold" />
 
-<!--              android:layout_x="162px" -->
+		<TextView
+			android:id="@+id/tabCarTextChargerLabel"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="348px"
+			android:text="@string/textCHARGER" />
+
+		<TextView
+			android:id="@+id/tabCarTextCharger"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="382px"
+			android:text="0°C"
+			android:textStyle="bold" />
+
+		<!--              android:layout_x="162px" -->
 
         <TextView
             android:id="@+id/tabCarTextOdometer"

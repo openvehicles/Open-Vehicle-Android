@@ -41,7 +41,7 @@ public class CarData implements Serializable {
 	public boolean car_headlights_on = false;
 	public boolean car_bonnet_open = false;
 	public boolean car_trunk_open = false;
-	public boolean car_coolingpump_on = false;
+	public boolean car_awake = false;
 	public boolean car_alarm_sounding = false;
 	public boolean car_charge_timer = false;
 	public Date car_parked_time = null;
@@ -51,6 +51,7 @@ public class CarData implements Serializable {
 	public String car_temp_pem = "";
 	public String car_temp_motor = "";
 	public String car_temp_battery = "";
+	public String car_temp_charger = "";
 	public String car_temp_ambient = "";
 	public DataStale stale_car_temps = DataStale.NoValue;
 	public DataStale stale_ambient_temp = DataStale.NoValue;
@@ -123,6 +124,7 @@ public class CarData implements Serializable {
 	public int car_temp_pem_raw = 0;
 	public int car_temp_motor_raw = 0;
 	public int car_temp_battery_raw = 0;
+	public int car_temp_charger_raw = 0;
 	public int car_temp_ambient_raw = 0;
 	public int car_tripmeter_raw = 0;
 	public int car_odometer_raw = 0;
