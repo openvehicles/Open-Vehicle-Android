@@ -484,8 +484,13 @@ public class MainActivity extends ApiActivity implements
 
 	@Override
 	public void after(boolean flBoolean) {
-		// TODO Auto-generated method stub
-
+		// Called from GetMapDetails.onPostExecute after retrieving OCM updates
+		Log.d(TAG, "OCM updates received");
+		FragMap frg = (FragMap) mPagerAdapter.getItem(2);
+		if (frg != null) {
+			Log.d(TAG, "OCM updates received => calling FragMap.update()");
+			frg.update();
+		}
 	}
 
 
@@ -548,10 +553,10 @@ public class MainActivity extends ApiActivity implements
 			cache_valid = false;
 		}
 		else if (cursor.moveToFirst()) {
-			// check if last tile update was more than 4 weeks (28 days) ago:
+			// check if last tile update was more than 24 hours ago:
 			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
 			long now = System.currentTimeMillis() / 1000;
-			if (now > last_update + (3600 * 24 * 28))
+			if (now > last_update + (3600 * 24))
 				cache_valid = false;
 		}
 
@@ -563,12 +568,15 @@ public class MainActivity extends ApiActivity implements
 
 			// make OCM API URL:
 			String maxresults = appPrefes.getData("maxresults");
+			String lastStatusUpdate = database.get_DateLastStatusUpdate();
+
 			String url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false"
 					+ "&latitude=" + lat
 					+ "&longitude=" + lng
 					+ "&distance=160" // see above
 					+ "&distanceunit=KM"
-					+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults);
+					+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults
+					+ "&modifiedsince=" + lastStatusUpdate);
 
 			Log.d(TAG, "getdata: new fetch for lat/lng=" + latitude + "/" + longitude
 					+ ", lat_main=" + appPrefes.getData("lat_main")

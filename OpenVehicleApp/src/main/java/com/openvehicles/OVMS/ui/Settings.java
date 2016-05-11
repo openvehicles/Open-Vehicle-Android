@@ -14,6 +14,7 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
@@ -54,7 +55,7 @@ public class Settings extends Fragment implements ConnectionList.Con {
 	}
 
 	private void setUpClusteringViews() {
-		CheckBox clusterCheckbox = (CheckBox) view
+		final CheckBox clusterCheckbox = (CheckBox) view
 				.findViewById(R.id.checkbox_cluster);
 		final SeekBar clusterSizeSeekbar = (SeekBar) view
 				.findViewById(R.id.seekbar_cluster_size);
@@ -62,10 +63,13 @@ public class Settings extends Fragment implements ConnectionList.Con {
 				.findViewById(R.id.ocm_maxresults);
 		Button btnConnections = (Button) view
 				.findViewById(R.id.btn_connections);
+		Button btnClearCache = (Button) view
+				.findViewById(R.id.btn_clearcache);
 
 
 		if (appPrefes.getData("check").equals("false")) {
 			clusterCheckbox.setChecked(false);
+			clusterSizeSeekbar.setEnabled(false);
 		}
 		try {
 			clusterSizeSeekbar.setProgress(Integer.parseInt(appPrefes
@@ -114,12 +118,14 @@ public class Settings extends Fragment implements ConnectionList.Con {
 					@Override
 					public void onProgressChanged(SeekBar seekBar,
 												  int progress, boolean fromUser) {
-						appPrefes.SaveData("progress", "" + progress);
-						FragMap.updateMap.updateClustering(progress, true);
 					}
 
 					@Override
 					public void onStopTrackingTouch(SeekBar seekBar) {
+						int progress = seekBar.getProgress();
+						boolean enabled = clusterCheckbox.isChecked();
+						appPrefes.SaveData("progress", "" + progress);
+						FragMap.updateMap.updateClustering(progress, enabled);
 					}
 				});
 
@@ -146,6 +152,16 @@ public class Settings extends Fragment implements ConnectionList.Con {
 					@Override
 					public void onClick(View view) {
 						connectionList.sublist();
+					}
+				});
+
+		btnClearCache
+				.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						FragMap.updateMap.clearCache();
+						Toast.makeText(getActivity(), getString(R.string.msg_cache_cleared),
+								Toast.LENGTH_SHORT).show();
 					}
 				});
 

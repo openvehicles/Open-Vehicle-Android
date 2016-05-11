@@ -122,6 +122,20 @@
 
         </TableRow>
 
+        <TableRow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dip">
+
+            <Button
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="20dip"
+                android:text="@string/clearcache"
+                android:id="@+id/btn_clearcache"
+                android:layout_column="1"/>
+        </TableRow>
+
     </TableLayout>
 
 </LinearLayout>

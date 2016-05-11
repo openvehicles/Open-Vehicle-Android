@@ -248,6 +248,9 @@
 
     <string name="connections">Connections</string>
 
+    <string name="clearcache">Clear cache</string>
+    <string name="msg_cache_cleared">Charge point cache cleared!</string>
+
     <string name="logs_title">Diagnostic logs</string>
     <string name="logs_btn_get">Get logs</string>
     <string name="logs_btn_reset">Reset logs</string>

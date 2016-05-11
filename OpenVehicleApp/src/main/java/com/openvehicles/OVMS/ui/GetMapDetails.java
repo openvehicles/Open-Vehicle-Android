@@ -84,7 +84,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 		database.endWrite(true);
 
-		Log.d(TAG, "saved " + i + " chargepoints to database");
+		Log.d(TAG, "saved " + i + " chargepoints to database, lastUpdate=" + database.get_DateLastStatusUpdate());
 
 		return null;
 	}

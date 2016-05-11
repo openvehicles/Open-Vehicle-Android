@@ -21,7 +21,7 @@ import java.util.Locale;
 
 public class Database extends SQLiteOpenHelper {
 	private static final String TAG = "Database";
-	private static final int SCHEMA_VERSION = 5;
+	private static final int SCHEMA_VERSION = 6;
 
 	Context context;
 	SQLiteDatabase db;
@@ -57,7 +57,7 @@ public class Database extends SQLiteOpenHelper {
 				"OperatorInfo TEXT, StatusType TEXT, UsageType TEXT," +
 				"AddressLine1 TEXT, RelatedURL TEXT, UsageCost TEXT," +
 				"AccessComments TEXT, GeneralComments TEXT," +
-				"NumberOfPoints TEXT)");
+				"NumberOfPoints TEXT, DateLastStatusUpdate TEXT)");
 
 		db.execSQL("CREATE TABLE if not exists company(id INTEGER PRIMARY KEY AUTOINCREMENT,userid TEXT,instance TEXT,companyname TEXT)");
 
@@ -182,6 +182,24 @@ public class Database extends SQLiteOpenHelper {
 
 		}
 
+		if (oldVersion < 6) {
+			// Version 6:
+
+			// mapdetails:
+			// add DateLastStatusUpdate
+			db.execSQL("DROP TABLE mapdetails");
+			db.execSQL("CREATE TABLE mapdetails(cpid INTEGER PRIMARY KEY," +
+					"Latitude TEXT, Longitude TEXT, Title TEXT," +
+					"OperatorInfo TEXT, StatusType TEXT, UsageType TEXT," +
+					"AddressLine1 TEXT, RelatedURL TEXT, UsageCost TEXT," +
+					"AccessComments TEXT, GeneralComments TEXT," +
+					"NumberOfPoints TEXT, DateLastStatusUpdate TEXT)");
+
+			// clear cache:
+			db.execSQL("DELETE FROM Connection");
+			db.execSQL("DELETE FROM latlngdetail");
+		}
+
 	}
 
 
@@ -223,6 +241,7 @@ public class Database extends SQLiteOpenHelper {
 
 			contentValues.put("GeneralComments", ifNull(cp.GeneralComments, ""));
 			contentValues.put("NumberOfPoints", ifNull(cp.NumberOfPoints, "1"));
+			contentValues.put("DateLastStatusUpdate", ifNull(cp.DateLastStatusUpdate, ""));
 
 			if (cp.Connections != null) {
 
@@ -288,9 +307,10 @@ public class Database extends SQLiteOpenHelper {
 		return cursor;
 	}
 
-	// clear OCM latlng cache:
-	public void clear_latlngdetail() {
+	// clear OCM cache:
+	public void clear_mapdetails() {
 		open();
+		db.delete("mapdetails", null, null);
 		db.delete("latlngdetail", null, null);
 	}
 
@@ -416,6 +436,15 @@ public class Database extends SQLiteOpenHelper {
 						"FROM mapdetails JOIN Connection ON ( conCpId = cpid )" +
 						"WHERE conTypeId IN (" + filterConTypeIds + ")", null);
 		return cursor;
+	}
+
+	public String get_DateLastStatusUpdate() {
+		open();
+		Cursor cursor = db.rawQuery("select MAX(DateLastStatusUpdate) from mapdetails", null);
+		if (cursor.moveToFirst()) {
+			return ifNull(cursor.getString(0), "");
+		}
+		return "";
 	}
 
 	public Cursor getChargePoint(String cpId) {

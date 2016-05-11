@@ -228,6 +228,9 @@
 
     <string name="connections">Lade-Anschlüsse</string>
 
+    <string name="clearcache">Ladepunkte neu laden</string>
+    <string name="msg_cache_cleared">Ladepunkte werden neu geladen!</string>
+
     <string name="logs_title">Diagnose-Logs</string>
     <string name="logs_btn_get">Abrufen</string>
     <string name="logs_btn_reset">Löschen</string>

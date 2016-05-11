@@ -38,6 +38,8 @@ public class ChargePoint {
 	}
 	public StatusType StatusType;
 
+	public String DateLastStatusUpdate;
+
 	static public class Connection {
 		static public class ConnectionType {
 			public String ID;
