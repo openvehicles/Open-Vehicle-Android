@@ -6,9 +6,9 @@
 	<include layout="@layout/view_car_statusbar" />
 
 	<com.openvehicles.OVMS.ui.witdet.ScaleLayout android:id="@+id/scaleLayout"
-		android:layout_width="match_parent"
-		android:layout_height="match_parent"
-		android:layout_margin="8dp"
+												 android:layout_width="match_parent"
+												 android:layout_height="match_parent"
+												 android:layout_margin="8dp"
         >
 
 		<ImageView
@@ -79,6 +79,23 @@
 			android:clickable="true"
 			android:src="@drawable/ic_home_link"
 			tools:ignore="PxUsage" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCarACBoxes"
+			style="@style/TabCarImgLetterBox"
+			android:src="@drawable/letterbox_ac"
+			/>
+
+		<ImageView
+			android:id="@+id/tabCarImageAC"
+			android:layout_x="426px"
+			android:layout_y="346px"
+			android:clickable="true"
+			android:src="@drawable/ic_ac_off"
+			tools:ignore="PxUsage"
+			android:layout_width="107px"
+			android:layout_height="71px"
+			/>
 
 		<TextView
 			android:id="@+id/textFLWheel"

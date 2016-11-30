@@ -243,6 +243,12 @@ public class CarEditorFragment extends BaseFragment {
 		"car_kiasoul_cherryblackinfernored",
 		"car_kiasoul_clearwhite",
 		"car_kiasoul_pearlwhiteelectronicblue",
-		"car_kiasoul_titaniumsilver"
-	 };		
+		"car_kiasoul_titaniumsilver",
+		"car_leaf_coulisred",
+		"car_leaf_deepblue",
+		"car_leaf_forgedbronze",
+		"car_leaf_gunmetallic",
+		"car_leaf_pearlwhite",
+		"car_leaf_superblack"
+	 };
 }

@@ -103,6 +103,7 @@
 
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown-Schwellwert</string>
     <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown-Kompensation</string>
+    <string name="lb_ft_rt_chargepower">#%d: Ladeleistungs-Stufe</string>
     <string name="lb_ft_rt_suffsoc">#%d: Ausreichender SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Ausreichende Reichweite</string>
     <string name="lb_ft_rt_maxrange">#%d: Maximale Reichweite</string>
@@ -138,12 +139,24 @@
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Fahrzeug Info</string>
 
-    <string name="lb_charger_setting_twizy">Lade-Benachrichtigungen</string>
+    <string name="lb_charger_setting_twizy">Lade-Einstellungen</string>
     <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Benachrichtigung aus.</string>
     <string name="lb_sufficient_soc">Ausreichender SOC (%)</string>
     <string name="lb_sufficient_range">Ausreichende Reichweite (%s)</string>
-    <string name="msg_getting_charge_alerts">Rufe Lade-Benachrichtigungen vom Modul ab&#8230;</string>
-    <string name="msg_setting_charge_alerts">Setze Lade-Benachrichtigungen&#8230;</string>
+    <string name="msg_getting_charge_alerts">Rufe Lade-Einstellungen vom Modul ab&#8230;</string>
+    <string name="msg_setting_charge_alerts">Setze Lade-Einstellungen&#8230;</string>
+
+    <string name="lb_charge_power_limit">Ladeleistung</string>
+    <string-array name="charge_power_limits">
+        <item>unbeschränkt</item>
+        <item>1,6A / 350W</item>
+        <item>3,1A / 700W</item>
+        <item>4,7A / 1.050W</item>
+        <item>6,3A / 1.400W</item>
+        <item>7,8A / 1.750W</item>
+        <item>9,4A / 2.100W</item>
+        <item>10A / 2.230W</item>
+    </string-array>
 
     <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
@@ -210,6 +223,11 @@
     <string name="text12VBATT">12V BATT</string>
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
+
+    <string name="textAC">KLIMASTEUERUNG</string>
+    <string name="mi_ac_on">A/C AN</string>
+    <string name="mi_ac_off">A/C AUS</string>
+    <string name="msg_issuing_climatecontrol">Sende Klimasteuerbefehl…</string>
 
     <string-array name="en_charger">
         <item>Standard</item>

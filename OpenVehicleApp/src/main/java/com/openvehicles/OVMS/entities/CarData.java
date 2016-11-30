@@ -1,9 +1,12 @@
 package com.openvehicles.OVMS.entities;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.util.Date;
 
 public class CarData implements Serializable {
+	private static final String TAG = "CarData";
 	private static final long serialVersionUID = 9069218298370983442L;
 
 	public enum DataStale {
@@ -184,4 +187,58 @@ public class CarData implements Serializable {
 	public double car_tpms_rr_p_raw = 0.0D;
 	public double car_tpms_rr_t_raw = 0.0D;
 	public int car_stale_tpms_raw = -1;
+
+	// Car Capabilities Message "V"
+	public String car_capabilities = "";
+	public boolean[] car_command_support;
+
+
+	/**
+	 * Default constructor
+	 */
+	public CarData() {
+		car_command_support = new boolean[256];
+	}
+
+	/**
+	 * Process capabilities message
+	 *
+	 */
+	public boolean processCapabilities(String msgdata) {
+
+		Log.d(TAG, "processCapabilities: " + msgdata);
+
+		car_capabilities = msgdata;
+		car_command_support = new boolean[256];
+
+		// msgdata format: C1,C3-6,...
+		// translate to bool array:
+		try {
+			String[] parts = msgdata.split(",\\s*");
+			int i, start, end;
+			for (String part : parts) {
+				// Command?
+				if (part.startsWith("C")) {
+					String[] caps = part.split("-");
+					start = Integer.parseInt(caps[0].substring(1));
+					if (caps.length > 1) {
+						end = Integer.parseInt(caps[1]);
+					} else {
+						end = start;
+					}
+					for (i = start; i <= end; i++) {
+						car_command_support[i] = true;
+					}
+				}
+			}
+		} catch(Exception e) {
+			return false;
+		}
+
+		return true;
+	}
+
+	public boolean hasCommand(int cmd) {
+		return (car_command_support != null) && car_command_support[cmd];
+	}
 }

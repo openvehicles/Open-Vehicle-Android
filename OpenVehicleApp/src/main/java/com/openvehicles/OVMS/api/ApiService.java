@@ -128,9 +128,9 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	public void onLoginComplete() {
 		Log.d(TAG, "onLoginComplete");
 		
-		//Intent intent = new Intent(getPackageName() + ".ApiEvent");
-		//intent.putExtra("onLoginComplete", true);
-		//sendBroadcast(intent);
+		Intent intent = new Intent(getPackageName() + ".ApiEvent");
+		intent.putExtra("onLoginComplete", true);
+		sendBroadcast(intent);
 	}
 	
 	public boolean isLoggedIn() {

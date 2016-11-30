@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
@@ -341,6 +342,12 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			snvSOC.setValue(mCarData.car_chargelimit_soclimit);
 		}
 
+		// set charge power limit:
+		Spinner spnChargePower = (Spinner) dialogView.findViewById(R.id.spn_charge_power_limit);
+		if (spnChargePower != null) {
+			spnChargePower.setSelection(mCarData.car_charge_currentlimit_raw / 5);
+		}
+
 		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting_twizy)
 				.setView(dialogView)
@@ -355,14 +362,17 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 										.findViewById(R.id.snv_sufficient_range);
 								SlideNumericView snvSOC = (SlideNumericView) dlg
 										.findViewById(R.id.snv_sufficient_soc);
+								Spinner spnChargePower = (Spinner) dlg
+										.findViewById(R.id.spn_charge_power_limit);
 
 								int suffRange = snvRange.getValue();
 								int suffSOC = snvSOC.getValue();
+								int chgPower = spnChargePower.getSelectedItemPosition();
 
 								// SetChargeAlerts (204):
 								sendCommand(
 										R.string.msg_setting_charge_alerts,
-										String.format("204,%d,%d", suffRange, suffSOC),
+										String.format("204,%d,%d,%d", suffRange, suffSOC, chgPower),
 										InfoFragment.this);
 							}
 						})

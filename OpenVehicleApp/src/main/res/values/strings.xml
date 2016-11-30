@@ -104,6 +104,7 @@
 
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown threshold</string>
     <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown compensation</string>
+    <string name="lb_ft_rt_chargepower">#%d: Charge power level</string>
     <string name="lb_ft_rt_suffsoc">#%d: Sufficient SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Sufficient range</string>
     <string name="lb_ft_rt_maxrange">#%d: Max ideal range</string>
@@ -125,6 +126,7 @@
     <string name="lb_cp_gsmlock">#%d: GSM lock</string>
     <string name="lb_cp_vehicle_type">#%d: Vehicle type</string>
     <string name="lb_cp_cooldown">#%d: Cooldown</string>
+    <string name="lb_cp_gprsdns">#%d: GPRS DNS IP</string>
     <string name="lb_cp_timezone">#%d: Time zone</string>
     <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
     <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
@@ -139,12 +141,24 @@
     <string name="lb_ovms_firmware">OVMS Firmware:</string>
     <string name="lb_vehicle_info">Vehicle Info</string>
 
-    <string name="lb_charger_setting_twizy">Charge Alerts</string>
+    <string name="lb_charger_setting_twizy">Charge configuration</string>
     <string name="lb_charger_setting_twizy_hint">Hint: set to zero to deactivate the alert.</string>
     <string name="lb_sufficient_soc">Sufficient SOC (%)</string>
     <string name="lb_sufficient_range">Sufficient range (%s)</string>
     <string name="msg_getting_charge_alerts">Getting charge alerts from module&#8230;</string>
-    <string name="msg_setting_charge_alerts">Setting charge alerts&#8230;</string>
+    <string name="msg_setting_charge_alerts">Setting charge configuration&#8230;</string>
+
+    <string name="lb_charge_power_limit">Charge power limit</string>
+    <string-array name="charge_power_limits">
+        <item>unlimited</item>
+        <item>1.6A / 350W</item>
+        <item>3.1A / 700W</item>
+        <item>4.7A / 1,050W</item>
+        <item>6.3A / 1,400W</item>
+        <item>7.8A / 1,750W</item>
+        <item>9.4A / 2,100W</item>
+        <item>10A / 2,230W</item>
+    </string-array>
 
     <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
@@ -211,6 +225,11 @@
     <string name="textPROFILE">PROFILE</string>
     <string name="textAMBIENT">AMBIENT</string>
     <string name="text12VBATT">12V BATT</string>
+
+    <string name="textAC">CLIMATE CONTROL</string>
+    <string name="mi_ac_on">A/C ON</string>
+    <string name="mi_ac_off">A/C OFF</string>
+    <string name="msg_issuing_climatecontrol">Issuing climate control…</string>
 
     <string-array name="en_charger">
     	<item>Standard</item>

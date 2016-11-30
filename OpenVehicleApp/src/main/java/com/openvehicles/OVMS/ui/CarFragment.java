@@ -73,6 +73,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	 */
 	private void setupCarType(CarData pCarData) {
 
+		ImageView img1, img2;
+		TextView label;
+
 		Log.d(TAG, "updateCarType: old=" + uiCarType + ", new=" + pCarData.car_type);
 		if (uiCarType.equals(pCarData.car_type))
 			return;
@@ -81,13 +84,36 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			// UI changes for Renault Twizy:
 
 			// exchange "Homelink" by "Profile":
-			ImageView icon = (ImageView) findViewById(R.id.tabCarImageHomelink);
-			if (icon != null)
-				icon.setImageResource(R.drawable.ic_drive_profile);
-			TextView label = (TextView) findViewById(R.id.txt_homelink);
+			img1 = (ImageView) findViewById(R.id.tabCarImageHomelink);
+			if (img1 != null)
+				img1.setImageResource(R.drawable.ic_drive_profile);
+			label = (TextView) findViewById(R.id.txt_homelink);
 			if (label != null)
 				label.setText(R.string.textPROFILE);
 		}
+
+		//
+		// Configure A/C button:
+		//
+
+		img1 = (ImageView) findViewById(R.id.tabCarImageCarACBoxes);
+		img2 = (ImageView) findViewById(R.id.tabCarImageAC);
+
+		if (pCarData.hasCommand(26)) {
+			// enable
+			img1.setVisibility(View.VISIBLE);
+			img2.setVisibility(View.VISIBLE);
+			if ((pCarData.car_doors5_raw & 0x80) > 0) {
+				img2.setImageResource(R.drawable.ic_ac_on);
+			} else {
+				img2.setImageResource(R.drawable.ic_ac_off);
+			}
+		} else {
+			// disable
+			img1.setVisibility(View.INVISIBLE);
+			img2.setVisibility(View.INVISIBLE);
+		}
+
 
 		uiCarType = pCarData.car_type;
 
@@ -156,7 +182,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		registerForContextMenu(findViewById(R.id.btn_wakeup));
 		registerForContextMenu(findViewById(R.id.txt_homelink));
 		registerForContextMenu(findViewById(R.id.tabCarImageHomelink));
-		
+		registerForContextMenu(findViewById(R.id.tabCarImageAC));
+
 		findViewById(R.id.btn_lock_car).setOnClickListener(this);
 		findViewById(R.id.btn_valet_mode).setOnClickListener(this);
 	}
@@ -258,6 +285,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	private static final int MI_HL_02		= Menu.FIRST + 2;
 	private static final int MI_HL_03		= Menu.FIRST + 3;
 	private static final int MI_HL_DEFAULT	= Menu.FIRST + 4;
+	private static final int MI_AC_ON		= Menu.FIRST + 5;
+	private static final int MI_AC_OFF		= Menu.FIRST + 6;
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
@@ -285,6 +315,13 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				menu.add(0, MI_HL_03, 0, "3");
 				menu.add(R.string.Cancel);
 				break;
+
+			case R.id.tabCarImageAC:
+				menu.setHeaderTitle(R.string.textAC);
+				menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on);
+				menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off);
+				menu.add(R.string.Cancel);
+				break;
 		}
 	}
 	
@@ -305,6 +342,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			return true;
 		case MI_HL_DEFAULT:
 			sendCommand(R.string.msg_issuing_homelink, "24", this);
+			return true;
+		case MI_AC_ON:
+			sendCommand(R.string.msg_issuing_climatecontrol, "26,1", this);
+			return true;
+		case MI_AC_OFF:
+			sendCommand(R.string.msg_issuing_climatecontrol, "26,0", this);
 			return true;
 		default:
 			return false;
@@ -639,5 +682,15 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			}
 
 	    }
+
+		// A/C status:
+		iv = (ImageView) findViewById(R.id.tabCarImageAC);
+		if ((pCarData.car_doors5_raw & 0x80) > 0) {
+			iv.setImageResource(R.drawable.ic_ac_on);
+		} else {
+			iv.setImageResource(R.drawable.ic_ac_off);
+		}
+
+		// Done.
 	}
 }

@@ -668,6 +668,10 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			}
 			break;
 		}
+		case 'V': { // Capabilities
+			mCarData.processCapabilities(cmd);
+			break;
+		}
 		case 'a': {
 			Log.v(TAG, "Server acknowleged ping");
 			break;

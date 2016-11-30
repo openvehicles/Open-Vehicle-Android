@@ -1,6 +1,7 @@
 package com.openvehicles.OVMS.utils;
 
 import java.io.Serializable;
+import java.sql.Time;
 import java.util.Date;
 
 public class NotificationData implements Serializable {
@@ -45,7 +46,8 @@ public class NotificationData implements Serializable {
 
 	// equals operator: used to detect duplicates
 	public boolean equals(NotificationData o) {
-		return (o.Type == Type && o.Title.equals(Title) && o.Message.equals(Message));
+		return (o.Timestamp == Timestamp && o.Type == Type
+				&& o.Title.equals(Title) && o.Message.equals(Message));
 	}
 
 	// message formatter:

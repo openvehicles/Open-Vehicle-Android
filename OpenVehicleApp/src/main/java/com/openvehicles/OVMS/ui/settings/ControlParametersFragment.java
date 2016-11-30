@@ -209,6 +209,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		static final int PARAM_ACC2   		= 0x11; // base64
 		static final int PARAM_ACC3   		= 0x12; // base64
 		static final int PARAM_ACC4   		= 0x13; // base64
+		static final int PARAM_GPRSDNS   	= 0x16;
 		static final int PARAM_TIMEZONE   	= 0x17;
 
 		// Renault Twizy:
@@ -308,6 +309,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 					return context.getString(R.string.lb_cp_vehicle_type, position);
 				case PARAM_COOLDOWN:
 					return context.getString(R.string.lb_cp_cooldown, position);
+				case PARAM_GPRSDNS:
+					return context.getString(R.string.lb_cp_gprsdns, position);
 				case PARAM_TIMEZONE:
 					return context.getString(R.string.lb_cp_timezone, position);
 
