@@ -82,7 +82,7 @@
 			android:layout_y="510px"
 			android:gravity="bottom|right"
             android:textSize="24px"
-            android:textColor="#fff07d00"
+            android:textColor="#ffffffff"
             android:textStyle="bold" />
 
         <ImageView
@@ -92,7 +92,6 @@
             android:layout_x="0px"
             android:layout_y="665px"
             android:scaleType="fitXY"
-            android:src="@drawable/etr_background"
             android:visibility="invisible"/>
 
         <TextView
@@ -102,13 +101,12 @@
             android:layout_x="59px"
             android:layout_y="665px"
             android:gravity="center_vertical|right"
-            android:textColor="#fff07d00"
+            android:textColor="#ffffffff"
             android:textStyle="bold"
             android:textSize="24px"
             android:text="50km: ~01:23\n95%: ~01:23"
             android:icon="@drawable/etr_sufficient"
             android:visibility="invisible"
-            android:background="@drawable/etr_sufficient"
             android:paddingRight="30dp"/>
 
         <TextView
@@ -117,22 +115,15 @@
             android:layout_height="76px"
             android:layout_x="292px"
             android:layout_y="665px"
-            android:textColor="#fff07d00"
+            android:textColor="#ffffffff"
             android:textStyle="bold"
             android:textSize="24px"
             android:text="100%: ~01:23"
             android:visibility="invisible"
-            android:background="@drawable/etr_full"
             android:paddingRight="30dp"
             android:gravity="center_vertical|right"/>
 
-        <ImageView
-			android:id="@+id/tabInfoImageBatteryText"
-			android:layout_width="466px"
-			android:layout_height="76px"
-			android:layout_x="57px"
-			android:layout_y="580px"
-			android:src="@drawable/battery_textbox" />
+
 
 		<TextView
 			style="@style/TabCarTextBox"
