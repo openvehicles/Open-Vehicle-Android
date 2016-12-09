@@ -139,7 +139,7 @@
   <string name="msg_charger_perform">Frequent gebruik van Prestatie Mode zal de levensduur van de batterij verminderen!</string>
   <string name="msg_wakeup_car">Wakker maken Voertuig&#8230;</string>
   <string name="msg_issuing_homelink">Uitvoeren Homelink Commando&#8230;</string>
-  <string name="msg_setting_charge_mc">Instellen van Laad Mode and Stroom&#8230;</string>
+  <string name="msg_setting_charge_mc">Instellen van Laad Mode en Stroom&#8230;</string>
   <string name="msg_setting_charge_m">Instellen van Laad Mode&#8230;</string>
   <string name="msg_setting_charge_c">Instellen van Laad stroom&#8230;</string>
   <string name="msg_starting_charge">Laden Starten&#8230;</string>
