@@ -2,17 +2,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <item android:id="@+id/mi_get_data"
+      app:showAsAction="always|withText"
+      android:title="@string/power_btn_get_data"
+      android:icon="@android:drawable/stat_sys_download" />
     <item android:id="@+id/power_menu"
           app:showAsAction="ifRoom|withText"
           android:icon="@android:drawable/ic_menu_more"
           android:title="@string/power_menu">
 
         <menu>
-
-            <item android:id="@+id/mi_get_data"
-              app:showAsAction="ifRoom"
-              android:title="@string/power_btn_get_data"
-              android:icon="@android:drawable/stat_sys_download" />
 
             <item android:id="@+id/mi_power_zoom5"
                   app:showAsAction="ifRoom"

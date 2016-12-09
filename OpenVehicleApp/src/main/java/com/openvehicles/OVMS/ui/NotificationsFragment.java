@@ -161,6 +161,8 @@ public class NotificationsFragment extends BaseFragment
 
 	private void initUi(Context pContext) {
 
+		Log.d(TAG, "initUi: (re-)loading notifications");
+
 		// (re-)load notifications:
 		mNotifications = new OVMSNotifications(pContext);
 		NotificationData[] data = new NotificationData[mNotifications.notifications.size()];

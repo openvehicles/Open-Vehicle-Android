@@ -64,10 +64,10 @@ public class ApiObservable {
     }
     
     public void notifyUpdate(CarData pCarData) {
-    	mHandler.notifyeUpdate(pCarData);
+    	mHandler.notifyUpdate(pCarData);
     }
     
-    private void notifyeOneUpdate(CarData pCarData) {
+    private void notifyOneUpdate(CarData pCarData) {
         int size = 0;
         ApiObserver[] arrays = null;
         synchronized (this) {
@@ -90,7 +90,7 @@ public class ApiObservable {
 			mParent = new WeakReference<ApiObservable>(pParent);
 		}
 		
-		public void notifyeUpdate(CarData pCarData) {
+		public void notifyUpdate(CarData pCarData) {
 			Message msg = new Message();
 			msg.what = WHAT;
 			msg.obj = pCarData;
@@ -101,7 +101,7 @@ public class ApiObservable {
 		
 		@Override
 		public void handleMessage(Message msg) {
-			mParent.get().notifyeOneUpdate((CarData) msg.obj);
+			mParent.get().notifyOneUpdate((CarData) msg.obj);
 		}
 	}
     

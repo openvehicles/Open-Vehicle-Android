@@ -5,6 +5,6 @@
     <item android:id="@+id/mi_battery_stats"
           android:title="@string/battery_title"
           android:icon="@drawable/ic_action_chart"
-          app:showAsAction="always"/>
+          app:showAsAction="always|withText"/>
 
 </menu>

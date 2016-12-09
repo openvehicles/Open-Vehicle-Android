@@ -33,6 +33,10 @@ public class AppPrefes {
 		return appSharedPrefs.getString(key, "");
 	}
 
+	public String getData(String key, String defaultValue) {
+		return appSharedPrefs.getString(key, defaultValue);
+	}
+
 	/****
 	 * 
 	 * SaveData() save the value to the preference

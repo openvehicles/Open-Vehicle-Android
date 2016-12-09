@@ -114,6 +114,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 
 	@Override
 	public void onServiceAvailable(ApiService pService) {
+		update(pService.getCarData());
 	}
 
 	public String getSentCommandMessage(String cmd) {

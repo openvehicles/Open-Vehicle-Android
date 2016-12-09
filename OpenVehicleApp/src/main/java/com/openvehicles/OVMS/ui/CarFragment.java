@@ -19,6 +19,7 @@ import android.view.MenuItem;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
@@ -174,7 +175,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		updateLastUpdatedView(pCarData);
 		updateCarBodyView(pCarData);
 	}
-	
+
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);

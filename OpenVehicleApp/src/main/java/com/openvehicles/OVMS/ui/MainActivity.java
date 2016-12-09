@@ -94,6 +94,10 @@ public class MainActivity extends ApiActivity implements
 		ConnectionList connectionList = new ConnectionList(this, this, url,
 				true);
 
+		// Start background ApiService:
+		Log.i(TAG, "Starting ApiService");
+		startService(new Intent(this, ApiService.class));
+
 		// set up receiver for server communication service:
 		registerReceiver(mApiEventReceiver, new IntentFilter(
 				getPackageName() + ".ApiEvent"));
@@ -133,7 +137,7 @@ public class MainActivity extends ApiActivity implements
 		);
 
 		mViewPager.setAdapter(mPagerAdapter);
-		mViewPager.setOnPageChangeListener(
+		mViewPager.addOnPageChangeListener(
 				new ViewPager.SimpleOnPageChangeListener() {
 					@Override
 					public void onPageSelected(int position) {
@@ -173,6 +177,14 @@ public class MainActivity extends ApiActivity implements
 		unregisterReceiver(mApiEventReceiver);
 		unregisterReceiver(mNotificationReceiver);
 		database.close();
+
+		// Stop background ApiService?
+		boolean serviceEnabled = appPrefes.getData("option_service_enabled", "0").equals("1");
+		if (!serviceEnabled) {
+			Log.i(TAG, "Stopping ApiService");
+			stopService(new Intent(this, ApiService.class));
+		}
+
 		super.onDestroy();
 	}
 
@@ -460,7 +472,7 @@ public class MainActivity extends ApiActivity implements
 						MainActivity.this,
 						mTabInfoItems[pPosition].getFragmentName());
 			}
-			//Log.d(TAG, "MainPagerAdapter: pos=" + pPosition + " => frg=" + mTabInfoItems[pPosition].fragment);
+			Log.d(TAG, "MainPagerAdapter: pos=" + pPosition + " => frg=" + mTabInfoItems[pPosition].fragment);
 			return mTabInfoItems[pPosition].fragment;
 		}
 
@@ -504,7 +516,7 @@ public class MainActivity extends ApiActivity implements
 			// update messages list:
 			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
 			if (frg != null) {
-				//Log.d(TAG, "Notifications: calling frg.update()");
+				Log.d(TAG, "Notifications: calling frg.update()");
 				frg.update();
 			}
 		}

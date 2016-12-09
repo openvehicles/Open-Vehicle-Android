@@ -103,6 +103,7 @@
 
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown-Schwellwert</string>
     <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown-Kompensation</string>
+    <string name="lb_ft_rt_chargemode">#%d: Ladestopp-Modus</string>
     <string name="lb_ft_rt_chargepower">#%d: Ladeleistungs-Stufe</string>
     <string name="lb_ft_rt_suffsoc">#%d: Ausreichender SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Ausreichende Reichweite</string>
@@ -140,14 +141,14 @@
     <string name="lb_vehicle_info">Fahrzeug Info</string>
 
     <string name="lb_charger_setting_twizy">Lade-Einstellungen</string>
-    <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Benachrichtigung aus.</string>
+    <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Schwelle aus.</string>
     <string name="lb_sufficient_soc">Ausreichender SOC (%)</string>
     <string name="lb_sufficient_range">Ausreichende Reichweite (%s)</string>
     <string name="msg_getting_charge_alerts">Rufe Lade-Einstellungen vom Modul ab&#8230;</string>
     <string name="msg_setting_charge_alerts">Setze Lade-Einstellungen&#8230;</string>
 
     <string name="lb_charge_power_limit">Ladeleistung</string>
-    <string-array name="charge_power_limits">
+    <string-array name="twizy_charge_power_limits">
         <item>unbeschränkt</item>
         <item>1,6A / 350W</item>
         <item>3,1A / 700W</item>
@@ -156,6 +157,11 @@
         <item>7,8A / 1.750W</item>
         <item>9,4A / 2.100W</item>
         <item>10A / 2.230W</item>
+    </string-array>
+    <string name="lb_charge_mode">Lademodus</string>
+    <string-array name="twizy_charge_modes">
+        <item>Nachricht</item>
+        <item>Stoppen</item>
     </string-array>
 
     <string name="msg_ok">OK</string>
@@ -450,6 +456,26 @@
         <b>6.100 Wh</b>. Bei der Aufladung ergibt sich die gespeicherte Energie aus
         <i>zugeführter Energie x Wirkungsgrad(Ladegerät+Akku)</i>, i.d.R. liegt der
         kombinierte Wirkungsgrad hier bei ~92%.</p>
+    ]]></string>
+
+    <string name="lb_options_service">Service:</string>
+    <string name="lb_options_service_cb">Verbindung offen halten</string>
+    <string name="lb_options_service_info">Die Serververbindung bleibt auch bestehen wenn die App nicht geöffnet ist.</string>
+    <string name="lb_options_broadcast">Weitergabe:</string>
+    <string name="lb_options_broadcast_cb">Daten an andere Apps weiterleiten bei Nachrichten…</string>
+    <string name="lb_options_broadcast_codes">Codes eingeben</string>
+    <string name="lb_options_commands">Befehle:</string>
+    <string name="lb_options_commands_cb">Fahrzeug-Kommandos freigeben</string>
+    <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
+        <p>Die Fahrzeug-Statusdaten sowie Nachrichteninhalte werden für die angegebenen Nachrichten-Codes
+         an andere Apps wie Automagic oder Tasker weitergeleitet.</p>
+        <p>Die Befehlsfreigabe erlaubt Apps zusätzlich, Befehle an registrierte Fahrzeuge zu senden,
+         dazu benötigt die jeweilige App die Fahrzeugkennung und das Passwort.
+         Hinweis: alle Kommando-Rückgaben werden an alle Apps weitergeleitet.</p>
+        <p>Die Nachrichtentypen und -inhalte werden im
+         <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">OVMS Android-Wiki</a>
+         und der <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS-Protokolldokumentation (PDF)</a>
+         erklärt.</p>
     ]]></string>
 
 

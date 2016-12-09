@@ -122,6 +122,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		map.getUiSettings().setRotateGesturesEnabled(false); // disable two-finger rotation gesture
 		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
+		map.getUiSettings().setMapToolbarEnabled(true); // enable Google Maps shortcuts
 
 		map.setMyLocationEnabled(!autotrack);
 		map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {

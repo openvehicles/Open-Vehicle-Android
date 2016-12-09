@@ -175,6 +175,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		// Renault Twizy:
 		private static final int FEATURE_KICKDOWN_THRESHOLD		= 0x01; // Kickdown threshold (pedal change)
 		private static final int FEATURE_KICKDOWN_COMPZERO 		= 0x02; // Kickdown pedal compensation zero point
+		private static final int FEATURE_CHARGEMODE 			= 0x06; // Charge mode (0-1)
 		private static final int FEATURE_CHARGEPOWER 			= 0x07; // Charge power level (0-7)
 		private static final int FEATURE_SUFFSOC 				= 0x0A; // Charge alert: sufficient SOC
 		private static final int FEATURE_SUFFRANGE 				= 0x0B; // Charge alert: sufficient range
@@ -220,6 +221,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						return context.getString(R.string.lb_ft_rt_kickdown_threshold, position);
 					case FEATURE_KICKDOWN_COMPZERO:
 						return context.getString(R.string.lb_ft_rt_kickdown_compzero, position);
+					case FEATURE_CHARGEMODE:
+						return context.getString(R.string.lb_ft_rt_chargemode, position);
 					case FEATURE_CHARGEPOWER:
 						return context.getString(R.string.lb_ft_rt_chargepower, position);
 					case FEATURE_SUFFSOC:

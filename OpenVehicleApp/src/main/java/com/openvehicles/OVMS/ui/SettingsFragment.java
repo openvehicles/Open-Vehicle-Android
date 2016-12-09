@@ -28,6 +28,7 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
 import com.openvehicles.OVMS.ui.settings.ControlFragment;
+import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
@@ -59,13 +60,17 @@ public class SettingsFragment extends BaseFragment implements
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-		inflater.inflate(R.menu.add, menu);
+		inflater.inflate(R.menu.settings_options, menu);
 	}
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		if (item.getItemId() == R.id.mi_add) {
 			edit(-1);
+			return true;
+		}
+		else if (item.getItemId() == R.id.mi_globaloptions) {
+			showGlobalOptions();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -130,6 +135,11 @@ public class SettingsFragment extends BaseFragment implements
 		Bundle args = new Bundle();
 		args.putInt("position", pPosition);
 		BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, args,
+				Configuration.ORIENTATION_UNDEFINED);
+	}
+
+	private void showGlobalOptions() {
+		BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
 				Configuration.ORIENTATION_UNDEFINED);
 	}
 

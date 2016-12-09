@@ -112,7 +112,7 @@ public class MyGcmListenerService extends GcmListenerService {
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setSmallIcon(icon)
                             .setContentTitle(contentTitle)
-                            .setContentText(contentText)
+                            .setContentText(contentText.replace('\r', '\n'))
                             .setContentIntent(launchOVMSIntent);
 
             // announce Notification via Android system:

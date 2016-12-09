@@ -5,10 +5,10 @@
     <item android:id="@+id/mi_power_stats"
           android:title="@string/power_title"
           android:icon="@drawable/ic_action_chart"
-          app:showAsAction="always"/>
+          app:showAsAction="always|withText"/>
 
     <item android:id="@+id/car_menu"
-          app:showAsAction="ifRoom|withText"
+          app:showAsAction="always|withText"
           android:icon="@android:drawable/ic_menu_more"
           android:title="@string/Options">
 

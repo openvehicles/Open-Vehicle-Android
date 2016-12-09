@@ -25,6 +25,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.settings.ControlFragment;
@@ -348,6 +349,11 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			spnChargePower.setSelection(mCarData.car_charge_currentlimit_raw / 5);
 		}
 
+		SwitcherView svChargeMode = (SwitcherView) dialogView.findViewById(R.id.sv_twizy_charge_mode);
+		if (svChargeMode != null) {
+			svChargeMode.setSelected(mCarData.car_charge_mode_i_raw);
+		}
+
 		new AlertDialog.Builder(getActivity())
 				.setTitle(R.string.lb_charger_setting_twizy)
 				.setView(dialogView)
@@ -364,15 +370,19 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 										.findViewById(R.id.snv_sufficient_soc);
 								Spinner spnChargePower = (Spinner) dlg
 										.findViewById(R.id.spn_charge_power_limit);
+								SwitcherView svChargeMode = (SwitcherView) dlg
+										.findViewById(R.id.sv_twizy_charge_mode);
 
 								int suffRange = snvRange.getValue();
 								int suffSOC = snvSOC.getValue();
 								int chgPower = spnChargePower.getSelectedItemPosition();
+								int chgMode = svChargeMode.getSelected();
 
 								// SetChargeAlerts (204):
 								sendCommand(
 										R.string.msg_setting_charge_alerts,
-										String.format("204,%d,%d,%d", suffRange, suffSOC, chgPower),
+										String.format("204,%d,%d,%d,%d",
+												suffRange, suffSOC, chgPower, chgMode),
 										InfoFragment.this);
 							}
 						})

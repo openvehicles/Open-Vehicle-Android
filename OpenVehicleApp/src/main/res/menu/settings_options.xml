@@ -7,4 +7,10 @@
         app:showAsAction="always|withText"
         android:title="@string/Add"/>
 
+    <item
+        android:id="@+id/mi_globaloptions"
+        android:icon="@drawable/ic_action_settings"
+        app:showAsAction="always|withText"
+        android:title="@string/Options"/>
+
 </menu>

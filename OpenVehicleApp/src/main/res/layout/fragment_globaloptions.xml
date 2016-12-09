@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:shrinkColumns="1"
+        android:stretchColumns="1">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_service"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView11"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_service_cb"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_service"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            >
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/lb_options_service_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView15"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:paddingLeft="8dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_broadcast"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView12"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_broadcast_cb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_broadcast"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="8dp">
+
+                <EditText
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:id="@+id/txt_options_broadcast_codes"
+                    android:typeface="monospace"
+                    android:inputType="text|textNoSuggestions"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="14sp"
+                    android:hint="@string/lb_options_broadcast_codes"
+                    />
+
+                <ImageButton
+                    android:layout_height="match_parent"
+                    android:id="@+id/btn_options_broadcast_codes_revert"
+                    android:layout_weight="0"
+                    android:layout_gravity="center_vertical"
+                    android:src="@android:drawable/ic_menu_revert"
+                    android:layout_width="wrap_content"/>
+
+            </LinearLayout>
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_commands"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView14"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_commands_cb"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_commands"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/lb_options_broadcast_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/txt_options_broadcast_info"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:paddingLeft="8dp"
+                />
+
+        </TableRow>
+
+
+    </TableLayout>
+</LinearLayout>
