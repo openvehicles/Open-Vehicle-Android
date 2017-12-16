@@ -47,7 +47,6 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private final Random sRnd = new Random();
 	private boolean isShuttingDown = false;
 	private Timer pingTimer;
-	AppPrefes appPrefes;
 
 
 	/**
@@ -70,7 +69,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * @return true if connection to server is currently established
 	 */
 	public boolean isLoggedIn() {
-		return isLoggedIn;
+		return (getStatus() == Status.RUNNING) && isLoggedIn && !isCancelled();
 	}
 
 
@@ -142,7 +141,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		}, pingPeriod * 60 * 1000, pingPeriod * 60 * 1000);
 
 		// Main Task loop:
-		while (!isShuttingDown) {
+		while (!isCancelled()) {
 
 			try {
 
@@ -153,7 +152,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				}
 
 				// Enter main RX loop:
-				while (mSocket != null && mSocket.isConnected()) {
+				while (!isCancelled() && mSocket != null && mSocket.isConnected()) {
 
 					// Read & decrypt message:
 					line = mInputstream.readLine();
@@ -184,8 +183,12 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				publishProgress(MsgType.msgError, e);
 			}
 
+			if (isCancelled()) {
+				break;
+			}
+
 			//
-			// Connection lost
+			// Connection lost:
 			//
 
 			Log.d(TAG, "Lost connection");
@@ -202,16 +205,14 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			}
 			mSocket = null;
 
-			// If not shutting down, wait 3 seconds before reconnect:
-			if (!isShuttingDown) {
-				try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// ignore
-				}
+			// Wait 3 seconds before reconnect:
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// ignore
 			}
 
-		} // while (!isShuttingDown)
+		} // while (!isCancelled())
 
 		// Shut down ApiTask:
 		Log.d(TAG, "Terminating AsyncTask");
@@ -231,22 +232,6 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		if (isLoggedIn) {
 			Log.d(TAG, "Sending ping");
 			sendCommand("MP-0 A");
-		}
-	}
-
-
-	/**
-	 * Close server connection and prepare ApiTask shutdown
-	 */
-	public void connClose() {
-		try {
-			Log.d(TAG, "connClose() requested");
-			isShuttingDown = true;
-			if ((mSocket != null) && mSocket.isConnected()) {
-				mSocket.close();
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -295,10 +280,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		Log.d(TAG, "connInit() requested");
 
 		isLoggedIn = false;
-		isShuttingDown = false;
 
 		// Check if some network is available:
-		if (!isNetworkConnectionAvailable()) {
+		if (!isOnline()) {
 			Log.i(TAG, "No network connection available");
 			return true; // temporary error, retry
 		}
@@ -420,15 +404,11 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * @param msg -- the OVMS protocol message payload received (without header)
 	 */
 	private void handleMessage(String msg) {
-		Context mContext = BaseApp.getApp();
-
 		Log.i(TAG, "handleMessage: " + msg);
 		
 		char msgCode = msg.charAt(0);
 		String msgData = msg.substring(1);
 		
-		appPrefes = new AppPrefes(mContext, "ovms");
-
 		if (msgCode == 'E') {
 			// We have a paranoid mode message
 			char innercode = msg.charAt(1);
@@ -486,102 +466,32 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		}
 
 		Log.v(TAG, msgCode + " MSG Received: " + msgData);
+
 		switch (msgCode) {
-			case 'Z': // Number of connected cars
-			{
-				mCarData.server_carsconnected = Integer.parseInt(msgData);
 
-				publishProgress(MsgType.msgUpdate, msgCode, msgData);
-				break;
-			}
-			case 'S': // STATUS
-			{
+			/**
+			 * OVMS PROTOCOL
+			 */
+
+			case 'f': // OVMS Server version
 				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 8) {
-					Log.v(TAG, "S MSG Validated");
-					mCarData.car_soc_raw = Integer.parseInt(dataParts[0]);
-					mCarData.car_soc = String.format("%d%%", mCarData.car_soc_raw);
-					mCarData.car_distance_units_raw = dataParts[1].toString();
-					mCarData.car_distance_units = (mCarData.car_distance_units_raw.equals("M")) ? "m" : "km";
-					mCarData.car_speed_units = (mCarData.car_distance_units_raw.equals("M"))
-							? mContext.getText(R.string.mph).toString()
-							: mContext.getText(R.string.kph).toString();
-					mCarData.car_charge_linevoltage_raw = Integer.parseInt(dataParts[2]);
-					mCarData.car_charge_linevoltage = String.format("%d%s", mCarData.car_charge_linevoltage_raw, "V");
-					mCarData.car_charge_current_raw = Integer.parseInt(dataParts[3]);
-					mCarData.car_charge_current = String.format("%d%s", mCarData.car_charge_current_raw, "A");
-					mCarData.car_charge_voltagecurrent = String.format("%d%s %d%s",
-							mCarData.car_charge_linevoltage_raw, "V",
-							mCarData.car_charge_current_raw, "A");
-					mCarData.car_charge_state_s_raw = dataParts[4].toString();
-					mCarData.car_charge_state = mCarData.car_charge_state_s_raw;
-					mCarData.car_mode_s_raw = dataParts[5].toString();
-					mCarData.car_charge_mode = mCarData.car_mode_s_raw;
-					mCarData.car_range_ideal_raw = Integer.parseInt(dataParts[6]);
-					mCarData.car_range_ideal = String.format("%d%s", mCarData.car_range_ideal_raw, mCarData.car_distance_units);
-					mCarData.car_range_estimated_raw = Integer.parseInt(dataParts[7]);
-					mCarData.car_range_estimated = String.format("%d%s", mCarData.car_range_estimated_raw, mCarData.car_distance_units);
-					mCarData.stale_status = DataStale.Good;
+				if (dataParts.length >= 1) {
+					Log.v(TAG, "f MSG Validated");
+					mCarData.server_firmware = dataParts[0].toString();
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				}
-				if (dataParts.length >= 15) {
-					mCarData.car_charge_currentlimit_raw = Integer.parseInt(dataParts[8]);
-					mCarData.car_charge_currentlimit = String.format("%d%s", mCarData.car_charge_currentlimit_raw, "A");
-					mCarData.car_charge_duration_raw = Integer.parseInt(dataParts[9]);
-					mCarData.car_charge_b4byte_raw = Integer.parseInt(dataParts[10]);
-					mCarData.car_charge_kwhconsumed = Integer.parseInt(dataParts[11]);
-					mCarData.car_charge_substate_i_raw = Integer.parseInt(dataParts[12]);
-					mCarData.car_charge_state_i_raw = Integer.parseInt(dataParts[13]);
-					mCarData.car_charge_mode_i_raw = Integer.parseInt(dataParts[14]);
-				}
-				if (dataParts.length >= 18) {
-					mCarData.car_charge_timermode_raw = Integer.parseInt(dataParts[15]);
-					mCarData.car_charge_timer = (mCarData.car_charge_timermode_raw > 0);
-					mCarData.car_charge_timerstart_raw = Integer.parseInt(dataParts[16]);
-					mCarData.car_charge_time = ""; // TODO: Implement later
-					mCarData.car_stale_chargetimer_raw = Integer.parseInt(dataParts[17]);
-					if (mCarData.car_stale_chargetimer_raw < 0)
-						mCarData.stale_chargetimer = DataStale.NoValue;
-					else if (mCarData.car_stale_chargetimer_raw == 0)
-						mCarData.stale_chargetimer = DataStale.Stale;
-					else
-						mCarData.stale_chargetimer = DataStale.Good;
-
-				}
-				if (dataParts.length >= 19) {
-					mCarData.car_CAC = Double.parseDouble(dataParts[18]);
-				}
-				if (dataParts.length >= 27) {
-					mCarData.car_chargefull_minsremaining = Integer.parseInt(dataParts[19]);
-					mCarData.car_chargelimit_minsremaining = Integer.parseInt(dataParts[20]);
-					mCarData.car_chargelimit_rangelimit_raw = Integer.parseInt(dataParts[21]);
-					mCarData.car_chargelimit_rangelimit = String.format("%d%s",
-							mCarData.car_chargelimit_rangelimit_raw, mCarData.car_distance_units);
-					mCarData.car_chargelimit_soclimit = Integer.parseInt(dataParts[22]);
-					mCarData.car_coolingdown = Integer.parseInt(dataParts[23]);
-					mCarData.car_cooldown_tbattery = Integer.parseInt(dataParts[24]);
-					mCarData.car_cooldown_timelimit = Integer.parseInt(dataParts[25]);
-					mCarData.car_chargeestimate = Integer.parseInt(dataParts[26]);
-				}
-				if (dataParts.length >= 30) {
-					mCarData.car_chargelimit_minsremaining_range = Integer.parseInt(dataParts[27]);
-					mCarData.car_chargelimit_minsremaining_soc = Integer.parseInt(dataParts[28]);
-					mCarData.car_max_idealrange_raw = Integer.parseInt(dataParts[29]);
-					mCarData.car_max_idealrange = String.format("%d%s",
-							mCarData.car_max_idealrange_raw, mCarData.car_distance_units);
-				}
-				if (dataParts.length >= 33) {
-					mCarData.car_charge_plugtype = Integer.parseInt(dataParts[30]);
-					mCarData.car_charge_power_kw = Double.parseDouble(dataParts[31]);
-					mCarData.car_battery_voltage = Double.parseDouble(dataParts[32]);
-				}
-
-				Log.v(TAG, "Notify Vehicle Status Update: " + mCarData.sel_vehicleid);
-
-				publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				break;
-			}
-			case 'T': // TIME
-			{
+
+			case 'Z': // Number of connected cars
+				try {
+					mCarData.server_carsconnected = Integer.parseInt(msgData);
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				} catch(Exception e) {
+					Log.w(TAG, "Z MSG Invalid");
+				}
+				break;
+
+			case 'T': // TIMESTAMP of last update
 				if (msgData.length() > 0) {
 					mCarData.car_lastupdate_raw = Long.parseLong(msgData);
 					mCarData.car_lastupdated = new Date(System.currentTimeMillis() - mCarData.car_lastupdate_raw * 1000);
@@ -589,258 +499,83 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				} else
 					Log.w(TAG, "T MSG Invalid");
 				break;
-			}
-			case 'L': // LOCATION
-			{
-				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 2) {
-					Log.v(TAG, "L MSG Validated");
-					mCarData.car_latitude = Double.parseDouble(dataParts[0]);
-					mCarData.car_longitude = Double.parseDouble(dataParts[1]);
-				}
-				if (dataParts.length >= 6) {
-					mCarData.car_direction = Integer.parseInt(dataParts[2]);
-					mCarData.car_altitude = Integer.parseInt(dataParts[3]);
-					mCarData.car_gpslock_raw = Integer.parseInt(dataParts[4]);
-					mCarData.car_gpslock = (mCarData.car_gpslock_raw > 0);
-					mCarData.car_stale_gps_raw = Integer.parseInt(dataParts[5]);
-					if (mCarData.car_stale_gps_raw < 0)
-						mCarData.stale_gps = DataStale.NoValue;
-					else if (mCarData.car_stale_gps_raw == 0)
-						mCarData.stale_gps = DataStale.Stale;
-					else
-						mCarData.stale_gps = DataStale.Good;
-				}
-				if (dataParts.length >= 8) {
-					mCarData.car_speed_raw = Integer.parseInt(dataParts[6]);
-					mCarData.car_speed = String.format("%d%s", mCarData.car_speed_raw, mCarData.car_speed_units);
-					mCarData.car_tripmeter_raw = Integer.parseInt(dataParts[7]);
-					mCarData.car_tripmeter = String.format("%.1f%s", (float) mCarData.car_tripmeter_raw / 10, mCarData.car_distance_units);
-				}
 
-				publishProgress(MsgType.msgUpdate, msgCode, msgData);
+			case 'a':
+				Log.d(TAG, "Server acknowledged ping");
 				break;
-			}
-			case 'D': // Doors and switches
-			{
-				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 9) {
-					Log.v(TAG, "D MSG Validated");
-					int dataField = Integer.parseInt(dataParts[0]);
-					mCarData.car_doors1_raw = dataField;
-					mCarData.car_frontleftdoor_open = ((dataField & 0x1) == 0x1);
-					mCarData.car_frontrightdoor_open = ((dataField & 0x2) == 0x2);
-					mCarData.car_chargeport_open = ((dataField & 0x4) == 0x4);
-					mCarData.car_pilot_present = ((dataField & 0x8) == 0x8);
-					mCarData.car_charging = ((dataField & 0x10) == 0x10);
-					// bit 5 is always 1
-					mCarData.car_handbrake_on = ((dataField & 0x40) == 0x40);
-					mCarData.car_started = ((dataField & 0x80) == 0x80);
 
-					dataField = Integer.parseInt(dataParts[1]);
-					mCarData.car_doors2_raw = dataField;
-					mCarData.car_bonnet_open = ((dataField & 0x40) == 0x40);
-					mCarData.car_trunk_open = ((dataField & 0x80) == 0x80);
-					mCarData.car_headlights_on = ((dataField & 0x20) == 0x20);
-					mCarData.car_valetmode = ((dataField & 0x10) == 0x10);
-					mCarData.car_locked = ((dataField & 0x08) == 0x08);
-
-					mCarData.car_lockunlock_raw = Integer.parseInt(dataParts[2]);
-
-					mCarData.car_temp_pem_raw = Integer.parseInt(dataParts[3]);
-					mCarData.car_temp_motor_raw = Integer.parseInt(dataParts[4]);
-					mCarData.car_temp_battery_raw = Integer.parseInt(dataParts[5]);
-					if (appPrefes.getData("showfahrenheit").equals("on")) {
-						mCarData.car_temp_pem = String.format("%.0f\u00B0F", (mCarData.car_temp_pem_raw * (9.0 / 5.0)) + 32.0);
-						mCarData.car_temp_motor = String.format("%.0f\u00B0F", (mCarData.car_temp_motor_raw * (9.0 / 5.0)) + 32.0);
-						mCarData.car_temp_battery = String.format("%.0f\u00B0F", (mCarData.car_temp_battery_raw * (9.0 / 5.0)) + 32.0);
-					} else {
-						mCarData.car_temp_pem = String.format("%d\u00B0C", mCarData.car_temp_pem_raw);
-						mCarData.car_temp_motor = String.format("%d\u00B0C", mCarData.car_temp_motor_raw);
-						mCarData.car_temp_battery = String.format("%d\u00B0C", mCarData.car_temp_battery_raw);
-					}
-
-					mCarData.car_tripmeter_raw = Integer.parseInt(dataParts[6]);
-					mCarData.car_tripmeter = String.format("%.1f%s", (float) mCarData.car_tripmeter_raw / 10, mCarData.car_distance_units);
-					mCarData.car_odometer_raw = Integer.parseInt(dataParts[7]);
-					mCarData.car_odometer = String.format("%.1f%s", (float) mCarData.car_odometer_raw / 10, mCarData.car_distance_units);
-					mCarData.car_speed_raw = Integer.parseInt(dataParts[8]);
-					mCarData.car_speed = String.format("%d%s", mCarData.car_speed_raw, mCarData.car_speed_units);
-
-					mCarData.stale_environment = DataStale.Good;
-
-					if (dataParts.length >= 14) {
-						mCarData.car_parking_timer_raw = Long.parseLong(dataParts[9]);
-						mCarData.car_parked_time = new Date((new Date()).getTime() - mCarData.car_parking_timer_raw * 1000);
-
-						mCarData.car_temp_ambient_raw = Integer.parseInt(dataParts[10]);
-						if (appPrefes.getData("showfahrenheit").equals("on"))
-							mCarData.car_temp_ambient = String.format("%.0f\u00B0F", (mCarData.car_temp_ambient_raw * (9.0 / 5.0)) + 32.0);
-						else
-							mCarData.car_temp_ambient = String.format("%d\u00B0C", mCarData.car_temp_ambient_raw);
-
-						dataField = Integer.parseInt(dataParts[11]);
-						mCarData.car_doors3_raw = dataField;
-						mCarData.car_awake = ((dataField & 0x02) == 0x02);
-
-						mCarData.car_stale_car_temps_raw = Integer.parseInt(dataParts[12]);
-						if (mCarData.car_stale_car_temps_raw < 0)
-							mCarData.stale_car_temps = DataStale.NoValue;
-						else if (mCarData.car_stale_car_temps_raw == 0)
-							mCarData.stale_car_temps = DataStale.Stale;
-						else
-							mCarData.stale_car_temps = DataStale.Good;
-
-						mCarData.car_stale_ambient_temp_raw = Integer.parseInt(dataParts[13]);
-						if (mCarData.car_stale_ambient_temp_raw < 0)
-							mCarData.stale_ambient_temp = DataStale.NoValue;
-						else if (mCarData.car_stale_ambient_temp_raw == 0)
-							mCarData.stale_ambient_temp = DataStale.Stale;
-						else
-							mCarData.stale_ambient_temp = DataStale.Good;
-					}
-					if (dataParts.length >= 16) {
-						mCarData.car_12vline_voltage = Double.parseDouble(dataParts[14]);
-						dataField = Integer.parseInt(dataParts[15]);
-						mCarData.car_doors4_raw = dataField;
-						mCarData.car_alarm_sounding = ((dataField & 0x02) == 0x02);
-					}
-					if (dataParts.length >= 18) {
-						mCarData.car_12vline_ref = Double.parseDouble(dataParts[16]);
-						dataField = Integer.parseInt(dataParts[17]);
-						mCarData.car_doors5_raw = dataField;
-						mCarData.car_charging_12v = ((dataField & 0x10) == 0x10);
-					}
-
-					if (dataParts.length >= 19) {
-						mCarData.car_temp_charger_raw = Integer.parseInt(dataParts[18]);
-						if (appPrefes.getData("showfahrenheit").equals("on")) {
-							mCarData.car_temp_charger = String.format("%.0f\u00B0F", (mCarData.car_temp_charger_raw * (9.0 / 5.0)) + 32.0);
-						} else {
-							mCarData.car_temp_charger = String.format("%d\u00B0C", mCarData.car_temp_charger_raw);
-						}
-					}
-
-					publishProgress(MsgType.msgUpdate, msgCode, msgData);
-				}
-				break;
-			}
-			case 'F': // VIN and Firmware
-			{
-				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 3) {
-					Log.v(TAG, "F MSG Validated");
-					mCarData.car_firmware = dataParts[0].toString();
-					mCarData.car_vin = dataParts[1].toString();
-
-					mCarData.car_gsm_signal_raw = Integer.parseInt(dataParts[2]);
-					mCarData.car_gsm_dbm = 0;
-					if (mCarData.car_gsm_signal_raw <= 31)
-						mCarData.car_gsm_dbm = -113 + (mCarData.car_gsm_signal_raw * 2);
-					mCarData.car_gsm_signal = String.format("%d%s", mCarData.car_gsm_dbm, " dbm");
-					if ((mCarData.car_gsm_dbm < -121) || (mCarData.car_gsm_dbm >= 0))
-						mCarData.car_gsm_bars = 0;
-					else if (mCarData.car_gsm_dbm < -107)
-						mCarData.car_gsm_bars = 1;
-					else if (mCarData.car_gsm_dbm < -98)
-						mCarData.car_gsm_bars = 2;
-					else if (mCarData.car_gsm_dbm < -87)
-						mCarData.car_gsm_bars = 3;
-					else if (mCarData.car_gsm_dbm < -76)
-						mCarData.car_gsm_bars = 4;
-					else
-						mCarData.car_gsm_bars = 5;
-
-					mCarData.stale_firmware = DataStale.Good;
-				}
-				if (dataParts.length >= 5) {
-					mCarData.car_canwrite_raw = Integer.parseInt(dataParts[3]);
-					mCarData.car_canwrite = (mCarData.car_canwrite_raw > 0);
-					mCarData.car_type = dataParts[4].toString();
-				}
-				if (dataParts.length >= 6) {
-					mCarData.car_gsmlock = dataParts[5].toString();
-				}
-
-				publishProgress(MsgType.msgUpdate, msgCode, msgData);
-			}
-			case 'f': // OVMS Server Firmware
-			{
-				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 1) {
-					Log.v(TAG, "f MSG Validated");
-					mCarData.server_firmware = dataParts[0].toString();
-
-					publishProgress(MsgType.msgUpdate, msgCode, msgData);
-				}
-				break;
-			}
-			case 'W': // TPMS
-			{
-				String[] dataParts = msgData.split(",\\s*");
-				if (dataParts.length >= 9) {
-					Log.v(TAG, "W MSG Validated");
-					mCarData.car_tpms_fr_p_raw = Double.parseDouble(dataParts[0]);
-					mCarData.car_tpms_fr_t_raw = Double.parseDouble(dataParts[1]);
-					mCarData.car_tpms_rr_p_raw = Double.parseDouble(dataParts[2]);
-					mCarData.car_tpms_rr_t_raw = Double.parseDouble(dataParts[3]);
-					mCarData.car_tpms_fl_p_raw = Double.parseDouble(dataParts[4]);
-					mCarData.car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
-					mCarData.car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
-					mCarData.car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
-					mCarData.car_tpms_fl_p = String.format("%.1f%s", mCarData.car_tpms_fl_p_raw, "psi");
-					mCarData.car_tpms_fr_p = String.format("%.1f%s", mCarData.car_tpms_fr_p_raw, "psi");
-					mCarData.car_tpms_rl_p = String.format("%.1f%s", mCarData.car_tpms_rl_p_raw, "psi");
-					mCarData.car_tpms_rr_p = String.format("%.1f%s", mCarData.car_tpms_rr_p_raw, "psi");
-					if (appPrefes.getData("showfahrenheit").equals("on")) {
-						mCarData.car_tpms_fl_t = String.format("%.0f%s", (mCarData.car_tpms_fl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-						mCarData.car_tpms_fr_t = String.format("%.0f%s", (mCarData.car_tpms_fr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-						mCarData.car_tpms_rl_t = String.format("%.0f%s", (mCarData.car_tpms_rl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-						mCarData.car_tpms_rr_t = String.format("%.0f%s", (mCarData.car_tpms_rr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-					} else {
-						mCarData.car_tpms_fl_t = String.format("%.0f%s", mCarData.car_tpms_fl_t_raw, "\u00B0C");
-						mCarData.car_tpms_fr_t = String.format("%.0f%s", mCarData.car_tpms_fr_t_raw, "\u00B0C");
-						mCarData.car_tpms_rl_t = String.format("%.0f%s", mCarData.car_tpms_rl_t_raw, "\u00B0C");
-						mCarData.car_tpms_rr_t = String.format("%.0f%s", mCarData.car_tpms_rr_t_raw, "\u00B0C");
-					}
-					mCarData.car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
-					if (mCarData.car_stale_tpms_raw < 0)
-						mCarData.stale_tpms = DataStale.NoValue;
-					else if (mCarData.car_stale_tpms_raw == 0)
-						mCarData.stale_tpms = DataStale.Stale;
-					else
-						mCarData.stale_tpms = DataStale.Good;
-
-					publishProgress(MsgType.msgUpdate, msgCode, msgData);
-				}
-				break;
-			}
-			case 'V': { // Capabilities
-				if (mCarData.processCapabilities(msgData))
-					publishProgress(MsgType.msgUpdate, msgCode, msgData);
-				break;
-			}
-			case 'a': {
-				Log.d(TAG, "Server acknowleged ping");
-				break;
-			}
-			case 'c': {
-				Log.i(TAG, "c MSG Validated");
+			case 'c':
+				Log.i(TAG, "Command response received: " + msgData);
 				publishProgress(MsgType.msgCommand, msgData);
 				break;
-			}
-			case 'P': {
+
+			case 'P':
 				Log.i(TAG, "Push notification received: " + msgData);
 				publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				break;
-			}
-			default: {
+
+
+			/**
+			 * CAR VERSION AND CAPABILITIES
+			 */
+
+			case 'F': // CAR VIN and Firmware version
+				if (mCarData.processFirmware(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "F MSG Invalid");
+				break;
+
+			case 'V': // CAR firmware capabilities
+				if (mCarData.processCapabilities(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "V MSG Invalid");
+				break;
+
+
+			/**
+			 * STANDARD CAR MODEL DATA
+			 */
+
+			case 'S': // STATUS
+				if (mCarData.processStatus(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "S MSG Invalid");
+				break;
+
+			case 'L': // LOCATION
+				if (mCarData.processLocation(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "L MSG Invalid");
+				break;
+
+			case 'D': // Doors / switches & environment
+				if (mCarData.processEnvironment(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "D MSG Invalid");
+				break;
+
+			case 'W': // TPMS
+				if (mCarData.processTPMS(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "W MSG Invalid");
+				break;
+
+
+			/**
+			 * CUSTOM MESSAGES
+			 */
+
+			default:
 				Log.i(TAG, "Unhandled message received: " + msgCode + msgData);
 				// forward to listeners, maybe this is a custom message:
 				publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				break;
-			}
-
 		}
 	}
 
@@ -853,18 +588,16 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 	/**
 	 * Check for network availability.
-	 * By Tom Whipple
-	 * http://stackoverflow.com/questions/7404917/how-to-check-the-network-availability
 	 *
 	 * @return true if any network is available
 	 */
-	boolean isNetworkConnectionAvailable() {
-		ConnectivityManager cm = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) mContext
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo info = cm.getActiveNetworkInfo();
-		if (info == null) return false;
-		NetworkInfo.State network = info.getState();
-		return (network == NetworkInfo.State.CONNECTED || network == NetworkInfo.State.CONNECTING);
+		return (info != null && info.isConnectedOrConnecting());
 	}
+
 
 }
 

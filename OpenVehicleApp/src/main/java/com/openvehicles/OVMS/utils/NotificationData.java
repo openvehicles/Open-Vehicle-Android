@@ -7,12 +7,13 @@ import java.util.Date;
 public class NotificationData implements Serializable {
 	private static final long serialVersionUID = -3173247800500433809L;
 
-	public static final int TYPE_INFO = 0;
-	public static final int TYPE_ALERT = 1;
+	public static final int TYPE_INFO = 0; // "PI"
+	public static final int TYPE_ALERT = 1; // "PA"
 	public static final int TYPE_COMMAND = 2;
 	public static final int TYPE_RESULT_SUCCESS = 3;
 	public static final int TYPE_RESULT_ERROR = 4;
 	public static final int TYPE_USSD = 5;
+	public static final int TYPE_ERROR = 6; // "PE"
 
 	public long ID;
 	public int Type;
@@ -59,6 +60,7 @@ public class NotificationData implements Serializable {
 	public int getIcon() {
 		switch (Type) {
 			case NotificationData.TYPE_ALERT:
+			case NotificationData.TYPE_ERROR:
 				return android.R.drawable.ic_dialog_alert;
 			case NotificationData.TYPE_USSD:
 				return android.R.drawable.ic_menu_call;

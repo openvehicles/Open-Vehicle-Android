@@ -346,7 +346,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		// set charge power limit:
 		Spinner spnChargePower = (Spinner) dialogView.findViewById(R.id.spn_charge_power_limit);
 		if (spnChargePower != null) {
-			spnChargePower.setSelection(mCarData.car_charge_currentlimit_raw / 5);
+			spnChargePower.setSelection((int) mCarData.car_charge_currentlimit_raw / 5);
 		}
 
 		SwitcherView svChargeMode = (SwitcherView) dialogView.findViewById(R.id.sv_twizy_charge_mode);
@@ -680,7 +680,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		tv = (TextView) findViewById(R.id.tabInfoTextEstimatedRange);
 		tv.setText(pCarData.car_range_estimated);
 
-		int maxWeight = findViewById(R.id.tabInfoTextSOC).getLayoutParams().width;
+		int maxWeight = ((TextView) findViewById(R.id.tabInfoTextSOC)).getLayoutParams().width;
 		int realWeight = Math
 				.round((maxWeight * pCarData.car_soc_raw / 100) * 1.1f);
 		View v = findViewById(R.id.tabInfoImageBatteryOverlay);

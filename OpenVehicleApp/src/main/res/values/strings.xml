@@ -58,6 +58,7 @@
     <string name="Type">Type</string>
     <string name="GMC">GSM</string>
     <string name="CAC">CAC</string>
+    <string name="SOH">SOH</string>
     <string name="Info12V">12V</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
@@ -102,6 +103,7 @@
     <string name="lb_ft_car_bits">#%d: Car Bits</string>
     <string name="lb_ft_can_write">#%d: CAN Write</string>
 
+    <string name="lb_ft_rt_gpslogint">#%d: GPS log interval [s]</string>
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown threshold</string>
     <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown compensation</string>
     <string name="lb_ft_rt_chargemode">#%d: Charge stop mode</string>
@@ -109,7 +111,8 @@
     <string name="lb_ft_rt_suffsoc">#%d: Sufficient SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Sufficient range</string>
     <string name="lb_ft_rt_maxrange">#%d: Max ideal range</string>
-    <string name="lb_ft_rt_capacity">#%d: Battery capacity (SOH%%)</string>
+    <string name="lb_ft_rt_capacity">#%d: Battery measured capacity (CAP%%)</string>
+    <string name="lb_ft_rt_capacity_nom_ah">#%d: Battery nominal capacity (Ah)</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>
@@ -333,9 +336,39 @@
 
     <string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string>
 
-    <string name="notifications_hint_cmdinput">SMS / MMI command</string>
+    <string name="notifications_hint_cmdinput">SMS/MMI/MSG command</string>
     <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
     <string name="notifications_toast_copied">Message has been copied to clipboard</string>
+    <string name="notifications_menu">Options</string>
+    <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_btn_help">Info</string>
+    <string name="notifications_help"><![CDATA[
+ 		<h1>Notifications &amp; Commands</h1>
+
+		<p>This screen will hold the latest 200 notifications, alerts, commands and command results.</p>
+
+        <p>Touch a notification to show it in a dialog, do a long touch to copy it to the clipboard.
+         Touching a command history entry loads the command into the input box so you can
+         simply change and/or resubmit it.</p>
+
+        <p>You may send text (SMS) commands, MMI (USSD) commands, MSG commands and modem (AT)
+         commands. All commands issued from here are sent via TCP/IP connection, so SMS commands and their
+		results will not be charged as SMS messages.</p>
+
+        <p><u>Examples</u>:</p>
+
+		<p>
+		&nbsp;&bull; SMS: <tt><b>STAT</b></tt> &mdash; <i>get vehicle status</i><br>
+		&nbsp;&bull; MMI: <tt><b>*100#</b></tt> &mdash; <i>normally SIM account balance</i><br>
+		&nbsp;&bull; MSG: <tt><b>#31</b></tt> &mdash; <i>historical data summary</i><br>
+		&nbsp;&bull; Modem: <tt><b>@AT…</b></tt> &mdash; <i>see modem command manual</i>
+		</p>
+
+		<p>Notes: MMI commands depend on the GSM carrier / SIM provider, check your provider&apos;s
+		documentation if available. Modem commands do not return their results. See OVMS
+		protocol documentation for standard MSG commands.</p>
+
+    ]]></string>
 
 
     <string name="battery_title">Battery history</string>
@@ -489,6 +522,10 @@
          and <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS protocol (PDF)</a>
          for message details.</p>
     ]]></string>
+
+    <string name="service_notification_title">OVMS</string>
+    <string name="service_notification_text">Service running</string>
+    <string name="service_notification_ticker">OVMS Service started</string>
 
 
 </resources>

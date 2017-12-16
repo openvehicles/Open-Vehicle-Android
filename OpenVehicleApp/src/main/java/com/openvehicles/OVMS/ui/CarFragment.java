@@ -23,6 +23,10 @@ import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
+import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
+import com.openvehicles.OVMS.ui.settings.FeaturesFragment;
+import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
+import com.openvehicles.OVMS.ui.settings.LogsFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
@@ -136,9 +140,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (uiCarType.equals("RT")) {
 			// Menu setup for Renault Twizy:
 			optionsMenu.findItem(R.id.mi_power_stats).setVisible(true);
+			optionsMenu.findItem(R.id.mi_show_diag_logs).setVisible(true);
 		} else {
 			// defaults:
 			optionsMenu.findItem(R.id.mi_power_stats).setVisible(false);
+			optionsMenu.findItem(R.id.mi_show_diag_logs).setVisible(false);
 		}
 	}
 
@@ -148,12 +154,28 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
+		Bundle args;
+
 
 		switch (menuId) {
 
 			case R.id.mi_power_stats:
-				Bundle args = new Bundle();
-				BaseFragmentActivity.show(getActivity(), PowerFragment.class, args,
+				BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_show_carinfo:
+				BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_show_features:
+				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_show_diag_logs:
+				BaseFragmentActivity.show(getActivity(), LogsFragment.class, null,
 						Configuration.ORIENTATION_UNDEFINED);
 				return true;
 
@@ -530,7 +552,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
         TextView rrtvv = (TextView) findViewById(R.id.textRRWheelVal);
         
     	iv = (ImageView)findViewById(R.id.tabCarImageCarTPMSBoxes);
-        if (pCarData.stale_tpms == DataStale.NoValue) {
+
+		if (mCarData.car_type.equals("RT")) {
+			pCarData.stale_tpms = DataStale.NoValue;
+		}
+
+		if (pCarData.stale_tpms == DataStale.NoValue) {
         	iv.setVisibility(View.INVISIBLE);
     		fltv.setText(null);
     		frtv.setText(null);

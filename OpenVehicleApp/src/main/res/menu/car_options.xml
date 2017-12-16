@@ -7,19 +7,40 @@
           android:icon="@drawable/ic_action_chart"
           app:showAsAction="always|withText"/>
 
-    <item android:id="@+id/car_menu"
-          app:showAsAction="always|withText"
-          android:icon="@android:drawable/ic_menu_more"
-          android:title="@string/Options">
+    <item
+        android:id="@+id/car_menu"
+        android:icon="@android:drawable/ic_menu_more"
+        android:title="@string/Options"
+        app:showAsAction="always|withText">
 
         <menu>
+
+            <item
+                android:id="@+id/mi_show_carinfo"
+                android:icon="@drawable/ic_action_about"
+                android:title="@string/lb_vehicle_info"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/mi_show_features"
+                android:icon="@drawable/ic_action_control"
+                android:title="@string/Features"
+                app:showAsAction="never"/>
+
+            <item
+                android:id="@+id/mi_show_diag_logs"
+                android:icon="@android:drawable/ic_dialog_alert"
+                android:title="@string/logs_title"
+                app:showAsAction="never"/>
 
             <group android:checkableBehavior="all">
 
                 <item
                     android:id="@+id/mi_show_fahrenheit"
-                    app:showAsAction="never"
-                    android:title="@string/mi_car_details_temp" android:checked="false" android:checkable="true"/>
+                    android:checkable="true"
+                    android:checked="false"
+                    android:title="@string/mi_car_details_temp"
+                    app:showAsAction="never"/>
 
             </group>
 

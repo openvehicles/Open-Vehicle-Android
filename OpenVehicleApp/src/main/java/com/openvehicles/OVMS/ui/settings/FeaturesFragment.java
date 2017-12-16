@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class FeaturesFragment extends BaseFragment implements OnResultCommandListener, OnItemClickListener {
+	private static final String TAG = "FeaturesFragment";
+
 	private FeaturesAdapter mAdapter;
 	private ListView mListView;
 	private int mEditPosition;
@@ -36,12 +39,19 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
 			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+		} else {
+			mCarData = CarsStorage.get().getSelectedCarData();
 		}
+		Log.d(TAG, "mEditPosition=" + mEditPosition + " → mCarData=" + mCarData);
 
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
 
-		createProgressOverlay(inflater, container, false);
+		// create storage adapter:
+		mAdapter = new FeaturesAdapter();
+		mListView.setAdapter(mAdapter);
+
+		createProgressOverlay(inflater, container, true);
 
 		return mListView;
 	}
@@ -56,23 +66,14 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	@Override
 	public void onServiceAvailable(ApiService pService) {
 		mService = pService;
+		requestData();
 	}
 
 	@Override
 	public void update(CarData pCarData) {
-		requestData();
 	}
 
 	private void requestData() {
-
-		// only start request once:
-		if (mAdapter != null)
-			return;
-
-		// create storage adapter:
-		mAdapter = new FeaturesAdapter();
-		mListView.setAdapter(mAdapter);
-
 		// send request:
 		showProgressOverlay();
 		mService.sendCommand("1", this);
@@ -82,7 +83,18 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 		Context context = parent.getContext();
 		final int fn = position;
-		Ui.showPinDialog(context, mAdapter.getTitleRow(context, position), Long.toString(id),  
+		Ui.showEditDialog(context,
+				mAdapter.getTitleRow(context, position),
+				(String) mAdapter.getItem(position),
+				R.string.Set, false, new Ui.OnChangeListener<String>() {
+					@Override
+					public void onAction(String pData) {
+						sendCommand(String.format("2,%d,%s", fn, pData), FeaturesFragment.this);
+						mAdapter.setFeature(fn, pData);
+					}
+				});
+		/*
+		Ui.showPinDialog(context, mAdapter.getTitleRow(context, position), Long.toString(id),
 				R.string.Set, false, new Ui.OnChangeListener<String>() {
 			@Override
 			public void onAction(String pData) {
@@ -91,6 +103,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 				mAdapter.setFeature(fn, val);
 			}
 		});
+		*/
 	}
 	
 	@Override
@@ -132,11 +145,15 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			if (result.length > 4) {
 				int fn = Integer.parseInt(result[2]);
 				int fm = Integer.parseInt(result[3]);
-				int fv = Integer.parseInt(result[4]);
+				String fv = result[4];
 
 				stepProgressOverlay(fn + 1, fm);
 
-				if (fn < FeaturesAdapter.FEATURES_MAX) {
+				if (fm != mAdapter.mFeaturesMax) {
+					mAdapter.setFeaturesMax(fm);
+				}
+
+				if (fn < mAdapter.mFeaturesMax) {
 					mAdapter.setFeature(fn, fv);
 				}
 
@@ -163,7 +180,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	}
 	
 	private class FeaturesAdapter extends BaseAdapter {
-		public static final int FEATURES_MAX			= 16;
+		public int mFeaturesMax = 16;
 
 		// Standard features:
 		private static final int FEATURE_SPEEDO			= 0x00; // Speedometer feature
@@ -173,6 +190,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		private static final int FEATURE_CANWRITE		= 0x0F; // CAN bus can be written to
 
 		// Renault Twizy:
+		private static final int FEATURE_GPSLOGINT				= 0x00; // GPS log interval [seconds]
 		private static final int FEATURE_KICKDOWN_THRESHOLD		= 0x01; // Kickdown threshold (pedal change)
 		private static final int FEATURE_KICKDOWN_COMPZERO 		= 0x02; // Kickdown pedal compensation zero point
 		private static final int FEATURE_CHARGEMODE 			= 0x06; // Charge mode (0-1)
@@ -181,6 +199,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		private static final int FEATURE_SUFFRANGE 				= 0x0B; // Charge alert: sufficient range
 		private static final int FEATURE_MAXRANGE 				= 0x0C; // Max ideal range (100% SOC)
 		private static final int FEATURE_CAPACITY 				= 0x0D; // Battery capacity average (SOH%)
+		private static final int FEATURE_CAPACITY_NOM_AH		= 0x10; // Battery nominal capacity (Ah)
 
 		// The FEATURE_CARBITS feature is a set of ON/OFF bits to control different
 		// miscelaneous aspects of the system. The following bits are defined:
@@ -189,11 +208,16 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		//private static final int FEATURE_CB_SOUT_SMS	= 0x04; // Set to 1 to suppress all outbound SMS
 
 		private LayoutInflater mInflater;
-		private final int[] mFeature = new int[FEATURES_MAX];
+		private String[] mFeature = new String[mFeaturesMax];
+
+		public void setFeaturesMax(int cnt) {
+			mFeaturesMax = cnt;
+			mFeature = new String[mFeaturesMax];
+		}
 
 		@Override
 		public int getCount() {
-			return FEATURES_MAX;
+			return mFeaturesMax;
 		}
 
 		@Override
@@ -203,11 +227,11 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 
 		@Override
 		public long getItemId(int position) {
-			return mFeature[position];
+			return position;
 		}
 		
-		public void setFeature(int key, int val) {
-			if (key > (FEATURES_MAX-1)) return;
+		public void setFeature(int key, String val) {
+			if (key > (mFeaturesMax -1)) return;
 			mFeature[key] = val;
 			notifyDataSetChanged();
 		}
@@ -217,6 +241,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			// Renault Twizy:
 			if (mCarData.car_type.equals("RT")) {
 				switch (position) {
+					case FEATURE_GPSLOGINT:
+						return context.getString(R.string.lb_ft_rt_gpslogint, position);
 					case FEATURE_KICKDOWN_THRESHOLD:
 						return context.getString(R.string.lb_ft_rt_kickdown_threshold, position);
 					case FEATURE_KICKDOWN_COMPZERO:
@@ -233,9 +259,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						return context.getString(R.string.lb_ft_rt_maxrange, position);
 					case FEATURE_CAPACITY:
 						return context.getString(R.string.lb_ft_rt_capacity, position);
-
-					case FEATURE_SPEEDO:
-						return String.format("#%d:", position);
+					case FEATURE_CAPACITY_NOM_AH:
+						return context.getString(R.string.lb_ft_rt_capacity_nom_ah, position);
 
 					default:
 						// fall through to standard
@@ -274,7 +299,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			tv.setText(getTitleRow(context, position));
 			
 			tv = (TextView) convertView.findViewById(android.R.id.text2);
-			tv.setText(Integer.toString(mFeature[position]));
+			tv.setText(mFeature[position]);
 			
 			return convertView;
 		}

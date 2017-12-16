@@ -36,10 +36,12 @@ public class CarInfoFragment extends BaseFragment {
 		int editPosition = getArguments().getInt("position", -1);
 		if (editPosition >= 0) {
 			mCarData = CarsStorage.get().getStoredCars().get(editPosition);
-			
+		} else {
+			mCarData = CarsStorage.get().getSelectedCarData();
 		}
-		
-		if (mCarData != null) approveCarData();
+
+		if (mCarData != null)
+			approveCarData();
 	}
 	
 	private void approveCarData() {
@@ -52,15 +54,19 @@ public class CarInfoFragment extends BaseFragment {
 		Ui.setValue(rootView, R.id.txt_server, mCarData.server_firmware);
 		Ui.setValue(rootView, R.id.txt_car, mCarData.car_firmware);
 		Ui.setValue(rootView, R.id.txt_gsm, mCarData.car_gsm_signal);
-		Ui.setValue(rootView, R.id.txt_cac, String.format("%.2f",mCarData.car_CAC));
+		Ui.setValue(rootView, R.id.txt_cac, (mCarData.car_CAC_percent > 0)
+				? String.format("%.2f Ah = %.1f%%", mCarData.car_CAC, mCarData.car_CAC_percent)
+				: String.format("%.2f Ah",mCarData.car_CAC));
+		Ui.setValue(rootView, R.id.txt_soh, String.format("%.1f%%", mCarData.car_soh));
 
-		Ui.setValue(rootView, R.id.txt_12v_info, String.format("%.1fV (%s)",
+		Ui.setValue(rootView, R.id.txt_12v_info, String.format("%.1fV (%s) %.1fA",
 			mCarData.car_12vline_voltage,
 			mCarData.car_charging_12v
 				? "charging"
 				: (mCarData.car_12vline_ref <= 1.5)
 					? String.format("calmdown, %d min left", 15 - (int)(mCarData.car_12vline_ref*10))
-					: String.format("ref=%.1fV", mCarData.car_12vline_ref)));
+					: String.format("ref=%.1fV", mCarData.car_12vline_ref),
+			mCarData.car_12v_current));
 
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(context, "signal_strength_" + mCarData.car_gsm_bars));

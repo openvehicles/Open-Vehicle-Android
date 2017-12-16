@@ -60,12 +60,21 @@
 		android:layout_alignRight="@id/txt_gsm"
 		android:layout_below="@id/txt_gsm" />
 
-    <TextView
+	<TextView
+		android:id="@+id/txt_soh"
+		style="@style/TextValue"
+		android:layout_alignLeft="@id/txt_type"
+		android:layout_alignRight="@id/txt_gsm"
+		android:layout_below="@+id/txt_cac"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"/>
+
+	<TextView
         android:id="@+id/txt_12v_info"
         style="@style/TextValue"
         android:layout_alignLeft="@id/txt_type"
         android:layout_alignRight="@id/txt_gsm"
-        android:layout_below="@id/txt_cac" />
+        android:layout_below="@+id/txt_soh" />
 
     <TextView
     	android:id="@+id/ac_02"
@@ -124,12 +133,21 @@
 	<TextView
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignBaseline="@+id/txt_soh"
+		android:layout_alignBottom="@+id/txt_soh"
+		android:layout_alignParentLeft="true"
+		android:text="@string/SOH" />
+
+	<TextView
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/txt_cac"
 		android:layout_alignBottom="@id/txt_cac"
 		android:layout_alignParentLeft="true"
-		android:text="@string/CAC" />
+		android:text="@string/CAC"
+		android:id="@+id/textView16"/>
 
-    <TextView
+	<TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignBaseline="@id/txt_12v_info"

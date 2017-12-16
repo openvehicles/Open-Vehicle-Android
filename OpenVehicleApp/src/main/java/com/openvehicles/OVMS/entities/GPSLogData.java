@@ -28,7 +28,7 @@ public class GPSLogData {
 
 		public float odometerMi;
 		public double latitude, longitude;
-		public int altitude, direction, speed;
+		public float altitude, direction, speed;
 		public int gspFix, gpsStaleCnt, gsmSignal;
 
 		public int currentPower, powerUsedWh, powerRecdWh;
@@ -322,9 +322,9 @@ public class GPSLogData {
 							entry.odometerMi = Integer.parseInt(result[j++]) / 10f;
 							entry.latitude = Double.parseDouble(result[j++]);
 							entry.longitude = Double.parseDouble(result[j++]);
-							entry.altitude = Integer.parseInt(result[j++]);
-							entry.direction = Integer.parseInt(result[j++]);
-							entry.speed = Integer.parseInt(result[j++]);
+							entry.altitude = Float.parseFloat(result[j++]);
+							entry.direction = Float.parseFloat(result[j++]);
+							entry.speed = Float.parseFloat(result[j++]);
 							entry.gspFix = Integer.parseInt(result[j++]);
 							entry.gpsStaleCnt = Integer.parseInt(result[j++]);
 							entry.gsmSignal = Integer.parseInt(result[j++]);

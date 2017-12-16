@@ -363,6 +363,8 @@ public class LogsFragment extends BaseFragment
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
 			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+		} else {
+			mCarData = CarsStorage.get().getSelectedCarData();
 		}
 
 		// load vehicle logs data:

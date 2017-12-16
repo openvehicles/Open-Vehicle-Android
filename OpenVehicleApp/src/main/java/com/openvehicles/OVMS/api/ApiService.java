@@ -1,12 +1,19 @@
 package com.openvehicles.OVMS.api;
 
+import android.app.Notification;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
+import android.provider.Browser;
 import android.support.annotation.IntegerRes;
 import android.text.TextUtils;
 import android.util.Log;
@@ -16,23 +23,24 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiTask.OnUpdateStatusListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.receiver.AutoStart;
+import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
+import java.util.Date;
+
 public class ApiService extends Service implements OnUpdateStatusListener {
+
 	private static final String TAG = "ApiService";
-    private final IBinder mBinder = new ApiBinder();
+	private static final int ONGOING_NOTIFICATION_ID = 0x4f564d53; // "OVMS"
+
+	private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
     private ApiTask mApiTask;
 	private OnResultCommandListener mOnResultCommandListener;
 	private AppPrefes appPrefes;
-	
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		return mBinder;
-	}
-	
 
 	@Override
 	public void onCreate() {
@@ -40,54 +48,152 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 		appPrefes = new AppPrefes(getApplicationContext(), "ovms");
 
+		// check if the service shall run in foreground:
+		boolean startService = appPrefes.getData("option_service_enabled", "0").equals("1");
+
+		if (startService) {
+
+			Intent notificationIntent = new Intent(this, MainActivity.class);
+			PendingIntent pendingIntent =
+					PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+			Notification notification =
+					(new android.support.v7.app.NotificationCompat.Builder(this))
+							.setContentTitle(getText(R.string.service_notification_title))
+							.setContentText(getText(R.string.service_notification_text))
+							.setTicker(getText(R.string.service_notification_ticker))
+							.setSmallIcon(R.drawable.ic_service)
+							.setPriority(Notification.PRIORITY_MIN)
+							.setContentIntent(pendingIntent)
+							.build();
+
+			startForeground(ONGOING_NOTIFICATION_ID, notification);
+		}
+
 		// Login for selected car:
-		changeCar(CarsStorage.get().getSelectedCarData());
+		openConnection();
 
 		// Register command receiver:
 		Log.d(TAG, "Registering command receiver for Intent: " + getPackageName() + ".SendCommand");
-		registerReceiver(mCommandReceiver, new IntentFilter(getPackageName() + ".SendCommand"));
+		registerReceiver(mCommandReceiver,
+				new IntentFilter(getPackageName() + ".SendCommand"));
+
+		// Register network status receiver:
+		registerReceiver(mNetworkStatusReceiver,
+				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+
+		// set up receiver to restart service after power saving:
+		registerReceiver(new AutoStart(), new IntentFilter(Intent.ACTION_SCREEN_ON));
+
 	}
 	
 
 	@Override
 	public void onDestroy() {
 
-		try {
-			if (mApiTask != null) {
-				Log.v(TAG, "Shutting down TCP connection");
-				mApiTask.connClose();
-				mApiTask.cancel(true);
-				mApiTask = null;
-			}
-		} catch (Exception e) {
-			Log.e(TAG, "ERROR stop ApiTask", e);
-		}
+		closeConnection();
 
 		unregisterReceiver(mCommandReceiver);
+		unregisterReceiver(mNetworkStatusReceiver);
 
 		super.onDestroy();
 	}
 
 
-	public void changeCar(CarData pCarData) {
-		Log.i(TAG, "Changed car to: " + pCarData.sel_vehicleid);
-		mCarData = pCarData;
+	@Override
+	public int onStartCommand(Intent intent, int flags, int startId) {
+		Log.d(TAG, "onStartCommand");
 
-		// kill previous connection
-		if (mApiTask != null) {
-			Log.v("TCP", "Shutting down previous TCP connection (ChangeCar())");
-			mApiTask.connClose();
-			mApiTask.cancel(true);
+		// Reconnect?
+		if (!isLoggedIn()) {
+			Log.d(TAG, "doing reconnect");
+			openConnection();
 		}
 
-		// start new connection
-		// reset the paranoid mode flag in car data
-		// it will be set again when the TCP task detects paranoid mode messages
-		mCarData.sel_paranoid = false;
-		mApiTask = new ApiTask(getApplicationContext(), mCarData, this);
-		
-		Log.v(TAG, "Starting TCP Connection (changeCar())");
-		mApiTask.execute();
+		return super.onStartCommand(intent, flags, startId);
+	}
+
+	@Override
+	public IBinder onBind(Intent intent) {
+		Log.d(TAG, "onBind");
+
+		// Reconnect?
+		if (!isLoggedIn()) {
+			Log.d(TAG, "doing reconnect");
+			openConnection();
+		}
+
+		return mBinder;
+	}
+
+	public class ApiBinder extends Binder {
+		public ApiService getService() {
+			return ApiService.this;
+		}
+	}
+
+
+	/**
+	 * closeConnection: terminate ApiTask
+	 */
+	public void closeConnection() {
+		try {
+			if (mApiTask != null) {
+				Log.v(TAG, "closeConnection: shutting down TCP connection");
+				mApiTask.cancel(true);
+				mApiTask = null;
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "closeConnection: ERROR stopping ApiTask", e);
+		}
+	}
+
+
+	/**
+	 * openConnection: start ApiTask
+	 */
+	public void openConnection() {
+		if (mCarData == null) {
+			Log.v(TAG, "openConnection: getting CarData");
+			mCarData = CarsStorage.get().getSelectedCarData();
+		}
+		if (mApiTask != null) {
+			Log.v(TAG, "openConnection: closing previous connection");
+			closeConnection();
+		}
+		if (mCarData != null) {
+			Log.v(TAG, "openConnection: starting TCP Connection");
+
+			// reset the paranoid mode flag in car data
+			// it will be set again when the TCP task detects paranoid mode messages
+			mCarData.sel_paranoid = false;
+
+			// start the new ApiTask:
+			mApiTask = new ApiTask(getApplicationContext(), mCarData, this);
+
+			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+				mApiTask.execute();
+				// Note: this may take a while to start when changing a car
+				// 	because the old ApiTask waits until the next protocol
+				// 	message arrives
+			} else {
+				mApiTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+				// Note: this will start immediately
+			}
+		}
+	}
+
+
+	/**
+	 * changeCar: terminate existing connection if any, connect to car
+	 *
+	 * @param pCarData
+	 */
+	public void changeCar(CarData pCarData) {
+		Log.i(TAG, "changeCar: changing car to: " + pCarData.sel_vehicleid);
+		closeConnection();
+		mCarData = pCarData;
+		openConnection();
 	}
 
 	
@@ -117,6 +223,8 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 	@Override
 	public void onUpdateStatus(char msgCode, String msgData) {
+		Log.d(TAG, "onUpdateStatus " + msgCode);
+
 		// Update internal observers:
 		ApiObservable.get().notifyUpdate(mCarData);
 
@@ -127,6 +235,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 					GlobalOptionsFragment.defaultBroadcastCodes);
 			if (broadcastCodes.indexOf(msgCode) >= 0) {
 
+				Log.d(TAG, "onUpdateStatus " + msgCode + ": sending broadcast");
 				Intent intent = new Intent(getPackageName() + ".Update");
 
 				intent.putExtra("sel_server", mCarData.sel_server);
@@ -156,8 +265,9 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	public void onServerSocketError(Throwable e) {
 		Intent intent = new Intent(getPackageName() + ".ApiEvent");
 		intent.putExtra("onServerSocketError", e);
-		intent.putExtra("message", getString(mApiTask.isLoggedIn() ? 
-				R.string.err_connection_lost : R.string.err_check_following));
+		intent.putExtra("message", getString(mApiTask.isLoggedIn()
+				? R.string.err_connection_lost
+				: R.string.err_check_following));
 		sendBroadcast(intent);
 	}
 
@@ -219,7 +329,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	
 
 	public boolean isLoggedIn() {
-		return mApiTask.isLoggedIn();
+		return (mApiTask != null && mApiTask.isLoggedIn());
 	}
 	
 	public CarData getCarData() {
@@ -227,14 +337,37 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	}
 	
 	public CarData getLoggedInCarData() {
-		return mApiTask.isLoggedIn() ? mCarData : null;
+		return isLoggedIn() ? mCarData : null;
 	}
 	
-    public class ApiBinder extends Binder {
-		public ApiService getService() {
-			return ApiService.this;
-		}
+
+	/**
+	 * Check for network availability.
+	 *
+	 * @return true if any network is available
+	 */
+	public boolean isOnline() {
+		ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo info = cm.getActiveNetworkInfo();
+		return (info != null && info.isConnectedOrConnecting());
 	}
+
+
+	/**
+	 * Broadcast Receiver for Network Connectivity Changes
+	 */
+	private final BroadcastReceiver mNetworkStatusReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "mNetworkStatusReceiver: new state: "
+					+ (isOnline() ? "ONLINE" : "OFFLINE"));
+			if (!isOnline() && mApiTask != null)
+				closeConnection();
+			else if (isOnline() && mApiTask == null)
+				openConnection();
+		}
+	};
 
 
 	/**

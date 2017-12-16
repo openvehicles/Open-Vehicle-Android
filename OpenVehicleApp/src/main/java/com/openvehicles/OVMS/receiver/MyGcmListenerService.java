@@ -53,12 +53,14 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
         // get notification text:
-        String contentTitle = data.getString("title");
+		String contentTitle = data.getString("title");
+		String contentType = data.getString("type");
         String contentText = data.getString("message");
         String contentTime = data.getString("time");
 
         Log.i(TAG, "Notification received from=" + from
-                + ", title=" + contentTitle
+				+ ", title=" + contentTitle
+				+ ", type=" + contentType
                 + ", message=" + contentText
                 + ", time=" + contentTime);
 
@@ -80,7 +82,7 @@ public class MyGcmListenerService extends GcmListenerService {
 		dbAccess.lock();
 		try {
 			OVMSNotifications savedList = new OVMSNotifications(this);
-			is_new = savedList.addNotification(contentTitle, contentText, timeStamp);
+			is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
 		} finally {
 			dbAccess.unlock();
 		}

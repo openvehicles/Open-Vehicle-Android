@@ -16,7 +16,9 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 
 public class Database extends SQLiteOpenHelper {
@@ -586,8 +588,72 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getNotifications() {
 		open();
+
+		// Due to a strange yet unknown bug sometimes the timestamp year of single notifications
+		// changes to 2201 (always?), letting the message be stuck at the end of the list.
+		// To fix, we need check & correct these here on every call :-/
+		fixNotificationTimes();
+
 		Cursor cursor = db.rawQuery("SELECT * FROM Notification ORDER BY nTimestamp, nID", null);
 		return cursor;
+	}
+
+	private void fixNotificationTimes() {
+
+		Date ts1, ts2, ts3;
+		GregorianCalendar cal1 = new GregorianCalendar(), cal2 = new GregorianCalendar();
+
+		// get latest entry:
+
+		Cursor latest = db.rawQuery("SELECT * FROM Notification ORDER BY nID DESC LIMIT 1", null);
+		if (latest == null || !latest.moveToNext())
+			return;
+
+		try {
+			ts1 = isoDateTime.parse(latest.getString(latest.getColumnIndex("nTimestamp")));
+		} catch (Exception e) {
+			ts1 = new Date();
+		}
+		cal1.setTime(ts1);
+
+		// get entries with timestamps after latest:
+
+		Cursor wrongts = db.rawQuery(
+				"SELECT * FROM Notification WHERE nTimestamp > ?",
+				new String[] { latest.getString(latest.getColumnIndex("nTimestamp")) });
+
+		while (wrongts != null && wrongts.moveToNext()) {
+			try {
+
+				// fix timestamp by replacing the year with the current or last year:
+
+				ts2 = isoDateTime.parse(wrongts.getString(wrongts.getColumnIndex("nTimestamp")));
+
+				cal2.setTime(ts2);
+				cal2.set(Calendar.YEAR, cal1.get(Calendar.YEAR));
+				if (cal2.after(cal1))
+					cal2.set(Calendar.YEAR, cal1.get(Calendar.YEAR)-1);
+
+				ts3 = new Date(cal2.getTimeInMillis());
+
+				Log.d(TAG, "fixNotificationTimes: latest='" + ts1 +
+						"', found '" + ts2 + "' → update to '" + ts3 + "'");
+
+				db.execSQL(
+						"UPDATE Notification SET nTimestamp = ? WHERE nID = ?",
+						new String[] {
+								isoDateTime.format(ts3),
+								wrongts.getString(wrongts.getColumnIndex("nID"))
+						});
+
+			} catch (Exception e) {
+				// ignore
+			}
+		}
+
+		if (wrongts != null)
+			wrongts.close();
+		latest.close();
 	}
 
 	public NotificationData getNextNotification(Cursor cursor) {
@@ -607,6 +673,9 @@ public class Database extends SQLiteOpenHelper {
 				timestamp,
 				cursor.getString(cursor.getColumnIndex("nTitle")),
 				cursor.getString(cursor.getColumnIndex("nMessage")));
+
+		//Log.d(TAG, "getNextNotification: index=" + cursor.getPosition() + " => nID=" + data.ID
+		//	+ " nTitle='" + data.Title + "' nTimestamp='" + data.Timestamp + "'");
 
 		return data;
 	}

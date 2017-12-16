@@ -101,6 +101,7 @@
     <string name="lb_ft_car_bits">#%d: Car Bits</string>
     <string name="lb_ft_can_write">#%d: CAN Write</string>
 
+    <string name="lb_ft_rt_gpslogint">#%d: GPS Log-Intervall [sek]</string>
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown-Schwellwert</string>
     <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown-Kompensation</string>
     <string name="lb_ft_rt_chargemode">#%d: Ladestopp-Modus</string>
@@ -108,7 +109,8 @@
     <string name="lb_ft_rt_suffsoc">#%d: Ausreichender SOC</string>
     <string name="lb_ft_rt_suffrange">#%d: Ausreichende Reichweite</string>
     <string name="lb_ft_rt_maxrange">#%d: Maximale Reichweite</string>
-    <string name="lb_ft_rt_capacity">#%d: Akku-Kapazität (SOH%%)</string>
+    <string name="lb_ft_rt_capacity">#%d: Akku-Kapazitätsmessung (CAP%%)</string>
+    <string name="lb_ft_rt_capacity_nom_ah">#%d: Akku-Standardkapazität (Ah)</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
     <string name="lb_cp_module_password">#%d: Module-Passwort</string>
@@ -312,9 +314,40 @@
 
     <string name="hint_sevcon_offline">\n(Hinweis: &#8230;B = SEVCON ausgeschaltet)</string>
 
-    <string name="notifications_hint_cmdinput">SMS/MMI-Kommando</string>
+    <string name="notifications_hint_cmdinput">SMS/MMI/MSG-Kommando</string>
     <string name="err_failed_smscmd">Fehler: unbekanntes Kommando / keine Authorisierung</string>
     <string name="notifications_toast_copied">Nachricht wurde in das Clipboard kopiert</string>
+    <string name="notifications_menu">Optionen</string>
+    <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_btn_help">Info</string>
+    <string name="notifications_help"><![CDATA[
+ 		<h1>Nachrichten &amp; Kommandos</h1>
+
+		<p>Diese Anzeige enthält die letzten 200 Nachrichten, Alarm-Meldungen, Kommandos und
+		Kommandoergebnisse.</p>
+
+        <p>Kurzes Antippen zeigt eine Nachricht in einem Dialog an, langes Antippen kopiert
+        den Eintrag in das Clipboard. Kommandoeinträge werden per Antippen in die Eingabebox
+        kopiert und können so einfach geändert und/oder neu abgeschickt werden.</p>
+
+        <p>Du kannst von hier aus Textkommandos (SMS), MMI-Abfragen (USSD), MSG-Funktionen und Modembefehle (AT)
+         absenden. Alle von hier gesendeten Kommandos und Ergebnisse laufen über den TCP/IP-Kanal,
+		 verursachen also keine SMS-Kosten.</p>
+
+        <p><u>Beispiele</u>:</p>
+
+		<p>
+		&nbsp;&bull; SMS: <tt><b>STAT</b></tt> &mdash; <i>Fahrzeugstatus abfragen</i><br>
+		&nbsp;&bull; MMI: <tt><b>*100#</b></tt> &mdash; <i>i.d.R. SIM-Guthaben</i><br>
+		&nbsp;&bull; MSG: <tt><b>#31</b></tt> &mdash; <i>Liste der gespeicherten Datensätze</i><br>
+		&nbsp;&bull; Modem: <tt><b>@AT…</b></tt> &mdash; <i>siehe Modem-Handbuch</i>
+		</p>
+
+		<p>Hinweise: MMI-Kommandos unterscheiden sich je nach Provider, i.d.R. findet man diese
+		in der Provider-Dokumentation. Modembefehle geben ihre Ergebnisse nicht zurück. Eine
+		Übersicht der MSG-Funktionen findest Du in der OVMS-Protokolldokumentation.</p>
+
+    ]]></string>
 
     <string name="battery_title">Akku-Statistik</string>
     <string name="battery_menu">Optionen</string>
@@ -478,5 +511,8 @@
          erklärt.</p>
     ]]></string>
 
+    <string name="service_notification_title">OVMS</string>
+    <string name="service_notification_text">Service läuft</string>
+    <string name="service_notification_ticker">OVMS Service gestartet</string>
 
 </resources>

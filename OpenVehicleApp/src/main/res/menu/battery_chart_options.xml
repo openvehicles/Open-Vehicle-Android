@@ -2,38 +2,44 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/mi_get_data"
-          android:title="@string/battery_btn_get_data"
-          android:icon="@android:drawable/stat_sys_download"
-          app:showAsAction="always|withText"/>
-    <item android:id="@+id/battery_menu"
-          app:showAsAction="ifRoom|withText"
-          android:icon="@android:drawable/ic_menu_more"
-          android:title="@string/battery_menu">
+    <item
+        android:id="@+id/mi_get_data"
+        android:icon="@android:drawable/ic_popup_sync"
+        android:title="@string/battery_btn_get_data"
+        app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/battery_menu"
+        android:icon="@android:drawable/ic_menu_more"
+        android:title="@string/battery_menu"
+        app:showAsAction="always|withText">
 
         <menu>
 
-            <item android:id="@+id/mi_reset_view"
-                  app:showAsAction="ifRoom"
-                  android:icon="@android:drawable/ic_menu_mylocation"
-                  android:title="@string/battery_btn_reset_view"/>
+            <item
+                android:id="@+id/mi_reset_view"
+                android:icon="@android:drawable/ic_menu_mylocation"
+                android:title="@string/battery_btn_reset_view"
+                app:showAsAction="ifRoom"/>
 
             <group android:checkableBehavior="all">
 
-                <item android:id="@+id/mi_chk_volt"
-                      app:showAsAction="ifRoom"
-                      android:title="@string/battery_chk_volt"/>
+                <item
+                    android:id="@+id/mi_chk_volt"
+                    android:title="@string/battery_chk_volt"
+                    app:showAsAction="ifRoom"/>
 
-                <item android:id="@+id/mi_chk_temp"
-                      app:showAsAction="ifRoom"
-                      android:title="@string/battery_chk_temp"/>
+                <item
+                    android:id="@+id/mi_chk_temp"
+                    android:title="@string/battery_chk_temp"
+                    app:showAsAction="ifRoom"/>
 
             </group>
 
-            <item android:id="@+id/mi_help"
-                  app:showAsAction="never"
-                  android:icon="@android:drawable/ic_menu_help"
-                  android:title="@string/battery_btn_help"/>
+            <item
+                android:id="@+id/mi_help"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="@string/battery_btn_help"
+                app:showAsAction="never"/>
 
         </menu>
     </item>

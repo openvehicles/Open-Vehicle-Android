@@ -68,7 +68,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	private CarData mCarData;
 	static double lat = 0, lng = 0;
-	static int maxrange = 160;
+	static float maxrange = 160;
 	static String distance_units = "KM";
 
 	List<Marker> lis;
@@ -462,7 +462,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	// draw circle in a map
-	private void addCircles(int rd1, int rd2) {
+	private void addCircles(float rd1, float rd2) {
 		if (map == null)
 			return;
 

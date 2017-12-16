@@ -40,6 +40,7 @@ import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.receiver.AutoStart;
 import com.openvehicles.OVMS.receiver.RegistrationIntentService;
 import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
 import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
@@ -73,6 +74,7 @@ public class MainActivity extends ApiActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 
 		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate");
 
 		appPrefes = new AppPrefes(this, "ovms");
 		database = new Database(this);
@@ -129,14 +131,15 @@ public class MainActivity extends ApiActivity implements
 		actionBar.setCustomView(progressBar);
 
 		mPagerAdapter = new MainPagerAdapter(
+				new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
 				new TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment.class),
 				new TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment.class),
 				new TabInfo(R.string.Location, R.drawable.ic_action_location_map, FragMap.class),
-				new TabInfo(R.string.Messages, R.drawable.ic_action_email, NotificationsFragment.class),
 				new TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment.class)
 		);
 
 		mViewPager.setAdapter(mPagerAdapter);
+		mViewPager.setOffscreenPageLimit(mPagerAdapter.getCount()-1);
 		mViewPager.addOnPageChangeListener(
 				new ViewPager.SimpleOnPageChangeListener() {
 					@Override
@@ -144,7 +147,7 @@ public class MainActivity extends ApiActivity implements
 						actionBar.setSelectedNavigationItem(position);
 
 						// cancel system notifications on page "Messages":
-						if (position == 3) {
+						if (mPagerAdapter.getItemId(position) == R.string.Messages) {
 							NotificationManager mNotificationManager = (NotificationManager)
 									getSystemService(Context.NOTIFICATION_SERVICE);
 							mNotificationManager.cancelAll();
@@ -156,24 +159,30 @@ public class MainActivity extends ApiActivity implements
 		actionBar.setListNavigationCallbacks(
 				new NavAdapter(this, mPagerAdapter.getTabInfoItems()), this);
 
+		// start on battery tab:
+		onNavigationItemSelected(mPagerAdapter.getPosition(R.string.Battery), 0);
+
 		// process Activity startup intent:
 		onNewIntent(getIntent());
 	}
 
 	@Override
 	public void onNewIntent(Intent newIntent) {
+		if (newIntent == null)
+			return;
 		Log.d(TAG, "onNewIntent: " + newIntent.toString());
 
 		super.onNewIntent(newIntent);
 
 		// if launched from notification, switch to messages tab:
 		if (newIntent.getBooleanExtra("onNotification", false)) {
-			onNavigationItemSelected(3, 0);
+			onNavigationItemSelected(mPagerAdapter.getPosition(R.string.Messages), 0);
 		}
 	}
 
 	@Override
 	protected void onDestroy() {
+		Log.d(TAG, "onDestroy");
 		unregisterReceiver(mApiEventReceiver);
 		unregisterReceiver(mNotificationReceiver);
 		database.close();
@@ -188,10 +197,21 @@ public class MainActivity extends ApiActivity implements
 		super.onDestroy();
 	}
 
+	@Override
+	protected void onStart() {
+		super.onStart();
+		Log.d(TAG, "onStart");
+	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(TAG, "onResume");
+
+
+		//ApiService apiService = getService();
+
+
 		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
 				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
 	}
@@ -199,6 +219,7 @@ public class MainActivity extends ApiActivity implements
 	@Override
 	protected void onPause() {
 		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
+		Log.d(TAG, "onPause");
 		super.onPause();
 	}
 
@@ -429,6 +450,8 @@ public class MainActivity extends ApiActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+		if (itemPosition < 0 || itemPosition >= mPagerAdapter.getCount())
+			return false;
 		TabInfo ti = mPagerAdapter.getTabInfoItems()[itemPosition];
 		getSupportActionBar().setIcon(ti.icon_res_id);
 		mViewPager.setCurrentItem(itemPosition, false);
@@ -466,6 +489,8 @@ public class MainActivity extends ApiActivity implements
 
 		@Override
 		public Fragment getItem(int pPosition) {
+			if (pPosition < 0 || pPosition >= mTabInfoItems.length)
+				return null;
 			if (mTabInfoItems[pPosition].fragment == null) {
 				// instantiate fragment:
 				mTabInfoItems[pPosition].fragment = Fragment.instantiate(
@@ -476,9 +501,27 @@ public class MainActivity extends ApiActivity implements
 			return mTabInfoItems[pPosition].fragment;
 		}
 
+		public Fragment getItemByTitle(int pTitle) {
+			return getItem(getPosition(pTitle));
+		}
+
 		@Override
 		public int getCount() {
 			return mTabInfoItems.length;
+		}
+
+		@Override
+		public long getItemId(int position) {
+			// use Title String resource id as Item id:
+			return mTabInfoItems[position].title_res_id;
+		}
+
+		public int getPosition(int itemId) {
+			for (int p = 0; p < mTabInfoItems.length; p++) {
+				if (mTabInfoItems[p].title_res_id == itemId)
+					return p;
+			}
+			return -1;
 		}
 
 		@Override
@@ -498,7 +541,7 @@ public class MainActivity extends ApiActivity implements
 	public void after(boolean flBoolean) {
 		// Called from GetMapDetails.onPostExecute after retrieving OCM updates
 		Log.d(TAG, "OCM updates received");
-		FragMap frg = (FragMap) mPagerAdapter.getItem(2);
+		FragMap frg = (FragMap) mPagerAdapter.getItemByTitle(R.string.Location);
 		if (frg != null) {
 			Log.d(TAG, "OCM updates received => calling FragMap.update()");
 			frg.update();
@@ -514,7 +557,7 @@ public class MainActivity extends ApiActivity implements
 			Log.d(TAG, "Notifications: received " + intent.toString());
 
 			// update messages list:
-			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItem(3);
+			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItemByTitle(R.string.Messages);
 			if (frg != null) {
 				Log.d(TAG, "Notifications: calling frg.update()");
 				frg.update();

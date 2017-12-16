@@ -40,7 +40,11 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
 
-		createProgressOverlay(inflater, container, false);
+		// create storage adapter:
+		mAdapter = new ControlParametersAdapter();
+		mListView.setAdapter(mAdapter);
+
+		createProgressOverlay(inflater, container, true);
 
 		return mListView;
 	}
@@ -55,23 +59,14 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 	@Override
 	public void onServiceAvailable(ApiService pService) {
 		mService = pService;
+		requestData();
 	}
 
 	@Override
 	public void update(CarData pCarData) {
-		requestData();
 	}
 
 	private void requestData() {
-
-		// only start request once:
-		if (mAdapter != null)
-			return;
-
-		// create storage adapter:
-		mAdapter = new ControlParametersAdapter();
-		mListView.setAdapter(mAdapter);
-
 		// send request:
 		showProgressOverlay();
 		mService.sendCommand("3", this);
@@ -105,10 +100,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 					R.string.Set, isPasswd, new Ui.OnChangeListener<String>() {
 						@Override
 						public void onAction(String pData) {
-							if (pData.equals(val)) return;
-
-							sendCommand(String.format("4,%d,%s", fn, pData), ControlParametersFragment.this);
-							mAdapter.setParam(fn, pData);
+						sendCommand(String.format("4,%d,%s", fn, pData), ControlParametersFragment.this);
+						mAdapter.setParam(fn, pData);
 						}
 					});
 		}

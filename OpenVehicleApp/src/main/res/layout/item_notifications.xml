@@ -29,10 +29,11 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/textNotificationsListTimestamp"
+                android:paddingRight="4dp"
                 android:text="Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:layout_toLeftOf="@+id/textNotificationsListTimestamp"
-                android:paddingRight="4dp"/>
+                android:textSize="14sp"/>
 
             <TextView
                 android:id="@+id/textNotificationsListTimestamp"
@@ -46,13 +47,13 @@
         </RelativeLayout>
 
         <TextView
-                android:id="@+id/textNotificationsListMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:text="Message"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:autoLink="map|web"/>
+            android:id="@+id/textNotificationsListMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="none"
+            android:text="Message"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="12sp" />
     </LinearLayout>
 
 </LinearLayout>

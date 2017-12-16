@@ -91,6 +91,25 @@ public class OVMSNotifications {
 	}
 
 
+	public boolean addNotification(String stype, String title, String message, Date timestamp) {
+
+		int type;
+		switch (stype) {
+			case "A":
+				type = NotificationData.TYPE_ALERT;
+				break;
+			case "E":
+				type = NotificationData.TYPE_ERROR;
+				break;
+			default:
+				type = NotificationData.TYPE_INFO;
+				break;
+		}
+
+		return addNotification(type, title, message, timestamp);
+	}
+
+
 	public boolean addNotification(String title, String message, Date timestamp) {
 
 		// unless a type classification is added to the protocol, we can only
