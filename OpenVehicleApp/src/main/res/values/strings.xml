@@ -1,0 +1,531 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" >
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Please wait</string>
+    <string name="Settings">Settings</string>
+    <string name="Range" formatted="false">Range: %s (%s estimated)</string>
+    <string name="LastUpdated" formatted="false">Updated: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Delete">Delete</string>
+    <string name="Save">Save</string>
+    <string name="Send">Send</string>
+    <string name="Error">Error</string>
+    <string name="Set">Set</string>
+    <string name="Control">Control</string>
+    <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
+    <string name="GcmSenderID">GCM Sender ID (empty=default)</string>
+    <string name="NetPass">Server Password</string>
+    <string name="UserPass">User Password (Paranoid Mode)</string>
+    <string name="Quit">Exit Application</string>
+    <string name="Edit">Edit</string>
+    <string name="Yes">Yes</string>
+    <string name="No">No</string>
+    <string name="ClearNotifications">Clear Notifications</string>
+    <string name="VehicleImage">Vehicle Image</string>
+    <string name="btnAddCar">Add Car</string>
+    <string name="btnCenterMap">Center Map</string>
+    <string name="ImageParking">Vehicle Parking</string>
+    <string name="SysWarning">System Warning</string>
+    <string name="LockIdle">Vehicle Lock</string>
+    <string name="SignalStrength">Signal Strength</string>
+    <string name="ChargerPlug">Charger Plug</string>
+    <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
+    <string name="DefaultMode">STANDARD</string>
+    <string name="ChargingOverlay">Charging</string>
+    <string name="BatteryOverlay">Battery</string>
+    <string name="EstimatedShort">ESTIMATED RANGE</string>
+    <string name="IdealShort">IDEAL RANGE</string>
+    <string name="BatteryText">Battery</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Profile">Profile</string>
+    <string name="Default">Default</string>
+    <string name="Wakeup">Wakeup</string>
+    <string name="Add">Add</string>
+    <string name="Battery">Battery</string>
+    <string name="Car">Car</string>
+    <string name="Location">Location</string>
+    <string name="Messages">Messages</string>
+    <string name="Amps">Amps</string>
+    <string name="Close">Close</string>
+    <string name="Features">Features</string>
+    <string name="Parameters">Parameters</string>
+    <string name="CellularStats">Cellular usage stats</string>
+    <string name="Vehicle">Vehicle</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Type</string>
+    <string name="GMC">GSM</string>
+    <string name="CAC">CAC</string>
+    <string name="SOH">SOH</string>
+    <string name="Info12V">12V</string>
+    <string name="Server">Server</string>
+    <string name="App">App</string>
+    <string name="Options">Options</string>
+
+    <string name="lb_wakeup_car">Wakeup Car</string>
+
+    <string name="lb_lock_car">Lock Car</string>
+    <string name="lb_unlock_car">Unlock Car</string>
+    <string name="lb_valet_mode">Valet Mode</string>
+    <string name="lb_valet_mode_on">Valet On</string>
+    <string name="lb_valet_mode_off">Valet Off</string>
+
+    <string name="lb_lock_mode_twizy">Limit max speed (kph):</string>
+    <string name="lb_lock_car_twizy">Set speed limit</string>
+    <string name="lb_unlock_car_twizy">Clear speed limit</string>
+    <string name="lb_valet_mode_twizy">Limit trip length (km):</string>
+    <string name="lb_valet_mode_on_twizy">Set trip limit</string>
+    <string name="lb_valet_mode_off_twizy">Clear trip limit</string>
+    <string name="lb_valet_mode_extend_twizy">Allow +1km</string>
+    <string name="lb_unvalet_unlock_twizy">Clear trip+speed limit</string>
+
+    <string name="lb_enter_pin">Enter PIN</string>
+    <string name="lb_enter_passwd">Enter password</string>
+    <string name="lb_enter_value">Enter value</string>
+    <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
+    <string name="lb_charger_setting">Charger Setting</string>
+    <string name="lb_communications_problem">Communications Problem</string>
+    <string name="lb_vehicle_id">Vehicle ID</string>
+    <string name="lb_vehicle_label">Vehicle Label (arbitrary)</string>
+    <string name="lb_server_passwd">Vehicle Server Password</string>
+    <string name="lb_module_passwd">Module/SMS Password</string>
+    <string name="lb_slide_choice_vehicle">Slide for vehicle choice</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
+    <string name="lb_cellular_usage">Cellular Usage</string>
+    <string name="lb_reset_ovms_module">Reset OVMS Module</string>
+    <string name="lb_center_map">Center map</string>
+
+    <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
+    <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_car_bits">#%d: Car Bits</string>
+    <string name="lb_ft_can_write">#%d: CAN Write</string>
+
+    <string name="lb_ft_rt_gpslogint">#%d: GPS log interval [s]</string>
+    <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown threshold</string>
+    <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdown compensation</string>
+    <string name="lb_ft_rt_chargemode">#%d: Charge stop mode</string>
+    <string name="lb_ft_rt_chargepower">#%d: Charge power level</string>
+    <string name="lb_ft_rt_suffsoc">#%d: Sufficient SOC</string>
+    <string name="lb_ft_rt_suffrange">#%d: Sufficient range</string>
+    <string name="lb_ft_rt_maxrange">#%d: Max ideal range</string>
+    <string name="lb_ft_rt_capacity">#%d: Battery measured capacity (CAP%%)</string>
+    <string name="lb_ft_rt_capacity_nom_ah">#%d: Battery nominal capacity (Ah)</string>
+
+    <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
+    <string name="lb_cp_module_password">#%d: Module Password</string>
+    <string name="lb_cp_miles_km">#%d: Miles/Km</string>
+    <string name="lb_cp_notifications">#%d: Notifications</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS Server IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Cellular Network APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Cellular Network User</string>
+    <string name="lb_cp_cellular_network_password">#%d: Cellular Network Password</string>
+    <string name="lb_cp_vehicle_id">#%d: Vehicle ID</string>
+    <string name="lb_cp_server_password">#%d: Server Password</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoid Mode</string>
+    <string name="lb_cp_social_group_1">#%d: Social Group #1</string>
+    <string name="lb_cp_social_group_2">#%d: Social Group #2</string>
+    <string name="lb_cp_gsmlock">#%d: GSM lock</string>
+    <string name="lb_cp_vehicle_type">#%d: Vehicle type</string>
+    <string name="lb_cp_cooldown">#%d: Cooldown</string>
+    <string name="lb_cp_gprsdns">#%d: GPRS DNS IP</string>
+    <string name="lb_cp_timezone">#%d: Time zone</string>
+    <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
+    <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
+    <string name="lb_cp_acc3">#%d: ACC #3 (base64)</string>
+    <string name="lb_cp_acc4">#%d: ACC #4 (base64)</string>
+
+    <string name="lb_cp_rt_profile">#%d: Active profile</string>
+    <string name="lb_cp_rt_profile1">#%d: Profile #1 (binary)</string>
+    <string name="lb_cp_rt_profile2">#%d: Profile #2 (binary)</string>
+    <string name="lb_cp_rt_profile3">#%d: Profile #3 (binary)</string>
+
+    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_vehicle_info">Vehicle Info</string>
+
+    <string name="lb_charger_setting_twizy">Charge configuration</string>
+    <string name="lb_charger_setting_twizy_hint">Hint: set to zero to deactivate the limit.</string>
+    <string name="lb_sufficient_soc">Sufficient SOC (%)</string>
+    <string name="lb_sufficient_range">Sufficient range (%s)</string>
+    <string name="msg_getting_charge_alerts">Getting charge alerts from module&#8230;</string>
+    <string name="msg_setting_charge_alerts">Setting charge configuration&#8230;</string>
+
+    <string name="lb_charge_power_limit">Charge power limit</string>
+    <string-array name="twizy_charge_power_limits">
+        <item>unlimited</item>
+        <item>1.6A / 350W</item>
+        <item>3.1A / 700W</item>
+        <item>4.7A / 1,050W</item>
+        <item>6.3A / 1,400W</item>
+        <item>7.8A / 1,750W</item>
+        <item>9.4A / 2,100W</item>
+        <item>10A / 2,230W</item>
+    </string-array>
+    <string name="lb_charge_mode">Charge mode</string>
+    <string-array name="twizy_charge_modes">
+        <item>Notify</item>
+        <item>Stop</item>
+    </string-array>
+
+    <string name="msg_ok">OK</string>
+    <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
+    <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
+    <string name="msg_wakeup_car">Waking up Car&#8230;</string>
+    <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
+    <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
+    <string name="msg_setting_charge_m">Setting Charge Mode&#8230;</string>
+    <string name="msg_setting_charge_c">Setting Charge Current&#8230;</string>
+    <string name="msg_starting_charge">Starting Charge&#8230;</string>
+    <string name="msg_stopping_charge">Stopping Charge&#8230;</string>
+    <string name="msg_rebooting_car_module">Rebooting Car Module&#8230;</string>
+    <string name="msg_please_enter_value">Please enter a correct value</string>
+    <string name="msg_invalid_name">Your username must be greater than 3 characters length and cannot contain  special characters.</string>
+    <string name="msg_invalid_passwd">Your password must be between %1$d and %2$d characters in length.</string>
+    <string name="msg_invalid_id_already_registered">Vehicle ID %s is already registered. Please enter a another ID.</string>
+    <string name="msg_delete_this_car">Delete this car?</string>
+    <string name="msg_mmi_ssd_code">Enter MMI/USSD Code, then tap SEND to transmit the code to your vehicle\'s cellular provider</string>
+    
+    <string name="err_connection_lost">OVMS Server Connection Lost</string>
+    <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
+    <string name="err_failed">Failed: %s</string>
+    <string name="err_unsupported_operation">Unsupported operation</string>
+    <string name="err_unimplemented_operation">Unimplemented operation</string>
+    <string name="err_param_not_editable">Sorry, this parameter is not editable!</string>
+
+    <string name="msg_retrieving_data">Retrieving data&#8230;</string>
+    <string name="msg_processing_data">Processing data&#8230;</string>
+    <string formatted="false" name="cellular_usage_info_car">Car: %.1f MB/month (%d days)</string>
+    <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/month (%d days)</string>
+    <string name="chart_axis_date">Date</string>
+    <string name="chart_axis_datavolume">Volume (KB)</string>
+
+    <string formatted="false" name="lb_chargepoint_conn_level">Level #%d</string>
+    <string formatted="false" name="lb_chargepoint_conn_type">Connection type #%d</string>
+
+    <string name="live">live</string>
+    <string name="ndays">%d days</string>
+    <string name="nhours">%d hours</string>
+    <string name="nmins">%d mins</string>
+    <string name="min1">1 min</string>
+    <string name="justnow">just now</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
+    <string name="slidetocharge">SLIDE TO\nCHARGE</string>
+    <string name="timedcharge">TIMED CHARGE</string>
+    <string name="pushnotifications">Push Notifications</string>
+    <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
+
+    <string formatted="false" name="state_charging">CHARGING\n%s %s</string>
+    <string formatted="false" name="state_topping_off">TOPPING OFF\n%s %s</string>
+    <string formatted="false" name="state_done">DONE\n%s %s</string>
+    <string formatted="false" name="state_stopped">STOPPED\n%s %s</string>
+
+    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
+
+    <string name="textMOTOR">MOTOR</string>
+    <string name="textPEM">PEM</string>
+    <string name="textBATTERY">BATTERY</string>
+    <string name="textCHARGER">CHARGER</string>
+    <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">PROFILE</string>
+    <string name="textAMBIENT">AMBIENT</string>
+    <string name="text12VBATT">12V BATT</string>
+
+    <string name="textAC">CLIMATE CONTROL</string>
+    <string name="mi_ac_on">A/C ON</string>
+    <string name="mi_ac_off">A/C OFF</string>
+    <string name="msg_issuing_climatecontrol">Issuing climate control…</string>
+
+    <string-array name="en_charger">
+    	<item>Standard</item>
+        <item>Storage</item>
+        <item>Range</item>
+        <item>Perform</item>
+    </string-array>
+
+    <string-array name="ocm_options_maxresults">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+    </string-array>
+
+    <string name="mi_map_options">Options</string>
+    <string name="mi_map_autotrack">Auto track</string>
+    <string name="mi_map_filter_connections">My plugs</string>
+    <string name="mi_map_filter_range">My range</string>
+    <string name="mi_map_settings">Settings</string>
+    
+    <string name="mi_car_details_temp">Fahrenheit</string>
+
+    <string name="cargroup_title">Car groups</string>
+    <string name="cargroup_name_hint">Group name</string>
+
+    <!-- OVMS Debug
+    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->  
+
+    <!-- OVMS Release
+    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
+
+    <!-- OVMS Google Play Release -->
+    <string name="map_api_key_debug" translatable="false">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+
+    <string name="connections">Connections</string>
+
+    <string name="clearcache">Clear cache</string>
+    <string name="msg_cache_cleared">Charge point cache cleared!</string>
+
+    <string name="logs_title">Diagnostic logs</string>
+    <string name="logs_btn_get">Get logs</string>
+    <string name="logs_btn_reset">Reset logs</string>
+
+    <string name="logs_lb_alerts">Alerts</string>
+    <string name="logs_lb_faults">Faults</string>
+    <string name="logs_lb_events">Events</string>
+    <string name="logs_lb_counter">Counter</string>
+    <string name="logs_lb_minmax">MinMax</string>
+
+    <string name="logs_th_code">Code</string>
+    <string name="logs_th_description">Description</string>
+    <string name="logs_th_keytime">KeyTime</string>
+    <string name="logs_th_lasttime">LastTime</string>
+    <string name="logs_th_firsttime">FirstTime</string>
+    <string name="logs_th_count">Count</string>
+    <string name="logs_th_data" formatted="false">Data%d</string>
+    <string name="logs_th_sensor">Sensor</string>
+    <string name="logs_th_user">User</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+
+    <string-array name="logs_th_sensornames">
+        <item>Battery voltage min (V)</item>
+        <item>Battery voltage max (V)</item>
+        <item>Capacitor voltage min (V)</item>
+        <item>Capacitor voltage max (V)</item>
+        <item>Motor current min (A)</item>
+        <item>Motor current max (A)</item>
+        <item>Motor speed min (rpm)</item>
+        <item>Motor speed max (rpm)</item>
+        <item>SEVCON temperature min (°C)</item>
+        <item>SEVCON temperature max (°C)</item>
+    </string-array>
+
+    <string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string>
+    <string name="logs_fmt_listinfo" formatted="false">Last fetched %s // key time %s</string>
+
+    <string name="logs_msg_query_alerts">Query alerts&#8230;</string>
+    <string name="logs_msg_query_faults">Query faults&#8230;</string>
+    <string name="logs_msg_query_events">Query events&#8230;</string>
+    <string name="logs_msg_query_counter">Query counter&#8230;</string>
+    <string name="logs_msg_query_minmax">Query min/max&#8230;</string>
+
+    <string name="logs_msg_fetch_keytime">Fetch key time&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Fetch alerts&#8230;</string>
+    <string name="logs_msg_fetch_faults">Fetch faults&#8230;</string>
+    <string name="logs_msg_fetch_events">Fetch events&#8230;</string>
+    <string name="logs_msg_fetch_counter">Fetch counter&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Fetch min/max&#8230;</string>
+
+    <string name="logs_msg_reset_faults">Reset faults&#8230;</string>
+    <string name="logs_msg_reset_events">Reset events&#8230;</string>
+    <string name="logs_msg_reset_counter">Reset counter&#8230;</string>
+    <string name="logs_msg_reset_minmax">Reset min/max&#8230;</string>
+
+    <string name="hint_sevcon_offline">\n(Hint: &#8230;B = SEVCON offline)</string>
+
+    <string name="notifications_hint_cmdinput">SMS/MMI/MSG command</string>
+    <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
+    <string name="notifications_toast_copied">Message has been copied to clipboard</string>
+    <string name="notifications_menu">Options</string>
+    <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_btn_help">Info</string>
+    <string name="notifications_help"><![CDATA[
+ 		<h1>Notifications &amp; Commands</h1>
+
+		<p>This screen will hold the latest 200 notifications, alerts, commands and command results.</p>
+
+        <p>Touch a notification to show it in a dialog, do a long touch to copy it to the clipboard.
+         Touching a command history entry loads the command into the input box so you can
+         simply change and/or resubmit it.</p>
+
+        <p>You may send text (SMS) commands, MMI (USSD) commands, MSG commands and modem (AT)
+         commands. All commands issued from here are sent via TCP/IP connection, so SMS commands and their
+		results will not be charged as SMS messages.</p>
+
+        <p><u>Examples</u>:</p>
+
+		<p>
+		&nbsp;&bull; SMS: <tt><b>STAT</b></tt> &mdash; <i>get vehicle status</i><br>
+		&nbsp;&bull; MMI: <tt><b>*100#</b></tt> &mdash; <i>normally SIM account balance</i><br>
+		&nbsp;&bull; MSG: <tt><b>#31</b></tt> &mdash; <i>historical data summary</i><br>
+		&nbsp;&bull; Modem: <tt><b>@AT…</b></tt> &mdash; <i>see modem command manual</i>
+		</p>
+
+		<p>Notes: MMI commands depend on the GSM carrier / SIM provider, check your provider&apos;s
+		documentation if available. Modem commands do not return their results. See OVMS
+		protocol documentation for standard MSG commands.</p>
+
+    ]]></string>
+
+
+    <string name="battery_title">Battery history</string>
+    <string name="battery_menu">Options</string>
+    <string name="battery_btn_get_data">Get data</string>
+    <string name="battery_btn_reset_view">Reset zoom</string>
+    <string name="battery_btn_help">Info</string>
+    <string name="battery_chk_volt">Show Volt</string>
+    <string name="battery_chk_temp">Show Temp</string>
+    <string name="battery_msg_loading_data">Loading data&#8230;</string>
+    <string name="battery_msg_get_status">Requesting battery status&#8230;</string>
+    <string name="battery_msg_get_battpack">Retrieving pack data&#8230;</string>
+    <string name="battery_msg_get_battcell">Retrieving cell data&#8230;</string>
+    <string name="battery_pack_description">Pack history</string>
+    <string name="battery_cell_description">Cell status</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_volt">Volt (V)</string>
+    <string name="battery_data_volt_min">Volt min (V)</string>
+    <string name="battery_data_temp">Temp (°C)</string>
+    <string name="battery_help"><![CDATA[
+ 		<h1>Battery history</h1>
+
+		<h2>Basics</h2>
+		<p>The <b>firmware version</b> needs to support the <b>battery monitor</b> feature.
+		The charts are based on the record types <tt>RT-BAT-P</tt> and <tt>RT-BAT-C</tt>
+		(see Manual). The server will keep these for <b>24h</b>.</p>
+		<p>The <b>measurement resolution</b> is 5 mV on voltage and 1 °C on temperature.
+		The Twizy battery pack consists of 42 cells with layout 14S3P, distributed to 7 modules.
+		The system supports only distinct measurements of the 14 3P bundle voltages and the
+		7 module temperatures.</p>
+
+		<h2>Packet history</h2>
+		<p>The packet chart only displays times with data, so excludes inactive parking times.</p>
+		<p>The module sends updates to the server every <b>~60 seconds</b> during driving or
+		charging (while network/server connection is available). Extremes and max standard deviations
+		are collected continuously, current values are those at the time of the update sent.</p>
+		<p>On <b>switch on</b> of the Twizy and <b>start of charging</b>, the collected values
+		are reset, so at the end of a usage section these show the overall extremes that occurred
+		during a usage section.</p>
+		<p><u><b>Hint</b></u>: to follow the minimum voltage line, click on it to highlight an entry,
+		then use the seek bar to move the marker.</p>
+
+		<h2>Cell status</h2>
+		<p>
+		&nbsp;&bull; lower end = minimum value<br>
+		&nbsp;&bull; upper end = current value (+text)<br>
+		&nbsp;&bull; filled box = bad<br>
+		&nbsp;&bull; bigger box = more deviation
+		</p>
+		<p>It\'s a candle stick chart. The <b>maximum value</b> shown is the
+		current value (<tt>volt_act</tt> / <tt>temp_act</tt>), the <b>minimum value</b> is
+		the smallest value measured (<tt>volt_min</tt> / <tt>temp_min</tt>) within the
+		current usage section.</p>
+		<p>The candle height reflects the <b>maximum deviation</b> measured.
+		A filled candle is used to display a "bad" deviation, i.e. higher
+		<b>voltage breakdown</b> or higher <b>temperature rise</b>.</p>
+		<p><u><b>Hint</b></u>: to compare voltage details, select a cell and zoom in vertically
+		until you can clearly read the deviations of the other cells from the selection marker.</p>
+    ]]></string>
+
+
+    <string name="power_title">Power history</string>
+    <string name="power_menu">Options</string>
+    <string name="power_btn_get_data">Get data</string>
+    <string name="power_btn_reset_view">Reset zoom</string>
+    <string name="power_btn_zoom5">Last 5 %1$s</string>
+    <string name="power_btn_zoom10">Last 10 %1$s</string>
+    <string name="power_btn_help">Info</string>
+    <string name="power_chk_energy">Show energy</string>
+    <string name="power_chk_power">Show power</string>
+    <string name="power_msg_loading_data">Loading&#8230;</string>
+    <string name="power_msg_getting_gpslog">Retrieving GPS log&#8230;</string>
+
+    <string name="power_trip_description">Trip</string>
+    <string name="power_data_altitude">Altitude (m)</string>
+    <string name="power_data_speed">Speed (%1$s)</string>
+
+    <string name="power_power_description">Power (W)</string>
+    <string name="power_data_pwr_min">Min</string>
+    <string name="power_data_pwr_max">Max</string>
+    <string name="power_data_pwr_avg">Avg</string>
+    <string name="power_data_pwr_recuplimit">Recup Limit</string>
+    <string name="power_data_pwr_drivelimit">Drive Limit</string>
+
+    <string name="power_energy_description">Energy</string>
+    <string name="power_data_energy_used">Used (Wh)</string>
+    <string name="power_data_energy_recd">Recovered (Wh)</string>
+    <string name="power_data_energy_avg">Avg (Wh/%1$s)</string>
+
+    <string name="power_help" formatted="false"><![CDATA[
+        <h1>Power history</h1>
+
+        <h2>Basics</h2>
+        <p>The charts are based on the <tt>RT-GPS-Log</tt> records (see manual). The
+        server will keep these for <b>24h</b>.</p>
+        <p>The GPS log is updated <b>once per minute</b> by default. This can be raised
+        to <b>every 5 seconds</b>
+        by setting the streaming mode (feature #8) to 2.</p>
+        <p>The <b>altitude</b> measurement depends on the <b>GPS signal</b>. The other
+        measurements do not depend on GPS.</p>
+        <p><u>Note</u>: power and energy measurements are an interpretation of
+        undocumented CAN bus data, that may be incorrect and/or incomplete (see
+        manual).</p>
+
+        <h2>Trip</h2>
+        <p>The chart displays the <b>altitude</b> (GPS) and the <b>average speed</b> of
+        the trip. Inclines and high speeds result in high energy usage.</p>
+        <p>The vertical marker lines show the beginnings of <b>usage sections</b>
+        (driving / charging) along with their respective odometer values.</p>
+
+        <h2>Power</h2>
+        <p>The filled area displays the maximum and minimum <b>electrical power</b> (at
+        the battery) per <b>time section</b>, negative power = recuperation/charging.
+        The upper &amp; lower light red lines show the <b>battery limits</b>.</p>
+        <p>The red line shows the <b>average power</b> derived from the energy usage of
+        the <b>time section</b>.</p>
+        <p><u>Info</u>: the <b>mechanical motor power</b> calculates as <i>electrical
+        power x efficiency(controller+motor)</i>.
+        Combined efficiency is around ~75% to 95% depending on the current load
+        situation, ~90% on average.</p>
+
+        <h2>Energy usage</h2>
+        <p>The filled area displays the maximum and minimum <b>energy usage/gain</b> (at
+        the battery) per <b>time section</b>, negative usage =
+        recuperation/charging.</p>
+        <p>The yellow line shows the effective <b>energy consumption per km/Mi</b>
+        derived from the total energy usage and the distance driven. This is the higher,
+        the more energy is used and the less distance has been driven on a time
+        section.</p>
+        <p><u>Info</u>: total <b>usable capacity</b> of the battery is around <b>6100
+        Wh</b>. On charging, the energy stored calculates as <i>energy delivered x
+        efficiency(charger+battery)</i>. Combined charging efficiency will normally be
+        ~92%.</p>
+    ]]></string>
+
+    <string name="lb_options_service">Service:</string>
+    <string name="lb_options_service_cb">Enable background connection</string>
+    <string name="lb_options_service_info">Allows the server connection to stay alive when the App is not running.</string>
+    <string name="lb_options_broadcast">Broadcast:</string>
+    <string name="lb_options_broadcast_cb">Enable update broadcasting for messages…</string>
+    <string name="lb_options_broadcast_codes">Enter code letters</string>
+    <string name="lb_options_commands">Commands:</string>
+    <string name="lb_options_commands_cb">Enable vehicle command service</string>
+    <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
+        <p>Update broadcasting allows to send car data updates to other Apps like Automagic or Tasker
+         for the message codes given.</p>
+        <p>The command service allows Apps to issue vehicle commands and receive command results. To
+         issue commands, the sending App needs to know the vehicle ID and password. Note: all Apps
+         will receive all command results.</p>
+        <p>See <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">OVMS Android Wiki</a>
+         and <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS protocol (PDF)</a>
+         for message details.</p>
+    ]]></string>
+
+    <string name="service_notification_title">OVMS</string>
+    <string name="service_notification_text">Service running</string>
+    <string name="service_notification_ticker">OVMS Service started</string>
+
+
+</resources>

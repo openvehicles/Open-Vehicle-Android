@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/notifications_menu"
+        android:icon="@android:drawable/ic_menu_more"
+        android:title="@string/notifications_menu"
+        app:showAsAction="always|withText">
+
+        <menu>
+
+            <group android:checkableBehavior="all">
+
+                <item
+                    android:id="@+id/mi_chk_monospace"
+                    android:title="@string/notifications_chk_monospace"
+                    app:showAsAction="ifRoom"/>
+
+            </group>
+
+            <item
+                android:id="@+id/mi_help"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="@string/notifications_btn_help"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
+
+</menu>

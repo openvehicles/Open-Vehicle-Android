@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <plurals name="commitSettingsTitle">
-        <item quantity="other">Commit these changes?</item>
-        <item quantity="one">Commit this change?</item>
-    </plurals>
-</resources>

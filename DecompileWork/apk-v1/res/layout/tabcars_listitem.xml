@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:descendantFocusability="blocksDescendants" android:layout_width="fill_parent" android:layout_height="wrap_content"
-  xmlns:android="http://schemas.android.com/apk/res/android">"
-<ImageView android:layout_gravity="left" android:id="@id/imgCarListCarImage" android:layout_width="150.0dip" android:layout_height="69.0dip" android:scaleType="fitCenter" />
-    <TextView android:id="@id/textCarListVehicleID" android:paddingLeft="10.0dip" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="VehicleID" android:layout_weight="0.5" android:layout_toRightOf="@id/imgCarListCarImage" android:layout_centerVertical="true" />
-    <ImageButton android:id="@id/btnCatListEditCar" android:background="@null" android:layout_width="30.0dip" android:layout_height="30.0dip" android:src="@android:drawable/ic_menu_edit" android:scaleType="fitXY" android:layout_alignParentTop="true" android:layout_alignParentRight="true" />
-</RelativeLayout>
