@@ -340,7 +340,7 @@ public class CarData implements Serializable {
 					rt_cfg_profile_user = (car_drivemode & 0x06) >> 1;
 					rt_cfg_profile_cfgmode = (car_drivemode & 0x18) >> 3;
 					rt_cfg_unsaved = (car_drivemode & 0x20) >> 5;
-					rt_cfg_unsaved = (car_drivemode & 0x80) >> 7;
+					rt_cfg_applied = (car_drivemode & 0x80) >> 7;
 				}
 				car_power = Double.parseDouble(dataParts[9]);
 				car_energyused = Float.parseFloat(dataParts[10]);
