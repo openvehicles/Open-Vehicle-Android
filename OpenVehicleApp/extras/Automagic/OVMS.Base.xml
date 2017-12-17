@@ -1,0 +1,1219 @@
+<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>
+<data version="1.34.0">
+  <trigger type="global_variable">
+    <useDefaultName>true</useDefaultName>
+    <name>Globale Variable: global_carcharging</name>
+    <enabled>true</enabled>
+    <variable>global_carcharging</variable>
+  </trigger>
+  <trigger type="global_variable">
+    <useDefaultName>true</useDefaultName>
+    <name>Globale Variable: global_carupdated</name>
+    <enabled>true</enabled>
+    <variable>global_carupdated</variable>
+  </trigger>
+  <trigger type="global_variable">
+    <useDefaultName>true</useDefaultName>
+    <name>Globale Variable: global_soc</name>
+    <enabled>true</enabled>
+    <variable>global_soc</variable>
+  </trigger>
+  <trigger type="general_broadcast">
+    <useDefaultName>false</useDefaultName>
+    <name>OVMS.Update</name>
+    <enabled>true</enabled>
+    <action>com.openvehicles.OVMS.Update</action>
+    <categoryList></categoryList>
+    <dataSchemeList></dataSchemeList>
+    <dataAuthorityList></dataAuthorityList>
+    <dataPathLiteralList></dataPathLiteralList>
+    <dataPathPrefixList></dataPathPrefixList>
+    <dataPathGlobList></dataPathGlobList>
+    <dataTypeList></dataTypeList>
+    <extras>global_carid = getString("sel_vehicleid");
+global_carname = getString("sel_vehicle_label");
+
+global_carupdated = getLong("car_lastupdated_seconds", 0);
+global_carupdated_time = convertNull(getString("car_lastupdated_time"),"");
+global_carupdated_date =
+ if(global_carupdated_time!="") getDate(global_carupdated_time,"yyyy-MM-dd HH:mm:ss")
+ else getDate();
+
+global_carparked = getLong("car_parked_seconds", 0);
+global_carparked_time = convertNull(getString("car_parked_time"),"");
+global_carparked_date =
+ if(global_carparked_time!="") getDate(global_carparked_time,"yyyy-MM-dd HH:mm:ss")
+ else getDate();
+
+global_carstarted = getBoolean("car_started", false);
+global_carcharging = getBoolean("car_charging", false);
+global_carawake = getBoolean("car_awake", false);
+
+global_soc = getFloat("car_soc", 0);
+global_cac = getDouble("car_battery_cac", 108.0);
+global_cac_prc = global_cac / 108.0 * 100;
+global_soh = getFloat("car_soh", 0);
+global_range = getFloat("car_range_ideal", 0);
+global_volt60 = getDouble("car_battery_voltage", 0);
+global_volt12 = getDouble("car_12vline_voltage", 0);
+global_curr12 = getDouble("car_12v_current", 0);
+global_tmpbat = getFloat("car_temp_battery", 0);
+global_tmpchg = getFloat("car_temp_charger", 0);
+global_chgstate = getString("car_charge_state_label");
+global_chgmins = getInt("car_chargefull_minsremaining", 0);
+global_chgkwh = getFloat("car_charge_kwhconsumed", 0);
+global_chgcurr = getFloat("car_charge_current", 0);
+global_chgcurrlim = getFloat("car_charge_currentlimit", 0);
+
+global_speed = getFloat("car_speed", 0);
+global_drivemode = getInt("car_drivemode", 0);
+global_trip = getFloat("car_tripmeter", 0)/10.0;
+global_energyused = getFloat("car_energyused", 0);
+global_energyrecd = getFloat("car_energyrecd", 0);
+global_odo = getFloat("car_odometer", 0)/10.0;
+global_tmpmot = getFloat("car_temp_motor", 0);
+global_tmppem = getFloat("car_temp_pem", 0);
+
+global_lat = getDouble("car_latitude", 0);
+global_lon = getDouble("car_longitude", 0);
+global_alt = getDouble("car_altitude", 0);
+global_dir = getDouble("car_direction", 0);
+
+global_rt_cfg_type = getInt("rt_cfg_type", 0);
+global_rt_cfg_user = getInt("rt_cfg_profile_user", 0);
+global_rt_cfg_base = getInt("rt_cfg_profile_cfgmode", 0);
+global_rt_cfg_unsaved = getInt("rt_cfg_unsaved", 0);
+global_rt_cfg_applied = getInt("rt_cfg_applied", 0);
+</extras>
+    <receiveInitialStickyBroadcast>false</receiveInitialStickyBroadcast>
+  </trigger>
+  <trigger type="periodic_timer">
+    <useDefaultName>true</useDefaultName>
+    <name>Periodischer Timer: alle 30s (Gerät nicht wecken)</name>
+    <enabled>true</enabled>
+    <frequency>30000</frequency>
+    <wakeDevice>false</wakeDevice>
+    <fixedTimes>false</fixedTimes>
+    <limitTimeRange>false</limitTimeRange>
+    <weekday>Mon</weekday>
+    <weekday>Tue</weekday>
+    <weekday>Wed</weekday>
+    <weekday>Thu</weekday>
+    <weekday>Fri</weekday>
+    <weekday>Sat</weekday>
+    <weekday>Sun</weekday>
+    <hourFrom>8</hourFrom>
+    <minuteFrom>0</minuteFrom>
+    <hourTo>17</hourTo>
+    <minuteTo>0</minuteTo>
+    <allowInDeviceIdle>false</allowInDeviceIdle>
+    <likeAlarmClock>false</likeAlarmClock>
+  </trigger>
+  <action type="launch_app">
+    <useDefaultName>true</useDefaultName>
+    <name>App Starten: com.openvehicles.OVMS</name>
+    <packageName>com.openvehicles.OVMS</packageName>
+    <className></className>
+  </action>
+  <action type="script">
+    <useDefaultName>true</useDefaultName>
+    <name>Script: setWidgetElementProperty("OVMS.Widget1", "socbox", "height", global_soc); setWidgetElementProperty("OVMS.Widget1", "socbox", "y", 30+(100-global_soc));</name>
+    <script>setWidgetElementProperty("OVMS.Widget1", "socbox", "height", global_soc);
+setWidgetElementProperty("OVMS.Widget1", "socbox", "y", 30+(100-global_soc));
+</script>
+  </action>
+  <action type="script">
+    <useDefaultName>true</useDefaultName>
+    <name>Script: setWidgetElementProperty("OVMS.Widget2", "soc_circle", "sweepangle", global_soc*3); if (global_carcharging) { col="#ff9649ff"; } else if (global_soc&lt;15) { col="#ffff8000"; } else if (global_soc&lt;30) { col="#ffffff00"; } else { col="#ff00ff00"; } setWidgetElementProperty("OVMS.Widget2", "soc_circle", "outlinecolor", col); setWidgetElementProperty("OVMS.Widget2", "kwh", "visible", global_carcharging); outdated = (addSeconds(global_carupdated_date, 120) &lt; getDate()); setWidgetElementProperty("OVMS.Widget2", "updated", "visible", outdated);</name>
+    <script>
+setWidgetElementProperty("OVMS.Widget2", "soc_circle", "sweepangle", global_soc*3);
+
+if (global_carcharging) { col="#ff9649ff"; }
+else if (global_soc&lt;15) { col="#ffff8000"; }
+else if (global_soc&lt;30) { col="#ffffff00"; }
+else { col="#ff00ff00"; }
+setWidgetElementProperty("OVMS.Widget2", "soc_circle", "outlinecolor", col);
+
+setWidgetElementProperty("OVMS.Widget2", "kwh", "visible", global_carcharging);
+
+outdated = (addSeconds(global_carupdated_date, 120) &lt; getDate());
+setWidgetElementProperty("OVMS.Widget2", "updated", "visible", outdated);
+</script>
+  </action>
+  <flow type="flow">
+    <name>OVMS.Update</name>
+    <group>OVMS.Base</group>
+    <enabled>true</enabled>
+    <executionPolicy>QUEUE</executionPolicy>
+    <emergencyStopCount>600</emergencyStopCount>
+    <triggercontainer id="t1" x="35.0" y="-17.5">
+      <trigger>OVMS.Update</trigger>
+    </triggercontainer>
+  </flow>
+  <flow type="flow">
+    <name>OVMS.Widget1</name>
+    <group>OVMS.Base</group>
+    <enabled>true</enabled>
+    <executionPolicy>PARALLEL</executionPolicy>
+    <triggercontainer id="t1" x="70.0" y="52.5">
+      <trigger>Globale Variable: global_soc</trigger>
+    </triggercontainer>
+    <actioncontainer id="t2" x="70.0" y="227.5">Script: setWidgetElementProperty("OVMS.Widget1", "socbox", "height", global_soc); setWidgetElementProperty("OVMS.Widget1", "socbox", "y", 30+(100-global_soc));</actioncontainer>
+    <connection from="t1" to="t2" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+  </flow>
+  <flow type="flow">
+    <name>OVMS.Widget2</name>
+    <group>OVMS.Base</group>
+    <enabled>true</enabled>
+    <executionPolicy>PARALLEL</executionPolicy>
+    <actioncontainer id="t1" x="70.0" y="227.5">Script: setWidgetElementProperty("OVMS.Widget2", "soc_circle", "sweepangle", global_soc*3); if (global_carcharging) { col="#ff9649ff"; } else if (global_soc&lt;15) { col="#ffff8000"; } else if (global_soc&lt;30) { col="#ffffff00"; } else { col="#ff00ff00"; } setWidgetElementProperty("OVMS.Widget2", "soc_circle", "outlinecolor", col); setWidgetElementProperty("OVMS.Widget2", "kwh", "visible", global_carcharging); outdated = (addSeconds(global_carupdated_date, 120) &lt; getDate()); setWidgetElementProperty("OVMS.Widget2", "updated", "visible", outdated);</actioncontainer>
+    <triggercontainer id="t2" x="70.0" y="52.5">
+      <trigger>Globale Variable: global_carcharging</trigger>
+      <trigger>Globale Variable: global_carupdated</trigger>
+      <trigger>Globale Variable: global_soc</trigger>
+      <trigger>Periodischer Timer: alle 30s (Gerät nicht wecken)</trigger>
+    </triggercontainer>
+    <connection from="t2" to="t1" type="NORMAL" sourcePosition="SOUTH" targetPosition="NORTH" />
+  </flow>
+  <widget type="custom">
+    <name>OVMS.Widget1</name>
+    <width>200</width>
+    <height>250</height>
+    <bitmapScalingFactor>1</bitmapScalingFactor>
+    <autoRefresh>false</autoRefresh>
+    <autoRefreshFrequency>10000</autoRefreshFrequency>
+    <clickable>
+      <row>
+        <cell>
+          <action gestureType="CLICK">App Starten: com.openvehicles.OVMS</action>
+        </cell>
+      </row>
+    </clickable>
+    <clickableFeedback>true</clickableFeedback>
+    <widgetIds>31</widgetIds>
+    <elements>
+      <element type="background">
+        <properties>
+          <property name="cornerradiusx" type="double">20.0</property>
+          <property name="cornerradiusy" type="double">20.0</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-620690367</property>
+          <property name="marginbottom" type="double">10.0</property>
+          <property name="marginleft" type="double">10.0</property>
+          <property name="marginright" type="double">10.0</property>
+          <property name="margintop" type="double">10.0</property>
+          <property name="name" type="string">Hintergrund</property>
+          <property name="roundedcorners" type="boolean">true</property>
+          <property name="visible" type="boolean">true</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">60.0</property>
+          <property name="multiline" type="boolean">true</property>
+          <property name="name" type="string">Text_1</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16777216</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_soc,numberformat,0.#}%</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">50.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">top</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">150.0</property>
+          <property name="x" type="double">40.0</property>
+          <property name="y" type="double">28.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">32.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">Text_2</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">P {getDurationString(round(global_carparked/60)*60000)}</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">25.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">top</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">160.0</property>
+          <property name="x" type="double">20.0</property>
+          <property name="y" type="double">169.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">60.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">Text_3</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_range,numberformat,0.#} km</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">35.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">top</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">150.0</property>
+          <property name="x" type="double">40.0</property>
+          <property name="y" type="double">93.98497009277344</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">32.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">Text_2 Kopie_1</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">L {getDurationString(global_chgmins*60000)}</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">25.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">top</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">160.0</property>
+          <property name="x" type="double">20.0</property>
+          <property name="y" type="double">199.0</property>
+        </properties>
+      </element>
+      <element type="rectangle">
+        <properties>
+          <property name="cornerradiusx" type="double">20.0</property>
+          <property name="cornerradiusy" type="double">20.0</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-14302934</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">90.0</property>
+          <property name="name" type="string">socbox</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-1</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="roundedcorners" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">15.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">40.0</property>
+        </properties>
+      </element>
+      <element type="rectangle">
+        <properties>
+          <property name="cornerradiusx" type="double">20.0</property>
+          <property name="cornerradiusy" type="double">20.0</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-14302934</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">100.0</property>
+          <property name="name" type="string">Rechteck_1 Kopie_1</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-1</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="roundedcorners" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">15.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">30.0</property>
+        </properties>
+      </element>
+    </elements>
+  </widget>
+  <widget type="custom">
+    <name>OVMS.Widget2</name>
+    <width>250</width>
+    <height>250</height>
+    <bitmapScalingFactor>2</bitmapScalingFactor>
+    <autoRefresh>false</autoRefresh>
+    <autoRefreshFrequency>3600000</autoRefreshFrequency>
+    <clickable>
+      <row>
+        <cell>
+          <action gestureType="CLICK">App Starten: com.openvehicles.OVMS</action>
+        </cell>
+      </row>
+    </clickable>
+    <clickableFeedback>true</clickableFeedback>
+    <widgetIds>28</widgetIds>
+    <elements>
+      <element type="background">
+        <properties>
+          <property name="cornerradiusx" type="double">20.0</property>
+          <property name="cornerradiusy" type="double">20.0</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-317575066</property>
+          <property name="marginbottom" type="double">0.0</property>
+          <property name="marginleft" type="double">0.0</property>
+          <property name="marginright" type="double">0.0</property>
+          <property name="margintop" type="double">0.0</property>
+          <property name="name" type="string">Hintergrund</property>
+          <property name="roundedcorners" type="boolean">true</property>
+          <property name="visible" type="boolean">true</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">190.0</property>
+          <property name="name" type="string">soc_circle_bg</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">2063597568</property>
+          <property name="outlineshadowoffsetx" type="double">0.0</property>
+          <property name="outlineshadowoffsety" type="double">0.0</property>
+          <property name="outlineshadowradius" type="double">4.0</property>
+          <property name="outlinewidth" type="double">7.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">120.0</property>
+          <property name="sweepangle" type="double">300.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">190.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">30.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">190.0</property>
+          <property name="name" type="string">soc_circle_stopl</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-1</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">118.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">190.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">30.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">190.0</property>
+          <property name="name" type="string">soc_circle_stopr</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-1</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">60.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">190.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">30.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">60.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">soc_text</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">754974720</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_soc,numberformat,0.#}%</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.2</property>
+          <property name="textsize" type="double">50.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">bold</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">250.0</property>
+          <property name="x" type="double">0.0</property>
+          <property name="y" type="double">85.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">50.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">range_text</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">754974720</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_range,numberformat,0.#} km</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">35.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">bold</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">250.0</property>
+          <property name="x" type="double">0.0</property>
+          <property name="y" type="double">135.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-25856</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">40.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">chgtime</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{getDurationString(global_chgmins*60000)}</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">25.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">bold</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">105.0</property>
+          <property name="x" type="double">135.0</property>
+          <property name="y" type="double">210.01071166992188</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-25856</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">40.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">temp</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">1.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_tmpbat,numberformat,0.0}°C</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">25.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">bold</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">105.0</property>
+          <property name="x" type="double">10.0</property>
+          <property name="y" type="double">210.01071166992188</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-2717953</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">50.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">kwh</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">754974720</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_chgkwh,numberformat,0.0} kWh</property>
+          <property name="textalign" type="string">center</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">20.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">bold</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">false</property>
+          <property name="width" type="double">250.0</property>
+          <property name="x" type="double">0.0</property>
+          <property name="y" type="double">45.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-16711687</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">24.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">updated</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">754974720</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_carupdated_date,dateformat,HH:mm}</property>
+          <property name="textalign" type="string">right</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">20.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">false</property>
+          <property name="width" type="double">65.0</property>
+          <property name="x" type="double">170.0</property>
+          <property name="y" type="double">2.0</property>
+        </properties>
+      </element>
+      <element type="text">
+        <properties>
+          <property name="clip" type="boolean">false</property>
+          <property name="fakebold" type="boolean">false</property>
+          <property name="fill" type="boolean">true</property>
+          <property name="fillcolor" type="integer">-1</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">24.0</property>
+          <property name="multiline" type="boolean">false</property>
+          <property name="name" type="string">carname</property>
+          <property name="outline" type="boolean">false</property>
+          <property name="outlinecolor" type="integer">754974720</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">3.0</property>
+          <property name="outlinewidth" type="double">2.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="strikethrough" type="boolean">false</property>
+          <property name="text" type="string">{global_carname}</property>
+          <property name="textalign" type="string">left</property>
+          <property name="textpaddingbottom" type="double">0.0</property>
+          <property name="textpaddingleft" type="double">0.0</property>
+          <property name="textpaddingright" type="double">0.0</property>
+          <property name="textpaddingtop" type="double">0.0</property>
+          <property name="textscalex" type="double">1.0</property>
+          <property name="textsize" type="double">20.0</property>
+          <property name="textskewx" type="double">0.0</property>
+          <property name="textstyle" type="string">normal</property>
+          <property name="typeface" type="string">sansserif</property>
+          <property name="underline" type="boolean">false</property>
+          <property name="verticaltextalign" type="string">middle</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">160.0</property>
+          <property name="x" type="double">15.0</property>
+          <property name="y" type="double">2.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl10</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">149.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl20</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">179.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl30</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">209.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl40</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">239.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl50</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">269.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl60</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">299.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl70</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">329.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl80</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">359.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">174.0</property>
+          <property name="name" type="string">soc_circle_scl90</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-9134143</property>
+          <property name="outlineshadow" type="boolean">false</property>
+          <property name="outlineshadowcolor" type="integer">-16777216</property>
+          <property name="outlineshadowoffsetx" type="double">2.0</property>
+          <property name="outlineshadowoffsety" type="double">2.0</property>
+          <property name="outlineshadowradius" type="double">0.5</property>
+          <property name="outlinewidth" type="double">10.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">29.0</property>
+          <property name="sweepangle" type="double">2.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">174.0</property>
+          <property name="x" type="double">38.0</property>
+          <property name="y" type="double">38.0</property>
+        </properties>
+      </element>
+      <element type="ellipse">
+        <properties>
+          <property name="arc" type="boolean">true</property>
+          <property name="fill" type="boolean">false</property>
+          <property name="fillcolor" type="integer">-16776961</property>
+          <property name="fillshadow" type="boolean">false</property>
+          <property name="fillshadowcolor" type="integer">-16777216</property>
+          <property name="fillshadowoffsetx" type="double">2.0</property>
+          <property name="fillshadowoffsety" type="double">2.0</property>
+          <property name="fillshadowradius" type="double">3.0</property>
+          <property name="height" type="double">190.0</property>
+          <property name="name" type="string">soc_circle</property>
+          <property name="outline" type="boolean">true</property>
+          <property name="outlinecolor" type="integer">-16711936</property>
+          <property name="outlineshadow" type="boolean">true</property>
+          <property name="outlineshadowcolor" type="integer">-1</property>
+          <property name="outlineshadowoffsetx" type="double">0.0</property>
+          <property name="outlineshadowoffsety" type="double">0.0</property>
+          <property name="outlineshadowradius" type="double">2.5</property>
+          <property name="outlinewidth" type="double">7.0</property>
+          <property name="rotation" type="double">0.0</property>
+          <property name="rotationx" type="double">0.0</property>
+          <property name="rotationy" type="double">0.0</property>
+          <property name="startangle" type="double">120.0</property>
+          <property name="sweepangle" type="double">270.0</property>
+          <property name="usecenter" type="boolean">false</property>
+          <property name="visible" type="boolean">true</property>
+          <property name="width" type="double">190.0</property>
+          <property name="x" type="double">30.0</property>
+          <property name="y" type="double">30.0</property>
+        </properties>
+      </element>
+    </elements>
+  </widget>
+</data>
