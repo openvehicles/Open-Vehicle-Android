@@ -3,6 +3,8 @@ package com.openvehicles.OVMS.ui;
 import java.util.UUID;
 
 import android.content.DialogInterface;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -22,6 +24,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,6 +59,9 @@ public class MainActivity extends ApiActivity implements
 		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
 
 	private static final String TAG = "MainActivity";
+
+	public String versionName = "";
+	public int versionCode = 0;
 
 	AppPrefes appPrefes;
 	Database database;
@@ -114,6 +121,9 @@ public class MainActivity extends ApiActivity implements
 		mViewPager = new ViewPager(this);
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
+
+		// check for update:
+		checkVersion();
 
 		// check for Google Play Services:
 		checkPlayServices();
@@ -227,6 +237,46 @@ public class MainActivity extends ApiActivity implements
 	@Override
 	public void setSupportProgressBarIndeterminateVisibility(boolean visible) {
 		getSupportActionBar().getCustomView().setVisibility(visible ? View.VISIBLE : View.GONE);
+	}
+
+
+	/**
+	 * Check for update, show changes info
+	 */
+	private void checkVersion() {
+
+		try {
+
+			// get App version
+			PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+			versionName = pinfo.versionName;
+			versionCode = pinfo.versionCode;
+
+			if (appPrefes.getData("lastUsedVersionName", "").equals(versionName))
+				return;
+
+			TextView msg = new TextView(this);
+			final float scale = getResources().getDisplayMetrics().density;
+			final int pad = (int) (25 * scale + 0.5f);
+			msg.setPadding(pad, pad, pad, pad);
+			msg.setText(Html.fromHtml(getString(R.string.update_message)));
+			msg.setMovementMethod(LinkMovementMethod.getInstance());
+			msg.setClickable(true);
+
+			AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+					.setTitle(getString(R.string.update_title, versionName, versionCode))
+					.setView(msg)
+					.setPositiveButton(R.string.msg_ok, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							appPrefes.SaveData("lastUsedVersionName", versionName);
+						}
+					})
+					.show();
+
+		} catch (PackageManager.NameNotFoundException e) {
+			// ignore
+		}
 	}
 
 

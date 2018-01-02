@@ -521,4 +521,15 @@
     <string name="remind">Erinnern</string>
     <string name="dontremind">Nicht erinnern</string>
 
+
+    <string name="update_title">Version %1$s (%2$d)</string>
+    <string name="update_message"><![CDATA[
+        <p>Die App wurde aktualisiert. Alle Änderungen sind in der
+         <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
+         nachlesbar.</p>
+        <p>Hinweis: im <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>
+         sind weitere nützliche Informationen zu finden.</p>
+        <p>Viel Spaß!</p>
+    ]]></string>
+
 </resources>
