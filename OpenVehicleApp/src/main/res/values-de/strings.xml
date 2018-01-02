@@ -515,4 +515,10 @@
     <string name="service_notification_text">Service läuft</string>
     <string name="service_notification_ticker">OVMS Service gestartet</string>
 
+    <string name="play_services_recommended">Diese App verwendet Google Play Services für Nachrichten
+        und Kartendienste. Sie funktioniert auch ohne, aber evtl. macht die Installation des
+        Play-Services-Pakets Sinn.</string>
+    <string name="remind">Erinnern</string>
+    <string name="dontremind">Nicht erinnern</string>
+
 </resources>

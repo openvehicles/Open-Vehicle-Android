@@ -527,5 +527,10 @@
     <string name="service_notification_text">Service running</string>
     <string name="service_notification_ticker">OVMS Service started</string>
 
+    <string name="play_services_recommended">This App uses Google Play Services for push notifications
+        and maps integration. It will run without, but you might consider installing the Play Services
+        package.</string>
+    <string name="remind">Remind</string>
+    <string name="dontremind">Don\'t remind</string>
 
 </resources>

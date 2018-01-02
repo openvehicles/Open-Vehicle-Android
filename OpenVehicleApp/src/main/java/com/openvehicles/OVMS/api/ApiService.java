@@ -82,9 +82,6 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		registerReceiver(mNetworkStatusReceiver,
 				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
-		// set up receiver to restart service after power saving:
-		registerReceiver(new AutoStart(), new IntentFilter(Intent.ACTION_SCREEN_ON));
-
 	}
 	
 

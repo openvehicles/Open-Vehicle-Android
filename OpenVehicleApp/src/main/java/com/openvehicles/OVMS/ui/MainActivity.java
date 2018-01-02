@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui;
 
 import java.util.UUID;
 
+import android.content.DialogInterface;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.LocalBroadcastManager;
@@ -114,9 +115,8 @@ public class MainActivity extends ApiActivity implements
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
 
-		// check for Google Play Services App:
-		if (!checkPlayServices())
-			finish();
+		// check for Google Play Services:
+		checkPlayServices();
 
 		// configure ActionBar:
 		final ActionBar actionBar = getSupportActionBar();
@@ -231,25 +231,29 @@ public class MainActivity extends ApiActivity implements
 
 
 	/**
-	 * Check the device to make sure it has the Google Play Services APK. If
-	 * it doesn't, display a dialog that allows users to download the APK from
-	 * the Google Play Store or enable it in the device's system settings.
+	 * Check the device for Google Play Services, tell user if missing.
 	 */
-	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	private boolean checkPlayServices() {
+	private void checkPlayServices() {
+
+		if (appPrefes.getData("skipPlayServicesCheck", "0").equals("1"))
+			return;
+
 		GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
 		int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
 		if (resultCode != ConnectionResult.SUCCESS) {
-			if (apiAvailability.isUserResolvableError(resultCode)) {
-				apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
-						.show();
-			} else {
-				Log.i(TAG, "This device is not supported.");
-				finish();
-			}
-			return false;
+
+			AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+					.setTitle(R.string.common_google_play_services_install_title)
+					.setMessage(R.string.play_services_recommended)
+					.setPositiveButton(R.string.remind, null)
+					.setNegativeButton(R.string.dontremind, new DialogInterface.OnClickListener() {
+						@Override
+						public void onClick(DialogInterface dialog, int which) {
+							appPrefes.SaveData("skipPlayServicesCheck", "1");
+						}
+					})
+					.show();
 		}
-		return true;
 	}
 
 

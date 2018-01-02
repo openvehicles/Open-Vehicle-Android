@@ -333,7 +333,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		// set range:
 		SlideNumericView snvRange = (SlideNumericView) dialogView.findViewById(R.id.snv_sufficient_range);
 		if (snvRange != null) {
-			snvRange.init(0, mCarData.car_max_idealrange_raw, 1);
+			snvRange.init(0, Math.max(mCarData.car_max_idealrange_raw+25, 50), 1);
 			snvRange.setValue(mCarData.car_chargelimit_rangelimit_raw);
 		}
 
