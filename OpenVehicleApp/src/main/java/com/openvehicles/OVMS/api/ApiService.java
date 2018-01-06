@@ -262,7 +262,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	public void onServerSocketError(Throwable e) {
 		Intent intent = new Intent(getPackageName() + ".ApiEvent");
 		intent.putExtra("onServerSocketError", e);
-		intent.putExtra("message", getString(mApiTask.isLoggedIn()
+		intent.putExtra("message", getString((mApiTask != null && mApiTask.isLoggedIn())
 				? R.string.err_connection_lost
 				: R.string.err_check_following));
 		sendBroadcast(intent);

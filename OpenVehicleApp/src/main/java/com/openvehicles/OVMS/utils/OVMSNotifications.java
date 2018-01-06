@@ -112,7 +112,7 @@ public class OVMSNotifications {
 
 	public boolean addNotification(String title, String message, Date timestamp) {
 
-		// unless a type classification is added to the protocol, we can only
+		// if the type classification is missing, we can only
 		// try to derive the type from the text:
 		int type;
 		if (message.contains("ALERT") || message.contains("WARNING"))

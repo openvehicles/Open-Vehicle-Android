@@ -535,9 +535,11 @@
 
     <string name="update_title">Version %1$s (%2$d)</string>
     <string name="update_message"><![CDATA[
+        <p>Main changes:</p>
+        <p>· Bug fixes</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
-         for details on all changes since the last release.</p>
-        <p>Hint: there is some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
+         for details on all changes.</p>
+        <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
         <p>Have fun!</p>
     ]]></string>
 

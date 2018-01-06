@@ -82,7 +82,10 @@ public class MyGcmListenerService extends GcmListenerService {
 		dbAccess.lock();
 		try {
 			OVMSNotifications savedList = new OVMSNotifications(this);
-			is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
+			if (contentType != null)
+				is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
+			else
+				is_new = savedList.addNotification(contentTitle, contentText, timeStamp);
 		} finally {
 			dbAccess.unlock();
 		}

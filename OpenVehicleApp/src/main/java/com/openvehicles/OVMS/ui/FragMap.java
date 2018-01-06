@@ -409,6 +409,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			return;
 		if (map == null)
 			return;
+		if (getContext() == null)
+			return;
 
 		// get last known car position:
 

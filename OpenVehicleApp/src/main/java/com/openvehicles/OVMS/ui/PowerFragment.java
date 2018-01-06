@@ -839,6 +839,11 @@ public class PowerFragment
 	 */
 	private void zoomOdometerRange(int size) {
 
+		if (!isPackValid())
+			return;
+		if (chartEntries == null)
+			return;
+
 		int start = 0, end = chartEntries.size()-1;
 		GPSLogData.Entry entry;
 		float odoEnd = 0;
