@@ -371,8 +371,8 @@ public class CarData implements Serializable {
 				car_soc_raw = Float.parseFloat(dataParts[0]);
 				car_soc = String.format("%.1f%%", car_soc_raw);
 				car_distance_units_raw = dataParts[1];
-				car_distance_units = (car_distance_units_raw.equals("M")) ? "m" : "km";
-				car_speed_units = (car_distance_units_raw.equals("M"))
+				car_distance_units = (car_distance_units_raw.startsWith("M")) ? "m" : "km";
+				car_speed_units = (car_distance_units_raw.startsWith("M"))
 						? mContext.getText(R.string.mph).toString()
 						: mContext.getText(R.string.kph).toString();
 				car_charge_linevoltage_raw = Float.parseFloat(dataParts[2]);
