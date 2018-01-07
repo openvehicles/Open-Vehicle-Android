@@ -384,6 +384,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		int command = Integer.parseInt(result[0]);
 		int resCode = Integer.parseInt(result[1]);
+		String resText = (result.length > 2) ? result[2] : "";
 		String cmdMessage = getSentCommandMessage(result[0]);
 
 		switch (resCode) {
@@ -392,7 +393,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 1: // failed
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_failed, result[2]),
+				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_failed, resText),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2: // unsupported

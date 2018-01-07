@@ -87,14 +87,15 @@ public class CarGroupFragment
 
 		int command = Integer.parseInt(result[0]);
 		int rcode = Integer.parseInt(result[1]);
-		
+		String resText = (result.length > 2) ? result[2] : "";
+
 		if (command == 2) {
 			cancelCommand();
 			switch (rcode) {
 			case 0:
 				break;
 			case 1: // failed
-				Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+				Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2: // unsupported
@@ -129,7 +130,7 @@ public class CarGroupFragment
 			}
 			break;
 		case 1: // failed
-			Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+			Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 					Toast.LENGTH_SHORT).show();
 			cancelCommand();
 			break;

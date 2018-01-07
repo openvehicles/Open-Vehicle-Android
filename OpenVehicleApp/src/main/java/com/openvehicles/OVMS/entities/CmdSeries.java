@@ -221,6 +221,7 @@ public class CmdSeries implements OnResultCommandListener {
 
 		int commandCode = Integer.parseInt(result[0]);
 		int returnCode = Integer.parseInt(result[1]);
+		String returnText = (result.length > 2) ? result[2] : "";
 
 		// check command:
 		Cmd cmd = getCurrent();
@@ -243,7 +244,7 @@ public class CmdSeries implements OnResultCommandListener {
 		if (commandCode == 30 || commandCode == 31 || commandCode == 32) {
 			// multiple result command:
 
-			if (result[2].equals("No historical data available")) {
+			if (returnText.equals("No historical data available")) {
 				// no records: continue without error
 				executeNext();
 

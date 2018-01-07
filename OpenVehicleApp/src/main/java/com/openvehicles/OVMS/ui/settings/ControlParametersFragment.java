@@ -115,7 +115,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		
 		int command = Integer.parseInt(result[0]);
 		int resCode = Integer.parseInt(result[1]);
-		
+		String resText = (result.length > 2) ? result[2] : "";
+
 		if (command == 4) {
 			cancelCommand();
 			switch (resCode) {
@@ -124,7 +125,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 1: // failed
-				Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+				Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2: // unsupported
@@ -160,7 +161,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 			}
 			break;
 		case 1: // failed
-			Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+			Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 					Toast.LENGTH_SHORT).show();
 			cancelCommand();
 			break;

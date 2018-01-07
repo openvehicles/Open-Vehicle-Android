@@ -114,7 +114,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		
 		int command = Integer.parseInt(result[0]);
 		int resCode = Integer.parseInt(result[1]);
-		
+		String resText = (result.length > 2) ? result[2] : "";
+
 		if (command == 2) {
 			cancelCommand();
 			switch (resCode) {
@@ -123,7 +124,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 1: // failed
-				Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+				Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2: // unsupported
@@ -163,7 +164,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 			}
 			break;
 		case 1: // failed
-			Toast.makeText(getActivity(), getString(R.string.err_failed, result[2]),
+			Toast.makeText(getActivity(), getString(R.string.err_failed, resText),
 					Toast.LENGTH_SHORT).show();
 			cancelCommand();
 			break;

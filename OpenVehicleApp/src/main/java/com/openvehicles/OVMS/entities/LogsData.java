@@ -244,7 +244,7 @@ public class LogsData {
 				
 				String result[] = cmd.results.get(resNr);
 				
-				if (result[2].equals("No historical data available"))
+				if (result.length > 2 && result[2].equals("No historical data available"))
 					continue;
 
 				try {
