@@ -161,7 +161,7 @@ public class SettingsFragment extends BaseFragment implements
 
 		@Override
 		public Object getItem(int position) {
-			if (mItems == null)
+			if (mItems == null || position >= mItems.size())
 				return null;
 			return mItems.get(position);
 		}

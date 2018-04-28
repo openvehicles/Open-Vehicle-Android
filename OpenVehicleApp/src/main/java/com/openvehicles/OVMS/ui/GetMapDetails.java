@@ -111,8 +111,15 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 		reader.beginArray();
 		while (!isCancelled() && reader.hasNext()) {
-			ChargePoint chargePoint = gson.fromJson(reader, ChargePoint.class);
-			chargePoints.add(chargePoint);
+			try {
+				ChargePoint chargePoint = gson.fromJson(reader, ChargePoint.class);
+				chargePoints.add(chargePoint);
+			} catch (JsonIOException e) {
+				e.printStackTrace();
+				break;
+			} catch (JsonSyntaxException e) {
+				e.printStackTrace();
+			}
 		}
 		reader.endArray();
 		reader.close();
