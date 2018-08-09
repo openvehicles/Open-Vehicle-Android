@@ -3,10 +3,9 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 23
-    buildToolsVersion '23.0.1'
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
-        minSdkVersion 10
+        minSdkVersion 14
         targetSdkVersion 23
     }
     buildTypes {
@@ -32,13 +31,13 @@ repositories {
 }
 
 dependencies {
-    compile project(':LuttuLibrary')
-    compile files('libs/gson-2.3.1.jar')
-    //compile 'com.github.PhilJay:MPAndroidChart:v2.2.2'
-    compile files('libs/mpandroidchart-2.2.3.jar')
-    compile 'com.androidmapsextensions:android-maps-extensions:2.2.0'
-    compile 'com.android.support:support-v4:23.0.+'
-    compile 'com.android.support:appcompat-v7:23.0.+'
-    compile 'com.google.android.gms:play-services-maps:8.1.0'
-    compile 'com.google.android.gms:play-services-gcm:8.1.0'
+    implementation project(':LuttuLibrary')
+    implementation files('libs/gson-2.3.1.jar')
+    //implementation 'com.github.PhilJay:MPAndroidChart:v2.2.2'
+    implementation files('libs/mpandroidchart-2.2.3.jar')
+    implementation 'com.androidmapsextensions:android-maps-extensions:2.2.0'
+    implementation 'com.android.support:support-v4:23.4.0'
+    implementation 'com.android.support:appcompat-v7:23.4.0'
+    implementation 'com.google.android.gms:play-services-maps:8.1.0'
+    implementation 'com.google.android.gms:play-services-gcm:8.1.0'
 }
