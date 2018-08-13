@@ -561,6 +561,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		TextView tvf = (TextView) findViewById(R.id.tabInfoTextChargeStatus);
 		TextView tvp = (TextView) findViewById(R.id.tabInfoTextChargeStatusPower);
 
+		tvp.setText(String.format(pCarData.car_charge_power_real_kwh));
+		tvp.setVisibility(View.VISIBLE);
 
 		if ((!pCarData.car_chargeport_open)
 				|| (pCarData.car_charge_substate_i_raw == 0x07)) {
@@ -611,8 +613,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 							pCarData.car_charge_linevoltage,
 							pCarData.car_charge_current));
 					tvf.setVisibility(View.VISIBLE);
-					tvp.setText(String.format(pCarData.car_charge_power_real_kwh));
-					tvp.setVisibility(View.VISIBLE);
+
 				}
 
 				coiv.setVisibility(View.VISIBLE);
@@ -628,6 +629,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 				bar.setVisibility(View.VISIBLE);
 				tvl.setVisibility(View.VISIBLE);
 				tvr.setVisibility(View.VISIBLE);
+				tvp.setVisibility(View.VISIBLE);
 
 				switch (pCarData.car_charge_state_i_raw) {
 					case 0x04: // Done
