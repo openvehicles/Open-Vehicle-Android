@@ -559,6 +559,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		TextView tvl = (TextView) findViewById(R.id.tabInfoTextChargeStatusLeft);
 		TextView tvr = (TextView) findViewById(R.id.tabInfoTextChargeStatusRight);
 		TextView tvf = (TextView) findViewById(R.id.tabInfoTextChargeStatus);
+		TextView tvp = (TextView) findViewById(R.id.tabInfoTextChargeStatusPower);
+
 
 		if ((!pCarData.car_chargeport_open)
 				|| (pCarData.car_charge_substate_i_raw == 0x07)) {
@@ -572,6 +574,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			tvl.setVisibility(View.INVISIBLE);
 			tvr.setVisibility(View.INVISIBLE);
 			tvf.setVisibility(View.INVISIBLE);
+			tvp.setVisibility(View.INVISIBLE);
 
 		} else {
 			// Car is plugged in
@@ -608,6 +611,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 							pCarData.car_charge_linevoltage,
 							pCarData.car_charge_current));
 					tvf.setVisibility(View.VISIBLE);
+					tvp.setText(String.format(pCarData.car_charge_power_real_kwh));
+					tvp.setVisibility(View.VISIBLE);
 				}
 
 				coiv.setVisibility(View.VISIBLE);

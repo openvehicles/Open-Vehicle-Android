@@ -168,6 +168,17 @@
             android:textSize="24px"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/tabInfoTextChargeStatusPower"
+            style="@style/TabCarTextBox"
+            android:layout_height="46px"
+            android:layout_x="265px"
+            android:layout_y="284px"
+            android:text="@string/DefaultChargingPower"
+            android:textSize="25px"
+			android:textStyle="bold"
+            android:gravity="center_vertical|left"/>
+
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusLeft"
 			style="@style/TabCarTextBox"

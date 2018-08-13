@@ -92,6 +92,7 @@ public class CarData implements Serializable {
 	public String car_soc = "";
 	public String car_charge_linevoltage = "";
 	public String car_charge_current = "";
+	public String car_charge_power_real_kwh;
 	public String car_charge_voltagecurrent = "";
 	public String car_charge_currentlimit = "";
 	public String car_charge_mode = "";
@@ -379,6 +380,9 @@ public class CarData implements Serializable {
 				car_charge_linevoltage = String.format("%.1f%s", car_charge_linevoltage_raw, "V");
 				car_charge_current_raw = Float.parseFloat(dataParts[3]);
 				car_charge_current = String.format("%.1f%s", car_charge_current_raw, "A");
+				if (car_charge_current_raw >0 && car_charge_power_kw<=0)
+					car_charge_power_kw = (car_charge_linevoltage_raw * car_charge_current_raw)/1000;
+				car_charge_power_real_kwh = String.format("%.1f%s", car_charge_power_kw, "kW");
 				car_charge_voltagecurrent = String.format("%.1f%s %.1f%s",
 						car_charge_linevoltage_raw, "V",
 						car_charge_current_raw, "A");
