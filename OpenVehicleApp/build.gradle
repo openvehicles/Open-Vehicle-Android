@@ -2,11 +2,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 26
     }
     buildTypes {
         release {
@@ -27,7 +27,7 @@ android {
 }
 
 repositories {
-    maven { url "https://jitpack.io" }
+    google()
 }
 
 dependencies {
@@ -35,9 +35,9 @@ dependencies {
     implementation files('libs/gson-2.3.1.jar')
     //implementation 'com.github.PhilJay:MPAndroidChart:v2.2.2'
     implementation files('libs/mpandroidchart-2.2.3.jar')
-    implementation 'com.androidmapsextensions:android-maps-extensions:2.2.0'
-    implementation 'com.android.support:support-v4:23.4.0'
-    implementation 'com.android.support:appcompat-v7:23.4.0'
-    implementation 'com.google.android.gms:play-services-maps:8.1.0'
-    implementation 'com.google.android.gms:play-services-gcm:8.1.0'
+    implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
+    implementation 'com.android.support:support-v4:26.1.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.google.android.gms:play-services-maps:15.0.1'
+    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
 }

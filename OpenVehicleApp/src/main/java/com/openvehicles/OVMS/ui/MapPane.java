@@ -5,6 +5,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -12,14 +13,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.openvehicles.OVMS.R;
 
-public class MapPane extends FragmentActivity {
-
+public class MapPane extends FragmentActivity implements OnMapReadyCallback {
+	private GoogleMap mMap;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.map_activity);
-		GoogleMap map = ((SupportMapFragment) getSupportFragmentManager()
-				.findFragmentById(R.id.map)).getMap();
+		((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map)).getMapAsync(this);
+	}
+
+	@Override
+	public void onMapReady(GoogleMap map) {
+		mMap = map;
 
 		LatLng mapCenter = new LatLng(41.889, -87.622);
 
