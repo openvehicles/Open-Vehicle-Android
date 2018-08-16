@@ -542,5 +542,6 @@
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
         <p>Have fun!</p>
     ]]></string>
+    <string name="channel_description">Open Vehicle Monitoring System</string>
 
 </resources>
