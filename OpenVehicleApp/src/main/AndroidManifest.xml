@@ -5,10 +5,6 @@
     android:versionCode="20180428"
     android:versionName="3.12.4">
 
-    <uses-sdk
-        android:minSdkVersion="10"
-        android:targetSdkVersion="23" />
-
     <!-- Only this application can receive the messages and registration result -->
     <permission
         android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
