@@ -92,7 +92,7 @@ public class CarData implements Serializable {
 	public String car_soc = "";
 	public String car_charge_linevoltage = "";
 	public String car_charge_current = "";
-	public String car_charge_power_real_kwh;
+	public String car_charge_power_kw;
 	public String car_charge_voltagecurrent = "";
 	public String car_charge_currentlimit = "";
 	public String car_charge_mode = "";
@@ -186,7 +186,7 @@ public class CarData implements Serializable {
 	public int car_chargelimit_minsremaining_soc = -1;
 	public int car_max_idealrange_raw = 0;
 	public int car_charge_plugtype = 0;
-	public double car_charge_power_kw = 0;
+	public double car_charge_power_kw_raw = 0;
 	public double car_battery_voltage = 0;
 	public float car_soh = 0;
 
@@ -380,9 +380,10 @@ public class CarData implements Serializable {
 				car_charge_linevoltage = String.format("%.1f%s", car_charge_linevoltage_raw, "V");
 				car_charge_current_raw = Float.parseFloat(dataParts[3]);
 				car_charge_current = String.format("%.1f%s", car_charge_current_raw, "A");
-				if (car_charge_current_raw >0 && car_charge_power_kw<=0)
+//				calculate real-time battery charge power level (kW) if not returned by the car
+				if (car_charge_current_raw >0 && car_charge_power_kw_raw<=0)
 					car_charge_power_kw = (car_charge_linevoltage_raw * car_charge_current_raw)/1000;
-				car_charge_power_real_kwh = String.format("%.1f%s", car_charge_power_kw, "kW");
+				car_charge_power_kw = String.format("%.1f%s", car_charge_power_kw, "kW");
 				car_charge_voltagecurrent = String.format("%.1f%s %.1f%s",
 						car_charge_linevoltage_raw, "V",
 						car_charge_current_raw, "A");
@@ -448,7 +449,7 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 33) {
 				car_charge_plugtype = Integer.parseInt(dataParts[30]);
-				car_charge_power_kw = Double.parseDouble(dataParts[31]);
+				car_charge_power_kw_raw = Double.parseDouble(dataParts[31]);
 				car_battery_voltage = Double.parseDouble(dataParts[32]);
 			}
 			if (dataParts.length >= 34) {

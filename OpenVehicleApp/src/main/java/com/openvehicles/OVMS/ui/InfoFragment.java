@@ -561,7 +561,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		TextView tvf = (TextView) findViewById(R.id.tabInfoTextChargeStatus);
 		TextView tvp = (TextView) findViewById(R.id.tabInfoTextChargeStatusPower);
 
-		tvp.setText(String.format(pCarData.car_charge_power_real_kwh));
+		tvp.setText(String.format(pCarData.car_charge_power_kw));
 		tvp.setVisibility(View.VISIBLE);
 
 		if ((!pCarData.car_chargeport_open)
