@@ -382,8 +382,8 @@ public class CarData implements Serializable {
 				car_charge_current = String.format("%.1f%s", car_charge_current_raw, "A");
 //				calculate real-time battery charge power level (kW) if not returned by the car
 				if (car_charge_current_raw >0 && car_charge_power_kw_raw<=0)
-					car_charge_power_kw = (car_charge_linevoltage_raw * car_charge_current_raw)/1000;
-				car_charge_power_kw = String.format("%.1f%s", car_charge_power_kw, "kW");
+					car_charge_power_kw_raw = (car_battery_voltage * car_charge_current_raw)/1000;
+				car_charge_power_kw = String.format("%.1f%s", car_charge_power_kw_raw, "kW");
 				car_charge_voltagecurrent = String.format("%.1f%s %.1f%s",
 						car_charge_linevoltage_raw, "V",
 						car_charge_current_raw, "A");
@@ -746,7 +746,7 @@ public class CarData implements Serializable {
 			b.putFloat("car_charge_currentlimit", car_charge_currentlimit_raw);
 			b.putInt("car_charge_duration", car_charge_duration_raw);
 			b.putInt("car_charge_plugtype", car_charge_plugtype);
-			b.putDouble("car_charge_power_kw", car_charge_power_kw);
+			b.putDouble("car_charge_power_kw_raw", car_charge_power_kw_raw);
 			b.putFloat("car_charge_kwhconsumed", car_charge_kwhconsumed / 10f);
 			b.putBoolean("car_charge_timer", car_charge_timer);
 
