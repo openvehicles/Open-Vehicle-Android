@@ -429,9 +429,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		// update car position marker:
 
 		LatLng carPosition = new LatLng(lat, lng);
-		Drawable drawable = getResources().getDrawable(
-				Ui.getDrawableIdentifier(getActivity(), "map_"
-						+ mCarData.sel_vehicle_image));
+		Drawable drawable;
+		if (mCarData.sel_vehicle_image.startsWith("car_imiev_"))
+			drawable = getResources().getDrawable(R.drawable.map_car_imiev); // one map icon for all colors
+		else
+			drawable = getResources().getDrawable(Ui.getDrawableIdentifier(getActivity(),
+					"map_" + mCarData.sel_vehicle_image));
 		Bitmap myLogo = ((BitmapDrawable) drawable).getBitmap();
 		MarkerOptions marker = new MarkerOptions().position(carPosition)
 				.title(mCarData.sel_vehicle_label)

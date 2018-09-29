@@ -521,11 +521,20 @@
     <string name="remind">Erinnern</string>
     <string name="dontremind">Nicht erinnern</string>
 
-
-    <string name="update_title">Version %1$s (%2$d)</string>
-    <string name="update_message"><![CDATA[
-        <p>Die App wurde aktualisiert. Hauptänderungen:</p>
-        <p>· Fehlerbehebungen</p>
+    <string name="about_title">Version %1$s (%2$d)</string>
+    <string name="about_message"><![CDATA[
+        <p><b><u>Über OVMS</u></b>:</p>
+        <p>Open Vehicles Monitoring System ist ein Community-Projekt zur Fernüberwachung und -steuerung von Fahrzeugen
+         mit Open-Source Soft- und Hardware.</p>
+        <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
+        <p>· <a href="https://docs.google.com/document/d/16JrXR7rybp-18DrEoeh1rg6GqQT_jVBvhaXh2oEWRHw">Anleitung (OVMS v3)</a></p>
+        <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
+        <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
+        <p>&nbsp;</p>
+        <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
+        <p>· Nissan e-NV200</p>
+        <p>· Mitsubishi i-MiEV</p>
+        <p>· Layout- und Menü-Optimierungen</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
@@ -533,5 +542,6 @@
          sind weitere nützliche Informationen zu finden.</p>
         <p>Viel Spaß!</p>
     ]]></string>
+    <string name="mi_app_about">Über OVMS</string>
 
 </resources>

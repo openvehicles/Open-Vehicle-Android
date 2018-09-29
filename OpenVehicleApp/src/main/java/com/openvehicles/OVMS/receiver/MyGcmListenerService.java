@@ -16,6 +16,7 @@ import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
@@ -105,8 +106,12 @@ public class MyGcmListenerService extends GcmListenerService {
             // try to find the correct icon for this car
             int icon = 0;
             CarData car = CarsStorage.get().getCarById(contentTitle);
-            if (car != null)
-                icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
+            if (car != null) {
+				if (car.sel_vehicle_image.startsWith("car_imiev_"))
+					icon = R.drawable.map_car_imiev; // one map icon for all colors
+				else
+            		icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
+			}
             if (icon == 0)
                 icon = android.R.drawable.ic_lock_idle_alarm;
 

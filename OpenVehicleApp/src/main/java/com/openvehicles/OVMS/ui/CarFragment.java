@@ -140,10 +140,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (uiCarType.equals("RT")) {
 			// Menu setup for Renault Twizy:
 			optionsMenu.findItem(R.id.mi_power_stats).setVisible(true);
+			optionsMenu.findItem(R.id.mi_battery_stats).setVisible(true);
 			optionsMenu.findItem(R.id.mi_show_diag_logs).setVisible(true);
 		} else {
 			// defaults:
 			optionsMenu.findItem(R.id.mi_power_stats).setVisible(false);
+			optionsMenu.findItem(R.id.mi_battery_stats).setVisible(false);
 			optionsMenu.findItem(R.id.mi_show_diag_logs).setVisible(false);
 		}
 	}
@@ -161,6 +163,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 			case R.id.mi_power_stats:
 				BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_battery_stats:
+				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
 						Configuration.ORIENTATION_UNDEFINED);
 				return true;
 
@@ -182,6 +189,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			case R.id.mi_show_fahrenheit:
 				appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
 				item.setChecked(newState);
+				return true;
+
+			case R.id.mi_globaloptions:
+				BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
 				return true;
 
 			default:
@@ -492,9 +504,16 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	public void updateCarBodyView(CarData pCarData) {
 		if ((pCarData == null) || (pCarData.car_lastupdated == null)) return;
 
-		// Now, the car background image	
+		// Now, the car background image
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
-		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_"+pCarData.sel_vehicle_image));
+
+		if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
+		 	// Mitsubishi i-MiEV: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_imiev);
+		}
+		else {
+			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
+		}
 
 		// "Ambient" box:
 		TextView label = (TextView) findViewById(R.id.tabCarTextAmbientLabel);
@@ -679,13 +698,16 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	    } else {
 			iv.setVisibility(View.VISIBLE);
 
-			// Renault Twizy:
-			if (pCarData.car_type.equals("RT")) {
+			if (pCarData.sel_vehicle_image.startsWith("car_twizy_")) {
+				// Renault Twizy:
 				iv.setImageResource(R.drawable.ol_car_twizy_chargeport);
 			}
-
-			// Tesla Roadster:
+			else if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
+				// Mitsubishi i-MiEV:
+				iv.setImageResource(R.drawable.ol_car_imiev_charge);
+			}
 			else {
+				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {
 					// We need to connect the power cable
 					iv.setImageResource(R.drawable.roadster_outline_cu);

@@ -250,6 +250,12 @@ public class CarEditorFragment extends BaseFragment {
 		"car_leaf_gunmetallic",
 		"car_leaf_pearlwhite",
 		"car_leaf_superblack",
-		"car_env200_white"
+		"car_env200_white",
+		"car_imiev_black",
+		"car_imiev_blue",
+		"car_imiev_cherrybrown",
+		"car_imiev_coolsilver",
+		"car_imiev_white",
+		"car_imiev_whitered"
 	 };
 }
