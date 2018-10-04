@@ -533,15 +533,26 @@
     <string name="remind">Remind</string>
     <string name="dontremind">Don\'t remind</string>
 
-    <string name="update_title">Version %1$s (%2$d)</string>
-    <string name="update_message"><![CDATA[
-        <p>Main changes:</p>
-        <p>· Bug fixes</p>
+    <string name="about_title">Version %1$s (%2$d)</string>
+    <string name="about_message"><![CDATA[
+        <p><b><u>About OVMS</u></b>:</p>
+        <p>Open Vehicles Monitoring System is a community project enabling remote monitoring and control of vehicles
+         with Open Source software and hardware.</p>
+        <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
+        <p>· <a href="https://docs.google.com/document/d/16JrXR7rybp-18DrEoeh1rg6GqQT_jVBvhaXh2oEWRHw">User guide (OVMS v3)</a></p>
+        <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
+        <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
+        <p>&nbsp;</p>
+        <p><b><u>Main changes in this App release</u></b>:</p>
+        <p>· Nissan e-NV200</p>
+        <p>· Mitsubishi i-MiEV</p>
+        <p>· Layout & menu optimizations</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
         <p>Have fun!</p>
     ]]></string>
     <string name="channel_description">Open Vehicle Monitoring System</string>
+    <string name="mi_app_about">About OVMS</string>
 
 </resources>

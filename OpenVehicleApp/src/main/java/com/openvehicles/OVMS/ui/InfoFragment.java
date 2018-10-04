@@ -25,11 +25,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.settings.ControlFragment;
-import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
+import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
+import com.openvehicles.OVMS.ui.settings.CellularStatsFragment;
+import com.openvehicles.OVMS.ui.settings.FeaturesFragment;
+import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.ui.utils.Ui.OnChangeListener;
 import com.openvehicles.OVMS.ui.witdet.ReversedSeekBar;
@@ -111,6 +112,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		super.onPrepareOptionsMenu(menu);
 		if (mCarData != null && mCarData.car_type != null) {
 			menu.findItem(R.id.mi_battery_stats).setVisible(mCarData.car_type.equals("RT"));
+			menu.findItem(R.id.mi_power_stats).setVisible(mCarData.car_type.equals("RT"));
 		}
 	}
 
@@ -184,11 +186,41 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+
 			case R.id.mi_battery_stats:
-				Bundle args = new Bundle();
-				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, args,
+				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
 						Configuration.ORIENTATION_UNDEFINED);
 				return true;
+
+			case R.id.mi_power_stats:
+				BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_show_carinfo:
+				BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_show_features:
+				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_globaloptions:
+				BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_cellular_usage:
+				BaseFragmentActivity.show(getActivity(), CellularStatsFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
+			case R.id.mi_app_about:
+				((MainActivity)getActivity()).showVersion();
+				return true;
+
 			default:
 				return false;
 		}

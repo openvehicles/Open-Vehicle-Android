@@ -244,9 +244,7 @@ public class MainActivity extends ApiActivity implements
 	 * Check for update, show changes info
 	 */
 	private void checkVersion() {
-
 		try {
-
 			// get App version
 			PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 			versionName = pinfo.versionName;
@@ -255,28 +253,32 @@ public class MainActivity extends ApiActivity implements
 			if (appPrefes.getData("lastUsedVersionName", "").equals(versionName))
 				return;
 
-			TextView msg = new TextView(this);
-			final float scale = getResources().getDisplayMetrics().density;
-			final int pad = (int) (25 * scale + 0.5f);
-			msg.setPadding(pad, pad, pad, pad);
-			msg.setText(Html.fromHtml(getString(R.string.update_message)));
-			msg.setMovementMethod(LinkMovementMethod.getInstance());
-			msg.setClickable(true);
-
-			AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-					.setTitle(getString(R.string.update_title, versionName, versionCode))
-					.setView(msg)
-					.setPositiveButton(R.string.msg_ok, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							appPrefes.SaveData("lastUsedVersionName", versionName);
-						}
-					})
-					.show();
+			showVersion();
 
 		} catch (PackageManager.NameNotFoundException e) {
 			// ignore
 		}
+	}
+
+	public void showVersion() {
+		TextView msg = new TextView(this);
+		final float scale = getResources().getDisplayMetrics().density;
+		final int pad = (int) (25 * scale + 0.5f);
+		msg.setPadding(pad, pad, pad, pad);
+		msg.setText(Html.fromHtml(getString(R.string.about_message)));
+		msg.setMovementMethod(LinkMovementMethod.getInstance());
+		msg.setClickable(true);
+
+		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+				.setTitle(getString(R.string.about_title, versionName, versionCode))
+				.setView(msg)
+				.setPositiveButton(R.string.msg_ok, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						appPrefes.SaveData("lastUsedVersionName", versionName);
+					}
+				})
+				.show();
 	}
 
 

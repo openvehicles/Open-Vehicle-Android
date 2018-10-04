@@ -15,6 +15,11 @@
 
         <menu>
 
+            <item android:id="@+id/mi_battery_stats"
+                  android:title="@string/battery_title"
+                  android:icon="@drawable/ic_action_chart"
+                  app:showAsAction="never"/>
+
             <item
                 android:id="@+id/mi_show_carinfo"
                 android:icon="@drawable/ic_action_about"
@@ -43,6 +48,12 @@
                     app:showAsAction="never"/>
 
             </group>
+
+            <item
+                android:id="@+id/mi_globaloptions"
+                android:icon="@drawable/ic_action_settings"
+                android:title="@string/Options"
+                app:showAsAction="never"/>
 
         </menu>
     </item>
