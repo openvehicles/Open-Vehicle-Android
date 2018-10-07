@@ -29,18 +29,20 @@
         android:scaleType="fitXY"/>
 
     <EditText
+        android:id="@+id/cmdInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:inputType="text|textImeMultiLine|textAutoComplete|textAutoCorrect"
-        android:ems="10"
-        android:id="@+id/cmdInput"
-        android:editable="true"
-        android:minLines="2"
-        android:hint="@string/notifications_hint_cmdinput"
-        android:typeface="monospace"
-        android:maxLength="160"
-        android:imeOptions="actionSend"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"/>
+        android:layout_alignParentLeft="true"
+        android:editable="true"
+        android:ems="10"
+        android:hint="@string/notifications_hint_cmdinput"
+        android:imeOptions="actionSend"
+        android:inputType="text|textImeMultiLine"
+        android:maxLength="160"
+        android:minLines="2"
+        android:textAllCaps="false"
+        android:typeface="monospace"
+        android:fontFamily="monospace"/>
 
 </RelativeLayout>
