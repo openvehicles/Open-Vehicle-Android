@@ -13,6 +13,7 @@
 
 # generated files
 build/
+apk/
 
 # Local configuration file (sdk path, etc)
 local.properties
