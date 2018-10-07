@@ -1,6 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
-import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.List;
 
 import com.androidmapsextensions.CircleOptions;
@@ -38,7 +38,9 @@ import android.view.MenuItem;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PatternItem;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
@@ -473,16 +475,41 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		float strokeWidth = getResources().getDimension(
 				R.dimen.circle_stroke_width);
-		CircleOptions options = new CircleOptions().strokeWidth(strokeWidth)
-				.strokeColor(Color.BLUE);
-		rd1 = rd1 * 1000;
-		rd2 = rd2 * 1000;
-		map.addCircle(options.center(new LatLng(lat, lng)).data("first circle")
-				.radius(rd1));
-		options = new CircleOptions().strokeWidth(strokeWidth).strokeColor(
-				Color.RED);
-		map.addCircle(options.center(new LatLng(lat, lng))
-				.data("second circle").radius(rd2));
+		List<PatternItem> pattern = Arrays.<PatternItem>asList(new Dot());
+
+		// full range circles:
+
+		map.addCircle(new CircleOptions()
+				.data("first circle")
+				.center(new LatLng(lat, lng))
+				.radius(rd1 * 1000)
+				.strokeWidth(strokeWidth)
+				.strokeColor(Color.BLUE));
+
+		map.addCircle(new CircleOptions()
+				.data("second circle")
+				.center(new LatLng(lat, lng))
+				.radius(rd2 * 1000)
+				.strokeWidth(strokeWidth)
+				.strokeColor(Color.RED));
+
+		// half range ("point of no return") circles:
+
+		map.addCircle(new CircleOptions()
+				.data("first ponr")
+				.center(new LatLng(lat, lng))
+				.radius(rd1 * 1000 / 2)
+				.strokeWidth(strokeWidth / 2)
+				.strokePattern(pattern)
+				.strokeColor(Color.parseColor("#A04455FF")));
+
+		map.addCircle(new CircleOptions()
+				.data("second ponr")
+				.center(new LatLng(lat, lng))
+				.radius(rd2 * 1000 / 2)
+				.strokeWidth(strokeWidth / 2)
+				.strokePattern(pattern)
+				.strokeColor(Color.parseColor("#A0FF5544")));
 	}
 
 	// calculate distance in meters:
