@@ -205,7 +205,8 @@ public class BatteryData {
 							packStatus.maxRecupPwr = Integer.parseInt(result[21]) * 100;
 
 							// store record:
-							packHistory.add(packStatus);
+							if (packStatus.volt > 0)
+								packHistory.add(packStatus);
 
 						} catch (Exception e) {
 							// invalid record: skip
