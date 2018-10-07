@@ -704,7 +704,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			}
 			else if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 				// Mitsubishi i-MiEV:
-				iv.setImageResource(R.drawable.ol_car_imiev_charge);
+				if (pCarData.car_charge_currentlimit_raw > 16)
+					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+				else
+					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			}
 			else {
 				// Tesla Roadster:
