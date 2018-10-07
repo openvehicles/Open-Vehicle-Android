@@ -319,6 +319,7 @@
     <string name="notifications_toast_copied">Nachricht wurde in das Clipboard kopiert</string>
     <string name="notifications_menu">Optionen</string>
     <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_set_fontsize">Schriftgröße</string>
     <string name="notifications_btn_help">Info</string>
     <string name="notifications_help"><![CDATA[
  		<h1>Nachrichten &amp; Kommandos</h1>

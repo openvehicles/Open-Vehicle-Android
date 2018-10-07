@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
@@ -40,11 +41,14 @@ import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CmdSeries;
+import com.openvehicles.OVMS.ui.settings.CarGroupFragment;
+import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import static android.util.TypedValue.COMPLEX_UNIT_DIP;
+import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 
 public class NotificationsFragment extends BaseFragment
@@ -60,6 +64,7 @@ public class NotificationsFragment extends BaseFragment
 
 	private AppPrefes appPrefes;
 	public boolean mFontMonospace = false;
+	public float mFontSize = 10;
 
 	
 	@Override
@@ -69,6 +74,11 @@ public class NotificationsFragment extends BaseFragment
 
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 		mFontMonospace = appPrefes.getData("notifications_font_monospace").equals("on");
+		try {
+			mFontSize = Float.parseFloat(appPrefes.getData("notifications_font_size"));
+		} catch(Exception e) {
+			mFontSize = 10;
+		}
 
 		// Create UI:
 
@@ -80,6 +90,7 @@ public class NotificationsFragment extends BaseFragment
 
 		mCmdInput = (EditText) layout.findViewById(R.id.cmdInput);
 		mCmdInput.setOnEditorActionListener(this);
+		mCmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize*1.2f);
 
 		setHasOptionsMenu(true);
 
@@ -143,8 +154,8 @@ public class NotificationsFragment extends BaseFragment
 
 			if (mFontMonospace) {
 				textView.setTypeface(Typeface.MONOSPACE);
-				textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 8);
 			}
+			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize * 1.2f);
 
 			Linkify.addLinks(textView, Linkify.WEB_URLS);
 
@@ -205,6 +216,27 @@ public class NotificationsFragment extends BaseFragment
 				mItemsAdapter.notifyDataSetChanged();
 				return true;
 
+			case R.id.mi_set_fontsize:
+				Ui.showPinDialog(getActivity(),
+						getString(R.string.notifications_set_fontsize),
+						Float.toString(mFontSize), R.string.Set, false,
+						new Ui.OnChangeListener<String>() {
+							@Override
+							public void onAction(String pData) {
+								float val;
+								try {
+									val = Float.parseFloat(pData);
+								} catch (Exception e) {
+									val = 10;
+								}
+								mFontSize = val;
+								appPrefes.SaveData("notifications_font_size",
+										Float.toString(mFontSize));
+								mItemsAdapter.notifyDataSetChanged();
+								mCmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize*1.2f);
+							}
+						});
+				return true;
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -363,11 +395,10 @@ public class NotificationsFragment extends BaseFragment
 
 				if (mFragment.mFontMonospace) {
 					tv.setTypeface(Typeface.MONOSPACE);
-					tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10);
 				} else {
 					tv.setTypeface(Typeface.DEFAULT);
-					tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 12);
 				}
+				tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFragment.mFontSize);
 
 				if (it.Type == NotificationData.TYPE_COMMAND) {
 					tv.setVisibility(View.GONE); // cmd shown in title

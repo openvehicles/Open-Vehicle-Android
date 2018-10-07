@@ -20,6 +20,11 @@
             </group>
 
             <item
+                android:id="@+id/mi_set_fontsize"
+                android:title="@string/notifications_set_fontsize"
+                app:showAsAction="never"/>
+
+            <item
                 android:id="@+id/mi_help"
                 android:icon="@android:drawable/ic_menu_help"
                 android:title="@string/notifications_btn_help"

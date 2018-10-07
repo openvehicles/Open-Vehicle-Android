@@ -341,6 +341,7 @@
     <string name="notifications_toast_copied">Message has been copied to clipboard</string>
     <string name="notifications_menu">Options</string>
     <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_set_fontsize">Font size</string>
     <string name="notifications_btn_help">Info</string>
     <string name="notifications_help"><![CDATA[
  		<h1>Notifications &amp; Commands</h1>
