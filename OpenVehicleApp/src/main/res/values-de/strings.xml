@@ -533,9 +533,11 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· Nissan e-NV200</p>
-        <p>· Mitsubishi i-MiEV</p>
-        <p>· Layout- und Menü-Optimierungen</p>
+        <p>· Android 8 Korrekturen</p>
+        <p>· i-MiEV: Schnelladung anzeigen</p>
+        <p>· Batterie-Chart: ungültige Reboot-Datensätze filtern</p>
+        <p>· Karte: halbe Reichweiten anzeigen ("point of no return")</p>
+        <p>· Nachrichten: einstellbare Schriftgröße</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
