@@ -7,11 +7,14 @@
 package com.openvehicles.OVMS.receiver;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
@@ -116,8 +119,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 icon = android.R.drawable.ic_lock_idle_alarm;
 
             // create Notification builder:
-            android.support.v7.app.NotificationCompat.Builder mBuilder =
-                    (android.support.v7.app.NotificationCompat.Builder) new android.support.v7.app.NotificationCompat.Builder(this)
+			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
                             .setSmallIcon(icon)

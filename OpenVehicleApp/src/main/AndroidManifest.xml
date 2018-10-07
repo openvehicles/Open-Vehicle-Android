@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
     android:versionCode="20180928"
-    android:versionName="3.12.5">
+    android:versionName="3.12.5" >
+
 
     <!-- Only this application can receive the messages and registration result -->
     <permission
@@ -26,7 +27,7 @@
     <application
         android:name=".BaseApp"
         android:allowBackup="false"
-        android:icon="@drawable/ic_launcher"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/Theme.App" >

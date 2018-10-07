@@ -10,7 +10,8 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
-        classpath 'com.google.gms:google-services:1.4.0-beta3'
+        classpath 'com.google.gms:google-services:4.0.1'
+
     }
 }
 

@@ -1,6 +1,8 @@
 package com.openvehicles.OVMS.api;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -100,6 +102,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		Log.d(TAG, "onStartCommand");
+		createNotificationChannel();
 
 		// Reconnect?
 		if (!isLoggedIn()) {
@@ -108,6 +111,22 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		}
 
 		return super.onStartCommand(intent, flags, startId);
+	}
+
+	private void createNotificationChannel() {
+		// Create the NotificationChannel, but only on API 26+ because
+		// the NotificationChannel class is new and not in the support library
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			CharSequence name = getString(R.string.app_name);
+			String description = getString(R.string.channel_description);
+			int importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channel = new NotificationChannel("default", name, importance);
+			channel.setDescription(description);
+			// Register the channel with the system; you can't change the importance
+			// or other notification behaviors after this
+			NotificationManager notificationManager = getSystemService(NotificationManager.class);
+			notificationManager.createNotificationChannel(channel);
+		}
 	}
 
 	@Override
