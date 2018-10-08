@@ -126,7 +126,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
 		map.getUiSettings().setMapToolbarEnabled(true); // enable Google Maps shortcuts
 
-		map.setMyLocationEnabled(!autotrack);
+		// map.setMyLocationEnabled(!autotrack); // crashing on SDK27 / maps 26
 		map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
 			@Override
 			public boolean onMyLocationButtonClick() {
@@ -228,7 +228,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				autotrack = newState;
 				if (autotrack)
 					update();
-				map.setMyLocationEnabled(!autotrack);
+				// map.setMyLocationEnabled(!autotrack); // crashing on SDK27 / maps 26
 				break;
 
 			case R.id.mi_map_filter_connections:
