@@ -256,6 +256,7 @@ public class CarEditorFragment extends BaseFragment {
 		"car_imiev_cherrybrown",
 		"car_imiev_coolsilver",
 		"car_imiev_white",
-		"car_imiev_whitered"
+		"car_imiev_whitered",
+		"car_smart_ed_white"
 	 };
 }
