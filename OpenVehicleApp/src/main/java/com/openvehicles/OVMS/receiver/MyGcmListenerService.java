@@ -112,7 +112,10 @@ public class MyGcmListenerService extends GcmListenerService {
             if (car != null) {
 				if (car.sel_vehicle_image.startsWith("car_imiev_"))
 					icon = R.drawable.map_car_imiev; // one map icon for all colors
+				else if (car.sel_vehicle_image.startsWith("car_smart_"))
+					icon = R.drawable.map_car_smart; // one map icon for all colors
 				else
+
             		icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
 			}
             if (icon == 0)

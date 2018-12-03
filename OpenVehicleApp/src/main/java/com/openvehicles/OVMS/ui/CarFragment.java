@@ -85,6 +85,25 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (uiCarType.equals(pCarData.car_type))
 			return;
 
+		// Hide Buttons not needed for smart ED
+		if (pCarData.car_type.equals("ED")) {
+			findViewById(R.id.tabCarImageCarValetMode).setVisibility(View.INVISIBLE);
+			findViewById(R.id.txt_homelink).setVisibility(View.INVISIBLE);
+			findViewById(R.id.tabCarImageHomelink).setVisibility(View.INVISIBLE);
+			findViewById(R.id.btn_lock_car).setVisibility(View.INVISIBLE);
+			findViewById(R.id.btn_valet_mode).setVisibility(View.INVISIBLE);
+	        findViewById(R.id.tabCarImageCarLocked).setVisibility(View.INVISIBLE);
+		}
+		else
+		{
+			findViewById(R.id.tabCarImageCarValetMode).setVisibility(View.VISIBLE);
+			findViewById(R.id.txt_homelink).setVisibility(View.VISIBLE);
+			findViewById(R.id.tabCarImageHomelink).setVisibility(View.VISIBLE);
+			findViewById(R.id.btn_lock_car).setVisibility(View.VISIBLE);
+			findViewById(R.id.btn_valet_mode).setVisibility(View.VISIBLE);
+			findViewById(R.id.tabCarImageCarLocked).setVisibility(View.VISIBLE);
+		}
+		
 		if (pCarData.car_type.equals("RT")) {
 			// UI changes for Renault Twizy:
 
@@ -329,8 +348,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		switch (v.getId()) {
 
 			case R.id.btn_wakeup:
-				if (mCarData.car_type.equals("RT"))
-					break; // no wakeup support for Twizy
+				if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("ED"))
+					break; // no wakeup support for Twizy or smarts
 				menu.setHeaderTitle(R.string.lb_wakeup_car);
 				menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
 				menu.add(R.string.Cancel);
@@ -511,6 +530,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		 	// Mitsubishi i-MiEV: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_imiev);
 		}
+		else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
+		 	// smart ED: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_smart);
+		}
 		else {
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
 		}
@@ -573,7 +596,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
         
     	iv = (ImageView)findViewById(R.id.tabCarImageCarTPMSBoxes);
 
-		if (mCarData.car_type.equals("RT")) {
+		if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("ED")) {
 			pCarData.stale_tpms = DataStale.NoValue;
 		}
 

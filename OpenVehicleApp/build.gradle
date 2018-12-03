@@ -39,10 +39,10 @@ dependencies {
     //implementation 'com.github.PhilJay:MPAndroidChart:v2.2.2'
     implementation files('libs/mpandroidchart-2.2.3.jar')
     implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
-    implementation 'com.android.support:support-v4:26.1.0'
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation "com.android.support:support-compat:26.1.0"
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
+    implementation 'com.android.support:support-v4:27.1.1'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation "com.android.support:support-compat:27.1.1"
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-gcm:16.0.0'
 
 }
