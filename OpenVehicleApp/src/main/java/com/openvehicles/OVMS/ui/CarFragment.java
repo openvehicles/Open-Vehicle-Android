@@ -103,7 +103,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			findViewById(R.id.btn_valet_mode).setVisibility(View.VISIBLE);
 			findViewById(R.id.tabCarImageCarLocked).setVisibility(View.VISIBLE);
 		}
-		
+
 		if (pCarData.car_type.equals("RT")) {
 			// UI changes for Renault Twizy:
 
@@ -527,12 +527,15 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
 
 		if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
-		 	// Mitsubishi i-MiEV: one ol image for all colors:
+			// Mitsubishi i-MiEV: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_imiev);
 		}
 		else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
 		 	// smart ED: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_smart);
+		}
+		else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+			iv.setImageResource(R.drawable.ol_car_kianiro_grey);
 		}
 		else {
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
@@ -728,6 +731,13 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			else if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 				// Mitsubishi i-MiEV:
 				if (pCarData.car_charge_currentlimit_raw > 16)
+					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+				else
+					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+			}
+			else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+				// Kia Niro: use i-MiEV charge overlays
+				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
