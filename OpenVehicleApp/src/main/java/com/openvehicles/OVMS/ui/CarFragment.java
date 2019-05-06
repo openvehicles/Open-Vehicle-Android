@@ -123,7 +123,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		img1 = (ImageView) findViewById(R.id.tabCarImageCarACBoxes);
 		img2 = (ImageView) findViewById(R.id.tabCarImageAC);
 
-		if (pCarData.hasCommand(26)) {
+		// The V3 framework does not support capabilities yet, but
+		//	the Leaf is the only car providing command 26 up to now, so:
+		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL")) {
 			// enable
 			img1.setVisibility(View.VISIBLE);
 			img2.setVisibility(View.VISIBLE);
