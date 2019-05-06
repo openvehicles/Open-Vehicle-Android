@@ -431,6 +431,7 @@ public class BatteryFragment
 	 */
 	private boolean isPackValid() {
 		return (batteryData != null
+				&& batteryData.cellCount != 0
 				&& batteryData.packHistory != null
 				&& batteryData.packHistory.size() > 0);
 	}
@@ -681,8 +682,6 @@ public class BatteryFragment
 		if (cells == null) {
 			Log.w(TAG, "showCellStatus x=" + index + ": cells=null");
 			return;
-		} else if (cells.size() != 14) {
-			Log.w(TAG, "showCellStatus x=" + index + ": cells.size=" + cells.size());
 		}
 
 
@@ -693,7 +692,7 @@ public class BatteryFragment
 		ArrayList<CandleEntry> tempValues = new ArrayList<CandleEntry>();
 		float low, high, open, close;
 
-		for (int i = 0; i < cells.size(); i++) {
+		for (int i = 0; i < batteryData.cellCount; i++) {
 
 			cell = cells.get(i);
 
@@ -774,8 +773,8 @@ public class BatteryFragment
 		YAxis yAxis = cellChart.getAxisLeft();
 		yAxis.setEnabled(mShowVolt);
 		if (mShowVolt && (packVoltSet != null)) {
-			float yMax = packVoltSet.getYMax() / 14f + 0.1f;
-			float yMin = packVoltMinSet.getYMin() / 14f - 0.1f;
+			float yMax = packVoltSet.getYMax() / (float)batteryData.cellCount + 0.1f;
+			float yMin = packVoltMinSet.getYMin() / (float)batteryData.cellCount - 0.1f;
 			yAxis.setAxisMaxValue(yMax);
 			if (mShowTemp)
 				yAxis.setAxisMinValue(yMin-(yMax-yMin)); // half height

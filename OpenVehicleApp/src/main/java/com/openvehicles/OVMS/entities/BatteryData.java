@@ -67,7 +67,7 @@ public class BatteryData {
 	//
 
 	public String vehicleId;
-
+	public int cellCount;
 	public ArrayList<PackStatus> packHistory;
 
 
@@ -77,6 +77,7 @@ public class BatteryData {
 
 	public BatteryData() {
 		vehicleId = "";
+		cellCount = 0;
 		packHistory = new ArrayList<PackStatus>(24*60);
 	}
 
@@ -149,14 +150,15 @@ public class BatteryData {
 			// init:
 			if (cmd.command.equals("32,RT-BAT-P")) {
 				packHistory.clear();
+				cellCount = 0;
 			} else if (cmd.command.equals("32,RT-BAT-C")) {
 				// check BattPack result:
 				if (packHistory.size() == 0)
 					continue;
 
 				// "BattCell" only transmits changed cells, so create complete group storage:
-				cells = new ArrayList<CellStatus>(14);
-				for (int j=0; j < 14; j++) {
+				cells = new ArrayList<CellStatus>(16);
+				for (int j=0; j < 16; j++) {
 					cellStatus = new CellStatus();
 					cells.add(cellStatus);
 				}
@@ -216,6 +218,8 @@ public class BatteryData {
 						try {
 
 							nrCell = Integer.parseInt(result[6]);
+							if (nrCell > cellCount)
+								cellCount = nrCell;
 
 							// Pack record(s) complete?
 							// (while handles Pack records without Cell records,
@@ -223,6 +227,7 @@ public class BatteryData {
 							while ((timeStamp.getTime() - packStatus.timeStamp.getTime()) > 3000) {
 								// set pack cells:
 								packStatus.cells = new ArrayList<CellStatus>(cells);
+
 
 								// get next pack:
 								packStatus = packHistory.get(++nrPack);
