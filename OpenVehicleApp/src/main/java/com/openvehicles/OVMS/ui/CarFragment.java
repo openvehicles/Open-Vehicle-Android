@@ -85,24 +85,6 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (uiCarType.equals(pCarData.car_type))
 			return;
 
-		// Hide Buttons not needed for smart ED
-		if (pCarData.car_type.equals("ED")) {
-			findViewById(R.id.tabCarImageCarValetMode).setVisibility(View.INVISIBLE);
-			findViewById(R.id.txt_homelink).setVisibility(View.INVISIBLE);
-			findViewById(R.id.tabCarImageHomelink).setVisibility(View.INVISIBLE);
-			findViewById(R.id.btn_lock_car).setVisibility(View.INVISIBLE);
-			findViewById(R.id.btn_valet_mode).setVisibility(View.INVISIBLE);
-	        findViewById(R.id.tabCarImageCarLocked).setVisibility(View.INVISIBLE);
-		}
-		else
-		{
-			findViewById(R.id.tabCarImageCarValetMode).setVisibility(View.VISIBLE);
-			findViewById(R.id.txt_homelink).setVisibility(View.VISIBLE);
-			findViewById(R.id.tabCarImageHomelink).setVisibility(View.VISIBLE);
-			findViewById(R.id.btn_lock_car).setVisibility(View.VISIBLE);
-			findViewById(R.id.btn_valet_mode).setVisibility(View.VISIBLE);
-			findViewById(R.id.tabCarImageCarLocked).setVisibility(View.VISIBLE);
-		}
 
 		if (pCarData.car_type.equals("RT")) {
 			// UI changes for Renault Twizy:
@@ -124,8 +106,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		img2 = (ImageView) findViewById(R.id.tabCarImageAC);
 
 		// The V3 framework does not support capabilities yet, but
-		//	the Leaf is the only car providing command 26 up to now, so:
-		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL")) {
+		//	the Leaf and Smart is the only car providing command 26 up to now, so:
+		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL") || pCarData.car_type.equals("SE")) {
 			// enable
 			img1.setVisibility(View.VISIBLE);
 			img2.setVisibility(View.VISIBLE);
@@ -350,8 +332,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		switch (v.getId()) {
 
 			case R.id.btn_wakeup:
-				if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("ED"))
-					break; // no wakeup support for Twizy or smarts
+				if (mCarData.car_type.equals("RT"))
+					break; // no wakeup support for Twizy
 				menu.setHeaderTitle(R.string.lb_wakeup_car);
 				menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
 				menu.add(R.string.Cancel);
@@ -601,7 +583,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
         
     	iv = (ImageView)findViewById(R.id.tabCarImageCarTPMSBoxes);
 
-		if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("ED")) {
+		if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("SE")) {
 			pCarData.stale_tpms = DataStale.NoValue;
 		}
 
