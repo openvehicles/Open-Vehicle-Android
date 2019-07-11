@@ -36,6 +36,6 @@
         android:layout_marginBottom="30dp"
     	android:id="@+id/snv_amps" 
     	android:layout_width="220dp" android:layout_height="60dp"
-    	ovms:min="10" ovms:max="70"/>
+    	ovms:min="8" ovms:max="70"/>
      
 </LinearLayout>

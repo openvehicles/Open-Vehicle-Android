@@ -288,6 +288,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 								: R.string.lb_valet_mode_off_twizy)
 							: R.string.lb_valet_mode_on_twizy;
 					isPinEntry = false;
+				} else if(mCarData.car_type.equals("SE")) {
+					dialogTitle = R.string.lb_valet_mode_smart;
+					dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_smart_off : R.string.lb_valet_mode_smart_on;
+					isPinEntry = true;
 				} else {
 					dialogTitle = R.string.lb_valet_mode;
 					dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on;

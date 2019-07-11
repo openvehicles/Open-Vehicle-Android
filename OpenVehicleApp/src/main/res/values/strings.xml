@@ -72,6 +72,10 @@
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
 
+    <string name="lb_valet_mode_smart">Ignition Mode</string>
+    <string name="lb_valet_mode_smart_on">Ignition On</string>
+    <string name="lb_valet_mode_smart_off">Ignition Off</string>
+
     <string name="lb_lock_mode_twizy">Limit max speed (kph):</string>
     <string name="lb_lock_car_twizy">Set speed limit</string>
     <string name="lb_unlock_car_twizy">Clear speed limit</string>
