@@ -171,12 +171,13 @@
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusLeft"
 			style="@style/TabCarTextBox"
+			android:layout_width="150px"
 			android:layout_height="46px"
-            android:layout_x="328px"
+			android:layout_x="328px"
 			android:layout_y="322px"
+			android:gravity="center_vertical|left"
 			android:text="@string/DefaultCharging"
-			android:textSize="16px"
-			android:gravity="center_vertical|left"/>
+			android:textSize="16px" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusRight"
