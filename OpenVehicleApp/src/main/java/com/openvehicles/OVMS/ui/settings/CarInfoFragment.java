@@ -68,7 +68,7 @@ public class CarInfoFragment extends BaseFragment {
 					: String.format("ref=%.1fV", mCarData.car_12vline_ref),
 			mCarData.car_12v_current));
 
-		Ui.setValue(rootView, R.id.txt_charge_info, String.format("%.3fkWh", mCarData.car_charge_kwhconsumed));
+		Ui.setValue(rootView, R.id.txt_charge_info, String.format("%.1f kWh", mCarData.car_charge_kwhconsumed));
 
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(context, "signal_strength_" + mCarData.car_gsm_bars));
