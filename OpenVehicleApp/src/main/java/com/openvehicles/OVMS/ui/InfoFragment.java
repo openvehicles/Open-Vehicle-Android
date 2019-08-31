@@ -579,6 +579,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	// This updates the main informational part of the view.
 	// It is called when the server gets new data.
 	public void updateCarInfoView(CarData pCarData) {
+
 		TextView tv = (TextView) findViewById(R.id.txt_title);
 		tv.setText(pCarData.sel_vehicle_label);
 
@@ -607,6 +608,11 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 		} else {
 			// Car is plugged in
+
+			String cmst = String.format("%s %s ▾%.1fkWh",
+					pCarData.car_charge_mode.toUpperCase(),
+					pCarData.car_charge_current,
+					pCarData.car_charge_kwhconsumed);
 
 			if (mCarData.car_type.equals("RT")) {
 
@@ -643,8 +649,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 				}
 
 				coiv.setVisibility(View.VISIBLE);
-				cmtv.setText(String.format("%s %s", pCarData.car_charge_mode,
-						pCarData.car_charge_current).toUpperCase());
+				cmtv.setText(cmst);
 				cmtv.setVisibility(View.VISIBLE);
 
 			} else {
@@ -691,8 +696,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 								pCarData.car_charge_linevoltage,
 								pCarData.car_charge_current));
 						tvr.setText("");
-						cmtv.setText(String.format("%s %s", pCarData.car_charge_mode,
-								pCarData.car_charge_currentlimit).toUpperCase());
+						cmtv.setText(cmst);
 						coiv.setVisibility(View.VISIBLE);
 						cmtv.setVisibility(View.VISIBLE);
 						break;

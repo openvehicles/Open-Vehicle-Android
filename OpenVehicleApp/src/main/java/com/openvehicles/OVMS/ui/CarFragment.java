@@ -2,6 +2,8 @@ package com.openvehicles.OVMS.ui;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -668,15 +670,43 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			}
 		}
 
+		String st;
+		SpannableString ss;
+
 		// Odometer
+		st = String.format("%.1f%s", (float) pCarData.car_odometer_raw / 10, pCarData.car_distance_units);
+		ss = new SpannableString(st);
+		ss.setSpan(new RelativeSizeSpan(0.67f), st.indexOf(pCarData.car_distance_units), st.length(), 0);
 		tv = (TextView) findViewById(R.id.tabCarTextOdometer);
-		tv.setText(pCarData.car_odometer);
+		tv.setText(ss);
 
 		// Speed
 		tv = (TextView) findViewById(R.id.tabCarTextSpeed);
-		if (!pCarData.car_started) tv.setText("");
-		else tv.setText(pCarData.car_speed);
-				
+		if (!pCarData.car_started) {
+			tv.setText("");
+		} else {
+			st = String.format("%.1f%s", pCarData.car_speed_raw, pCarData.car_speed_units);
+			ss = new SpannableString(st);
+			ss.setSpan(new RelativeSizeSpan(0.67f), st.indexOf(pCarData.car_speed_units), st.length(), 0);
+			tv.setText(ss);
+		}
+
+		// Trip
+		st = String.format("➟%.1f%s", (float) pCarData.car_tripmeter_raw / 10, pCarData.car_distance_units);
+		ss = new SpannableString(st);
+		ss.setSpan(new RelativeSizeSpan(0.67f), st.indexOf(pCarData.car_distance_units), st.length(), 0);
+		tv = (TextView) findViewById(R.id.tabCarTextTrip);
+		tv.setText(ss);
+
+		// Energy
+		st = String.format("▴%.1f ▾%.1f kWh",
+				Math.floor(pCarData.car_energyused*10)/10,
+				Math.floor(pCarData.car_energyrecd*10)/10);
+		ss = new SpannableString(st);
+		ss.setSpan(new RelativeSizeSpan(0.67f), st.indexOf("kWh"), st.length(), 0);
+		tv = (TextView) findViewById(R.id.tabCarTextEnergy);
+		tv.setText(ss);
+
 		// Car Hood
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
 		iv.setVisibility(pCarData.car_bonnet_open ? View.VISIBLE : View.INVISIBLE);

@@ -76,14 +76,14 @@
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeMode"
-			android:layout_width="340px"
+			android:layout_width="470px"
 			android:layout_height="40px"
-			android:layout_x="105px"
+			android:layout_x="40px"
 			android:layout_y="410px"
 			android:gravity="bottom|center"
-            android:textSize="22px"
-            android:textColor="#ffffffff"
-            android:textStyle="bold" />
+			android:textColor="#ffffffff"
+			android:textSize="22px"
+			android:textStyle="bold"/>
 
         <ImageView
             android:id="@+id/tabInfoImageChargeEtr"

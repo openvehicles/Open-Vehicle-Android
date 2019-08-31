@@ -168,7 +168,7 @@
 		android:layout_alignBaseline="@id/txt_charge_info"
 		android:layout_alignBottom="@id/txt_charge_info"
 		android:layout_alignParentLeft="true"
-		android:text="charged" />
+		android:text="@string/Charged" />
 
     <TextView
 		android:layout_width="wrap_content"

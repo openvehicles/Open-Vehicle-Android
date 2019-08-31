@@ -57,6 +57,7 @@
     <string name="WIN">VIN</string>
     <string name="Type">Typ</string>
     <string name="GMC">GSM</string>
+    <string name="Charged">Geladen</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     <string name="CAC">Kapazität</string>
@@ -96,7 +97,7 @@
     <string name="lb_slide_choice_vehicle">Slide um Fahrzeug auszuwählen</string>
     <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
     <string name="lb_cellular_usage">Datenverbrauch</string>
-    <string name="lb_reset_ovms_module">OVMS Modul zurücksetzen</string>
+    <string name="lb_reset_ovms_module">OVMS Modul neu starten</string>
     <string name="lb_center_map">Karte zentrieren</string>
 
     <string name="lb_ft_digital_speedo">#%d: Digitaler Tacho</string>
@@ -537,10 +538,9 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· Twizy: Batterielayouts mit 16 Zellen</p>
-        <p>· Leaf: A/C-Button auch mit V3-Modul</p>
-        <p>· Smart ED</p>
-        <p>· Kia e-Niro</p>
+        <p>· Smart EQ zugefügt</p>
+        <p>· Energieanzeigen zugefügt</p>
+        <p>· Trip zugefügt</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
