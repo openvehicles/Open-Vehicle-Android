@@ -70,6 +70,10 @@
     <string name="lb_valet_mode_on">Valet An</string>
     <string name="lb_valet_mode_off">Valet Aus</string>
 
+    <string name="lb_valet_mode_smart">Zündung Mode</string>
+    <string name="lb_valet_mode_smart_on">Zündung On</string>
+    <string name="lb_valet_mode_smart_off">Zündung Off</string>
+
     <string name="lb_lock_mode_twizy">Höchstgeschwindigkeit (km/h):</string>
     <string name="lb_lock_car_twizy">Geschwindigkeit begrenzen</string>
     <string name="lb_unlock_car_twizy">Geschwindigkeit freigeben</string>

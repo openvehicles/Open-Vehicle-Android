@@ -397,7 +397,7 @@ public class CarData implements Serializable {
 				car_charge_currentlimit = String.format("%.1f%s", car_charge_currentlimit_raw, "A");
 				car_charge_duration_raw = Integer.parseInt(dataParts[9]);
 				car_charge_b4byte_raw = Integer.parseInt(dataParts[10]);
-				car_charge_kwhconsumed = Float.parseFloat(dataParts[11]);
+				car_charge_kwhconsumed = Float.parseFloat(dataParts[11]) / 10f;
 				car_charge_substate_i_raw = Integer.parseInt(dataParts[12]);
 				car_charge_state_i_raw = Integer.parseInt(dataParts[13]);
 				car_charge_mode_i_raw = Integer.parseInt(dataParts[14]);
@@ -742,7 +742,7 @@ public class CarData implements Serializable {
 			b.putInt("car_charge_duration", car_charge_duration_raw);
 			b.putInt("car_charge_plugtype", car_charge_plugtype);
 			b.putDouble("car_charge_power_kw", car_charge_power_kw);
-			b.putFloat("car_charge_kwhconsumed", car_charge_kwhconsumed / 10f);
+			b.putFloat("car_charge_kwhconsumed", car_charge_kwhconsumed);
 			b.putBoolean("car_charge_timer", car_charge_timer);
 
 			b.putInt("car_chargeestimate", car_chargeestimate);
