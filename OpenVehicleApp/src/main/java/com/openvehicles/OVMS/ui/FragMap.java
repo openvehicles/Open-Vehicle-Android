@@ -477,6 +477,10 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (map == null)
 			return;
 
+		// fix for issue #79 by @Timopen:
+		if (rd1 < 0) rd1 = 0;
+		if (rd2 < 0) rd2 = 0;
+
 		float strokeWidth = getResources().getDimension(
 				R.dimen.circle_stroke_width);
 		List<PatternItem> pattern = Arrays.<PatternItem>asList(new Dot());
