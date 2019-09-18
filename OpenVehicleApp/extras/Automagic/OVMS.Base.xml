@@ -65,7 +65,7 @@ global_chgkwh = getFloat("car_charge_kwhconsumed", 0);
 global_chgcurr = getFloat("car_charge_current", 0);
 global_chgcurrlim = getFloat("car_charge_currentlimit", 0);
 
-global_speed = getFloat("car_speed", 0);
+global_speed = getDouble("car_speed", 0);
 global_drivemode = getInt("car_drivemode", 0);
 global_trip = getFloat("car_tripmeter", 0)/10.0;
 global_energyused = getFloat("car_energyused", 0);
