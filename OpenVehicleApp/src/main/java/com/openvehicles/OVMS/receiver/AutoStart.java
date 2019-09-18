@@ -22,7 +22,11 @@ public class AutoStart extends BroadcastReceiver {
 		boolean serviceEnabled = appPrefes.getData("option_service_enabled", "0").equals("1");
 		if (serviceEnabled) {
 			Log.i(TAG, "Starting ApiService");
-			context.startService(new Intent(context, ApiService.class));
+			try {
+				context.startService(new Intent(context, ApiService.class));
+			} catch(Exception e) {
+				Log.e(TAG, "Can't start ApiService: ERROR", e);
+			}
 		}
 	}
 }
