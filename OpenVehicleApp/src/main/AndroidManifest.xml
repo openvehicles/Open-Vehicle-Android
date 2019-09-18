@@ -31,7 +31,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/Theme.App" >
+        android:theme="@style/Theme.App"
+        tools:ignore="GoogleAppIndexingWarning">
 
         <activity
             android:name=".ui.MainActivity"
