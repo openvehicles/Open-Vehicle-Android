@@ -357,28 +357,32 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				do {
 					// check position:
 
-					double Latitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("Latitude")));
-					double Longitude = Double.parseDouble(cursor
-							.getString(cursor.getColumnIndex("Longitude")));
+					try {
+						double Latitude = Double.parseDouble(cursor
+								.getString(cursor.getColumnIndex("Latitude")));
+						double Longitude = Double.parseDouble(cursor
+								.getString(cursor.getColumnIndex("Longitude")));
 
-					if (check_range) {
-						if (distance(lat, lng, Latitude, Longitude) > maxrange_m)
-							continue;
+						if (check_range) {
+							if (distance(lat, lng, Latitude, Longitude) > maxrange_m)
+								continue;
+						}
+
+						// add marker:
+
+						String cpid = cursor.getString(cursor.getColumnIndex("cpid"));
+						String title = cursor.getString(cursor.getColumnIndex("Title"));
+						String snippet = cursor.getString(cursor.getColumnIndex("OperatorInfo"));
+
+						MarkerGenerator.addMarkers(map,
+								title, snippet,
+								new LatLng(Latitude, Longitude),
+								cpid);
+
+						cnt_added++;
+					} catch (Exception e) {
+						Log.e(TAG, "skipped charge point: ERROR", e);
 					}
-
-					// add marker:
-
-					String cpid = cursor.getString(cursor.getColumnIndex("cpid"));
-					String title = cursor.getString(cursor.getColumnIndex("Title"));
-					String snippet = cursor.getString(cursor.getColumnIndex("OperatorInfo"));
-
-					MarkerGenerator.addMarkers(map,
-							title, snippet,
-							new LatLng(Latitude, Longitude),
-							cpid);
-
-					cnt_added++;
 
 				} while (cursor.moveToNext());
 			}
