@@ -711,29 +711,67 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
 		iv.setVisibility(pCarData.car_bonnet_open ? View.VISIBLE : View.INVISIBLE);
 		
-		// Left Door
-		iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
-		iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-		
-		// Right Door
-		iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
-		iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-		
-		// Trunk
-		iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
-		iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
-		
-		// Headlights
-		iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
-		iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+    if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
+      // Left Door Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_outline_ld);
+      
+      // Right Door Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_outline_rd);
+      
+      // Rear Left Door Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+      iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_outline_rld);
+      
+      // Rear Right Door Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+      iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_outline_rrd);
+      
+      // Trunk Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_outline_tr);
+      
+      // Headlights Zoe
+      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.zoe_carlights);
+    } else {
+      // Left Door
+      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+      
+      // Right Door
+      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+      
+      // Trunk
+      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+      
+      // Headlights
+      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+    }
 
 		// Car locked
 		iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
 		iv.setImageResource(pCarData.car_locked ? R.drawable.carlock : R.drawable.carunlock);
-		
-		// Valet mode
-		iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-		iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
+    
+    if (pCarData.sel_vehicle_image.startsWith("car_smart_ed_")) {
+      // Valet mode Smart ED 451
+      iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+      iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
+    } else {
+      // Valet mode
+      iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+      iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
+    }
 		
 		// Charge Port
 	    iv = (ImageView) findViewById(R.id.tabCarImageCarChargePortOpen);
@@ -759,6 +797,17 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+			}
+			else if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
+				// Renault ZOE
+				if (pCarData.car_charge_state.equals("charging"))
+					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_orange);
+				else if (pCarData.car_charge_state.equals("stopped"))
+					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_red);
+				else if (pCarData.car_charge_state.equals("prepare"))
+					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_yellow);
+				else
+					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_green);
 			}
 			else {
 				// Tesla Roadster:

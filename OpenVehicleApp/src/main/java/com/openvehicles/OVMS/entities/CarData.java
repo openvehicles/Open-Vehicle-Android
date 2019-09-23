@@ -41,6 +41,8 @@ public class CarData implements Serializable {
 	// Environment
 	public boolean car_frontleftdoor_open = false;
 	public boolean car_frontrightdoor_open = false;
+	public boolean car_rearleftdoor_open = false;
+	public boolean car_rearrightdoor_open = false;
 	public boolean car_chargeport_open = false;
 	public boolean car_pilot_present = false;
 	public boolean car_charging = false;
@@ -557,6 +559,8 @@ public class CarData implements Serializable {
 				dataField = Integer.parseInt(dataParts[17]);
 				car_doors5_raw = dataField;
 				car_charging_12v = ((dataField & 0x10) == 0x10);
+				car_rearleftdoor_open = ((dataField & 0x1) == 0x1);
+				car_rearrightdoor_open = ((dataField & 0x2) == 0x2);
 			}
 			if (dataParts.length >= 19) {
 				car_temp_charger_raw = Float.parseFloat(dataParts[18]);
@@ -788,6 +792,8 @@ public class CarData implements Serializable {
 
 			b.putBoolean("car_frontleftdoor_open", car_frontleftdoor_open);
 			b.putBoolean("car_frontrightdoor_open", car_frontrightdoor_open);
+			b.putBoolean("car_rearleftdoor_open", car_rearleftdoor_open);
+			b.putBoolean("car_rearrightdoor_open", car_rearrightdoor_open);
 			b.putBoolean("car_chargeport_open", car_chargeport_open);
 			b.putBoolean("car_pilot_present", car_pilot_present);
 			b.putBoolean("car_charging", car_charging);
