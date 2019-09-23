@@ -741,6 +741,26 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
       iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
       iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
       iv.setImageResource(R.drawable.zoe_carlights);
+    } else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
+      // Left Door Smart
+      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.smart_outline_ld);
+      
+      // Right Door Smart
+      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.smart_outline_rd);
+      
+      // Trunk Smart
+      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.smart_outline_tr);
+      
+      // Headlights Smart
+      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+      iv.setImageResource(R.drawable.smart_carlights);
     } else {
       // Left Door
       iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
