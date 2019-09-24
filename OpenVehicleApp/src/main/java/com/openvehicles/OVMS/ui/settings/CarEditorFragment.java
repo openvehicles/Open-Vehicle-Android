@@ -272,6 +272,7 @@ public class CarEditorFragment extends BaseFragment {
 		"car_smart_eq_black",
 		"car_smart_eq_white",
 		"car_zoe_black",
-		"car_zoe_grey"
+		"car_zoe_grey",
+		"car_zoe_funk"
 	 };
 }
