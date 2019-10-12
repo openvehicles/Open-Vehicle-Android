@@ -234,6 +234,7 @@
     <string name="textPROFILE">PROFIL</string>
     <string name="textAMBIENT">AUSSEN</string>
     <string name="text12VBATT">12V BATT</string>
+    <string name="textHVBATT">HV BATT</string>
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
 

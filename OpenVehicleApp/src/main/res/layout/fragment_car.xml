@@ -176,6 +176,7 @@
 			android:textStyle="bold"/>
 
 		<TextView
+			android:id="@+id/tabCarTextPEMLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="614px"
@@ -204,6 +205,7 @@
 			android:textStyle="bold"/>
 
 		<TextView
+			android:id="@+id/tabCarTextMotorLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="215px"
 			android:layout_y="615px"

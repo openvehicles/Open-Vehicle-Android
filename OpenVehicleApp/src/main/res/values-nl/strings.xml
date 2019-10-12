@@ -191,6 +191,7 @@
   <string name="textPROFILE">PROFIEL</string>
   <string name="textAMBIENT">OMGEVING</string>
   <string name="text12VBATT">12V BATT</string>
+  <string name="textHVBATT">HV BATT</string>
   <string-array name="en_charger">
     <item>Standaard</item>
     <item>Berging</item>

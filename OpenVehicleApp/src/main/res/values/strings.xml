@@ -239,6 +239,7 @@
     <string name="textPROFILE">PROFILE</string>
     <string name="textAMBIENT">AMBIENT</string>
     <string name="text12VBATT">12V BATT</string>
+    <string name="textHVBATT">HV BATT</string>
 
     <string name="textAC">CLIMATE CONTROL</string>
     <string name="mi_ac_on">A/C ON</string>

@@ -87,17 +87,25 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (uiCarType.equals(pCarData.car_type))
 			return;
 
-
+		img1 = (ImageView) findViewById(R.id.tabCarImageHomelink);
 		if (pCarData.car_type.equals("RT")) {
 			// UI changes for Renault Twizy:
 
 			// exchange "Homelink" by "Profile":
-			img1 = (ImageView) findViewById(R.id.tabCarImageHomelink);
 			if (img1 != null)
 				img1.setImageResource(R.drawable.ic_drive_profile);
 			label = (TextView) findViewById(R.id.txt_homelink);
 			if (label != null)
 				label.setText(R.string.textPROFILE);
+		}
+		else if (pCarData.car_type.equals("RZ")) {
+			// UI changes for Renault ZOE:
+
+			// change "Homelink" image:
+			if (img1 != null)
+				img1.setImageResource(R.drawable.homelinklogo_zoe);
+		} else {
+			img1.setImageResource(R.drawable.ic_home_link);
 		}
 
 		//
@@ -642,29 +650,78 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
     		}
         }
 
-        // Temperatures
+    // "Temp PEM" box:
+		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
+		
+		// Renault Zoe, Smart ED: display 12V state
+		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE")) {
+			pemtvl.setText(R.string.text12VBATT);
+			pemtv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
+      
+      if (mCarData.car_12vline_ref <= 1.5) {
+				// charging / calmdown
+				pemtv.setTextColor(0xFFA9A9FF);
+			} else {
+				Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
+				if (diff >= 1.6)
+					pemtv.setTextColor(0xFFFF0000);
+				else if (diff >= 1.0)
+					pemtv.setTextColor(0xFFFF6600);
+				else
+					pemtv.setTextColor(0xFFFFFFFF);
+			}
+    } else {
+			// Standard car: display PEM temperature
+			pemtvl.setText(R.string.textPEM);
+      if (pCarData.stale_car_temps == DataStale.NoValue) {
+				pemtv.setText("");
+			} else {
+				pemtv.setText(pCarData.car_temp_pem);
+				if (pCarData.stale_car_temps == DataStale.Stale) {
+					pemtv.setTextColor(0xFF808080);
+				} else {
+					pemtv.setTextColor(0xFFFFFFFF);
+				}
+			}
+    }
+
+		// "Temp Motor" box:
+		TextView motortvl = (TextView) findViewById(R.id.tabCarTextMotorLabel);
 		TextView motortv = (TextView) findViewById(R.id.tabCarTextMotor);
+		
+		// Renault Zoe, Smart ED: display HVBatt state
+		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE")) {
+			motortvl.setText(R.string.textHVBATT);
+			motortv.setText(String.format("%.1fV", mCarData.car_battery_voltage));
+    } else {
+			// Standard car: display Motor temperature
+			motortvl.setText(R.string.textMOTOR);
+      if (pCarData.stale_car_temps == DataStale.NoValue) {
+				motortv.setText("");
+			} else {
+				motortv.setText(pCarData.car_temp_motor);
+				if (pCarData.stale_car_temps == DataStale.Stale) {
+					motortv.setTextColor(0xFF808080);
+				} else {
+					motortv.setTextColor(0xFFFFFFFF);
+				}
+			}
+    }
+
+		// Temperatures
 		TextView batterytv = (TextView) findViewById(R.id.tabCarTextBattery);
 		TextView chargertv = (TextView) findViewById(R.id.tabCarTextCharger);
 		if (pCarData.stale_car_temps == DataStale.NoValue) {
-			pemtv.setText("");
-			motortv.setText("");
 			batterytv.setText("");
 			chargertv.setText("");
 		} else {
-			pemtv.setText(pCarData.car_temp_pem);
-			motortv.setText(pCarData.car_temp_motor);
 			batterytv.setText(pCarData.car_temp_battery);
 			chargertv.setText(pCarData.car_temp_charger);
 			if (pCarData.stale_car_temps == DataStale.Stale) {
-				pemtv.setTextColor(0xFF808080);
-				motortv.setTextColor(0xFF808080);
 				batterytv.setTextColor(0xFF808080);
 				chargertv.setTextColor(0xFF808080);
 			} else {
-				pemtv.setTextColor(0xFFFFFFFF);
-				motortv.setTextColor(0xFFFFFFFF);
 				batterytv.setTextColor(0xFFFFFFFF);
 				chargertv.setTextColor(0xFFFFFFFF);
 			}
