@@ -837,14 +837,24 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
     }
 
 		// Car locked
-		iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
-		iv.setImageResource(pCarData.car_locked ? R.drawable.carlock : R.drawable.carunlock);
+		if (pCarData.car_type.equals("SE") || pCarData.car_type.equals("RZ")) {
+			// Car locked Smart ED 451 and Renault ZOE
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
+			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock_clean : R.drawable.carunlock_clean);
+		} else {
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
+			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock : R.drawable.carunlock);
+		}
     
-    if (pCarData.sel_vehicle_image.startsWith("car_smart_ed_")) {
+    if (pCarData.car_type.equals("SE")) {
       // Valet mode Smart ED 451
       iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
       iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
-    } else {
+    } else if (pCarData.car_type.equals("RZ")) {
+			// Valet mode Renault ZOE
+			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+      iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_clean : R.drawable.carvaletoff_clean);
+		} else {
       // Valet mode
       iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
       iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
