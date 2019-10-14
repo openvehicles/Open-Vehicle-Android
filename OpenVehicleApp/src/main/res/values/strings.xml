@@ -551,8 +551,9 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
         <p>&nbsp;</p>
         <p><b><u>Main changes in this App release</u></b>:</p>
-        <p>· Added Hyundai Kona</p>
-        <p>· Bug fixes for Android 8 &amp; 9</p>
+        <p>· Renault Zoe support & images</p>
+        <p>· Updated Smart support & images</p>
+        <p>· TPMS pressures in BAR units when Kilometers selected</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
