@@ -208,6 +208,7 @@
     <string name="textPROFILE">PERFIL</string>
     <string name="textAMBIENT">AMBIENTE</string>
     <string name="text12VBATT">BAT 12V</string>
+    <string name="textHVBATT">BATT HV</string>
 
     <string-array name="en_charger">
     	<item>Estándar</item>

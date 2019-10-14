@@ -41,6 +41,8 @@ public class CarData implements Serializable {
 	// Environment
 	public boolean car_frontleftdoor_open = false;
 	public boolean car_frontrightdoor_open = false;
+	public boolean car_rearleftdoor_open = false;
+	public boolean car_rearrightdoor_open = false;
 	public boolean car_chargeport_open = false;
 	public boolean car_pilot_present = false;
 	public boolean car_charging = false;
@@ -557,6 +559,8 @@ public class CarData implements Serializable {
 				dataField = Integer.parseInt(dataParts[17]);
 				car_doors5_raw = dataField;
 				car_charging_12v = ((dataField & 0x10) == 0x10);
+				car_rearleftdoor_open = ((dataField & 0x1) == 0x1);
+				car_rearrightdoor_open = ((dataField & 0x2) == 0x2);
 			}
 			if (dataParts.length >= 19) {
 				car_temp_charger_raw = Float.parseFloat(dataParts[18]);
@@ -650,10 +654,17 @@ public class CarData implements Serializable {
 				car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
 				car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
 				car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
-				car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
-				car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
-				car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
-				car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
+				if (car_distance_units_raw.startsWith("M")) {
+					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
+					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
+					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
+					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
+				} else {
+					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar");
+					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar");
+					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar");
+					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar");
+				}
 				if (appPrefes.getData("showfahrenheit").equals("on")) {
 					car_tpms_fl_t = String.format("%.0f%s", (car_tpms_fl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
 					car_tpms_fr_t = String.format("%.0f%s", (car_tpms_fr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
@@ -788,6 +799,8 @@ public class CarData implements Serializable {
 
 			b.putBoolean("car_frontleftdoor_open", car_frontleftdoor_open);
 			b.putBoolean("car_frontrightdoor_open", car_frontrightdoor_open);
+			b.putBoolean("car_rearleftdoor_open", car_rearleftdoor_open);
+			b.putBoolean("car_rearrightdoor_open", car_rearrightdoor_open);
 			b.putBoolean("car_chargeport_open", car_chargeport_open);
 			b.putBoolean("car_pilot_present", car_pilot_present);
 			b.putBoolean("car_charging", car_charging);
