@@ -210,6 +210,7 @@
   <string name="mi_map_filter_range">Mon autonomie</string>
   <string name="mi_map_settings">Réglages</string>
   <string name="mi_car_details_temp">Fahrenheit</string>
+	<string name="mi_car_details_tpms">TPMS in bar</string>
   <string name="cargroup_title">Groupe de véhicules</string>
   <string name="cargroup_name_hint">Nom du groupe</string>
   <string name="connections">Connexions</string>

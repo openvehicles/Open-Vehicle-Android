@@ -47,6 +47,13 @@
                     android:title="@string/mi_car_details_temp"
                     app:showAsAction="never"/>
 
+                <item
+                    android:id="@+id/mi_show_tpms_bar"
+                    android:checkable="true"
+                    android:checked="false"
+                    android:title="@string/mi_car_details_tpms"
+                    app:showAsAction="never"/>
+
             </group>
 
             <item

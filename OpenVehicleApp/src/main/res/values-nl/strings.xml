@@ -210,6 +210,7 @@
   <string name="mi_map_filter_range">Mijn bereik</string>
   <string name="mi_map_settings">Instellingen</string>
   <string name="mi_car_details_temp">Fahrenheit</string>
+	<string name="mi_car_details_tpms">TPMS in bar</string>
   <string name="cargroup_title">Voertuig groepen</string>
   <string name="cargroup_name_hint">Groep naam</string>
   <string name="connections">Verbindingen</string>

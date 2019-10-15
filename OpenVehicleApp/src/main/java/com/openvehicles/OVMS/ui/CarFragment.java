@@ -149,6 +149,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// set checkbox:
 		optionsMenu.findItem(R.id.mi_show_fahrenheit)
 				.setChecked(appPrefes.getData("showfahrenheit").equals("on"));
+		optionsMenu.findItem(R.id.mi_show_tpms_bar)
+				.setChecked(appPrefes.getData("showtpmsbar").equals("on"));
 
 		if (uiCarType.equals("RT")) {
 			// Menu setup for Renault Twizy:
@@ -201,6 +203,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 			case R.id.mi_show_fahrenheit:
 				appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
+				item.setChecked(newState);
+				return true;
+			
+			case R.id.mi_show_tpms_bar:
+				appPrefes.SaveData("showtpmsbar", newState ? "on" : "off");
 				item.setChecked(newState);
 				return true;
 
