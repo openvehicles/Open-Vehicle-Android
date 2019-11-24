@@ -528,8 +528,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	public void updateCarBodyView(CarData pCarData) {
 		if ((pCarData == null) || (pCarData.car_lastupdated == null)) return;
 
+		ImageView iv;
+		TextView label, tv;
+
 		// Now, the car background image
-		ImageView iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
+		iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
 
 		if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 			// Mitsubishi i-MiEV: one ol image for all colors:
@@ -546,46 +549,48 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
 		}
 
+		// "12V" box:
+		label = (TextView) findViewById(R.id.tabCarText12VLabel);
+		tv = (TextView) findViewById(R.id.tabCarText12V);
+
+		tv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
+
+		if (mCarData.car_12vline_ref <= 1.5 || mCarData.car_charging_12v) {
+			// charging / calmdown
+			tv.setTextColor(0xFFA9A9FF);
+		} else {
+			Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
+			if (diff >= 1.6)
+				tv.setTextColor(0xFFFF0000);
+			else if (diff >= 1.0)
+				tv.setTextColor(0xFFFF6600);
+			else
+				tv.setTextColor(0xFFFFFFFF);
+		}
+
 		// "Ambient" box:
-		TextView label = (TextView) findViewById(R.id.tabCarTextAmbientLabel);
-		TextView tv = (TextView) findViewById(R.id.tabCarTextAmbient);
+		iv = (ImageView)findViewById(R.id.tabCarImageCarAmbientBox);
+		label = (TextView) findViewById(R.id.tabCarTextAmbientLabel);
+		tv = (TextView) findViewById(R.id.tabCarTextAmbient);
 
 		if (mCarData.car_type.equals("RT")) {
+			pCarData.stale_ambient_temp = DataStale.NoValue;
+		}
 
-			// Renault Twizy: display 12V state
-
-			label.setText(R.string.text12VBATT);
-
-			tv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
-
-			if (mCarData.car_12vline_ref <= 1.5) {
-				// charging / calmdown
-				tv.setTextColor(0xFFA9A9FF);
-			} else {
-				Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
-				if (diff >= 1.6)
-					tv.setTextColor(0xFFFF0000);
-				else if (diff >= 1.0)
-					tv.setTextColor(0xFFFF6600);
-				else
-					tv.setTextColor(0xFFFFFFFF);
-			}
-
+		if (pCarData.stale_ambient_temp == DataStale.NoValue) {
+			iv.setVisibility(View.INVISIBLE);
+			label.setVisibility(View.INVISIBLE);
+			tv.setText(null);
+		} else if ((pCarData.stale_ambient_temp == DataStale.Stale)) {
+			iv.setVisibility(View.VISIBLE);
+			label.setVisibility(View.VISIBLE);
+			tv.setText(pCarData.car_temp_ambient);
+			tv.setTextColor(0xFF808080);
 		} else {
-
-			// Standard car: display ambient temperature
-
-			label.setText(R.string.textAMBIENT);
-			if (pCarData.stale_ambient_temp == DataStale.NoValue) {
-				tv.setText("");
-				tv.setTextColor(0xFF808080);
-			} else if ((pCarData.stale_ambient_temp == DataStale.Stale)) {
-				tv.setText(pCarData.car_temp_ambient);
-				tv.setTextColor(0xFF808080);
-			} else {
-				tv.setText(pCarData.car_temp_ambient);
-				tv.setTextColor(0xFFFFFFFF);
-			}
+			iv.setVisibility(View.VISIBLE);
+			label.setVisibility(View.VISIBLE);
+			tv.setText(pCarData.car_temp_ambient);
+			tv.setTextColor(0xFFFFFFFF);
 		}
 
 		// TPMS

@@ -80,6 +80,12 @@
 			android:src="@drawable/motortemp_letterbox"/>
 
 		<ImageView
+			android:id="@+id/tabCarImageCarAmbientBox"
+			style="@style/TabCarImgLetterBox"
+			android:src="@drawable/letterbox_ambient"
+			/>
+
+		<ImageView
 			android:id="@+id/tabCarImageCarTPMSBoxes"
 			style="@style/TabCarImgLetterBox"
 			android:src="@drawable/tirepress_letterbox"/>
@@ -227,6 +233,21 @@
 			android:clickable="true"
 			android:text="@string/textHOMELINK"
 			android:textSize="18px"/>
+
+		<TextView
+			android:id="@+id/tabCarText12VLabel"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="186px"
+			android:text="@string/text12VBATT"/>
+
+		<TextView
+			android:id="@+id/tabCarText12V"
+			style="@style/TabCarTextBox"
+			android:layout_x="2px"
+			android:layout_y="220px"
+			android:text="12.3V"
+			android:textStyle="bold"/>
 
 		<TextView
 			android:id="@+id/tabCarTextAmbientLabel"
