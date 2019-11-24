@@ -77,9 +77,9 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		Context context = parent.getContext();
 		final int fn = position;
 		final String val = (String)mAdapter.getItem(position);
-		boolean isPasswd = position == ControlParametersAdapter.PARAM_REGPASS ||
-				position == ControlParametersAdapter.PARAM_NETPASS1 ||
-				position == ControlParametersAdapter.PARAM_GPRSPASS;
+		boolean isPasswd = (position == ControlParametersAdapter.PARAM_REGPASS) ||
+				(position == ControlParametersAdapter.PARAM_NETPASS1) ||
+				(position == ControlParametersAdapter.PARAM_GPRSPASS);
 
 		// Check content type:
 		boolean isBinary = false;
@@ -331,11 +331,16 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 				}
 				convertView = mInflater.inflate(R.layout.item_keyvalue, null);
 			}
+
+			boolean isPasswd = (position == ControlParametersAdapter.PARAM_REGPASS) ||
+					(position == ControlParametersAdapter.PARAM_NETPASS1) ||
+					(position == ControlParametersAdapter.PARAM_GPRSPASS);
+
 			TextView tv = (TextView) convertView.findViewById(android.R.id.text1);
 			tv.setText(getTitleRow(context, position));
 			
 			tv = (TextView) convertView.findViewById(android.R.id.text2);
-			tv.setText(mParams[position]);
+			tv.setText(isPasswd ? "*****" : mParams[position]);
 			
 			return convertView;
 		}
