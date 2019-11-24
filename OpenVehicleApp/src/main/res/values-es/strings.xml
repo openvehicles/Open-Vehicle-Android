@@ -231,6 +231,7 @@
     <string name="mi_map_settings">Configuración</string>
     
     <string name="mi_car_details_temp">Fahrenheit</string>
+		<string name="mi_car_details_tpms">TPMS in bar</string>
 
     <string name="cargroup_title">Grupos de coches</string>
     <string name="cargroup_name_hint">Nombre del grupo</string>

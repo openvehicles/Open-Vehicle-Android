@@ -654,16 +654,16 @@ public class CarData implements Serializable {
 				car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
 				car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
 				car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
-				if (car_distance_units_raw.startsWith("M")) {
-					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
-					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
-					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
-					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
-				} else {
+				if (appPrefes.getData("showtpmsbar").equals("on")) {
 					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar");
 					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar");
 					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar");
 					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar");
+				} else {
+					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
+					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
+					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
+					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
 				}
 				if (appPrefes.getData("showfahrenheit").equals("on")) {
 					car_tpms_fl_t = String.format("%.0f%s", (car_tpms_fl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");

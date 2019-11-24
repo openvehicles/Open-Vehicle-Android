@@ -267,6 +267,7 @@
     <string name="mi_map_settings">Settings</string>
     
     <string name="mi_car_details_temp">Fahrenheit</string>
+    <string name="mi_car_details_tpms">TPMS in bar</string>
 
     <string name="cargroup_title">Car groups</string>
     <string name="cargroup_name_hint">Group name</string>
