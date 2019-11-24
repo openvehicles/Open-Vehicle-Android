@@ -89,7 +89,7 @@
     <string name="lb_enter_pin">Enter PIN</string>
     <string name="lb_enter_passwd">Enter password</string>
     <string name="lb_enter_value">Enter value</string>
-    <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damege electric systems!</string>
+    <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damage electric systems!</string>
     <string name="lb_charger_setting">Charger Setting</string>
     <string name="lb_communications_problem">Communications Problem</string>
     <string name="lb_vehicle_id">Vehicle ID</string>
