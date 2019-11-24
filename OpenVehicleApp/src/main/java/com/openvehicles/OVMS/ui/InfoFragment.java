@@ -609,9 +609,9 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		} else {
 			// Car is plugged in
 
-			String cmst = String.format("%s %s ▾%.1fkWh",
+			String cmst = String.format("%s ≤%s ▾%.1fkWh",
 					pCarData.car_charge_mode.toUpperCase(),
-					pCarData.car_charge_current,
+					pCarData.car_charge_currentlimit,
 					pCarData.car_charge_kwhconsumed);
 
 			if (mCarData.car_type.equals("RT")) {
