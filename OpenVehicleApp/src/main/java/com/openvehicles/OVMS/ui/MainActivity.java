@@ -100,7 +100,7 @@ public class MainActivity extends ApiActivity implements
 		// OCM init:
 		updateLocation = this;
 		updatelocation();
-		String url = "http://api.openchargemap.io/v2/referencedata/";
+		String url = "https://api.openchargemap.io/v2/referencedata/";
 		ConnectionList connectionList = new ConnectionList(this, this, url,
 				true);
 
@@ -681,7 +681,7 @@ public class MainActivity extends ApiActivity implements
 			String maxresults = appPrefes.getData("maxresults");
 			String lastStatusUpdate = database.get_DateLastStatusUpdate();
 
-			String url = "http://api.openchargemap.io/v2/poi/?output=json&verbose=false"
+			String url = "https://api.openchargemap.io/v2/poi/?output=json&verbose=false"
 					+ "&latitude=" + lat
 					+ "&longitude=" + lng
 					+ "&distance=160" // see above

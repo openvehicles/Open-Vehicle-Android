@@ -45,7 +45,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
 		}
 
-		String url = "http://api.openchargemap.io/v2/referencedata/";
+		String url = "https://api.openchargemap.io/v2/referencedata/";
 		connectionList = new ConnectionList(getActivity(), this, url,false);
 
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_control);

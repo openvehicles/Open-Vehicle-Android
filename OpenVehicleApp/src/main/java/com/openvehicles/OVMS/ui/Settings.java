@@ -34,7 +34,7 @@ public class Settings extends Fragment implements ConnectionList.Con {
 		view = inflater.inflate(R.layout.setting, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 
-		String url = "http://api.openchargemap.io/v2/referencedata/";
+		String url = "https://api.openchargemap.io/v2/referencedata/";
 		connectionList = new ConnectionList(getActivity(), this, url,false);
 
 		setUpClusteringViews();
