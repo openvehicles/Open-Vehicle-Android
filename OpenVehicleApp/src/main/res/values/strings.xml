@@ -555,6 +555,7 @@
         <p>· Change TPMS units to be configurable</p>
         <p>· Add dedicated 12V display for all vehicles</p>
         <p>· Fix missing charge current limit info</p>
+        <p>· Update OpenChargeMap API</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>

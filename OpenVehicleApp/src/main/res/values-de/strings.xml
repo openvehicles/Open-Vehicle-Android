@@ -543,6 +543,7 @@
         <p>· Reifendruck-Einheit unabhängig einstellbar</p>
         <p>· Separate 12V-Anzeige für alle Fahrzeuge</p>
         <p>· Batterieinfo zeigt beim Laden wieder das Stromlimit an</p>
+        <p>· Aktualisierung des OpenChargeMap-API</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
