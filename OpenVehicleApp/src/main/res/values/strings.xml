@@ -258,7 +258,11 @@
         <item>1000</item>
         <item>1500</item>
         <item>2000</item>
+        <item>3000</item>
+        <item>5000</item>
     </string-array>
+
+    <string formatted="false" name="ocm_read_failed">OpenChargeMap read failed: %s</string>
 
     <string name="mi_map_options">Options</string>
     <string name="mi_map_autotrack">Auto track</string>

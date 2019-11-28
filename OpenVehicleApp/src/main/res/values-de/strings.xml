@@ -250,6 +250,8 @@
         <item>Perform</item>
     </string-array>
 
+    <string formatted="false" name="ocm_read_failed">OpenChargeMap Lesefehler: %s</string>
+
     <string name="mi_map_options">Optionen</string>
     <string name="mi_map_autotrack">Fahrzeug verfolgen</string>
     <string name="mi_map_filter_connections">Meine Anschlüsse</string>

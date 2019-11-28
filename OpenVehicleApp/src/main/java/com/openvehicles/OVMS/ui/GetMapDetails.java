@@ -3,6 +3,7 @@ package com.openvehicles.OVMS.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -11,9 +12,11 @@ import com.google.gson.*;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.gson.stream.JsonReader;
 import com.luttu.Main;
+import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
 import com.openvehicles.OVMS.ui.utils.Database;
 
@@ -23,25 +26,29 @@ import com.openvehicles.OVMS.ui.utils.Database;
 public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 	private static final String TAG = "GetMapDetails";
 
+	Context appContext;
 	Main main;
 	String url;
 	Database database;
-	afterasytask name;
+	afterasytask invoker;
 	Gson gson;
 	ArrayList<ChargePoint> chargePoints;
+	Exception error;
 
 
 	public interface afterasytask {
 		public void after(boolean flBoolean);
 	}
 
-	public GetMapDetails(Context context, String url, afterasytask name) {
+	public GetMapDetails(Context context, String url, afterasytask invoker) {
+		appContext = context;
 		main = new Main(context);
 		this.url = url;
 		database = new Database(context);
-		this.name = name;
+		this.invoker = invoker;
 		gson = new Gson();
 		chargePoints = new ArrayList<ChargePoint>();
+		error = null;
 	}
 
 	@Override
@@ -69,6 +76,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 			getdata();
 		} catch (IOException e) {
 			e.printStackTrace();
+			error = e;
 		}
 
 		Log.d(TAG, "read " + chargePoints.size() + " chargepoints");
@@ -91,10 +99,15 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected void onPostExecute(Void result) {
-		// TODO Auto-generated method stub
 		super.onPostExecute(result);
-		// main.Diacancel();
-		name.after(true);
+		if (error != null) {
+			Toast.makeText(appContext,
+					appContext.getString(R.string.ocm_read_failed, error.getLocalizedMessage()),
+					Toast.LENGTH_LONG).show();
+			invoker.after(false);
+		} else {
+			invoker.after(true);
+		}
 		database.close();
 	}
 
@@ -104,7 +117,14 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 		// open URL for JSON parser:
 
 		URL obj_URL = new URL(url);
-		InputStream in = obj_URL.openStream();
+		HttpURLConnection connection = (HttpURLConnection)obj_URL.openConnection();
+		connection.setAllowUserInteraction(false);
+		connection.setUseCaches(false);
+		connection.setInstanceFollowRedirects(true);
+		connection.setConnectTimeout(30*1000);
+		connection.setReadTimeout(120*1000);
+
+		InputStream in = connection.getInputStream();
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 
 		// read charge points array:

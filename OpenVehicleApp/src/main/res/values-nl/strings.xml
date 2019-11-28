@@ -198,12 +198,6 @@
     <item>Bereik</item>
     <item>Prestatie</item>
   </string-array>
-  <string-array name="ocm_options_maxresults">
-    <item>500</item>
-    <item>1000</item>
-    <item>1500</item>
-    <item>2000</item>
-  </string-array>
   <string name="mi_map_options">Opties</string>
   <string name="mi_map_autotrack">Auto track</string>
   <string name="mi_map_filter_connections">Mijn stekkers</string>

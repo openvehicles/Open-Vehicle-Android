@@ -198,12 +198,6 @@
     <item>Distance</item>
     <item>Performance</item>
   </string-array>
-  <string-array name="ocm_options_maxresults">
-    <item>500</item>
-    <item>1000</item>
-    <item>1500</item>
-    <item>2000</item>
-  </string-array>
   <string name="mi_map_options">Options</string>
   <string name="mi_map_autotrack">Suivi automatique</string>
   <string name="mi_map_filter_connections">Mes bornes</string>
