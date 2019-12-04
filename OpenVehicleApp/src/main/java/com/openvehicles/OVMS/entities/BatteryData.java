@@ -223,11 +223,10 @@ public class BatteryData {
 
 							// Pack record(s) complete?
 							// (while handles Pack records without Cell records,
-							//  3000 ms covers server timestamp offsets for cells)
-							while ((timeStamp.getTime() - packStatus.timeStamp.getTime()) > 3000) {
+							//  30 seconds covers server timestamp offsets for cells)
+							while ((timeStamp.getTime() - packStatus.timeStamp.getTime()) > 30000) {
 								// set pack cells:
 								packStatus.cells = new ArrayList<CellStatus>(cells);
-
 
 								// get next pack:
 								packStatus = packHistory.get(++nrPack);
