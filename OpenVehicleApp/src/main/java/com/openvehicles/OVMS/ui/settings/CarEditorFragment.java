@@ -4,12 +4,12 @@ import java.util.List;
 
 import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.Gallery;
@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Spinner;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
@@ -31,10 +32,17 @@ import com.openvehicles.OVMS.ui.validators.ValidationException;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
 public class CarEditorFragment extends BaseFragment {
+
+	private static final String TAG = "CarEditorFragment";
+
 	private CarData mCarData;
 	private boolean isSelectedCar;
 	private int mEditPosition;
-	private Gallery mGalleryCar; 
+	private Gallery mGalleryCar;
+	private Spinner mSelectServer;
+	private int mSelectServerPosition;
+	private String[] mServers, mGcmSenders;
+	private EditText mServer, mGcmSender;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,12 +62,31 @@ public class CarEditorFragment extends BaseFragment {
 			isSelectedCar = selectedCarData != null && mCarData != null 
 				&& selectedCarData.sel_vehicleid.equals(mCarData.sel_vehicleid); 
 		}
-		
+
+		mSelectServer = (Spinner) getView().findViewById(R.id.select_server);
+		mSelectServerPosition = -1;
+		mServers = getResources().getStringArray(R.array.select_server_options);
+		mGcmSenders = getResources().getStringArray(R.array.select_server_gcm_senders);
+		mServer = (EditText) getView().findViewById(R.id.txt_server_address);
+		mGcmSender = (EditText) getView().findViewById(R.id.txt_gcm_senderid);
+
+		mSelectServer.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				setSelectedServer(position, true);
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nop
+			}
+		});
+
 		mGalleryCar = (Gallery) getView().findViewById(R.id.ga_car);
 		mGalleryCar.setAdapter(new CarImgAdapter());
 		
 		setHasOptionsMenu(true);
-		if (mCarData != null) approveCarData();
+
+		load();
 	}
 	
 	@Override
@@ -110,11 +137,12 @@ public class CarEditorFragment extends BaseFragment {
 	}
 	
 	private void save() {
+		View rootView = getView();
+
 		if (mCarData == null) {
 			mCarData = new CarData();
 		}
-		View rootView = getView();
-		
+
 		try {
 			mCarData.sel_vehicleid = Ui.getValidValue(rootView, R.id.txt_vehicle_id, 
 				new StringValidator() {
@@ -155,27 +183,75 @@ public class CarEditorFragment extends BaseFragment {
 	}
 	
 	
-	private void approveCarData() {
+	private void load() {
 		View rootView = getView();
-		getCompatActivity().setTitle(mCarData.sel_vehicleid);
-		Ui.setValue(rootView, R.id.txt_vehicle_id, mCarData.sel_vehicleid);
-		Ui.setValue(rootView, R.id.txt_vehicle_label, mCarData.sel_vehicle_label);
-		Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);
-		Ui.setValue(rootView, R.id.txt_module_passwd, mCarData.sel_module_password);
-		Ui.setValue(rootView, R.id.txt_server_address, mCarData.sel_server);
-		Ui.setValue(rootView, R.id.txt_gcm_senderid, mCarData.sel_gcm_senderid);
 
-		AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
-		Log.d("CarEditorFragment", "sel_vehicle_label=" + mCarData.sel_vehicle_label);
-		appPrefes.SaveData("sel_vehicle_label", mCarData.sel_vehicle_label);
-		int index = -1;
-		for (String imgRes: sAvailableColors) {
-			index++;
-			if (imgRes.equals(mCarData.sel_vehicle_image)) break;
+		if (mCarData == null) {
+			// edit new car:
+			setSelectedServer(0, false);
 		}
-		if (index > 0) mGalleryCar.setSelection(index);
+		else {
+			// edit existing car:
+			getCompatActivity().setTitle(mCarData.sel_vehicleid);
+			Ui.setValue(rootView, R.id.txt_vehicle_id, mCarData.sel_vehicleid);
+			Ui.setValue(rootView, R.id.txt_vehicle_label, mCarData.sel_vehicle_label);
+			Ui.setValue(rootView, R.id.txt_server_passwd, mCarData.sel_server_password);
+			Ui.setValue(rootView, R.id.txt_module_passwd, mCarData.sel_module_password);
+
+			// set server:
+			int position = mServers.length - 1;
+			for (int i = 0; i < mServers.length; i++) {
+				if (mServers[i].equals(mCarData.sel_server) && mGcmSenders[i].equals(mCarData.sel_gcm_senderid)) {
+					position = i;
+					break;
+				}
+			}
+			Log.d(TAG, "load: server=" + mCarData.sel_server + " → position=" + position);
+			setSelectedServer(position, false);
+
+			// set car image:
+			int index = -1;
+			for (String imgRes : sAvailableColors) {
+				index++;
+				if (imgRes.equals(mCarData.sel_vehicle_image)) break;
+			}
+			if (index >= 0) mGalleryCar.setSelection(index);
+
+			// save selected vehicle label:
+			AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
+			Log.d(TAG, "load: sel_vehicle_label=" + mCarData.sel_vehicle_label);
+			appPrefes.SaveData("sel_vehicle_label", mCarData.sel_vehicle_label);
+		}
 	}
-	
+
+	private void setSelectedServer(int position, boolean userAction) {
+		if (position != mSelectServerPosition) {
+			mSelectServerPosition = position;
+			Log.d(TAG, "setSelectedServer: new position=" + position
+					+ " → server=" + mServers[position]);
+			if (position < mServers.length-1) {
+				mServer.setText(mServers[position]);
+				mGcmSender.setText(mGcmSenders[position]);
+				mServer.setVisibility(View.GONE);
+				mGcmSender.setVisibility(View.GONE);
+			} else {
+				if (userAction) {
+					mServer.setText("");
+					mGcmSender.setText("");
+					mServer.requestFocus();
+				} else {
+					mServer.setText((mCarData != null) ? mCarData.sel_server : "");
+					mGcmSender.setText((mCarData != null) ? mCarData.sel_gcm_senderid : "");
+				}
+				mServer.setVisibility(View.VISIBLE);
+				mGcmSender.setVisibility(View.VISIBLE);
+			}
+			if (!userAction) {
+				mSelectServer.setSelection(position);
+			}
+		}
+	}
+
 	private static class CarImgAdapter extends BaseAdapter {
 		
 		@Override

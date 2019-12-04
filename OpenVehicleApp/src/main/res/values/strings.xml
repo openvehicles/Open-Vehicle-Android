@@ -102,6 +102,18 @@
     <string name="lb_reset_ovms_module">Restart OVMS Module</string>
     <string name="lb_center_map">Center map</string>
 
+    <string name="lb_select_server">Select server:</string>
+    <string-array name="select_server_options">
+        <item>api.openvehicles.com</item>
+        <item>ovms.dexters-web.de</item>
+        <item>Custom server</item>
+    </string-array>
+    <string-array name="select_server_gcm_senders">
+        <item>497749188588</item>
+        <item>1043773844049</item>
+        <item></item>
+    </string-array>
+
     <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
     <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>

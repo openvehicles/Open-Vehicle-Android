@@ -94,11 +94,18 @@
     <string name="lb_vehicle_label">Fahrzeugbeschreibung (beliebig)</string>
     <string name="lb_server_passwd">Fahrzeug Server-Passwort</string>
     <string name="lb_module_passwd">Modul/SMS-Passwort</string>
-    <string name="lb_slide_choice_vehicle">Slide um Fahrzeug auszuwählen</string>
+    <string name="lb_slide_choice_vehicle">Slide um Fahrzeug auszuwählen:</string>
     <string name="lb_mmi_ussd_code">MMI/USSD Code</string>
     <string name="lb_cellular_usage">Datenverbrauch</string>
     <string name="lb_reset_ovms_module">OVMS Modul neu starten</string>
     <string name="lb_center_map">Karte zentrieren</string>
+
+    <string name="lb_select_server">Server auswählen:</string>
+    <string-array name="select_server_options">
+        <item>api.openvehicles.com</item>
+        <item>ovms.dexters-web.de</item>
+        <item>Eigener Server</item>
+    </string-array>
 
     <string name="lb_ft_digital_speedo">#%d: Digitaler Tacho</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
