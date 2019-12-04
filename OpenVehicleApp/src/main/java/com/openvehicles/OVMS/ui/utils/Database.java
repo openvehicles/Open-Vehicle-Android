@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
 import com.openvehicles.OVMS.utils.NotificationData;
@@ -447,6 +448,22 @@ public class Database extends SQLiteOpenHelper {
 			return ifNull(cursor.getString(0), "");
 		}
 		return "";
+	}
+
+	public String get_DateLastStatusUpdate(int lat, int lng) {
+		// Note: the local Android timestamp will be used as the "modified since"
+		// 	query parameter for OCM. We subtract 1 hour to accomodate for differences.
+		Cursor cursor = getlatlngdetail(lat, lng);
+		if (cursor.moveToFirst()) {
+			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
+			if (last_update > 0) {
+				return isoDateTime.format(new Date((last_update - 3600) * 1000));
+			}
+		}
+		return "";
+	}
+	public String get_DateLastStatusUpdate(LatLng pos) {
+		return get_DateLastStatusUpdate((int)pos.latitude, (int)pos.longitude);
 	}
 
 	public Cursor getChargePoint(String cpId) {

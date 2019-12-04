@@ -5,8 +5,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.*;
 
 import android.content.Context;
@@ -15,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.stream.JsonReader;
+import com.luttu.AppPrefes;
 import com.luttu.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
@@ -28,23 +32,25 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 	Context appContext;
 	Main main;
-	String url;
+	AppPrefes appPrefes;
 	Database database;
-	afterasytask invoker;
+	LatLng center;
+	GetMapDetailsListener invoker;
 	Gson gson;
 	ArrayList<ChargePoint> chargePoints;
 	Exception error;
 
 
-	public interface afterasytask {
-		public void after(boolean flBoolean);
+	public interface GetMapDetailsListener {
+		public void getMapDetailsDone(boolean success, LatLng center);
 	}
 
-	public GetMapDetails(Context context, String url, afterasytask invoker) {
+	public GetMapDetails(Context context, LatLng center, GetMapDetailsListener invoker) {
 		appContext = context;
 		main = new Main(context);
-		this.url = url;
+		appPrefes = new AppPrefes(context, "ovms");
 		database = new Database(context);
+		this.center = center;
 		this.invoker = invoker;
 		gson = new Gson();
 		chargePoints = new ArrayList<ChargePoint>();
@@ -64,14 +70,10 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 	@Override
 	protected Void doInBackground(Void... params) {
-
 		if (isCancelled())
 			return null;
 
 		// read from OCM:
-
-		Log.d(TAG, "reading from url=" + url);
-
 		try {
 			getdata();
 		} catch (IOException e) {
@@ -79,20 +81,15 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 			error = e;
 		}
 
-		Log.d(TAG, "read " + chargePoints.size() + " chargepoints");
-
 		// update database:
-
 		database.beginWrite();
-
 		int i;
 		for (i = 0; !isCancelled() && (i < chargePoints.size()); i++) {
 			database.insert_mapdetails(chargePoints.get(i));
 		}
-
 		database.endWrite(true);
-
-		Log.d(TAG, "saved " + i + " chargepoints to database, lastUpdate=" + database.get_DateLastStatusUpdate());
+		Log.d(TAG, "saved " + i + " chargepoints to database, lastUpdate="
+				+ database.get_DateLastStatusUpdate());
 
 		return null;
 	}
@@ -104,9 +101,9 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 			Toast.makeText(appContext,
 					appContext.getString(R.string.ocm_read_failed, error.getLocalizedMessage()),
 					Toast.LENGTH_LONG).show();
-			invoker.after(false);
+			invoker.getMapDetailsDone(false, center);
 		} else {
-			invoker.after(true);
+			invoker.getMapDetailsDone(true, center);
 		}
 		database.close();
 	}
@@ -114,21 +111,32 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 
 	private void getdata() throws IOException {
 
+		// Make OCM API URL:
+		// As OCM does not yet support incremental queries,
+		// we're using a cache with key = int(lat/lng)
+		// resulting in a tile size of max. 112 x 112 km
+		// = diagonal max 159 km
+		// The API call will fetch a fixed radius of 160 km
+		// covering all adjacent tiles.
+		String maxresults = appPrefes.getData("maxresults");
+		String lastStatusUpdate = database.get_DateLastStatusUpdate(center);
+
+		String url = "https://api.openchargemap.io/v2/poi/?output=json&verbose=false"
+				+ "&latitude=" + center.latitude
+				+ "&longitude=" + center.longitude
+				+ "&distance=160" // see above
+				+ "&distanceunit=KM"
+				+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults
+				+ "&modifiedsince=" + lastStatusUpdate.replace(' ', 'T'));
+
+		Log.d(TAG, "getdata: fetching @" + center.latitude + "," + center.longitude
+				+ " => url=" + url);
+
 		// open URL for JSON parser:
-
-		URL obj_URL = new URL(url);
-		HttpURLConnection connection = (HttpURLConnection)obj_URL.openConnection();
-		connection.setAllowUserInteraction(false);
-		connection.setUseCaches(false);
-		connection.setInstanceFollowRedirects(true);
-		connection.setConnectTimeout(30*1000);
-		connection.setReadTimeout(120*1000);
-
-		InputStream in = connection.getInputStream();
+		InputStream in = main.getURLInputStream(url);
 		JsonReader reader = new JsonReader(new InputStreamReader(in, "UTF-8"));
 
 		// read charge points array:
-
 		reader.beginArray();
 		while (!isCancelled() && reader.hasNext()) {
 			try {
@@ -144,6 +152,7 @@ public class GetMapDetails extends AsyncTask<Void, Void, Void> {
 		reader.endArray();
 		reader.close();
 
+		Log.d(TAG, "getdata: read " + chargePoints.size() + " chargepoints");
 	}
 
 

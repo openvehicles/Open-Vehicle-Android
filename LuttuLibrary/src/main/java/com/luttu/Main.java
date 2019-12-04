@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.json.JSONArray;
@@ -16,7 +17,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.util.Log;
 import android.view.Window;
@@ -28,7 +33,10 @@ import com.example.luttulibrary.R;
 
 @SuppressLint("NewApi")
 public class Main {
+	private static final String TAG = "Main";
 	Context context;
+	PackageInfo packageInfo;
+	Bundle metaData;
 	Dialog dialog;
 	JSONObject json;
 	JSONArray jsonarray;
@@ -36,8 +44,14 @@ public class Main {
 	ImageView img;
 
 	public Main(Context context) {
-		// TODO Auto-generated constructor stub
 		this.context = context;
+		try {
+			ApplicationInfo ai = context.getPackageManager().getApplicationInfo(context.getPackageName(), PackageManager.GET_META_DATA);
+			metaData = ai.metaData;
+			packageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		dialog = new Dialog(context, android.R.style.Theme_Translucent);
 		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		dialog.setContentView(R.layout.loadingicon);
@@ -50,10 +64,45 @@ public class Main {
 		strictmaode();
 	}
 
+	public String getUserAgent() {
+		return "OVMS/" + packageInfo.versionName + "-" + packageInfo.versionCode
+				+ " Android/" + Build.VERSION.RELEASE;
+	}
+
+	public HttpURLConnection getURLConnection(String url) throws IOException {
+		// create connection:
+		URL obj_URL = new URL(url);
+		HttpURLConnection connection = (HttpURLConnection) obj_URL.openConnection();
+
+		// set standard props:
+		connection.setRequestProperty("User-Agent", getUserAgent());
+		connection.setAllowUserInteraction(false);
+		connection.setUseCaches(false);
+		connection.setInstanceFollowRedirects(true);
+		connection.setConnectTimeout(30 * 1000);
+		connection.setReadTimeout(120 * 1000);
+
+		// auto specialize by URL:
+		if (url.contains("api.openchargemap.io")) {
+			String apiKey = metaData.getString("org.openchargemap.api.v2.API_KEY");
+			Log.d(TAG, "getURLConnection: using API key for openchargemap: " + apiKey);
+			if (apiKey != null)
+				connection.setRequestProperty("X-API-Key", apiKey);
+			else
+				Log.e(TAG, "getURLConnection: missing API key for openchargemap");
+		}
+
+		return connection;
+	}
+
+	public InputStream getURLInputStream(String url) throws IOException {
+		HttpURLConnection connection = getURLConnection(url);
+		return connection.getInputStream();
+	}
+
 	@TargetApi(Build.VERSION_CODES.GINGERBREAD)
 	@SuppressLint("NewApi")
 	private void strictmaode() {
-		// TODO Auto-generated method stub
 		int SDK_INT = android.os.Build.VERSION.SDK_INT;
 		if (SDK_INT > 8) {
 			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
@@ -63,72 +112,57 @@ public class Main {
 	}
 
 	public void Diashow() {
-		// TODO Auto-generated method stub
 		dialog.show();
 		img.startAnimation(rotation);
 	}
 
 	public void Diacancel() {
-		// TODO Auto-generated method stub
 		dialog.dismiss();
 	}
 
 	public JSONObject getJSONObject(final String url) {
-		// TODO Auto-generated method stub
 		try {
-			URL obj_URL = new URL(url);
-			InputStream in;
-			in = obj_URL.openStream();
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(in));
-			String line,line1 = "";
-			while ((line = reader.readLine()) != null) {
-				line1=line1+line;
-			}
-			try {
-				json = new JSONObject(line1);
-			} catch (JSONException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-				System.out.println(e);
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(json);
-		return json;
-	}
-
-	public JSONArray getJSONArray(final String url) {
-		// TODO Auto-generated method stub
-		try {
-			URL obj_URL = new URL(url);
-			InputStream in;
-			in = obj_URL.openStream();
-
+			InputStream in = getURLInputStream(url);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 			StringBuilder data = new StringBuilder();
-
-			BufferedReader reader = new BufferedReader(
-					new InputStreamReader(in));
 			String line;
 			while ((line = reader.readLine()) != null) {
 				data.append(line);
 			}
+			try {
+				json = new JSONObject(data.toString());
+			} catch (JSONException e) {
+				Log.e(TAG, "getJSONObject: url='" + url + "' → " + e.getMessage());
+				e.printStackTrace();
+			}
+		} catch (Exception e) {
+			Log.e(TAG, "getJSONObject: url='" + url + "' → " + e.getMessage());
+			e.printStackTrace();
+		}
+		// System.out.println(json);
+		return json;
+	}
 
+	public JSONArray getJSONArray(final String url) {
+		try {
+			InputStream in = getURLInputStream(url);
+			BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+			StringBuilder data = new StringBuilder();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				data.append(line);
+			}
 			try {
 				jsonarray = new JSONArray(data.toString());
 			} catch (JSONException e) {
-				// TODO: handle exception
+				Log.e(TAG, "getJSONArray: url='" + url + "' → " + e.getMessage());
 				e.printStackTrace();
-				System.out.println(e);
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			Log.e(TAG, "getJSONArray: url='" + url + "' → " + e.getMessage());
 			e.printStackTrace();
 		}
-        Log.d("luttu", "getJSONArray got " + (jsonarray != null ? jsonarray.length() : -1) + " JSON elems from url=" + url);
-
+        Log.d(TAG, "getJSONArray: got " + (jsonarray != null ? jsonarray.length() : -1) + " JSON elems from url=" + url);
         return jsonarray;
 	}
 

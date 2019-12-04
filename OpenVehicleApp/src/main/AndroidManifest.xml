@@ -49,6 +49,9 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyCepznTQOhuy_IN1npQOgVTTWE4QbPONRc" />
+        <meta-data
+            android:name="org.openchargemap.api.v2.API_KEY"
+            android:value="59284e43-14f7-4d0a-8fec-f2a255611974" />
 
         <activity
             android:name=".ui.BaseFragmentActivity"

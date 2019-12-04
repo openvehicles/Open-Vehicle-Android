@@ -13,7 +13,9 @@ import com.androidmapsextensions.MarkerOptions;
 import com.androidmapsextensions.OnMapReadyCallback;
 import com.androidmapsextensions.SupportMapFragment;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -23,9 +25,15 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentManager;
 
+import android.support.v4.content.ContextCompat;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,6 +42,7 @@ import android.view.ViewGroup;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -44,14 +53,14 @@ import com.google.android.gms.maps.model.PatternItem;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
+import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider;
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
 import com.openvehicles.OVMS.ui.utils.Ui;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
-		afterasytask, OnClickListener, Settings.UpdateMap, OnMapReadyCallback {
+		GetMapDetailsListener, OnClickListener, FragMapSettings.UpdateMap, OnMapReadyCallback {
 	private static final String TAG = "FragMap";
 
 	private SupportMapFragment fragment;
@@ -65,8 +74,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
 	View rootView;
 	Menu optionsMenu;
+	MenuItem autoTrackMenuItem;
 	boolean autotrack = true;
-	static Settings.UpdateMap updateMap;
+	float mapZoomLevel = 15;
+	boolean permRequested = false;
+	static FragMapSettings.UpdateMap updateMap;
 
 	private CarData mCarData;
 	static double lat = 0, lng = 0;
@@ -104,19 +116,22 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	public void onMapReady(GoogleMap googleMap) {
 
 		map = googleMap;
-		Log.d(TAG, "getMap/onMapReady: map=" + map);
+		Log.i(TAG, "getMap/onMapReady: map=" + map);
 
 		boolean clusterEnabled = true;
 		int clusterSizeIndex = 0;
-		float mapZoomLevel = 15;
 
 		try {
 			clusterEnabled = !appPrefes.getData("check").equals("false");
 			clusterSizeIndex = Integer.parseInt(appPrefes.getData("progress"));
 			mapZoomLevel = Float.parseFloat(appPrefes.getData("mapZoomLevel"));
+			if (mapZoomLevel == 0)
+				mapZoomLevel = 15;
 		} catch (Exception e) {
 			// ignore
 		}
+
+		mapInitState = true;
 
 		updateClustering(clusterSizeIndex, clusterEnabled);
 
@@ -126,7 +141,20 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
 		map.getUiSettings().setMapToolbarEnabled(true); // enable Google Maps shortcuts
 
-		// map.setMyLocationEnabled(!autotrack); // crashing on SDK27 / maps 26
+		if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+				== PackageManager.PERMISSION_GRANTED) {
+			map.setMyLocationEnabled(true);
+			map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+			Log.i(TAG, "getMap/onMapReady: MyLocation enabled, button = " + !autotrack);
+		} else {
+			Log.w(TAG, "getMap/onMapReady: MyLocation unavailable, permission FINE_LOCATION not granted");
+			if (!permRequested) {
+				permRequested = true;
+				ActivityCompat.requestPermissions(getActivity(),
+						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+						MainActivity.REQUEST_LOCATION);
+			}
+		}
 		map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
 			@Override
 			public boolean onMyLocationButtonClick() {
@@ -135,45 +163,93 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					return false;
 				LatLng carPosition = new LatLng(lat, lng);
 				map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
+				Log.i(TAG, "getMap/onMyLocationButtonClick: enabling autotrack");
+				autotrack = true;
+				appPrefes.SaveData("autotrack", autotrack ? "on" : "off");
+				if (autoTrackMenuItem != null)
+					autoTrackMenuItem.setChecked(autotrack);
+				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+				showMapToast(getString(R.string.ocm_toast_autotrack_on));
 				return true;
 			}
 		});
 
-		Log.d(TAG, "getMap/onMapReady: mapZoomLevel=" + mapZoomLevel);
+		Log.i(TAG, "getMap/onMapReady: mapZoomLevel=" + mapZoomLevel);
 		map.moveCamera(CameraUpdateFactory.zoomTo(mapZoomLevel)); // init zoom level
 		map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
 			@Override
 			public void onCameraChange(CameraPosition cameraPosition) {
-				appPrefes.SaveData("mapZoomLevel", "" + cameraPosition.zoom);
-				Log.d(TAG, "getMap/onCameraChange: new mapZoomLevel=" + cameraPosition.zoom);
+				if (mapInitState)
+					return;
+				// save zoom:
+				if (cameraPosition.zoom != 0 && cameraPosition.zoom != mapZoomLevel) {
+					mapZoomLevel = cameraPosition.zoom;
+					appPrefes.SaveData("mapZoomLevel", "" + mapZoomLevel);
+					Log.i(TAG, "getMap/onCameraChange: new mapZoomLevel=" + cameraPosition.zoom);
+				}
+				// disable autotrack?
+				if (cameraPosition.target.latitude != 0 && cameraPosition.target.longitude != 0) {
+					if (autotrack) {
+						int moved = (int) distance(lat, lng, cameraPosition.target.latitude, cameraPosition.target.longitude);
+						if (moved > 300 * Math.pow(2, 15 - mapZoomLevel)) {
+							Log.i(TAG, "getMap/onCameraChange: moved " + moved + "m, disabling autotrack");
+							autotrack = false;
+							appPrefes.SaveData("autotrack", autotrack ? "on" : "off");
+							if (autoTrackMenuItem != null)
+								autoTrackMenuItem.setChecked(autotrack);
+							if (map.isMyLocationEnabled())
+								map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+							showMapToast(getString(R.string.ocm_toast_autotrack_off));
+						}
+					}
+				}
+			}
+		});
+
+		map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+			@Override
+			public void onCameraIdle() {
+				if (mapInitState)
+					return;
+				// fetch chargepoints for view:
+				CameraPosition cameraPosition = map.getCameraPosition();
+				Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target);
+				((MainActivity)getActivity()).StartGetMapDetails(cameraPosition.target);
 			}
 		});
 
 		update();
 	}
 
+	private void showMapToast(String msg) {
+		SpannableStringBuilder text = new SpannableStringBuilder(msg);
+		text.setSpan(new RelativeSizeSpan(1.15f), 0, text.length(), 0);
+		Toast toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
+		toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,
+				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f,
+						getResources().getDisplayMetrics()));
+		toast.show();
+	}
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		rootView = inflater.inflate(R.layout.mmap, null);
-		appPrefes = new AppPrefes(getActivity(), "ovms");
-		updateMap = this;
 
+		rootView = inflater.inflate(R.layout.mmap, null);
+		setHasOptionsMenu(true);
+
+		appPrefes = new AppPrefes(getActivity(), "ovms");
+		database = new Database(getActivity());
+
+		updateMap = this;
 		lat = 37.410866;
 		lng = -122.001946;
 		maxrange = 285;
 		distance_units = "KM";
 
-		database = new Database(getActivity());
-
-		getMap();
-
-		setHasOptionsMenu(true);
+		autotrack = !appPrefes.getData("autotrack").equals("off");
 
 		mapInitState = true;
-
-		// get config:
-		autotrack = !appPrefes.getData("autotrack").equals("off");
 
 		return rootView;
 	}
@@ -206,8 +282,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		optionsMenu = menu;
 
 		// set checkboxes:
-		optionsMenu.findItem(R.id.mi_map_autotrack)
-				.setChecked(autotrack);
+		autoTrackMenuItem = optionsMenu.findItem(R.id.mi_map_autotrack);
+		autoTrackMenuItem.setChecked(autotrack);
 		optionsMenu.findItem(R.id.mi_map_filter_connections)
 				.setChecked(appPrefes.getData("filter").equals("on"));
 		optionsMenu.findItem(R.id.mi_map_filter_range)
@@ -228,24 +304,27 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				autotrack = newState;
 				if (autotrack)
 					update();
-				// map.setMyLocationEnabled(!autotrack); // crashing on SDK27 / maps 26
+				if (map.isMyLocationEnabled()) {
+					Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autotrack);
+					map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+				}
 				break;
 
 			case R.id.mi_map_filter_connections:
 				appPrefes.SaveData("filter", newState ? "on" : "off");
 				item.setChecked(newState);
-				after(false);
+				updateMapDetails(false);
 				break;
 
 			case R.id.mi_map_filter_range:
 				appPrefes.SaveData("inrange", newState ? "on" : "off");
 				item.setChecked(newState);
-				after(false);
+				updateMapDetails(false);
 				break;
 
 			case R.id.mi_map_settings:
 				Bundle args = new Bundle();
-				BaseFragmentActivity.show(getActivity(), Settings.class, args,
+				BaseFragmentActivity.show(getActivity(), FragMapSettings.class, args,
 						Configuration.ORIENTATION_UNDEFINED);
 				break;
 		}
@@ -299,12 +378,16 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	// after fetch value from server
 	@Override
-	public void after(boolean clearmap) {
+	public void getMapDetailsDone(boolean success, LatLng center) {
+		updateMapDetails(success);
+	}
+
+	public void updateMapDetails(boolean clearmap) {
 
 		if (map == null)
 			return;
 
-		Log.d(TAG, "after: clearmap=" + clearmap);
+		Log.d(TAG, "updateMapDetails: clearmap=" + clearmap);
 
 		if (clearmap) {
 			map.clear();
@@ -331,7 +414,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (appPrefes.getData("filter").equals("on")) {
 			// check if filter is defined, else fallback to all stations:
 			String connectionList = appPrefes.getData("Id");
-			Log.d(TAG, "after: connectionList=(" + connectionList + ")");
+			Log.d(TAG, "updateMapDetails: connectionList=(" + connectionList + ")");
 			if (!connectionList.equals(""))
 				cursor = database.get_mapdetails(connectionList);
 			else
@@ -349,7 +432,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				maxrange_m = maxrange * 1000;
 		}
 
-		Log.d(TAG, "after: addMarkers avail=" + cursor.getCount());
+		Log.d(TAG, "updateMapDetails: addMarkers avail=" + cursor.getCount());
 
 		if (cursor.getCount() != 0) {
 			int cnt_added = 0;
@@ -387,7 +470,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				} while (cursor.moveToNext());
 			}
 
-			Log.d(TAG, "after: addMarkers added=" + cnt_added);
+			Log.d(TAG, "updateMapDetails: addMarkers added=" + cnt_added);
 		}
 	}
 
@@ -425,12 +508,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		maxrange = Math.max(mCarData.car_range_estimated_raw, mCarData.car_range_ideal_raw);
 		distance_units = (mCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
 
-		Log.d(TAG, "update: Car on map: lat=" + lat + " lng=" + lng
+		Log.i(TAG, "update: Car on map: lat=" + lat + " lng=" + lng
 				+ " maxrange=" + maxrange + distance_units);
 
 		// update charge point markers:
 
-		after(true);
+		updateMapDetails(true);
 
 		// update car position marker:
 
@@ -558,7 +641,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	@Override
 	public void updateFilter(String connectionList) {
 		// update markers:
-		after(false);
+		updateMapDetails(false);
 	}
 
 }

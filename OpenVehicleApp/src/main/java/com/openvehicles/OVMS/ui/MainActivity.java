@@ -1,5 +1,7 @@
 package com.openvehicles.OVMS.ui;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import android.content.DialogInterface;
@@ -18,10 +20,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -35,30 +35,32 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.luttu.AppPrefes;
 
+import com.luttu.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.receiver.AutoStart;
 import com.openvehicles.OVMS.receiver.RegistrationIntentService;
 import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
-import com.openvehicles.OVMS.ui.GetMapDetails.afterasytask;
+import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
 import com.openvehicles.OVMS.ui.utils.Database;
-import com.openvehicles.OVMS.ui.validators.StringValidator;
 import com.openvehicles.OVMS.utils.ConnectionList;
-import com.openvehicles.OVMS.utils.ConnectionList.Con;
+import com.openvehicles.OVMS.utils.ConnectionList.ConnectionsListener;
+
+import org.json.JSONObject;
 
 
 public class MainActivity extends ApiActivity implements
-		ActionBar.OnNavigationListener, afterasytask, Con, UpdateLocation {
+		ActionBar.OnNavigationListener, GetMapDetailsListener, ConnectionsListener, UpdateLocation {
 
 	private static final String TAG = "MainActivity";
+
+	public static final int REQUEST_LOCATION = 1;
 
 	public String versionName = "";
 	public int versionCode = 0;
@@ -71,6 +73,7 @@ public class MainActivity extends ApiActivity implements
 	private MainPagerAdapter mPagerAdapter;
 	public static UpdateLocation updateLocation;
 	public GetMapDetails getMapDetails;
+	public List<LatLng> getMapDetailList;
 
 
 	/**
@@ -98,11 +101,11 @@ public class MainActivity extends ApiActivity implements
 		}
 
 		// OCM init:
+		getMapDetails = null;
+		getMapDetailList = new ArrayList<LatLng>();
 		updateLocation = this;
 		updatelocation();
-		String url = "https://api.openchargemap.io/v2/referencedata/";
-		ConnectionList connectionList = new ConnectionList(this, this, url,
-				true);
+		ConnectionList connectionList = new ConnectionList(this,this,true);
 
 		// Start background ApiService:
 		Log.i(TAG, "Starting ApiService");
@@ -588,20 +591,9 @@ public class MainActivity extends ApiActivity implements
 
 
 	@Override
-	public void connections(String al, String name) {
+	public void onConnectionChanged(String al, String name) {
 		// TODO Auto-generated method stub
 
-	}
-
-	@Override
-	public void after(boolean flBoolean) {
-		// Called from GetMapDetails.onPostExecute after retrieving OCM updates
-		Log.d(TAG, "OCM updates received");
-		FragMap frg = (FragMap) mPagerAdapter.getItemByTitle(R.string.Location);
-		if (frg != null) {
-			Log.d(TAG, "OCM updates received => calling FragMap.update()");
-			frg.update();
-		}
 	}
 
 
@@ -627,7 +619,6 @@ public class MainActivity extends ApiActivity implements
 	public void updatelocation() {
 
 		// get car location:
-
 		String lat = "37.410866";
 		String lng = "-122.001946";
 
@@ -642,7 +633,16 @@ public class MainActivity extends ApiActivity implements
 			lng = appPrefes.getData("lng_main");
 		}
 
+		// Start OpenChargeMap task:
+		try {
+			double dlat = Double.parseDouble(lat), dlng = Double.parseDouble(lng);
+			StartGetMapDetails(new LatLng(dlat, dlng));
+		} catch (Exception e) {
+			// ignore
+		}
+	}
 
+	public boolean isMapCacheValid(LatLng center) {
 		// As OCM does not yet support incremental queries,
 		// we're using a cache with key = int(lat/lng)
 		// resulting in a tile size of max. 112 x 112 km
@@ -652,68 +652,76 @@ public class MainActivity extends ApiActivity implements
 
 		// check OCM cache for key int(lat/lng):
 
-		boolean cache_valid = true;
-
-		String[] strings = lat.split("\\.");
-		String[] strings2 = lng.split("\\.");
-		int latitude = Integer.parseInt(strings[0]);
-		int longitude = Integer.parseInt(strings2[0]);
+		int latitude = (int) center.latitude;
+		int longitude = (int) center.longitude;
 
 		Cursor cursor = database.getlatlngdetail(latitude, longitude);
 		if (cursor.getCount() == 0) {
-			cache_valid = false;
+			return false;
 		}
 		else if (cursor.moveToFirst()) {
 			// check if last tile update was more than 24 hours ago:
 			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
 			long now = System.currentTimeMillis() / 1000;
 			if (now > last_update + (3600 * 24))
-				cache_valid = false;
+				return false;
 		}
 
-		if (cache_valid) {
-			Log.d(TAG, "getdata: cache valid for lat/lng=" + latitude + "/" + longitude
-					+ ", lat_main=" + appPrefes.getData("lat_main"));
-		} else {
-			database.addlatlngdetail(latitude, longitude);
+		Log.d(TAG, "isMapCacheValid: cache valid for lat/lng=" + latitude + "/" + longitude);
+		return true;
+	}
 
-			// make OCM API URL:
-			String maxresults = appPrefes.getData("maxresults");
-			String lastStatusUpdate = database.get_DateLastStatusUpdate();
+	public void StartGetMapDetails(LatLng center) {
+		if (!isMapCacheValid(center)) {
+			getMapDetailList.add(center);
+			StartGetMapDetails();
+		}
+	}
 
-			String url = "https://api.openchargemap.io/v2/poi/?output=json&verbose=false"
-					+ "&latitude=" + lat
-					+ "&longitude=" + lng
-					+ "&distance=160" // see above
-					+ "&distanceunit=KM"
-					+ "&maxresults=" + (maxresults.equals("") ? "500" : maxresults
-					+ "&modifiedsince=" + lastStatusUpdate);
+	public void StartGetMapDetails() {
+		// check if task is still running:
+		if (getMapDetails != null && getMapDetails.getStatus() != AsyncTask.Status.FINISHED) {
+			return;
+		}
 
-			Log.d(TAG, "getdata: new fetch for lat/lng=" + latitude + "/" + longitude
-					+ ", lat_main=" + appPrefes.getData("lat_main")
-					+ " => url=" + url);
+		do {
+			// get next coordinates to fetch:
+			if (getMapDetailList.isEmpty()) {
+				Log.i(TAG, "StartGetMapDetails: done.");
+				return;
+			}
 
-			// cancel old fetcher task:
-			if (getMapDetails != null) {
-				getMapDetails.cancel(true);
+			LatLng center = getMapDetailList.remove(0);
+			if (isMapCacheValid(center)) {
+				continue;
 			}
 
 			// create new fetcher task:
-			getMapDetails = new GetMapDetails(MainActivity.this, url, this);
+			Log.i(TAG, "StartGetMapDetails: starting task for " + center);
+			getMapDetails = new GetMapDetails(MainActivity.this, center, this);
+			getMapDetails.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+			return;
 
-			// After Android 3.0, the default behavior of AsyncTask is execute in a single
-			// thread using SERIAL_EXECUTOR. This means the thread will no longer run while
-			// the App is in the foreground...
-			// Solution source:
-			// http://stackoverflow.com/questions/13080367/android-async-task-behavior-in-2-3-3-and-4-0-os
-			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-				getMapDetails.execute();
-			} else {
-				getMapDetails.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+		} while(true);
+	}
+
+	@Override
+	public void getMapDetailsDone(boolean success, LatLng center) {
+		if (success) {
+			// mark cache tile valid:
+			Log.i(TAG, "OCM updates received for " + center);
+			database.addlatlngdetail((int)center.latitude, (int)center.longitude);
+			// update map:
+			FragMap frg = (FragMap) mPagerAdapter.getItemByTitle(R.string.Location);
+			if (frg != null) {
+				Log.d(TAG, "OCM updates received => calling FragMap.update()");
+				frg.update();
 			}
-
+		} else {
+			Log.e(TAG, "OCM updates failed for " + center);
 		}
-
+		// check for next fetch job:
+		StartGetMapDetails();
 	}
 
 }

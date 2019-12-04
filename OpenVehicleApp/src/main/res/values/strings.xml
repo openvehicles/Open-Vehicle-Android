@@ -275,6 +275,8 @@
     </string-array>
 
     <string formatted="false" name="ocm_read_failed">OpenChargeMap read failed: %s</string>
+    <string name="ocm_toast_autotrack_off">Auto track disabled\nClick Home [⌖] to reactivate</string>
+    <string name="ocm_toast_autotrack_on">Auto track enabled</string>
 
     <string name="mi_map_options">Options</string>
     <string name="mi_map_autotrack">Auto track</string>

@@ -20,8 +20,8 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.utils.ConnectionList;
 
-public class Settings extends Fragment implements ConnectionList.Con {
-	private static final String TAG = "Settings(OCM)";
+public class FragMapSettings extends Fragment implements ConnectionList.ConnectionsListener {
+	private static final String TAG = "FragMapSettings(OCM)";
 
 	View view;
 	AppPrefes appPrefes;
@@ -31,11 +31,10 @@ public class Settings extends Fragment implements ConnectionList.Con {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		view = inflater.inflate(R.layout.setting, null);
+		view = inflater.inflate(R.layout.map_settings, null);
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 
-		String url = "https://api.openchargemap.io/v2/referencedata/";
-		connectionList = new ConnectionList(getActivity(), this, url,false);
+		connectionList = new ConnectionList(getActivity(), this,false);
 
 		setUpClusteringViews();
 
@@ -49,9 +48,8 @@ public class Settings extends Fragment implements ConnectionList.Con {
 	}
 
 	@Override
-	public void connections(String al, String name) {
-		Log.d(TAG, "connections: al=" + al);
-		FragMap.updateMap.updateFilter(al);
+	public void onConnectionChanged(String conId, String conName) {
+		FragMap.updateMap.updateFilter(conId);
 	}
 
 	private void setUpClusteringViews() {

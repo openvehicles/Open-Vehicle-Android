@@ -4,7 +4,6 @@ import android.support.v7.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -22,12 +21,12 @@ import com.openvehicles.OVMS.ui.BaseFragmentActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.ConnectionList;
-import com.openvehicles.OVMS.utils.ConnectionList.Con;
+import com.openvehicles.OVMS.utils.ConnectionList.ConnectionsListener;
 import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 public class ControlFragment extends BaseFragment implements OnClickListener,
-		OnResultCommandListener, Con {
+		OnResultCommandListener, ConnectionsListener {
 	ConnectionList connectionList;
 	private int mEditPosition;
 	private CarData mCarData;
@@ -45,8 +44,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
 		}
 
-		String url = "https://api.openchargemap.io/v2/referencedata/";
-		connectionList = new ConnectionList(getActivity(), this, url,false);
+		connectionList = new ConnectionList(getActivity(), this, false);
 
 		activity.getSupportActionBar().setIcon(R.drawable.ic_action_control);
 		activity.setTitle(R.string.Control);
@@ -206,8 +204,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 	}
 
 	@Override
-	public void connections(String al, String name) {
-		// TODO Auto-generated method stub
-		Log.d("ControlFragment", "connections: al=" + al);
+	public void onConnectionChanged(String conId, String conName) {
+		Log.d("ControlFragment", "onConnectionChanged: conName=" + conName);
 	}
 }
