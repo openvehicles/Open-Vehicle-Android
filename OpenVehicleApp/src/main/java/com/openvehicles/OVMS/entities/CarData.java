@@ -21,10 +21,17 @@ public class CarData implements Serializable {
 		NoValue, Stale, Good
 	}
 
+	// ================================================================================
+	// START OF PUBLIC DATA
+	// ================================================================================
+	// NOTE:
+	// 	The list of cars is now saved in JSON format, see CarsStorage.saveStoredCars(),
+	//	so you can now add new fields where appropriate.
+
 	// //////////////////////////////////////////////////////////////////////
 	// Selected Vehicle
 
-	public String sel_server = "api.openvehicles.com"; // ServerNameOrIP
+	public String sel_server = ""; 				// ServerNameOrIP
 	public String sel_gcm_senderid = "";		// GCM sender ID (empty = default OVMS ID)
 	public String sel_vehicleid = "";			// VehicleID
 	public String sel_vehicle_label = "";		// VehicleLabel
@@ -229,6 +236,10 @@ public class CarData implements Serializable {
 	public int rt_cfg_unsaved = 0;				// CFG: RAM profile changed & not yet saved to EEPROM
 	public int rt_cfg_applied = 0;				// CFG: applyprofile success flag
 
+
+	// ================================================================================
+	// END OF PUBLIC DATA
+	// ================================================================================
 
 	//
 	// Private (non serialization) data
