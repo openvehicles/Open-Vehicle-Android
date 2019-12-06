@@ -102,8 +102,8 @@
 
     <string name="lb_select_server">Server auswählen:</string>
     <string-array name="select_server_options">
-        <item>api.openvehicles.com</item>
-        <item>ovms.dexters-web.de</item>
+        <item translatable="false">api.openvehicles.com</item>
+        <item translatable="false">ovms.dexters-web.de</item>
         <item>Eigener Server</item>
     </string-array>
 
@@ -268,7 +268,15 @@
     <string name="mi_map_settings">Einstellungen</string>
     
     <string name="mi_car_details_temp">Fahrenheit</string>
-		<string name="mi_car_details_tpms">TPMS in bar</string>
+    <string name="mi_car_details_tpms">TPMS in bar</string>
+
+    <string name="ocm_title_charge_points">LADESTATIONEN</string>
+    <string name="ocm_subtitle_charge_points">Quelle: https://openchargemap.org/</string>
+
+    <string name="ocm_lb_cluster_enable">Gruppierung an</string>
+    <string name="ocm_lb_cluster_size">Gruppengröße</string>
+
+    <string name="ocm_lb_max_results">Max. Ladepunkte pro Kachel</string>
 
     <string name="connections">Lade-Anschlüsse</string>
 

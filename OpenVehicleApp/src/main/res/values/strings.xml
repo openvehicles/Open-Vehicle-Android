@@ -104,14 +104,14 @@
 
     <string name="lb_select_server">Select server:</string>
     <string-array name="select_server_options">
-        <item>api.openvehicles.com</item>
-        <item>ovms.dexters-web.de</item>
+        <item translatable="false">api.openvehicles.com</item>
+        <item translatable="false">ovms.dexters-web.de</item>
         <item>Custom server</item>
     </string-array>
     <string-array name="select_server_gcm_senders">
-        <item>497749188588</item>
-        <item>1043773844049</item>
-        <item></item>
+        <item translatable="false">497749188588</item>
+        <item translatable="false">1043773844049</item>
+        <item translatable="false"></item>
     </string-array>
 
     <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
@@ -290,14 +290,13 @@
     <string name="cargroup_title">Car groups</string>
     <string name="cargroup_name_hint">Group name</string>
 
-    <!-- OVMS Debug
-    <string name="map_api_key_debug">0QvjonKAPqu1JRrQz3D7Rfl51x5vK8kS5PiLkTQ</string> -->  
+    <string name="ocm_title_charge_points">CHARGING STATIONS</string>
+    <string name="ocm_subtitle_charge_points">Source: https://openchargemap.org/</string>
 
-    <!-- OVMS Release
-    <string name="map_api_key_debug">0QvjonKAPqu1CvxcEEcnQbdsxUmPTewEqbkMaSg</string> -->
+    <string name="ocm_lb_cluster_enable">Enable clustering</string>
+    <string name="ocm_lb_cluster_size">Cluster size</string>
 
-    <!-- OVMS Google Play Release -->
-    <string name="map_api_key_debug" translatable="false">0FCEKIy1Q57W2uMZr_JP_VorwcABtvK-_CF-9dw</string>
+    <string name="ocm_lb_max_results">Max charge points per tile</string>
 
     <string name="connections">Connections</string>
 
