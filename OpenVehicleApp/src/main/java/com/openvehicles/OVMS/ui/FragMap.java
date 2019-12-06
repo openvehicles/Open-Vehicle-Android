@@ -71,6 +71,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	AppPrefes appPrefes;
 
 	static boolean mapInitState = true;
+	boolean userInteraction = false;
 	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
 	View rootView;
 	Menu optionsMenu;
@@ -81,7 +82,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	static FragMapSettings.UpdateMap updateMap;
 
 	private CarData mCarData;
-	static double lat = 0, lng = 0;
+	private LatLng carPosition = new LatLng(0,0);
 	static float maxrange = 160;
 	static String distance_units = "KM";
 
@@ -159,9 +160,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			@Override
 			public boolean onMyLocationButtonClick() {
 				// move camera to car position if available:
-				if (lat == 0 && lng == 0)
+				if (carPosition == null || carPosition.latitude == 0 || carPosition.longitude == 0)
 					return false;
-				LatLng carPosition = new LatLng(lat, lng);
 				map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
 				Log.i(TAG, "getMap/onMyLocationButtonClick: enabling autotrack");
 				autotrack = true;
@@ -183,6 +183,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 					return;
 				// save zoom:
 				if (cameraPosition.zoom != 0 && cameraPosition.zoom != mapZoomLevel) {
+					userInteraction = true;
 					mapZoomLevel = cameraPosition.zoom;
 					appPrefes.SaveData("mapZoomLevel", "" + mapZoomLevel);
 					Log.i(TAG, "getMap/onCameraChange: new mapZoomLevel=" + cameraPosition.zoom);
@@ -190,7 +191,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				// disable autotrack?
 				if (cameraPosition.target.latitude != 0 && cameraPosition.target.longitude != 0) {
 					if (autotrack) {
-						int moved = (int) distance(lat, lng, cameraPosition.target.latitude, cameraPosition.target.longitude);
+						int moved = (int) distance(carPosition, cameraPosition.target);
+						if (moved > 10)
+							userInteraction = true;
 						if (moved > 300 * Math.pow(2, 15 - mapZoomLevel)) {
 							Log.i(TAG, "getMap/onCameraChange: moved " + moved + "m, disabling autotrack");
 							autotrack = false;
@@ -209,6 +212,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
 			@Override
 			public void onCameraIdle() {
+				userInteraction = false;
 				if (mapInitState)
 					return;
 				// fetch chargepoints for view:
@@ -242,8 +246,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		database = new Database(getActivity());
 
 		updateMap = this;
-		lat = 37.410866;
-		lng = -122.001946;
+		carPosition = new LatLng(37.410866, -122.001946);
 		maxrange = 285;
 		distance_units = "KM";
 
@@ -447,7 +450,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 								.getString(cursor.getColumnIndex("Longitude")));
 
 						if (check_range) {
-							if (distance(lat, lng, Latitude, Longitude) > maxrange_m)
+							if (distance(carPosition.latitude, carPosition.longitude, Latitude, Longitude) > maxrange_m)
 								continue;
 						}
 
@@ -503,12 +506,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		// get last known car position:
 
-		lat = mCarData.car_latitude;
-		lng = mCarData.car_longitude;
+		carPosition = new LatLng(mCarData.car_latitude, mCarData.car_longitude);
 		maxrange = Math.max(mCarData.car_range_estimated_raw, mCarData.car_range_ideal_raw);
 		distance_units = (mCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
 
-		Log.i(TAG, "update: Car on map: lat=" + lat + " lng=" + lng
+		Log.i(TAG, "update: Car on map: " + carPosition
 				+ " maxrange=" + maxrange + distance_units);
 
 		// update charge point markers:
@@ -517,7 +519,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		// update car position marker:
 
-		LatLng carPosition = new LatLng(lat, lng);
 		Drawable drawable;
 		if (mCarData.sel_vehicle_image.startsWith("car_imiev_"))
 			drawable = getResources().getDrawable(R.drawable.map_car_imiev); // one map icon for all colors
@@ -536,7 +537,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		Marker carmarker = map.addMarker(marker);
 		carmarker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
 
-		if (mapInitState || autotrack) {
+		// move camera if tracking enabled and user not currently interacting with the map:
+		if (mapInitState || (autotrack && !userInteraction)) {
 			map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
 			mapInitState = false;
 		}
@@ -576,14 +578,14 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		map.addCircle(new CircleOptions()
 				.data("first circle")
-				.center(new LatLng(lat, lng))
+				.center(carPosition)
 				.radius(rd1 * 1000)
 				.strokeWidth(strokeWidth)
 				.strokeColor(Color.BLUE));
 
 		map.addCircle(new CircleOptions()
 				.data("second circle")
-				.center(new LatLng(lat, lng))
+				.center(carPosition)
 				.radius(rd2 * 1000)
 				.strokeWidth(strokeWidth)
 				.strokeColor(Color.RED));
@@ -592,7 +594,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		map.addCircle(new CircleOptions()
 				.data("first ponr")
-				.center(new LatLng(lat, lng))
+				.center(carPosition)
 				.radius(rd1 * 1000 / 2)
 				.strokeWidth(strokeWidth / 2)
 				.strokePattern(pattern)
@@ -600,7 +602,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		map.addCircle(new CircleOptions()
 				.data("second ponr")
-				.center(new LatLng(lat, lng))
+				.center(carPosition)
 				.radius(rd2 * 1000 / 2)
 				.strokeWidth(strokeWidth / 2)
 				.strokePattern(pattern)
@@ -608,6 +610,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	// calculate distance in meters:
+	public static double distance(LatLng pos1, LatLng pos2) {
+		return distance(pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
+	}
 	public static double distance(double lat1, double lon1, double lat2, double lon2) {
 		double dLat = Math.toRadians(lat2-lat1);
 		double dLon = Math.toRadians(lon2-lon1);
