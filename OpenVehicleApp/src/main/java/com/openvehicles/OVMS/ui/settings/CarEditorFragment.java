@@ -56,11 +56,16 @@ public class CarEditorFragment extends BaseFragment {
 		
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
-			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
-			
-			CarData selectedCarData = CarsStorage.get().getSelectedCarData();
-			isSelectedCar = selectedCarData != null && mCarData != null 
-				&& selectedCarData.sel_vehicleid.equals(mCarData.sel_vehicleid); 
+			try {
+				mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+				CarData selectedCarData = CarsStorage.get().getSelectedCarData();
+				isSelectedCar = selectedCarData != null && mCarData != null
+						&& selectedCarData.sel_vehicleid.equals(mCarData.sel_vehicleid);
+			} catch(Exception e) {
+				mCarData = null;
+				mEditPosition = -1;
+				isSelectedCar = false;
+			}
 		}
 
 		mSelectServer = (Spinner) getView().findViewById(R.id.select_server);
