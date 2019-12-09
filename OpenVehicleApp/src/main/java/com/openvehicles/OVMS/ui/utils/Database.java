@@ -3,6 +3,7 @@ package com.openvehicles.OVMS.ui.utils;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -281,15 +282,6 @@ public class Database extends SQLiteOpenHelper {
 		}
 	}
 
-	public void addCompany(String userid, String companyname, String instance) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("userid", userid);
-		contentValues.put("companyname", companyname);
-		contentValues.put("instance", instance);
-		db.insert("company", null, contentValues);
-	}
-
 	// update/add OCM latlng cache tile:
 	public void addlatlngdetail(int lat, int lng) {
 		open();
@@ -357,75 +349,6 @@ public class Database extends SQLiteOpenHelper {
 		db.update("ConnectionTypes", contentValues, whereClause, whereArgs);
 	}
 
-	public void addcompanydetail(String companyname, String buffer) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("buffer", buffer);
-		contentValues.put("companyname", companyname);
-		db.insert("companydetail", null, contentValues);
-	}
-
-	public void addcompanydetail1(String companyname, String buffer,
-			String bufferserver) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("buffer", buffer);
-		contentValues.put("bufferserver", bufferserver);
-		contentValues.put("companyname", companyname);
-		db.insert("companydetails", null, contentValues);
-	}
-
-	public void updatecompanydetail(String companyname, String buffer,
-			String bufferserver) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("buffer", buffer);
-		contentValues.put("bufferserver", bufferserver);
-		contentValues.put("companyname", companyname);
-		db.update("companydetails", contentValues, "companyname='"
-				+ companyname + "'", null);
-	}
-
-	public void addinterviewuser(String companyname, String user) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("username", user);
-		contentValues.put("companyname", companyname);
-		db.insert("interviewuser", null, contentValues);
-	}
-
-	public void addinterviewuserdetails(String companyname, String user,
-			String bufferserver) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("username", user);
-		contentValues.put("buffer", bufferserver);
-		contentValues.put("bufferserver", bufferserver);
-		contentValues.put("companyname", companyname);
-		db.insert("interviewuserdetails", null, contentValues);
-	}
-
-	public void updateinterviewuser(String companyname, String user) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("username", user);
-		contentValues.put("companyname", companyname);
-		db.update("interviewuser", contentValues, "companyname='" + companyname
-				+ "'", null);
-	}
-
-	public void updateinterviewuserdetails(String companyname, String user,
-			String bufferserver) {
-		open();
-		ContentValues contentValues = new ContentValues();
-		contentValues.put("username", user);
-		contentValues.put("buffer", bufferserver);
-		contentValues.put("bufferserver", bufferserver);
-		contentValues.put("companyname", companyname);
-		db.update("interviewuserdetails", contentValues, "companyname='"
-				+ companyname + "'", null);
-	}
-
 	public Cursor get_mapdetails() {
 		open();
 		Cursor cursor = db.rawQuery("select * from mapdetails", null);
@@ -468,6 +391,7 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getChargePoint(String cpId) {
 		open();
+		if (cpId == "") cpId = "-1";
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM mapdetails WHERE cpid=" + cpId, null);
 		return cursor;
@@ -475,17 +399,12 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getChargePointConnections(String cpId) {
 		open();
+		if (cpId == "") cpId = "-1";
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM Connection WHERE conCpId=" + cpId, null);
 		return cursor;
 	}
 
-	//	public Cursor get_ConnectionTypesdetails() {
-//		SQLiteDatabase db = this.getWritableDatabase();
-//		Cursor cursor = db.rawQuery(
-//				"select * from ConnectionTypes ORDER BY title", null);
-//		return cursor;
-//	}
 	public Cursor get_ConnectionTypes_Main() {
 		open();
 		Cursor cursor = db.rawQuery(
@@ -496,8 +415,9 @@ public class Database extends SQLiteOpenHelper {
 	public Cursor get_ConnectionTypesdetails(String cmpname) {
 		open();
 		Cursor cursor = db.rawQuery(
-				"select * from ConnectionTypes where CompanyName='" + cmpname
-						+ "' ORDER BY title", null);
+				"select * from ConnectionTypes where CompanyName="
+						+ DatabaseUtils.sqlEscapeString(cmpname)
+						+ " ORDER BY title", null);
 		return cursor;
 	}
 
@@ -512,66 +432,6 @@ public class Database extends SQLiteOpenHelper {
 		cursor.close();
 		return (idList.length() > 1) ? idList.substring(1) : "";
 	}
-
-	public Cursor getCompanydetails() {
-		open();
-		Cursor cursor = db.rawQuery("select * from company", null);
-		return cursor;
-	}
-
-	public Cursor getinterviewuserdetails() {
-		open();
-		Cursor cursor = db.rawQuery("select * from interviewuser", null);
-		return cursor;
-	}
-
-	public Cursor getinterviewuserdetailsdetails() {
-		open();
-		Cursor cursor = db.rawQuery("select * from interviewuserdetails", null);
-		return cursor;
-	}
-
-	public Cursor getCdetails() {
-		open();
-		Cursor cursor = db.rawQuery("select * from companydetail", null);
-		return cursor;
-	}
-
-	public Cursor getCdetails1() {
-		open();
-		Cursor cursor = db.rawQuery("select * from companydetails", null);
-		return cursor;
-	}
-
-	public Cursor getCompanydetails(String instance) {
-		open();
-		Cursor cursor = db.rawQuery("select * from company where instance='"
-				+ instance + "'", null);
-		return cursor;
-	}
-
-	public Cursor getsearchvalues(String name) {
-		open();
-		Cursor cursor = db.rawQuery(
-				"SELECT * FROM producttable WHERE productidno LIKE '%" + name
-						+ "%'", null);
-		return cursor;
-	}
-
-	public Cursor del(String name, String company) {
-		open();
-		Cursor cursor = db.rawQuery(
-				"delete FROM interviewuserdetails WHERE username='" + name
-						+ "'&companyname='" + company + "'", null);
-		return cursor;
-	}
-
-	public void deleteTable() {
-		open();
-		String deleteSQL = "delete from producttable";
-		db.execSQL(deleteSQL);
-	}
-
 
 	public void addNotification(NotificationData notificationData) {
 		open();
