@@ -191,6 +191,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 						Configuration.ORIENTATION_UNDEFINED);
 				return true;
 
+			case R.id.mi_aux_battery_stats:
+				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
 			case R.id.mi_show_features:
 				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
 						Configuration.ORIENTATION_UNDEFINED);
@@ -241,6 +246,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		findViewById(R.id.btn_lock_car).setOnClickListener(this);
 		findViewById(R.id.btn_valet_mode).setOnClickListener(this);
+
+		findViewById(R.id.tabCarText12V).setOnClickListener(this);
+		findViewById(R.id.tabCarText12VLabel).setOnClickListener(this);
 	}
 	
 	@Override
@@ -332,6 +340,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 								sendCommand(resId, cmd, CarFragment.this);
 							}
 						});
+				break;
+
+			case R.id.tabCarText12V:
+			case R.id.tabCarText12VLabel:
+				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
 				break;
 
 			default:

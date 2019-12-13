@@ -239,6 +239,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="186px"
+			android:clickable="true"
 			android:text="@string/text12VBATT"/>
 
 		<TextView
@@ -246,6 +247,7 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="220px"
+			android:clickable="true"
 			android:text="12.3V"
 			android:textStyle="bold"/>
 

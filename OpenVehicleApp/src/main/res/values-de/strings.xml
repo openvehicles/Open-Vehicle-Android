@@ -439,6 +439,68 @@
         Abweichungen der anderen Zellen von der Auswahl-Markierung ablesen kann.</p>
     ]]></string>
 
+    <string name="aux_battery_menulabel">12V-Verlauf</string>
+    <string name="aux_battery_title">12V Batterieverlauf</string>
+    <string name="aux_battery_msg_get_battpack">Empfange 12V-Daten&#8230;</string>
+    <string name="aux_battery_data_volt">Spannung (V)</string>
+    <string name="aux_battery_data_volt_ref">Referenz (V)</string>
+    <string name="aux_battery_data_current">Strom (A)</string>
+    <string name="aux_battery_data_temp_ambient">Umgebung (°C)</string>
+    <string name="aux_battery_data_temp_charger">Lader (°C)</string>
+    <string name="aux_battery_help"><![CDATA[
+ 		<h1>12V Batterieverlauf</h1>
+
+        <p>Da Bleibatterien zu plötzlichem Tod neigen (insbesondere im Winter), und durch
+         das OVMS eine ungeplante Zusatzlast tragen müssen, enthält das Modul eine
+         Überwachung der 12V-Spannung inkl. Alarm.</p>
+
+		<p><u>Hinweis</u>: die Spannung wird durch die Versorgungsspannung des OVMS gemessen.
+		 Da der Sensor Fertigungstoleranzen hat sollte anfangs eine Kalibrierung durchgeführt
+		 werden. Details stehen im Benutzerhandbuch.</p>
+
+		<h2>Verlaufsdaten</h2>
+		<p>Die 12V-Daten werden auf dem Server für 24 Stunden vorgehalten. Die lokale Kopie
+		 der App wird nicht automatisch aktualisiert, verwenden Sie den Button dafür.</p>
+        <p>Das Chart zeigt den Spannungsverlauf an, außerdem die Referenzspannung (s.u.),
+         die Stromstärke im 12V-Kreis, sowie die Umgebungs- und Ladegerät-Temperatur. Nicht
+         alle Fahrzeuge können alle Daten bereitstellen. Über das Menü können Spannungen und
+         Temperaturen ausgeblendet werden, der Strom wird immer angezeigt.</p>
+        <p>Die gestrichelten vertikalen Linien zeigen die Lade- und Nutzungsabschnitte an.
+         Per Klick auf einen Datenpunkt wird ein Fadenkreuz für Vergleiche eingeblendet.
+         Zoomen und Scrollen geht wie gewohnt über die Touchgesten, Reset des Zooms über
+         das Menü.</p>
+		<p>Die meisten Fahrzeuge laden die 12V-Batterie automatisch regelmäßig über den
+		 internen DC-Konverter aus der Hauptbatterie nach. Der Konverter ist oft in das
+		 Ladegerät integriert. Falls kein regelmäßiges Nachladen im Verlauf erkennbar ist,
+		 dann liegt möglicherweise ein Defekt vor.</p>
+
+		<h2>Referenzspannung &amp; Alarm</h2>
+		<p>Die Referenzspannung wird jeweils 15 Minuten nach 12V-Ladestop genommen. Sie
+		 dient als Referenz für den Unterspannungs-Alarm: ist die aktuelle Spannung um den
+		 eingestellten Schwellwert niedriger als die Referenz, dann sendet das Modul einen
+		 Alarm. Das passiert unabhängig von der App.</p>
+		<p>Die gemessene Referenz wird nicht verwendet, wenn diese niedriger liegt als die
+		 konfigurierte Standard-Referenz einer gesunden Batterie.</p>
+		<p>Eine höhere Ladespannung während des Winters bzw. in kaltem Klima ist normal,
+		 Bleibatterien benötigen um so höhere Ladespannung je kälter sie sind.</p>
+
+        <h2>Tipps</h2>
+        <p>Eine gesunde Bleibatterie geht ohne Last nicht unter 11,8V.</p>
+        <p>Falls eine stetige oder schnelle Abnahme der Spannungen angezeigt wird,
+         oder die Ladeströme oder -temperaturen start zunehmen, sind das i.d.R. Zeichen
+         für einen bevorstehenden Batterietod.</p>
+        <p>Die Batterie sollte regelmäßig auf Anzeichen von Ausgasung (Aufblähen) geprüft
+         werden, falls diese sichtbar sind sollte sie möglichst umgehend abgeklemmt werden.
+         Auch Korrosion an den Anschlüssen kann ein Warnzeichen sein.</p>
+        <p>Um die Lebensdauer zu erhöhen sollte man regelmäßig eine vollständige Aufladung
+         durchführen, d.h. den 12V-Ladeprozess bis zum Abschluss durchlaufen lassen.
+         Das benötigt normalerweise 3-4 Stunden und ist speziell im Winter sowie kalten
+         Klimabedingungen wichtig.</p>
+        <p>Wenn man das Fahrzeug längere Zeit unbenutzt stehen lässt sollte man das
+         OVMS vom Strom nehmen.</p>
+
+    ]]></string>
+
 
     <string name="power_title">Energie-Statistik</string>
     <string name="power_menu">Optionen</string>

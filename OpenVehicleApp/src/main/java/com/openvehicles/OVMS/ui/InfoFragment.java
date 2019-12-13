@@ -202,6 +202,11 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						Configuration.ORIENTATION_UNDEFINED);
 				return true;
 
+			case R.id.mi_aux_battery_stats:
+				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+						Configuration.ORIENTATION_UNDEFINED);
+				return true;
+
 			case R.id.mi_show_features:
 				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
 						Configuration.ORIENTATION_UNDEFINED);

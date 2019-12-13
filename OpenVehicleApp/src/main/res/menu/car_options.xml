@@ -27,6 +27,12 @@
                 app:showAsAction="never"/>
 
             <item
+                android:id="@+id/mi_aux_battery_stats"
+                android:icon="@drawable/ic_action_chart"
+                android:title="@string/aux_battery_menulabel"
+                app:showAsAction="never"/>
+
+            <item
                 android:id="@+id/mi_show_features"
                 android:icon="@drawable/ic_action_control"
                 android:title="@string/Features"

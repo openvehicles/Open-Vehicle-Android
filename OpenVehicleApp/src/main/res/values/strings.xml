@@ -454,6 +454,62 @@
 		until you can clearly read the deviations of the other cells from the selection marker.</p>
     ]]></string>
 
+    <string name="aux_battery_menulabel">12V History</string>
+    <string name="aux_battery_title">12V Battery History</string>
+    <string name="aux_battery_msg_get_battpack">Retrieving 12V data&#8230;</string>
+    <string name="aux_battery_data_volt">Voltage (V)</string>
+    <string name="aux_battery_data_volt_ref">Reference (V)</string>
+    <string name="aux_battery_data_current">Current (A)</string>
+    <string name="aux_battery_data_temp_ambient">Ambient temp (°C)</string>
+    <string name="aux_battery_data_temp_charger">Charger temp (°C)</string>
+    <string name="aux_battery_help"><![CDATA[
+ 		<h1>12V Battery History</h1>
+
+        <p>As lead-acid car batteries tend to die without warning (especially during winter)
+         and need to handle an additional unplanned constant load from the OVMS, the module
+         includes a 12V monitoring and alert system.</p>
+
+		<p><u>Note</u>: The 12V voltage is measured using the incoming voltage that powers the OVMS.
+		 As the sensor used by the module has some manufacturing tolerances you should do an
+		 initial calibration. See the user manual for details.</p>
+
+		<h2>History Data</h2>
+		<p>The 12V data is kept by the server for 24 hours. The local copy of the App is
+		 not updated automatically, use the update button to retrieve the last 24 hours.</p>
+		<p>The history chart shows the actual 12V battery voltage, the reference voltage (see
+		 below), the 12V current, and the ambient and charger temperatures. Not all vehicles
+		 can provide all of this. The menu has options to show only voltages or temperatures,
+		 the current is always shown.</p>
+		<p>Sections of 12V charging and vehicle usages are shown by vertical dashed lines.
+		 Click on any data point to set the focus and display a cross hair for comparison.
+		 Pinch to zoom and move the chart as usual, and reset the view by the menu option.</p>
+		<p>Most vehicles trickle charge the 12V battery from the main battery when idle by
+		 the internal DC/DC converter which is normally built into the charger. If you don\'t
+		  see a regular charging pattern, your DC converter may be defective.</p>
+
+		<h2>Reference &amp; Alerts</h2>
+		<p>The reference voltage is updated 15 minutes after the 12V charging stops. It\'s
+		 used as the alert reference if it\'s higher than the configured default reference
+		 of a healthy battery.</p>
+		<p>If the actual voltage drops below the reference by the configured threshold, the
+		 OVMS will automatically send an alert. This is handled by the module, the App doesn\'t
+		 need to run for this.</p>
+		<p>A higher charge voltage during winter is normal and expected, as lead-acid
+		 batteries need higher charge voltages at lower temperatures.</p>
+
+        <h2>Tips</h2>
+        <p>A healthy lead-acid battery will not drop below 11.8V without load.</p>
+		<p>If you see continuous or fast degradation of the voltages or unusually high
+		 currents and/or charger temperatures, that\'s a sign of a dying battery.</p>
+		<p>Regularly check your battery for signs of gasing (i.e. bloating), if present
+		 disconnect the battery ASAP. Also look for corrosion on the terminals.</p>
+		<p>To enhance the life span of a lead-acid battery, take care to regularly do a
+		 full charge (i.e. keep the 12V charger running until finished). This normally
+		 takes 3-4 hours and is especially important in cold climates or winter.</p>
+		<p>If you\'re going to park your car for some time, unplug the OVMS.</p>
+
+    ]]></string>
+
 
     <string name="power_title">Power history</string>
     <string name="power_menu">Options</string>
