@@ -167,8 +167,8 @@ public class CarEditorFragment extends BaseFragment {
 					}
 				});
 			mCarData.sel_vehicle_label = Ui.getValidValue(rootView, R.id.txt_vehicle_label, new StringValidator()); 
-			mCarData.sel_server_password = Ui.getValidValue(rootView, R.id.txt_server_passwd, new PasswdValidator(4, 16)); 
-			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 16));
+			mCarData.sel_server_password = Ui.getValidValue(rootView, R.id.txt_server_passwd, new PasswdValidator(4, 255));
+			mCarData.sel_module_password = Ui.getValidValue(rootView, R.id.txt_module_passwd, new PasswdValidator(4, 255));
 			mCarData.sel_server = Ui.getValidValue(rootView, R.id.txt_server_address, new StringValidator());
 			mCarData.sel_gcm_senderid = Ui.getValue(rootView, R.id.txt_gcm_senderid);
 			mCarData.sel_vehicle_image = sAvailableColors[mGalleryCar.getSelectedItemPosition()];
