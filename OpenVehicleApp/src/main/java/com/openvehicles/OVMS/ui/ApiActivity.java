@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 
 import android.support.v7.app.AppCompatActivity;
@@ -19,22 +20,31 @@ public class ApiActivity extends AppCompatActivity {
 	private ApiService mApiService;
 	
 	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.d(TAG, "onStart: binding service");
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		Log.d(TAG, "onCreate: binding service");
         bindService(new Intent(this, ApiService.class), mConnection, Context.BIND_AUTO_CREATE);
 	}
 	
 	@Override
-	protected void onStop() {
+	protected void onDestroy() {
 		if (mApiService != null) {
-			Log.d(TAG, "onStop: unbinding service");
+			Log.d(TAG, "onDestroy: unbinding service");
         	unbindService(mConnection);
         	mApiService = null;
         }
-		super.onStop();
+		super.onDestroy();
 	}
-	
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if (mApiService != null) {
+			Log.d(TAG, "onResume: check connection");
+			mApiService.checkConnection();
+		}
+	}
+
 	public ApiService getService() {
 		return mApiService;
 	}

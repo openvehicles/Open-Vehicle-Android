@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.api;
 
+import android.app.AlarmManager;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,9 +15,11 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.IBinder;
-import android.provider.Browser;
-import android.support.annotation.IntegerRes;
+import android.os.Looper;
+import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,17 +28,17 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiTask.OnUpdateStatusListener;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.receiver.AutoStart;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.utils.CarsStorage;
-
-import java.util.Date;
 
 public class ApiService extends Service implements OnUpdateStatusListener {
 
 	private static final String TAG = "ApiService";
 	private static final int ONGOING_NOTIFICATION_ID = 0x4f564d53; // "OVMS"
+
+	private static final String ACTION_PING = "com.openvehicles.OVMS.intent.action.PING";
+	private static final int PING_INTERVAL = 5; // Minutes
 
 	private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
@@ -43,17 +46,25 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	private OnResultCommandListener mOnResultCommandListener;
 	private AppPrefes appPrefes;
 
+	private ConnectivityManager mConnectivityManager;
+	private AlarmManager mAlarmManager;
+	private Handler mHandler;
+	private volatile Looper mServiceLooper;
+	private volatile ApiServiceHandler mServiceHandler;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
 
+		mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		appPrefes = new AppPrefes(getApplicationContext(), "ovms");
 
-		// check if the service shall run in foreground:
-		boolean startService = appPrefes.getData("option_service_enabled", "0").equals("1");
+		createNotificationChannel();
 
-		if (startService) {
+		// check if the service shall run in foreground:
+		boolean foreground = appPrefes.getData("option_service_enabled", "0").equals("1");
+		if (foreground) {
 
 			Intent notificationIntent = new Intent(this, MainActivity.class);
 			PendingIntent pendingIntent =
@@ -72,9 +83,6 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			startForeground(ONGOING_NOTIFICATION_ID, notification);
 		}
 
-		// Login for selected car:
-		openConnection();
-
 		// Register command receiver:
 		Log.d(TAG, "Registering command receiver for Intent: " + getPackageName() + ".SendCommand");
 		registerReceiver(mCommandReceiver,
@@ -84,12 +92,34 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		registerReceiver(mNetworkStatusReceiver,
 				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
+		// Start intent handler thread:
+		mHandler = new Handler();
+		final HandlerThread thread = new HandlerThread("ApiServiceHandler");
+		thread.start();
+		mServiceLooper = thread.getLooper();
+		mServiceHandler = new ApiServiceHandler(mServiceLooper);
+
+		// Login for selected car:
+		openConnection();
+
+		// Schedule ping:
+		final PendingIntent pi = PendingIntent.getService(this, 0,
+				new Intent(ACTION_PING), PendingIntent.FLAG_UPDATE_CURRENT);
+		long pingIntervalMs = PING_INTERVAL * 60 * 1000;
+		mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+				System.currentTimeMillis() + pingIntervalMs, pingIntervalMs, pi);
 	}
-	
 
 	@Override
 	public void onDestroy() {
+		Log.d(TAG, "onDestroy: close");
 
+		// Stop ping:
+		final PendingIntent pi = PendingIntent.getService(this, 0,
+				new Intent(ACTION_PING), PendingIntent.FLAG_UPDATE_CURRENT);
+		mAlarmManager.cancel(pi);
+
+		// Logout:
 		closeConnection();
 
 		unregisterReceiver(mCommandReceiver);
@@ -98,47 +128,23 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		super.onDestroy();
 	}
 
-
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(TAG, "onStartCommand");
-		createNotificationChannel();
+		Log.d(TAG, "onStartCommand: " + intent);
 
-		// Reconnect?
-		if (!isLoggedIn()) {
-			Log.d(TAG, "doing reconnect");
-			openConnection();
-		}
+		// Forward intent to our handler thread:
+		final Message msg = mServiceHandler.obtainMessage();
+		msg.arg1 = startId;
+		msg.obj = intent;
+		mServiceHandler.sendMessage(msg);
 
 		return super.onStartCommand(intent, flags, startId);
 	}
 
-	private void createNotificationChannel() {
-		// Create the NotificationChannel, but only on API 26+ because
-		// the NotificationChannel class is new and not in the support library
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			CharSequence name = getString(R.string.app_name);
-			String description = getString(R.string.channel_description);
-			int importance = NotificationManager.IMPORTANCE_DEFAULT;
-			NotificationChannel channel = new NotificationChannel("default", name, importance);
-			channel.setDescription(description);
-			// Register the channel with the system; you can't change the importance
-			// or other notification behaviors after this
-			NotificationManager notificationManager = getSystemService(NotificationManager.class);
-			notificationManager.createNotificationChannel(channel);
-		}
-	}
-
 	@Override
 	public IBinder onBind(Intent intent) {
-		Log.d(TAG, "onBind");
-
-		// Reconnect?
-		if (!isLoggedIn()) {
-			Log.d(TAG, "doing reconnect");
-			openConnection();
-		}
-
+		Log.d(TAG, "onBind:" + intent);
+		checkConnection();
 		return mBinder;
 	}
 
@@ -149,10 +155,41 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	}
 
 
+	private final class ApiServiceHandler extends Handler {
+		public ApiServiceHandler(final Looper looper) {
+			super(looper);
+		}
+		@Override
+		public void handleMessage(final Message msg) {
+			handleIntent((Intent) msg.obj);
+		}
+	}
+
+	private void handleIntent(final Intent intent) {
+		Log.d(TAG, "handleIntent:" + intent);
+		if (intent == null) return;
+		if (ACTION_PING.equals(intent.getAction())) {
+			checkConnection();
+		}
+	}
+
+
+	/**
+	 * checkConnection: reconnect if necessary
+	 */
+	public void checkConnection() {
+		if (!isLoggedIn()) {
+			Log.i(TAG, "checkConnection: doing reconnect");
+			openConnection();
+		} else {
+			Log.i(TAG, "checkConnection: connection OK");
+		}
+	}
+
 	/**
 	 * closeConnection: terminate ApiTask
 	 */
-	public void closeConnection() {
+	public synchronized void closeConnection() {
 		try {
 			if (mApiTask != null) {
 				Log.v(TAG, "closeConnection: shutting down TCP connection");
@@ -168,7 +205,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	/**
 	 * openConnection: start ApiTask
 	 */
-	public void openConnection() {
+	public synchronized void openConnection() {
 		if (mCarData == null) {
 			Log.v(TAG, "openConnection: getting CarData");
 			mCarData = CarsStorage.get().getSelectedCarData();
@@ -186,18 +223,45 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 			// start the new ApiTask:
 			mApiTask = new ApiTask(getApplicationContext(), mCarData, this);
-
-			if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
-				mApiTask.execute();
-				// Note: this may take a while to start when changing a car
-				// 	because the old ApiTask waits until the next protocol
-				// 	message arrives
-			} else {
-				mApiTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-				// Note: this will start immediately
-			}
+			mApiTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
+
+
+	public boolean isLoggedIn() {
+		return (mApiTask != null && mApiTask.isLoggedIn());
+	}
+
+	public CarData getCarData() {
+		return mCarData;
+	}
+
+
+	/**
+	 * Check for network availability.
+	 *
+	 * @return true if any network is available
+	 */
+	public boolean isOnline() {
+		NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
+		return (info != null && info.isConnected());
+	}
+
+
+	/**
+	 * Broadcast Receiver for Network Connectivity Changes
+	 */
+	private final BroadcastReceiver mNetworkStatusReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "mNetworkStatusReceiver: new state: "
+					+ (isOnline() ? "ONLINE" : "OFFLINE"));
+			if (!isOnline() && mApiTask != null)
+				closeConnection();
+			else if (isOnline() && mApiTask == null)
+				openConnection();
+		}
+	};
 
 
 	/**
@@ -221,7 +285,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		if (mApiTask == null) return;
 
 		mOnResultCommandListener = pOnResultCommandListener;
-		mApiTask.sendCommand(String.format("MP-0 C%s", pCommand));
+		mApiTask.sendMessage(String.format("MP-0 C%s", pCommand));
 		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
 	}
 	
@@ -229,7 +293,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		if (mApiTask == null || TextUtils.isEmpty(pCommand)) return false;
 		
 		mOnResultCommandListener = pOnResultCommandListener;
-		return mApiTask.sendCommand(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
+		return mApiTask.sendMessage(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
 	}
 	
 	public void cancelCommand() {
@@ -344,48 +408,6 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	}
 	
 
-	public boolean isLoggedIn() {
-		return (mApiTask != null && mApiTask.isLoggedIn());
-	}
-	
-	public CarData getCarData() {
-		return mCarData;
-	}
-	
-	public CarData getLoggedInCarData() {
-		return isLoggedIn() ? mCarData : null;
-	}
-	
-
-	/**
-	 * Check for network availability.
-	 *
-	 * @return true if any network is available
-	 */
-	public boolean isOnline() {
-		ConnectivityManager cm = (ConnectivityManager) getApplicationContext()
-				.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo info = cm.getActiveNetworkInfo();
-		return (info != null && info.isConnectedOrConnecting());
-	}
-
-
-	/**
-	 * Broadcast Receiver for Network Connectivity Changes
-	 */
-	private final BroadcastReceiver mNetworkStatusReceiver = new BroadcastReceiver() {
-		@Override
-		public void onReceive(Context context, Intent intent) {
-			Log.d(TAG, "mNetworkStatusReceiver: new state: "
-					+ (isOnline() ? "ONLINE" : "OFFLINE"));
-			if (!isOnline() && mApiTask != null)
-				closeConnection();
-			else if (isOnline() && mApiTask == null)
-				openConnection();
-		}
-	};
-
-
 	/**
 	 * Broadcast Command Receiver for Automagic / Tasker / ...
 	 *
@@ -442,12 +464,31 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			// Send command:
 			if (vehCommand != null && vehCommand.length() > 0) {
 				Log.i(TAG, "CommandReceiver: sending command: " + vehCommand);
-				if (!mApiTask.sendCommand(String.format("MP-0 C%s", vehCommand))) {
+				if (!mApiTask.sendMessage(String.format("MP-0 C%s", vehCommand))) {
 					Log.e(TAG, "CommandReceiver: sendCommand failed");
 				}
 			}
 		}
 	};
 
+
+	/**
+	 * Create NotificationChannel "default" for Android >= 8.0
+	 * This is done here in ApiService because the service may start
+	 * on boot, independant of the MainActivity.
+ 	 */
+	private void createNotificationChannel() {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+			CharSequence name = getString(R.string.app_name);
+			String description = getString(R.string.channel_description);
+			int importance = NotificationManager.IMPORTANCE_DEFAULT;
+			NotificationChannel channel = new NotificationChannel("default", name, importance);
+			channel.setDescription(description);
+			// Register the channel with the system; you can't change the importance
+			// or other notification behaviors after this
+			NotificationManager notificationManager = getSystemService(NotificationManager.class);
+			notificationManager.createNotificationChannel(channel);
+		}
+	}
 
 }

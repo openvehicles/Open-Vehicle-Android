@@ -59,8 +59,12 @@
             android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
-            android:name="com.openvehicles.OVMS.api.ApiService"
-            android:enabled="true" />
+            android:name=".api.ApiService"
+            android:enabled="true" >
+            <intent-filter>
+                <action android:name="com.openvehicles.OVMS.intent.action.PING" />
+            </intent-filter>
+        </service>
 
         <receiver android:name=".receiver.AutoStart">
             <intent-filter>

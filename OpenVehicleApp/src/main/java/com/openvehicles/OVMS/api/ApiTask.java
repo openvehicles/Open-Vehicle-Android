@@ -25,11 +25,7 @@ import android.os.AsyncTask;
 import android.util.Base64;
 import android.util.Log;
 
-import com.openvehicles.OVMS.BaseApp;
-import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.entities.CarData.DataStale;
-import com.luttu.AppPrefes;
 
 public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private static final String TAG = "ApiTask";
@@ -45,7 +41,6 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private BufferedReader mInputstream;
 	private boolean isLoggedIn = false;
 	private final Random sRnd = new Random();
-	private boolean isShuttingDown = false;
 	private Timer pingTimer;
 
 
@@ -193,17 +188,20 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 			Log.d(TAG, "Lost connection");
 
-			isLoggedIn = false;
+			synchronized (ApiTask.this) {
 
-			// Cleanup Socket:
-			if (mSocket != null && mSocket.isConnected()) {
-				try {
-					mSocket.close();
-				} catch (Exception ex) {
-					// ignore
+				isLoggedIn = false;
+
+				// Cleanup Socket:
+				if (mSocket != null && mSocket.isConnected()) {
+					try {
+						mSocket.close();
+					} catch (Exception ex) {
+						// ignore
+					}
 				}
+				mSocket = null;
 			}
-			mSocket = null;
 
 			// Wait 3 seconds before reconnect:
 			try {
@@ -231,7 +229,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	public void ping() {
 		if (isLoggedIn) {
 			Log.d(TAG, "Sending ping");
-			sendCommand("MP-0 A");
+			sendMessage("MP-0 A");
 		}
 	}
 
@@ -241,18 +239,18 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * Asynchronous reply will be handled by handleMessage().
 	 * Example: request feature list: sendCommand("MP-0 C1")
 	 *
-	 * @param command -- complete protocol message with header
+	 * @param message -- complete protocol message with header
 	 * @return true if command has been sent, false on error
 	 */
-	public boolean sendCommand(String command) {
-		Log.i(TAG, "TX: " + command);
+	public synchronized boolean sendMessage(String message) {
+		Log.i(TAG, "TX: " + message);
 		if (!isLoggedIn) {
 			Log.w(TAG, "Server not ready. TX aborted.");
 			return false;
 		}
 
 		try {
-			mOutputstream.println(Base64.encodeToString(mTxCipher.update(command.getBytes()), Base64.NO_WRAP));
+			mOutputstream.println(Base64.encodeToString(mTxCipher.update(message.getBytes()), Base64.NO_WRAP));
 		} catch (Exception e) {
 			publishProgress(MsgType.msgError, e);
 			return false;
@@ -275,7 +273,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 *  false: a non recoverable error is detected (like wrong host or login)
 	 * 	true: connection established (isLoggedIn==true) or caller shall retry (isLoggedIn==false)
 	 */
-	private boolean connInit() {
+	private synchronized boolean connInit() {
 
 		Log.d(TAG, "connInit() requested");
 

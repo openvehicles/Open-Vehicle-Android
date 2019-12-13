@@ -95,9 +95,9 @@ public class MainActivity extends ApiActivity implements
 		if (uuid.length() == 0) {
 			uuid = UUID.randomUUID().toString();
 			appPrefes.SaveData("UUID", uuid);
-			Log.d(TAG, "generated new UUID: " + uuid);
+			Log.d(TAG, "onCreate: generated new UUID: " + uuid);
 		} else {
-			Log.d(TAG, "using UUID: " + uuid);
+			Log.d(TAG, "onCreate: using UUID: " + uuid);
 		}
 
 		// OCM init:
@@ -108,7 +108,7 @@ public class MainActivity extends ApiActivity implements
 		ConnectionList connectionList = new ConnectionList(this,this,true);
 
 		// Start background ApiService:
-		Log.i(TAG, "Starting ApiService");
+		Log.i(TAG, "onCreate: starting ApiService");
 		startService(new Intent(this, ApiService.class));
 
 		// set up receiver for server communication service:
@@ -116,7 +116,7 @@ public class MainActivity extends ApiActivity implements
 				getPackageName() + ".ApiEvent"));
 
 		// set up receiver for notifications:
-		Log.d(TAG, "Notifications registering receiver for Intent: " + getPackageName() + ".Notification");
+		Log.d(TAG, "onCreate: registering receiver for Intent: " + getPackageName() + ".Notification");
 		registerReceiver(mNotificationReceiver, new IntentFilter(
 				getPackageName() + ".Notification"));
 
@@ -203,7 +203,7 @@ public class MainActivity extends ApiActivity implements
 		// Stop background ApiService?
 		boolean serviceEnabled = appPrefes.getData("option_service_enabled", "0").equals("1");
 		if (!serviceEnabled) {
-			Log.i(TAG, "Stopping ApiService");
+			Log.i(TAG, "onDestroy: stopping ApiService");
 			stopService(new Intent(this, ApiService.class));
 		}
 
@@ -221,9 +221,7 @@ public class MainActivity extends ApiActivity implements
 		super.onResume();
 		Log.d(TAG, "onResume");
 
-
-		//ApiService apiService = getService();
-
+		ApiService apiService = getService();
 
 		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
 				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
