@@ -402,7 +402,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * @param msg -- the OVMS protocol message payload received (without header)
 	 */
 	private void handleMessage(String msg) {
-		Log.i(TAG, "handleMessage: " + msg);
+		Log.v(TAG, "handleMessage: " + msg);
 		
 		char msgCode = msg.charAt(0);
 		String msgData = msg.substring(1);
@@ -503,7 +503,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				break;
 
 			case 'c':
-				Log.i(TAG, "Command response received: " + msgData);
+				Log.d(TAG, "Command response received: " + msgData);
 				publishProgress(MsgType.msgCommand, msgData);
 				break;
 
@@ -570,7 +570,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			 */
 
 			default:
-				Log.i(TAG, "Unhandled message received: " + msgCode + msgData);
+				Log.w(TAG, "Unhandled message received: " + msgCode + msgData);
 				// forward to listeners, maybe this is a custom message:
 				publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				break;

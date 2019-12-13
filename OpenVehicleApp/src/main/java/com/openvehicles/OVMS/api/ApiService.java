@@ -368,7 +368,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		// Check broadcast API configuration:
 		if (appPrefes.getData("option_commands_enabled", "0").equals("1")) {
 
-			Log.i(TAG, "onResultCommand: sending broadcast: " +
+			Log.v(TAG, "onResultCommand: sending broadcast: " +
 					getPackageName() + ".CommandResult = " + pCmd);
 			Intent intent = new Intent(getPackageName() + ".CommandResult");
 
