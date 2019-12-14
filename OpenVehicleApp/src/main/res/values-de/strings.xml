@@ -621,10 +621,12 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· Reifendruck-Einheit unabhängig einstellbar</p>
-        <p>· Separate 12V-Anzeige für alle Fahrzeuge</p>
-        <p>· Batterieinfo zeigt beim Laden wieder das Stromlimit an</p>
-        <p>· Aktualisierung des OpenChargeMap-API</p>
+        <p>· OpenChargeMap API-Aktualisierungen und Verbesserungen</p>
+        <p>· Kartenansicht mit Fahrzeugverfolgung / "Meine Position" gekoppelt</p>
+        <p>· Vereinfachte Fahrzeugkonfiguration</p>
+        <p>· Schutz gegen Verlust der Fahrzeugkonfiguration bei zukünftigen Updates</p>
+        <p>· OVMS-Service bleibt auch unter Android &gt;= 7 online</p>
+        <p>· 12V-Batterieverlauf</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
