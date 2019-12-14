@@ -155,15 +155,20 @@ public class AuxBatteryData {
 							packStatus.timeStamp = timeStamp;
 
 							packStatus.volt = Float.parseFloat(result[21]);
-							packStatus.voltRef = Float.parseFloat(result[23]);
-							packStatus.current = Float.parseFloat(result[26]);
+							if (result.length > 23)
+								packStatus.voltRef = Float.parseFloat(result[23]);
+							if (result.length > 26)
+								packStatus.current = Float.parseFloat(result[26]);
 							packStatus.tempAmbient = Float.parseFloat(result[17]);
-							packStatus.tempCharger = Float.parseFloat(result[25]);
+							if (result.length > 25)
+								packStatus.tempCharger = Float.parseFloat(result[25]);
 
 							doors = Integer.parseInt(result[18]); // doors3
 							packStatus.isCarAwake = ((doors & 0x01) != 0);
-							doors = Integer.parseInt(result[24]); // doors5
-							packStatus.isCharging12V = ((doors & 0x10) != 0);
+							if (result.length > 24) {
+								doors = Integer.parseInt(result[24]); // doors5
+								packStatus.isCharging12V = ((doors & 0x10) != 0);
+							}
 
 							// add to history:
 							packHistory.add(packStatus);

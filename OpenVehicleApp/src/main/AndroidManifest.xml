@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
-    android:versionCode="2019112701"
+    android:versionCode="2019121301"
     android:versionName="3.13.2" >
 
 
