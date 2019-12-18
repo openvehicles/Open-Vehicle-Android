@@ -590,6 +590,11 @@ public class CarData implements Serializable {
 			return false;
 		}
 
+		// Car specific handling:
+		if (car_type.equals("RT")) {
+			stale_ambient_temp = DataStale.NoValue;
+		}
+
 		return true;
 	}
 
@@ -699,6 +704,11 @@ public class CarData implements Serializable {
 		} catch(Exception e) {
 			Log.e(TAG, "processTPMS: ERROR", e);
 			return false;
+		}
+
+		// Car specific handling:
+		if (car_type.equals("RT") || car_type.equals("SE")) {
+			stale_tpms = DataStale.NoValue;
 		}
 
 		return true;

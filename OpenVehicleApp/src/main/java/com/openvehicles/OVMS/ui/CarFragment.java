@@ -465,78 +465,69 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if ((pCarData == null) || (pCarData.car_lastupdated == null)) return;
 
 		// First the last updated section...
-		TextView tv = (TextView)findViewById(R.id.txt_last_updated);
+		TextView tv = (TextView) findViewById(R.id.txt_last_updated);
 		long now = System.currentTimeMillis();
 		long seconds = (now - pCarData.car_lastupdated.getTime()) / 1000;
-		long minutes = (seconds)/60;
-		long hours = minutes/60;
-		long days = minutes/(60*24);
+		long minutes = (seconds) / 60;
+		long hours = minutes / 60;
+		long days = minutes / (60 * 24);
 		Log.d(TAG, "Last updated: " + seconds + " secs ago");
 
 		if (pCarData.car_lastupdated == null) {
 			tv.setText("");
 			tv.setTextColor(0xFFFFFFFF);
-		}
-		else if (minutes == 0) {
+		} else if (minutes == 0) {
 			tv.setText(getText(R.string.live));
 			tv.setTextColor(0xFFFFFFFF);
-		}
-		else if (minutes == 1) {
+		} else if (minutes == 1) {
 			tv.setText(getText(R.string.min1));
 			tv.setTextColor(0xFFFFFFFF);
-		}
-		else if (days > 1) {
-			tv.setText(String.format(getText(R.string.ndays).toString(),days));
+		} else if (days > 1) {
+			tv.setText(String.format(getText(R.string.ndays).toString(), days));
 			tv.setTextColor(0xFFFF0000);
-		}
-		else if (hours > 1) {
-			tv.setText(String.format(getText(R.string.nhours).toString(),hours));
+		} else if (hours > 1) {
+			tv.setText(String.format(getText(R.string.nhours).toString(), hours));
 			tv.setTextColor(0xFFFF0000);
-		}
-		else if (minutes > 60) {
-			tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
-			tv.setTextColor(0xFFFF0000);			
-		}
-		else {
-			tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
+		} else if (minutes > 60) {
+			tv.setText(String.format(getText(R.string.nmins).toString(), minutes));
+			tv.setTextColor(0xFFFF0000);
+		} else {
+			tv.setText(String.format(getText(R.string.nmins).toString(), minutes));
 			tv.setTextColor(0xFFFFFFFF);
 		}
 
 		// Then the parking timer...
-//		LinearLayout parkinglayoutv = (LinearLayout)findViewById(R.id.tabCarLayoutParking);
-		tv = (TextView)findViewById(R.id.txt_parked_time);
+		tv = (TextView) findViewById(R.id.txt_parked_time);
 		if ((!pCarData.car_started) && (pCarData.car_parked_time != null)) {
 			// Car is parked
-//			parkinglayoutv.setVisibility(View.VISIBLE);
 			tv.setVisibility(View.VISIBLE);
-			
+
 			seconds = (now - pCarData.car_parked_time.getTime()) / 1000;
-			minutes = (seconds)/60;
-			hours = minutes/60;
-			days = minutes/(60*24);
+			minutes = (seconds) / 60;
+			hours = minutes / 60;
+			days = minutes / (60 * 24);
 
 			if (minutes == 0)
 				tv.setText(getText(R.string.justnow));
 			else if (minutes == 1)
 				tv.setText("1 min");
 			else if (days > 1)
-				tv.setText(String.format(getText(R.string.ndays).toString(),days));
+				tv.setText(String.format(getText(R.string.ndays).toString(), days));
 			else if (hours > 1)
-				tv.setText(String.format(getText(R.string.nhours).toString(),hours));
+				tv.setText(String.format(getText(R.string.nhours).toString(), hours));
 			else if (minutes > 60)
-				tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
+				tv.setText(String.format(getText(R.string.nmins).toString(), minutes));
 			else
-				tv.setText(String.format(getText(R.string.nmins).toString(),minutes));
-			} else {
-//			parkinglayoutv.setVisibility(View.INVISIBLE);
+				tv.setText(String.format(getText(R.string.nmins).toString(), minutes));
+		} else {
 			tv.setVisibility(View.INVISIBLE);
 		}
 
 		// The signal strength indicator
-		ImageView iv = (ImageView)findViewById(R.id.img_signal_rssi);
+		ImageView iv = (ImageView) findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "signal_strength_" + pCarData.car_gsm_bars));
 	}
-	
+
 	// This updates the main informational part of the view.
 	// It is called when the server gets new data.
 	public void updateCarBodyView(CarData pCarData) {
@@ -546,34 +537,29 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView label, tv;
 
 		// Now, the car background image
-		iv = (ImageView)findViewById(R.id.tabCarImageCarOutline);
+		iv = (ImageView) findViewById(R.id.tabCarImageCarOutline);
 
 		if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 			// Mitsubishi i-MiEV: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_imiev);
-		}
-		else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
-		 	// smart ED: one ol image for all colors:
+		} else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
+			// smart ED: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_smart);
-		}
-		else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+		} else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 			iv.setImageResource(R.drawable.ol_car_kianiro_grey);
-		}
-		else {
+		} else {
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
 		}
 
 		// "12V" box:
-		label = (TextView) findViewById(R.id.tabCarText12VLabel);
+		//label = (TextView) findViewById(R.id.tabCarText12VLabel);
 		tv = (TextView) findViewById(R.id.tabCarText12V);
-
 		tv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
-
 		if (mCarData.car_12vline_ref <= 1.5 || mCarData.car_charging_12v) {
 			// charging / calmdown
 			tv.setTextColor(0xFFA9A9FF);
 		} else {
-			Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
+			double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
 			if (diff >= 1.6)
 				tv.setTextColor(0xFFFF0000);
 			else if (diff >= 1.0)
@@ -583,13 +569,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		}
 
 		// "Ambient" box:
-		iv = (ImageView)findViewById(R.id.tabCarImageCarAmbientBox);
+		iv = (ImageView) findViewById(R.id.tabCarImageCarAmbientBox);
 		label = (TextView) findViewById(R.id.tabCarTextAmbientLabel);
 		tv = (TextView) findViewById(R.id.tabCarTextAmbient);
-
-		if (mCarData.car_type.equals("RT")) {
-			pCarData.stale_ambient_temp = DataStale.NoValue;
-		}
 
 		if (pCarData.stale_ambient_temp == DataStale.NoValue) {
 			iv.setVisibility(View.INVISIBLE);
@@ -609,121 +591,96 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// TPMS
 		//	String tirePressureDisplayFormat = "%s\n%s";
-        TextView fltv = (TextView) findViewById(R.id.textFLWheel);
-        TextView fltvv = (TextView) findViewById(R.id.textFLWheelVal);
+		TextView fltv = (TextView) findViewById(R.id.textFLWheel);
+		TextView fltvv = (TextView) findViewById(R.id.textFLWheelVal);
 
-        TextView frtv = (TextView) findViewById(R.id.textFRWheel);
-        TextView frtvv = (TextView) findViewById(R.id.textFRWheelVal);
-        
-        TextView rltv = (TextView) findViewById(R.id.textRLWheel);
-        TextView rltvv = (TextView) findViewById(R.id.textRLWheelVal);
-        
-        TextView rrtv = (TextView) findViewById(R.id.textRRWheel);
-        TextView rrtvv = (TextView) findViewById(R.id.textRRWheelVal);
-        
-    	iv = (ImageView)findViewById(R.id.tabCarImageCarTPMSBoxes);
+		TextView frtv = (TextView) findViewById(R.id.textFRWheel);
+		TextView frtvv = (TextView) findViewById(R.id.textFRWheelVal);
 
-		if (mCarData.car_type.equals("RT") || mCarData.car_type.equals("SE")) {
-			pCarData.stale_tpms = DataStale.NoValue;
-		}
+		TextView rltv = (TextView) findViewById(R.id.textRLWheel);
+		TextView rltvv = (TextView) findViewById(R.id.textRLWheelVal);
+
+		TextView rrtv = (TextView) findViewById(R.id.textRRWheel);
+		TextView rrtvv = (TextView) findViewById(R.id.textRRWheelVal);
+
+		iv = (ImageView) findViewById(R.id.tabCarImageCarTPMSBoxes);
 
 		if (pCarData.stale_tpms == DataStale.NoValue) {
-        	iv.setVisibility(View.INVISIBLE);
-    		fltv.setText(null);
-    		frtv.setText(null);
-    		rltv.setText(null);
-    		rrtv.setText(null);
-    		
-    		fltvv.setText(null);
-    		frtvv.setText(null);
-    		rltvv.setText(null);
-    		rrtvv.setText(null);
-    		
-        } else {
-        	iv.setVisibility(View.VISIBLE);
+			iv.setVisibility(View.INVISIBLE);
+			fltv.setText(null);
+			frtv.setText(null);
+			rltv.setText(null);
+			rrtv.setText(null);
 
-        	fltv.setText(pCarData.car_tpms_fl_p);
-    		frtv.setText(pCarData.car_tpms_fr_p);
-    		rltv.setText(pCarData.car_tpms_rl_p);
-    		rrtv.setText(pCarData.car_tpms_rr_p);
-    		
-        	fltvv.setText(pCarData.car_tpms_fl_t);
-    		frtvv.setText(pCarData.car_tpms_fr_t);
-    		rltvv.setText(pCarData.car_tpms_rl_t);
-    		rrtvv.setText(pCarData.car_tpms_rr_t);
-    		
-    		if (pCarData.stale_tpms == DataStale.Stale) {
-    			fltv.setTextColor(0xFF808080);
-    			frtv.setTextColor(0xFF808080);
-    			rltv.setTextColor(0xFF808080);
-    			rrtv.setTextColor(0xFF808080);
+			fltvv.setText(null);
+			frtvv.setText(null);
+			rltvv.setText(null);
+			rrtvv.setText(null);
 
-    			fltvv.setTextColor(0xFF808080);
-    			frtvv.setTextColor(0xFF808080);
-    			rltvv.setTextColor(0xFF808080);
-    			rrtvv.setTextColor(0xFF808080);
-    			
-    		} else {
-    			fltv.setTextColor(0xFFFFFFFF);
-    			frtv.setTextColor(0xFFFFFFFF);
-    			rltv.setTextColor(0xFFFFFFFF);
-    			rrtv.setTextColor(0xFFFFFFFF);
+		} else {
+			iv.setVisibility(View.VISIBLE);
 
-    			fltvv.setTextColor(0xFFFFFFFF);
-    			frtvv.setTextColor(0xFFFFFFFF);
-    			rltvv.setTextColor(0xFFFFFFFF);
-    			rrtvv.setTextColor(0xFFFFFFFF);
-    		}
-        }
+			fltv.setText(pCarData.car_tpms_fl_p);
+			frtv.setText(pCarData.car_tpms_fr_p);
+			rltv.setText(pCarData.car_tpms_rl_p);
+			rrtv.setText(pCarData.car_tpms_rr_p);
 
-    // "Temp PEM" box:
+			fltvv.setText(pCarData.car_tpms_fl_t);
+			frtvv.setText(pCarData.car_tpms_fr_t);
+			rltvv.setText(pCarData.car_tpms_rl_t);
+			rrtvv.setText(pCarData.car_tpms_rr_t);
+
+			if (pCarData.stale_tpms == DataStale.Stale) {
+				fltv.setTextColor(0xFF808080);
+				frtv.setTextColor(0xFF808080);
+				rltv.setTextColor(0xFF808080);
+				rrtv.setTextColor(0xFF808080);
+
+				fltvv.setTextColor(0xFF808080);
+				frtvv.setTextColor(0xFF808080);
+				rltvv.setTextColor(0xFF808080);
+				rrtvv.setTextColor(0xFF808080);
+
+			} else {
+				fltv.setTextColor(0xFFFFFFFF);
+				frtv.setTextColor(0xFFFFFFFF);
+				rltv.setTextColor(0xFFFFFFFF);
+				rrtv.setTextColor(0xFFFFFFFF);
+
+				fltvv.setTextColor(0xFFFFFFFF);
+				frtvv.setTextColor(0xFFFFFFFF);
+				rltvv.setTextColor(0xFFFFFFFF);
+				rrtvv.setTextColor(0xFFFFFFFF);
+			}
+		}
+
+		// "Temp PEM" box:
 		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
-		
-		// Renault Zoe, Smart ED: display 12V state
-		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE")) {
-			pemtvl.setText(R.string.text12VBATT);
-			pemtv.setText(String.format("%.1fV", mCarData.car_12vline_voltage));
-      
-      if (mCarData.car_12vline_ref <= 1.5) {
-				// charging / calmdown
-				pemtv.setTextColor(0xFFA9A9FF);
+		pemtvl.setText(R.string.textPEM);
+		if (pCarData.stale_car_temps == DataStale.NoValue) {
+			pemtv.setText("");
+		} else {
+			pemtv.setText(pCarData.car_temp_pem);
+			if (pCarData.stale_car_temps == DataStale.Stale) {
+				pemtv.setTextColor(0xFF808080);
 			} else {
-				Double diff = mCarData.car_12vline_ref - mCarData.car_12vline_voltage;
-				if (diff >= 1.6)
-					pemtv.setTextColor(0xFFFF0000);
-				else if (diff >= 1.0)
-					pemtv.setTextColor(0xFFFF6600);
-				else
-					pemtv.setTextColor(0xFFFFFFFF);
+				pemtv.setTextColor(0xFFFFFFFF);
 			}
-    } else {
-			// Standard car: display PEM temperature
-			pemtvl.setText(R.string.textPEM);
-      if (pCarData.stale_car_temps == DataStale.NoValue) {
-				pemtv.setText("");
-			} else {
-				pemtv.setText(pCarData.car_temp_pem);
-				if (pCarData.stale_car_temps == DataStale.Stale) {
-					pemtv.setTextColor(0xFF808080);
-				} else {
-					pemtv.setTextColor(0xFFFFFFFF);
-				}
-			}
-    }
+		}
 
 		// "Temp Motor" box:
 		TextView motortvl = (TextView) findViewById(R.id.tabCarTextMotorLabel);
 		TextView motortv = (TextView) findViewById(R.id.tabCarTextMotor);
-		
+
 		// Renault Zoe, Smart ED: display HVBatt state
 		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE")) {
 			motortvl.setText(R.string.textHVBATT);
 			motortv.setText(String.format("%.1fV", mCarData.car_battery_voltage));
-    } else {
+		} else {
 			// Standard car: display Motor temperature
 			motortvl.setText(R.string.textMOTOR);
-      if (pCarData.stale_car_temps == DataStale.NoValue) {
+			if (pCarData.stale_car_temps == DataStale.NoValue) {
 				motortv.setText("");
 			} else {
 				motortv.setText(pCarData.car_temp_motor);
@@ -733,7 +690,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					motortv.setTextColor(0xFFFFFFFF);
 				}
 			}
-    }
+		}
 
 		// Temperatures
 		TextView batterytv = (TextView) findViewById(R.id.tabCarTextBattery);
@@ -783,8 +740,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// Energy
 		st = String.format("▴%.1f ▾%.1f kWh",
-				Math.floor(pCarData.car_energyused*10)/10,
-				Math.floor(pCarData.car_energyrecd*10)/10);
+				Math.floor(pCarData.car_energyused * 10) / 10,
+				Math.floor(pCarData.car_energyrecd * 10) / 10);
 		ss = new SpannableString(st);
 		ss.setSpan(new RelativeSizeSpan(0.67f), st.indexOf("kWh"), st.length(), 0);
 		tv = (TextView) findViewById(R.id.tabCarTextEnergy);
@@ -793,74 +750,108 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// Car Hood
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
 		iv.setVisibility(pCarData.car_bonnet_open ? View.VISIBLE : View.INVISIBLE);
-		
-    if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
-      // Left Door Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
-      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_outline_ld);
-      
-      // Right Door Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
-      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_outline_rd);
-      
-      // Rear Left Door Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
-      iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_outline_rld);
-      
-      // Rear Right Door Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
-      iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_outline_rrd);
-      
-      // Trunk Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
-      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_outline_tr);
-      
-      // Headlights Zoe
-      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
-      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.zoe_carlights);
-    } else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
-      // Left Door Smart
-      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
-      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.smart_outline_ld);
-      
-      // Right Door Smart
-      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
-      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.smart_outline_rd);
-      
-      // Trunk Smart
-      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
-      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.smart_outline_tr);
-      
-      // Headlights Smart
-      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
-      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
-      iv.setImageResource(R.drawable.smart_carlights);
-    } else {
-      // Left Door
-      iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
-      iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-      
-      // Right Door
-      iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
-      iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-      
-      // Trunk
-      iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
-      iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
-      
-      // Headlights
-      iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
-      iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
-    }
+
+		// Doors, Trunks & Headlights:
+		if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
+			// Left Door Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_outline_ld);
+
+			// Right Door Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_outline_rd);
+
+			// Rear Left Door Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_outline_rld);
+
+			// Rear Right Door Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_outline_rrd);
+
+			// Trunk Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_outline_tr);
+
+			// Headlights Zoe
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.zoe_carlights);
+
+		} else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
+			// Left Door Smart
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.smart_outline_ld);
+
+			// Right Door Smart
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.smart_outline_rd);
+
+			// Trunk Smart
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.smart_outline_tr);
+
+			// Headlights Smart
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.smart_carlights);
+
+		} else if (pCarData.sel_vehicle_image.startsWith("car_leaf")) {
+			// Left Door Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			//iv.setImageResource(R.drawable.leaf_outline_ld);
+
+			// Right Door Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			//iv.setImageResource(R.drawable.leaf_outline_rd);
+
+			// Rear Left Door Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			//iv.setImageResource(R.drawable.leaf_outline_rld);
+
+			// Rear Right Door Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			//iv.setImageResource(R.drawable.leaf_outline_rrd);
+
+			// Trunk Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			//iv.setImageResource(R.drawable.leaf_outline_tr);
+
+			// Headlights Leaf
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.leaf_carlights);
+
+		} else {
+			// Left Door
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+
+			// Right Door
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+
+			// Trunk
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+
+			// Headlights
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+		}
 
 		// Car locked
 		if (pCarData.car_type.equals("SE") || pCarData.car_type.equals("RZ")) {
@@ -871,47 +862,44 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
 			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock : R.drawable.carunlock);
 		}
-    
-    if (pCarData.car_type.equals("SE")) {
-      // Valet mode Smart ED 451
-      iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-      iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
-    } else if (pCarData.car_type.equals("RZ")) {
+
+		// Valet mode
+		if (pCarData.car_type.equals("SE")) {
+			// Valet mode Smart ED 451
+			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+			iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
+		} else if (pCarData.car_type.equals("RZ")) {
 			// Valet mode Renault ZOE
 			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-      iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_clean : R.drawable.carvaletoff_clean);
+			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_clean : R.drawable.carvaletoff_clean);
 		} else {
-      // Valet mode
-      iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-      iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
-    }
-		
+			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
+		}
+
 		// Charge Port
-	    iv = (ImageView) findViewById(R.id.tabCarImageCarChargePortOpen);
-	    if (!pCarData.car_chargeport_open) {
+		iv = (ImageView) findViewById(R.id.tabCarImageCarChargePortOpen);
+		if (!pCarData.car_chargeport_open) {
 			iv.setVisibility(View.INVISIBLE);
-	    } else {
+		} else {
 			iv.setVisibility(View.VISIBLE);
 
 			if (pCarData.sel_vehicle_image.startsWith("car_twizy_")) {
 				// Renault Twizy:
 				iv.setImageResource(R.drawable.ol_car_twizy_chargeport);
-			}
-			else if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
+			} else if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 				// Mitsubishi i-MiEV:
 				if (pCarData.car_charge_currentlimit_raw > 16)
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
-			}
-			else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+			} else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 				// Kia Niro: use i-MiEV charge overlays
 				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
-			}
-			else if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
+			} else if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
 				// Renault ZOE
 				if (pCarData.car_charge_state.equals("charging"))
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_orange);
@@ -921,8 +909,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_yellow);
 				else
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_green);
-			}
-			else {
+			} else {
 				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {
 					// We need to connect the power cable
@@ -948,7 +935,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				}
 			}
 
-	    }
+		}
 
 		// A/C status:
 		iv = (ImageView) findViewById(R.id.tabCarImageAC);
