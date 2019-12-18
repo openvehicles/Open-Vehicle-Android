@@ -587,8 +587,11 @@ public class AuxBatteryFragment
 
 		// center highlight in chart viewport:
 		ILineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
-		Entry entry = dataSet.getEntryForXValue(xpos, 0);
-		packChart.centerViewTo(entry.getX(), entry.getY(), dataSet.getAxisDependency());
+		if (dataSet != null) {
+			Entry entry = dataSet.getEntryForXValue(xpos, 0);
+			if (entry != null)
+				packChart.centerViewTo(entry.getX(), entry.getY(), dataSet.getAxisDependency());
+		}
 
 	}
 
