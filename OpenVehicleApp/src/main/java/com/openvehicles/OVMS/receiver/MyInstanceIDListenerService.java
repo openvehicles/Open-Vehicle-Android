@@ -36,7 +36,11 @@ public class MyInstanceIDListenerService extends InstanceIDListenerService {
         Log.d(TAG, "onTokenRefresh: starting new registration");
         // Fetch updated Instance ID token and notify our app's server of any changes (if applicable).
         Intent intent = new Intent(this, RegistrationIntentService.class);
-        startService(intent);
+        try {
+            startService(intent);
+        } catch (Exception e) {
+            Log.w(TAG, "onTokenRefresh: starting RegistrationIntentService failed: " + e);
+        }
     }
     // [END refresh_token]
 }

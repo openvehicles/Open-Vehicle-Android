@@ -109,7 +109,11 @@ public class MainActivity extends ApiActivity implements
 
 		// Start background ApiService:
 		Log.i(TAG, "onCreate: starting ApiService");
-		startService(new Intent(this, ApiService.class));
+		try {
+			startService(new Intent(this, ApiService.class));
+		} catch (Exception e) {
+			Log.w(TAG, "onCreate: starting ApiService failed: " + e);
+		}
 
 		// set up receiver for server communication service:
 		registerReceiver(mApiEventReceiver, new IntentFilter(
@@ -335,7 +339,12 @@ public class MainActivity extends ApiActivity implements
 		Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
 		intent.putExtra("ovmsVehicleId", pCarData.sel_vehicleid);
 		intent.putExtra("ovmsGcmSenderId", gcmSenderId);
-		startService(intent);
+
+		try {
+			startService(intent);
+		} catch (Exception e) {
+			Log.w(TAG, "starting RegistrationIntentService failed: " + e);
+		}
 	}
 
 	private BroadcastReceiver mGcmRegistrationBroadcastReceiver = new BroadcastReceiver() {
