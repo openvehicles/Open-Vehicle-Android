@@ -530,7 +530,7 @@
     <string name="power_power_description">Power (W)</string>
     <string name="power_data_pwr_min">Min</string>
     <string name="power_data_pwr_max">Max</string>
-    <string name="power_data_pwr_avg">Avg</string>
+    <string name="power_data_pwr_avg">Avg (W)</string>
     <string name="power_data_pwr_recuplimit">Recup Limit</string>
     <string name="power_data_pwr_drivelimit">Drive Limit</string>
 

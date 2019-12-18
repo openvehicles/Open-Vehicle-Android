@@ -521,7 +521,7 @@
     <string name="power_power_description">Leistung (W)</string>
     <string name="power_data_pwr_min">Min.</string>
     <string name="power_data_pwr_max">Max.</string>
-    <string name="power_data_pwr_avg">Durchschnitt</string>
+    <string name="power_data_pwr_avg">Durchschnitt (W)</string>
     <string name="power_data_pwr_recuplimit">Reku-Limit</string>
     <string name="power_data_pwr_drivelimit">Fahr-Limit</string>
 

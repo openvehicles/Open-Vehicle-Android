@@ -328,7 +328,7 @@
   <string name="power_power_description">Vermorgen (W)</string>
   <string name="power_data_pwr_min">Min</string>
   <string name="power_data_pwr_max">Max</string>
-  <string name="power_data_pwr_avg">Gem</string>
+  <string name="power_data_pwr_avg">Gem (W)</string>
   <string name="power_energy_description">Energie</string>
   <string name="power_data_energy_used">Verbruikt (Wh)</string>
   <string name="power_data_energy_recd">Hersteld (Wh)</string>

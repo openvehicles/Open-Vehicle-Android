@@ -322,7 +322,7 @@ Une chandelle pleine représente une "mauvaise" déviation, i.e. plus forte
   <string name="power_power_description">Puissance (W)</string>
   <string name="power_data_pwr_min">Min</string>
   <string name="power_data_pwr_max">Max</string>
-  <string name="power_data_pwr_avg">Moy</string>
+  <string name="power_data_pwr_avg">Moy (W)</string>
   <string name="power_energy_description">Énergie</string>
   <string name="power_data_energy_used">Utilisé (Wh)</string>
   <string name="power_data_energy_recd">Récupéré (Wh)</string>

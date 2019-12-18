@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -17,7 +16,8 @@ import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
@@ -94,29 +94,39 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		XAxis xAxis;
 		YAxis yAxis;
 
+		ValueFormatter xFormatter = new ValueFormatter() {
+			@Override
+			public String getFormattedValue(float value) {
+				try {
+					UsageData day = mUsageData.get((int)value);
+					return day.date.substring(5);
+				} catch(Exception e) {
+					return "";
+				}
+			}
+		};
+
 		mChartViewCar = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_car);
-		mChartViewCar.setDescription("");
+		mChartViewCar.getDescription().setEnabled(false);
 		mChartViewCar.setMaxVisibleValueCount(30);
 		mChartViewCar.setPinchZoom(false);
 		mChartViewCar.setDrawBarShadow(false);
 		mChartViewCar.setDrawValueAboveBar(true);
-		mChartViewCar.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
 		mChartViewCar.setDrawGridBackground(false);
 		mChartViewCar.setDrawBorders(true);
 
 		xAxis = mChartViewCar.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+		xAxis.setValueFormatter(xFormatter);
+		xAxis.setGranularityEnabled(true);
+		xAxis.setGranularity(1f);
 
 		yAxis = mChartViewCar.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.0f", value);
-			}
-		});
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(0));
+		yAxis.setSpaceBottom(0f);
 
 		yAxis = mChartViewCar.getAxisRight();
 		yAxis.setEnabled(false);
@@ -127,28 +137,24 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		//
 
 		mChartViewApp = (BarChart) rootView.findViewById(R.id.cellular_usage_chart_app);
-		mChartViewApp.setDescription("");
+		mChartViewApp.getDescription().setEnabled(false);
 		mChartViewApp.setMaxVisibleValueCount(30);
 		mChartViewApp.setPinchZoom(false);
 		mChartViewApp.setDrawBarShadow(false);
 		mChartViewApp.setDrawValueAboveBar(true);
-		mChartViewApp.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
 		mChartViewApp.setDrawGridBackground(false);
 		mChartViewApp.setDrawBorders(true);
 
 		xAxis = mChartViewApp.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
 		xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+		xAxis.setValueFormatter(xFormatter);
 
 		yAxis = mChartViewApp.getAxisLeft();
 		yAxis.setTextColor(Color.WHITE);
 		yAxis.setGridColor(Color.LTGRAY);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.0f", value);
-			}
-		});
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(0));
+		yAxis.setSpaceBottom(0f);
 
 		yAxis = mChartViewApp.getAxisRight();
 		yAxis.setEnabled(false);
@@ -308,18 +314,16 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		UsageData day;
 
-		ArrayList<String> xValues = new ArrayList<String>();
 		ArrayList<BarEntry> carValues = new ArrayList<BarEntry>();
 		ArrayList<BarEntry> appValues = new ArrayList<BarEntry>();
 
 		for (int i = 0; i < mUsageData.size(); ++i) {
 			day = mUsageData.get(i);
-			xValues.add(day.date.substring(5));
-			carValues.add(new BarEntry(new float[] {
+			carValues.add(new BarEntry(i, new float[] {
 					Math.round(day.carTxBytes / 100) / 10,
 					Math.round(day.carRxBytes / 100) / 10
 					}, i));
-			appValues.add(new BarEntry(new float[] {
+			appValues.add(new BarEntry(i, new float[] {
 					Math.round(day.appTxBytes / 100) / 10,
 					Math.round(day.appRxBytes / 100) / 10
 					}, i));
@@ -341,7 +345,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		dataSets = new ArrayList<IBarDataSet>();
 		dataSets.add(dataSet);
 
-		data = new BarData(xValues, dataSets);
+		data = new BarData(dataSets);
 		//data.setValueTextColor(Color.WHITE);
 		//data.setValueTextSize(9f);
 		data.setDrawValues(false);
@@ -352,7 +356,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		legend = mChartViewCar.getLegend();
 		legend.setTextColor(Color.WHITE);
-		legend.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+		legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
 
 		mChartViewCar.invalidate();
 
@@ -365,7 +369,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 		dataSets = new ArrayList<IBarDataSet>();
 		dataSets.add(dataSet);
 
-		data = new BarData(xValues, dataSets);
+		data = new BarData(dataSets);
 		//data.setValueTextColor(Color.WHITE);
 		//data.setValueTextSize(9f);
 		data.setDrawValues(false);
@@ -376,7 +380,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		legend = mChartViewApp.getLegend();
 		legend.setTextColor(Color.WHITE);
-		legend.setPosition(Legend.LegendPosition.BELOW_CHART_RIGHT);
+		legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
 
 		mChartViewApp.invalidate();
 

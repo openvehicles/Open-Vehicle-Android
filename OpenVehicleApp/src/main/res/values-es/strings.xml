@@ -372,7 +372,7 @@
     <string name="power_power_description">Potencia (W)</string>
     <string name="power_data_pwr_min">Min</string>
     <string name="power_data_pwr_max">Max</string>
-    <string name="power_data_pwr_avg">Media</string>
+    <string name="power_data_pwr_avg">Media (W)</string>
 
     <string name="power_energy_description">Energía</string>
     <string name="power_data_energy_used">Usada (Wh)</string>

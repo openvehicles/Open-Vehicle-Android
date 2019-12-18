@@ -21,7 +21,7 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
@@ -31,6 +31,7 @@ import com.openvehicles.OVMS.entities.AuxBatteryData;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CmdSeries;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
+import com.openvehicles.OVMS.ui.utils.TimeAxisValueFormatter;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
 import java.text.SimpleDateFormat;
@@ -76,6 +77,9 @@ public class AuxBatteryFragment
 
 	private LineChart packChart;
 	private LineData packData;
+	XAxis xAxis;
+	YAxis yAxisLeft, yAxisRight;
+	long timeStart;
 
 	private int highlightSetNr = -1;
 	private String highlightSetLabel = "";
@@ -125,17 +129,16 @@ public class AuxBatteryFragment
 		// Setup Pack history chart:
 		//
 
-		XAxis xAxis;
-		YAxis yAxis;
-
 		packChart = (LineChart) rootView.findViewById(R.id.auxbattery_chart_pack);
-		packChart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
+		packChart.getDescription().setEnabled(false);
+		packChart.setPinchZoom(false); // = pinch zoom in one direction at a time
 		packChart.setDrawGridBackground(false);
 		packChart.setDrawBorders(true);
 		packChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
 			@Override
-			public void onValueSelected(Entry entry, int dataSet, Highlight highlight) {
+			public void onValueSelected(Entry entry, Highlight highlight) {
 				// remember user data set selection:
+				int dataSet = highlight.getDataSetIndex();
 				highlightSetNr = dataSet;
 				highlightSetLabel = packChart.getData().getDataSetByIndex(dataSet).getLabel();
 			}
@@ -148,28 +151,19 @@ public class AuxBatteryFragment
 
 		xAxis = packChart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
+		xAxis.setGranularityEnabled(true);
+		xAxis.setGranularity(60f); // one minute
 
-		yAxis = packChart.getAxisLeft();
-		yAxis.setTextColor(COLOR_CURR_TEXT);
-		yAxis.setGridColor(COLOR_CURR_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.0f", value);
-			}
-		});
+		yAxisLeft = packChart.getAxisLeft();
+		yAxisLeft.setTextColor(COLOR_CURR_TEXT);
+		yAxisLeft.setGridColor(COLOR_CURR_GRID);
+		yAxisLeft.setValueFormatter(new DefaultAxisValueFormatter(0));
 
-		yAxis = packChart.getAxisRight();
-		yAxis.setTextColor(COLOR_VOLT);
-		yAxis.setGridColor(COLOR_VOLT_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.1f", value);
-			}
-		});
-		yAxis.setGranularity(0.1f);
-
+		yAxisRight = packChart.getAxisRight();
+		yAxisRight.setTextColor(COLOR_VOLT);
+		yAxisRight.setGridColor(COLOR_VOLT_GRID);
+		yAxisRight.setValueFormatter(new DefaultAxisValueFormatter(1));
+		yAxisRight.setGranularity(0.1f);
 
 		// default data set to highlight:
 		highlightSetLabel = getString(R.string.aux_battery_data_volt);
@@ -404,7 +398,6 @@ public class AuxBatteryFragment
 
 		// create value arrays:
 
-		ArrayList<String> xValues = new ArrayList<String>();
 		ArrayList<LimitLine> xSections = new ArrayList<LimitLine>();
 		ArrayList<Entry> voltValues = new ArrayList<Entry>();
 		ArrayList<Entry> voltRefValues = new ArrayList<Entry>();
@@ -412,27 +405,32 @@ public class AuxBatteryFragment
 		ArrayList<Entry> tempAmbientValues = new ArrayList<Entry>();
 		ArrayList<Entry> tempChargerValues = new ArrayList<Entry>();
 
+		timeStart = packHistory.get(0).timeStamp.getTime() / 1000;
+		xAxis.setValueFormatter(new TimeAxisValueFormatter(timeStart, "HH:mm"));
+
+		// create y values:
+
 		lastStatus = null;
 
 		for (int i = 0; i < packHistory.size(); i++) {
 
 			packStatus = packHistory.get(i);
 
-			xValues.add(timeFmt.format(packStatus.timeStamp));
+			float xpos = (packStatus.timeStamp.getTime() / 1000) - timeStart;
 
-			voltValues.add(new Entry(packStatus.volt, i));
-			voltRefValues.add(new Entry(packStatus.voltRef, i));
-			currentValues.add(new Entry(packStatus.current, i));
-			tempAmbientValues.add(new Entry(packStatus.tempAmbient, i));
-			tempChargerValues.add(new Entry(packStatus.tempCharger, i));
+			voltValues.add(new Entry(xpos, packStatus.volt));
+			voltRefValues.add(new Entry(xpos, packStatus.voltRef));
+			currentValues.add(new Entry(xpos, packStatus.current));
+			tempAmbientValues.add(new Entry(xpos, packStatus.tempAmbient));
+			tempChargerValues.add(new Entry(xpos, packStatus.tempCharger));
 
 			// add section markers:
 			if (packStatus.isNewSection(lastStatus)) {
-				LimitLine l = new LimitLine(i);
+				LimitLine l = new LimitLine(xpos);
 				l.setLabel(timeFmt.format(packStatus.timeStamp));
-				l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
 				l.setTextColor(Color.WHITE);
 				l.setTextStyle(Paint.Style.FILL);
+				l.setTextSize(6f);
 				l.enableDashedLine(3f, 2f, 0f);
 				xSections.add(l);
 			}
@@ -449,13 +447,15 @@ public class AuxBatteryFragment
 		LineDataSet packTempAmbientSet=null, packTempChargerSet=null;
 
 		if (mShowTemp) {
-			packTempAmbientSet = dataSet = new LineDataSet(tempAmbientValues, getString(R.string.aux_battery_data_temp_ambient));
-			dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-			dataSet.setColor(COLOR_TEMP_AMBIENT);
-			dataSet.setLineWidth(3f);
-			dataSet.setDrawCircles(false);
-			dataSet.setDrawValues(false);
-			dataSets.add(dataSet);
+			if (mCarData.stale_ambient_temp != CarData.DataStale.NoValue) {
+				packTempAmbientSet = dataSet = new LineDataSet(tempAmbientValues, getString(R.string.aux_battery_data_temp_ambient));
+				dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
+				dataSet.setColor(COLOR_TEMP_AMBIENT);
+				dataSet.setLineWidth(3f);
+				dataSet.setDrawCircles(false);
+				dataSet.setDrawValues(false);
+				dataSets.add(dataSet);
+			}
 
 			packTempChargerSet = dataSet = new LineDataSet(tempChargerValues, getString(R.string.aux_battery_data_temp_charger));
 			dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
@@ -499,37 +499,39 @@ public class AuxBatteryFragment
 		// voltage axis:
 		YAxis yAxis = packChart.getAxisRight();
 		yAxis.setEnabled(mShowVolt);
-		if (mShowVolt && (packVoltSet != null) && (packVoltRefSet != null)) {
+		if (packVoltSet != null) {
 			yMax = Math.max(packVoltSet.getYMax(), packVoltRefSet.getYMax());
 			yMin = Math.min(packVoltSet.getYMin(), packVoltRefSet.getYMin());
 			yMax += 0.3;
 			yMin -= 0.3;
-			yAxis.setAxisMaxValue(yMax);
-			yAxis.setAxisMinValue(yMin-(yMax-yMin)); // half height
+			yAxis.setAxisMaximum(yMax);
+			yAxis.setAxisMinimum(yMin-(yMax-yMin)); // half height
 		}
 
 		// current & temperature axis:
 		yAxis = packChart.getAxisLeft();
 		yMax = packCurrentSet.getYMax();
 		yMin = packCurrentSet.getYMin();
-		if (mShowTemp && (packTempAmbientSet != null) && (packTempChargerSet != null)) {
-			yMax = Math.max(yMax, packTempAmbientSet.getYMax());
-			yMin = Math.min(yMin, packTempAmbientSet.getYMin());
+		if (packTempChargerSet != null) {
 			yMax = Math.max(yMax, packTempChargerSet.getYMax());
 			yMin = Math.min(yMin, packTempChargerSet.getYMin());
+		}
+		if (packTempAmbientSet != null) {
+			yMax = Math.max(yMax, packTempAmbientSet.getYMax());
+			yMin = Math.min(yMin, packTempAmbientSet.getYMin());
 		}
 		yMax += 3.0;
 		yMin -= 3.0;
 		if (mShowVolt)
-			yAxis.setAxisMaxValue(yMax + (yMax - yMin)); // half height
+			yAxis.setAxisMaximum(yMax + (yMax - yMin)); // half height
 		else
-			yAxis.setAxisMaxValue(yMax); // full height
-		yAxis.setAxisMinValue(yMin);
+			yAxis.setAxisMaximum(yMax); // full height
+		yAxis.setAxisMinimum(yMin);
 
 		// display data sets:
 
 		LineData data;
-		packData = data = new LineData(xValues, dataSets);
+		packData = data = new LineData(dataSets);
 		data.setValueTextColor(Color.WHITE);
 		data.setValueTextSize(9f);
 
@@ -538,7 +540,12 @@ public class AuxBatteryFragment
 		XAxis xAxis = packChart.getXAxis();
 		xAxis.removeAllLimitLines();
 		for (int i=0; i < xSections.size(); i++) {
-			xAxis.addLimitLine(xSections.get(i));
+			LimitLine l = xSections.get(i);
+			if (i < xSections.size()/2)
+				l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+			else
+				l.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_BOTTOM);
+			xAxis.addLimitLine(l);
 		}
 
 		packChart.getLegend().setTextColor(Color.WHITE);
@@ -574,12 +581,14 @@ public class AuxBatteryFragment
 		}
 
 		// highlight entry:
-		packChart.highlightValue(index, highlightSetNr); // does not fire listener event
+		AuxBatteryData.PackStatus packStatus = batteryData.packHistory.get(index);
+		float xpos = (packStatus.timeStamp.getTime() / 1000) - timeStart;
+		packChart.highlightValue(xpos, highlightSetNr); // does not fire listener event
 
 		// center highlight in chart viewport:
 		ILineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
-		packChart.centerViewTo(index, dataSet.getYValForXIndex(index),
-				dataSet.getAxisDependency());
+		Entry entry = dataSet.getEntryForXValue(xpos, 0);
+		packChart.centerViewTo(entry.getX(), entry.getY(), dataSet.getAxisDependency());
 
 	}
 

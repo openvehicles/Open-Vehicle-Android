@@ -18,6 +18,7 @@ import android.view.MenuItem;
 
 import com.github.mikephil.charting.charts.CandleStickChart;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.LimitLine;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -28,11 +29,10 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 
-import com.github.mikephil.charting.formatter.YAxisValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.luttu.AppPrefes;
@@ -93,6 +93,23 @@ public class BatteryFragment
 	private CandleStickChart cellChart;
 	private SeekBar seekPack;
 
+	public class PackTimeValueFormatter extends ValueFormatter {
+		SimpleDateFormat timeFmt;
+		public PackTimeValueFormatter() {
+			timeFmt = new SimpleDateFormat("HH:mm");
+		}
+		@Override
+		public String getFormattedValue(float value) {
+			try {
+				BatteryData.PackStatus entry = batteryData.packHistory.get((int)value);
+				return timeFmt.format(entry.timeStamp);
+			} catch(Exception e) {
+				return "";
+			}
+		}
+	};
+
+
 	private int highlightSetNr = -1;
 	private String highlightSetLabel = "";
 
@@ -141,36 +158,37 @@ public class BatteryFragment
 
 		XAxis xAxis;
 		YAxis yAxis;
+		Description description;
 
 		cellChart = (CandleStickChart) rootView.findViewById(R.id.chart_cells);
-		cellChart.setDescription(getString(R.string.battery_cell_description));
-		cellChart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
+		description = cellChart.getDescription();
+		description.setText(getString(R.string.battery_cell_description));
+		description.setTextColor(Color.LTGRAY);
+		cellChart.setDescription(description);
 		cellChart.setDrawGridBackground(false);
 		cellChart.setDrawBorders(true);
 
 		xAxis = cellChart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
+		xAxis.setValueFormatter(new ValueFormatter() {
+			@Override
+			public String getFormattedValue(float value) {
+				return "#" + ((int)value+1);
+			}
+		});
+		xAxis.setGranularityEnabled(true);
+		xAxis.setGranularity(1f);
 
 		yAxis = cellChart.getAxisLeft();
 		yAxis.setTextColor(COLOR_VOLT);
 		yAxis.setGridColor(COLOR_VOLT_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.2f", value);
-			}
-		});
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(2));
 		yAxis.setGranularity(0.01f);
 
 		yAxis = cellChart.getAxisRight();
 		yAxis.setTextColor(COLOR_TEMP);
 		yAxis.setGridColor(COLOR_TEMP_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
-			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.0f", value);
-			}
-		});
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(0));
 
 
 		//
@@ -178,22 +196,22 @@ public class BatteryFragment
 		//
 
 		packChart = (LineChart) rootView.findViewById(R.id.chart_pack);
-		packChart.setDescription(getString(R.string.battery_pack_description));
-		packChart.getPaint(LineChart.PAINT_DESCRIPTION).setColor(Color.LTGRAY);
+		packChart.getDescription().setEnabled(false);
 		packChart.setDrawGridBackground(false);
 		packChart.setDrawBorders(true);
 		packChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
 			@Override
-			public void onValueSelected(Entry entry, int dataSet, Highlight highlight) {
+			public void onValueSelected(Entry entry, Highlight highlight) {
 				// remember user data set selection:
+				int dataSet = highlight.getDataSetIndex();
 				highlightSetNr = dataSet;
 				highlightSetLabel = packChart.getData().getDataSetByIndex(dataSet).getLabel();
 
 				// update seek bar:
-				seekPack.setProgress(entry.getXIndex()); // fires listener event (fromUser=false)
+				seekPack.setProgress((int)entry.getX()); // fires listener event (fromUser=false)
 
 				// update cell chart:
-				showCellStatus(entry.getXIndex());
+				showCellStatus((int)entry.getX());
 			}
 
 			@Override
@@ -204,16 +222,19 @@ public class BatteryFragment
 
 		xAxis = packChart.getXAxis();
 		xAxis.setTextColor(Color.WHITE);
+		xAxis.setValueFormatter(new PackTimeValueFormatter());
+		xAxis.setGranularityEnabled(true);
+		xAxis.setGranularity(1f);
 
 		yAxis = packChart.getAxisLeft();
 		yAxis.setSpaceTop(5f);
 		yAxis.setSpaceBottom(5f);
 		yAxis.setTextColor(COLOR_SOC_TEXT);
 		yAxis.setGridColor(COLOR_SOC_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(0) {
 			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.0f%%", value);
+			public String getFormattedValue(float value) {
+				return super.getFormattedValue(value) + "%";
 			}
 		});
 
@@ -222,10 +243,10 @@ public class BatteryFragment
 		yAxis.setSpaceBottom(15f);
 		yAxis.setTextColor(COLOR_VOLT);
 		yAxis.setGridColor(COLOR_VOLT_GRID);
-		yAxis.setValueFormatter(new YAxisValueFormatter() {
+		yAxis.setValueFormatter(new DefaultAxisValueFormatter(1) {
 			@Override
-			public String getFormattedValue(float value, YAxis yAxis) {
-				return String.format("%.1f", value);
+			public String getFormattedValue(float value) {
+				return super.getFormattedValue(value) + "%";
 			}
 		});
 		yAxis.setGranularity(0.1f);
@@ -242,17 +263,14 @@ public class BatteryFragment
 				if (fromUser) {
 					// highlight entry:
 					highlightPackEntry(val);
-
 					// update cell chart:
 					showCellStatus(val);
 				}
 			}
-
 			@Override
 			public void onStartTrackingTouch(SeekBar seekBar) {
 				// nop
 			}
-
 			@Override
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				// nop
@@ -518,7 +536,6 @@ public class BatteryFragment
 
 		// create value arrays:
 
-		ArrayList<String> xValues = new ArrayList<String>();
 		ArrayList<LimitLine> xSections = new ArrayList<LimitLine>();
 		ArrayList<Entry> socValues = new ArrayList<Entry>();
 		ArrayList<Entry> voltValues = new ArrayList<Entry>();
@@ -531,20 +548,20 @@ public class BatteryFragment
 
 			packStatus = packHistory.get(i);
 
-			xValues.add(timeFmt.format(packStatus.timeStamp));
+			float xpos = i;
 
-			socValues.add(new Entry(packStatus.soc, i));
-			voltValues.add(new Entry(packStatus.volt, i));
-			voltMinValues.add(new Entry(packStatus.voltMin, i));
-			tempValues.add(new Entry(packStatus.temp, i));
+			socValues.add(new Entry(xpos, packStatus.soc));
+			voltValues.add(new Entry(xpos, packStatus.volt));
+			voltMinValues.add(new Entry(xpos, packStatus.voltMin));
+			tempValues.add(new Entry(xpos, packStatus.temp));
 
 			// add section markers:
 			if (packStatus.isNewSection(lastStatus)) {
-				LimitLine l = new LimitLine(i);
+				LimitLine l = new LimitLine(xpos);
 				l.setLabel(timeFmt.format(packStatus.timeStamp));
-				l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
 				l.setTextColor(Color.WHITE);
 				l.setTextStyle(Paint.Style.FILL);
+				l.setTextSize(6f);
 				l.enableDashedLine(3f, 2f, 0f);
 				xSections.add(l);
 			}
@@ -601,7 +618,7 @@ public class BatteryFragment
 		// display data sets:
 
 		LineData data;
-		packData = data = new LineData(xValues, dataSets);
+		packData = data = new LineData(dataSets);
 		data.setValueTextColor(Color.WHITE);
 		data.setValueTextSize(9f);
 
@@ -610,7 +627,12 @@ public class BatteryFragment
 		XAxis xAxis = packChart.getXAxis();
 		xAxis.removeAllLimitLines();
 		for (int i=0; i < xSections.size(); i++) {
-			xAxis.addLimitLine(xSections.get(i));
+			LimitLine l = xSections.get(i);
+			if (i < xSections.size()/2)
+				l.setLabelPosition(LimitLine.LimitLabelPosition.RIGHT_BOTTOM);
+			else
+				l.setLabelPosition(LimitLine.LimitLabelPosition.LEFT_BOTTOM);
+			xAxis.addLimitLine(l);
 		}
 
 		packChart.getLegend().setTextColor(Color.WHITE);
@@ -652,12 +674,13 @@ public class BatteryFragment
 		}
 
 		// highlight entry:
+		BatteryData.PackStatus packStatus = batteryData.packHistory.get(index);
 		packChart.highlightValue(index, highlightSetNr); // does not fire listener event
 
 		// center highlight in chart viewport:
 		ILineDataSet dataSet = packChart.getData().getDataSetByIndex(highlightSetNr);
-		packChart.centerViewTo(index, dataSet.getYValForXIndex(index),
-				dataSet.getAxisDependency());
+		Entry entry = dataSet.getEntryForXValue(index, 0);
+		packChart.centerViewTo(entry.getX(), entry.getY(), dataSet.getAxisDependency());
 
 	}
 
@@ -687,7 +710,6 @@ public class BatteryFragment
 
 		// create value arrays:
 
-		ArrayList<String> xValues = new ArrayList<String>();
 		ArrayList<CandleEntry> voltValues = new ArrayList<CandleEntry>();
 		ArrayList<CandleEntry> tempValues = new ArrayList<CandleEntry>();
 		float low, high, open, close;
@@ -695,8 +717,6 @@ public class BatteryFragment
 		for (int i = 0; i < batteryData.cellCount; i++) {
 
 			cell = cells.get(i);
-
-			xValues.add("#" + (i+1));
 
 			// Volt: high=current, low=min
 
@@ -740,12 +760,15 @@ public class BatteryFragment
 		if (mShowTemp) {
 			dataSet = new CandleDataSet(tempValues, getString(R.string.battery_data_temp));
 			dataSet.setAxisDependency(YAxis.AxisDependency.RIGHT);
-			dataSet.setColor(COLOR_TEMP);
+			dataSet.setNeutralColor(COLOR_TEMP);
+			dataSet.setIncreasingColor(COLOR_TEMP);
+			dataSet.setDecreasingColor(COLOR_TEMP);
+			dataSet.setShadowColor(COLOR_TEMP);
 			dataSet.setDrawValues(true);
 			dataSet.setShadowWidth(4f);
 			dataSet.setValueFormatter(new ValueFormatter() {
 				@Override
-				public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+				public String getFormattedValue(float value) {
 					return String.format("%.0f", value);
 				}
 			});
@@ -755,12 +778,15 @@ public class BatteryFragment
 		if (mShowVolt) {
 			dataSet = new CandleDataSet(voltValues, getString(R.string.battery_data_volt));
 			dataSet.setAxisDependency(YAxis.AxisDependency.LEFT);
-			dataSet.setColor(COLOR_VOLT);
+			dataSet.setNeutralColor(COLOR_VOLT);
+			dataSet.setIncreasingColor(COLOR_VOLT);
+			dataSet.setDecreasingColor(COLOR_VOLT);
+			dataSet.setShadowColor(COLOR_VOLT);
 			dataSet.setDrawValues(true);
 			dataSet.setShadowWidth(4f);
 			dataSet.setValueFormatter(new ValueFormatter() {
 				@Override
-				public String getFormattedValue(float value, Entry entry, int dataSetIndex, ViewPortHandler viewPortHandler) {
+				public String getFormattedValue(float value) {
 					return String.format("%.3f", value);
 				}
 			});
@@ -775,11 +801,11 @@ public class BatteryFragment
 		if (mShowVolt && (packVoltSet != null)) {
 			float yMax = packVoltSet.getYMax() / (float)batteryData.cellCount + 0.1f;
 			float yMin = packVoltMinSet.getYMin() / (float)batteryData.cellCount - 0.1f;
-			yAxis.setAxisMaxValue(yMax);
+			yAxis.setAxisMaximum(yMax);
 			if (mShowTemp)
-				yAxis.setAxisMinValue(yMin-(yMax-yMin)); // half height
+				yAxis.setAxisMinimum(yMin-(yMax-yMin)); // half height
 			else
-				yAxis.setAxisMinValue(yMin); // full height
+				yAxis.setAxisMinimum(yMin); // full height
 		}
 
 		yAxis = cellChart.getAxisRight();
@@ -788,16 +814,16 @@ public class BatteryFragment
 			float yMax = packTempSet.getYMax() + 3f;
 			float yMin = packTempSet.getYMin() - 3f;
 			if (mShowVolt)
-				yAxis.setAxisMaxValue(yMax + (yMax - yMin)); // half height
+				yAxis.setAxisMaximum(yMax + (yMax - yMin)); // half height
 			else
-				yAxis.setAxisMaxValue(yMax); // full height
-			yAxis.setAxisMinValue(yMin);
+				yAxis.setAxisMaximum(yMax); // full height
+			yAxis.setAxisMinimum(yMin);
 		}
 
 
 		// display data sets:
 
-		CandleData data = new CandleData(xValues, dataSets);
+		CandleData data = new CandleData(dataSets);
 		data.setValueTextColor(Color.WHITE);
 		data.setValueTextSize(9f);
 
