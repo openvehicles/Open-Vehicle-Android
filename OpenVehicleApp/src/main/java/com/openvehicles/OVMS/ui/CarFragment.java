@@ -45,16 +45,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// init car data:
 		mCarData = CarsStorage.get().getSelectedCarData();
-
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 		
 		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_car, null);
-
-		// set the car background image:
-		ImageView iv = (ImageView) rootView.findViewById(R.id.tabCarImageCarOutline);
-		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_"+mCarData.sel_vehicle_image));
-
 		setHasOptionsMenu(true);
 
 		return rootView;
@@ -86,6 +80,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		Log.d(TAG, "updateCarType: old=" + uiCarType + ", new=" + pCarData.car_type);
 		if (uiCarType.equals(pCarData.car_type))
 			return;
+
+		// set the car background image:
+		ImageView iv = (ImageView) findViewById(R.id.tabCarImageCarOutline);
+		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_"+mCarData.sel_vehicle_image));
 
 		img1 = (ImageView) findViewById(R.id.tabCarImageHomelink);
 		if (pCarData.car_type.equals("RT")) {

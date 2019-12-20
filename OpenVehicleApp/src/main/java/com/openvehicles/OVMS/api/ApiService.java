@@ -273,6 +273,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		Log.i(TAG, "changeCar: changing car to: " + pCarData.sel_vehicleid);
 		closeConnection();
 		mCarData = pCarData;
+		ApiObservable.get().notifyUpdate(mCarData);
 		openConnection();
 	}
 

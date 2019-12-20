@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui.settings;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.support.v7.app.AlertDialog;
@@ -133,8 +134,18 @@ public class CarEditorFragment extends BaseFragment {
 			.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					CarsStorage.get().getStoredCars().remove(mEditPosition);
+					ArrayList<CarData> carList = CarsStorage.get().getStoredCars();
+					// remove car:
+					carList.remove(mEditPosition);
 					CarsStorage.get().saveStoredCars();
+					CarData selCar;
+					// select closest remaining car:
+					if (mEditPosition < carList.size())
+						selCar = carList.get(mEditPosition);
+					else
+						selCar = carList.get(carList.size()-1);
+					changeCar(selCar);
+					// back to previous fragment:
 					getActivity().finish();
 				}
 			})

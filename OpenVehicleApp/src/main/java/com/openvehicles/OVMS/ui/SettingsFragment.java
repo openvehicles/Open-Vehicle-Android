@@ -36,15 +36,11 @@ import com.openvehicles.OVMS.utils.CarsStorage;
 public class SettingsFragment extends BaseFragment implements
 		OnItemClickListener {
 	private ListView mListView;
-	private AppPrefes appPrefes;
-	private Database database;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		mListView = new ListView(container.getContext());
-		appPrefes = new AppPrefes(container.getContext(), "ovms");
-		database = new Database(container.getContext());
 		return mListView;
 	}
 
@@ -109,10 +105,6 @@ public class SettingsFragment extends BaseFragment implements
 				return;
 			default:
 				CarData carData = (CarData) parent.getAdapter().getItem(position);
-				CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
-				appPrefes.SaveData("sel_vehicle_label", carData.sel_vehicle_label);
-				appPrefes.SaveData("autotrack", "on");
-				appPrefes.SaveData("Id", database.getConnectionFilter(carData.sel_vehicle_label));
 				changeCar(carData);
 		}
 	}

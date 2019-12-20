@@ -21,12 +21,13 @@
 		android:layout_weight="1"
         >
 
-		<ImageView
-			android:id="@+id/tabInfoImageCar"
-			android:layout_width="580px"
-			android:layout_height="270px"
-			android:src="@drawable/car_default"
-			tools:ignore="ContentDescription" />
+        <Gallery
+            android:id="@+id/tabInfoImageCar"
+            android:layout_width="580px"
+            android:layout_height="270px"
+            android:padding="10dp"
+            android:spacing="0dp"
+            tools:ignore="ContentDescription" />
 
 		<ImageView
 			android:id="@+id/tabInfoImageCharger"

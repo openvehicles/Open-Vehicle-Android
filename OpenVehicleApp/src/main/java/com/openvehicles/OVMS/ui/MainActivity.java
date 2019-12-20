@@ -323,7 +323,14 @@ public class MainActivity extends ApiActivity implements
 	 * 	- GcmDoSubscribe does push subscription (retries if necessary)
 	 */
 
-	private void gcmStartRegistration(CarData pCarData) {
+	private void gcmStartRegistration() {
+
+		ApiService service = getService();
+		if (service == null)
+			return;
+		CarData pCarData = service.getCarData();
+		if (pCarData == null)
+			return;
 
 		// get GCM sender ID for car:
 		String gcmSenderId;
@@ -427,9 +434,32 @@ public class MainActivity extends ApiActivity implements
 		@Override
 		public void onReceive(Context context, Intent intent) {
 
-			if (intent.getSerializableExtra("onServerSocketError") != null) {
-				Log.d(TAG, "mApiEventReceiver: onServerSocketError");
+			if (intent.getBooleanExtra("onLoginBegin", false)) {
+				Log.d(TAG, "mApiEventReceiver: login process started");
 
+				// show progress indicator:
+				setSupportProgressBarIndeterminateVisibility(true);
+			}
+
+			else if (intent.getBooleanExtra("onLoginComplete", false)) {
+				Log.d(TAG, "mApiEventReceiver: login successful");
+
+				// hide progress indicator:
+				setSupportProgressBarIndeterminateVisibility(false);
+
+				// ...and hide error dialog:
+				if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
+					mApiErrorDialog.hide();
+				}
+
+				// schedule GCM registration:
+				gcmStartRegistration();
+			}
+
+			else if (intent.getSerializableExtra("onServerSocketError") != null) {
+				Log.d(TAG, "mApiEventReceiver: server/login error");
+
+				// hide progress indicator:
 				setSupportProgressBarIndeterminateVisibility(false);
 
 				// check if this message needs to be displayed:
@@ -447,41 +477,6 @@ public class MainActivity extends ApiActivity implements
 					mApiErrorMessage = message;
 				}
 			}
-
-			if (intent.getBooleanExtra("onLoginBegin", false)) {
-				Log.d(TAG, "mApiEventReceiver: login process started");
-
-				setSupportProgressBarIndeterminateVisibility(true);
-
-				// observe for login success:
-				ApiObservable.get().addObserver(mApiObserver);
-			}
-
-		}
-	};
-
-	private ApiObserver mApiObserver = new ApiObserver() {
-		@Override
-		public void update(CarData pCarData) {
-			Log.d(TAG, "mApiObserver: login successful");
-
-			// data update implies login successful => hide progress:
-			setSupportProgressBarIndeterminateVisibility(false);
-
-			// ...and hide error dialog:
-			if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
-				mApiErrorDialog.hide();
-			}
-
-			// schedule GCM registration:
-			gcmStartRegistration(pCarData);
-
-			// done waiting for login:
-			ApiObservable.get().deleteObserver(this);
-		}
-
-		@Override
-		public void onServiceAvailable(ApiService pService) {
 		}
 	};
 

@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
+import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialog;
 import android.content.DialogInterface;
@@ -13,6 +14,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -43,7 +48,12 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		OnResultCommandListener {
 	private static final String TAG = "InfoFragment";
 
-	private CarData mCarData;
+	protected CarsStorage mCarsStorage;
+	protected CarData mCarData;
+	protected Gallery mCarSelect;
+	protected int mCarSelectPos;
+	protected Handler mHandler;
+	protected Runnable mCarChanger;
 
 
 	@Override
@@ -51,14 +61,47 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			Bundle savedInstanceState) {
 
 		// init car data:
-		mCarData = CarsStorage.get().getSelectedCarData();
+		mCarsStorage = CarsStorage.get();
+		mCarData = mCarsStorage.getSelectedCarData();
 
 		// inflate layout:
 		View rootView = inflater.inflate(R.layout.fragment_info, null);
 
-		// set the car background image:
-		ImageView iv = (ImageView) rootView.findViewById(R.id.tabInfoImageCar);
-		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), mCarData.sel_vehicle_image));
+		// init car selector:
+		mHandler = new Handler();
+		mCarSelect = (Gallery) rootView.findViewById(R.id.tabInfoImageCar);
+		mCarSelectPos = 0;
+		mCarChanger = null;
+		mCarSelect.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				if (position == mCarSelectPos)
+					return; // no user action
+				try {
+					mCarSelectPos = position;
+					// while mCarChanger is defined, updates are inhibited to avoid
+					// interference from scripts or incoming updates during interaction
+					if (mCarChanger != null)
+						mHandler.removeCallbacks(mCarChanger);
+					mCarChanger = () -> {
+						CarData carData = mCarsStorage.getStoredCars().get(mCarSelectPos);
+						if (carData.sel_vehicleid != mCarData.sel_vehicleid) {
+							Log.d(TAG, "onItemSelected: pos=" + mCarSelectPos + ", id=" + carData.sel_vehicleid);
+							changeCar(carData);
+							mCarChanger = null; // car is changed, allow updates
+							update(carData); // …and do a first update
+						}
+					};
+					mHandler.postDelayed(mCarChanger, 750);
+				} catch (Exception e) {
+					Log.e(TAG, "Car selection: position invalid: " + position);
+				}
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> parent) {
+				// nop
+			}
+		});
 
 		// init ScaleLayout:
 		final ScaleLayout scaleLayout = (ScaleLayout) rootView
@@ -123,13 +166,60 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	}
 
 	@Override
+	public void onResume() {
+		super.onResume();
+		mCarSelect.setAdapter(new CarSelectAdapter());
+		mCarSelectPos = mCarsStorage.getSelectedCarIndex();
+		mCarSelect.setSelection(mCarSelectPos);
+		Log.d(TAG, "onResume: pos=" + mCarSelectPos + ", id=" + mCarData.sel_vehicleid);
+	}
+
+	private class CarSelectAdapter extends BaseAdapter {
+		@Override
+		public int getCount() {
+			return mCarsStorage.getStoredCars().size();
+		}
+		@Override
+		public Object getItem(int position) {
+			return mCarsStorage.getStoredCars().get(position);
+		}
+		@Override
+		public long getItemId(int position) {
+			return 0;
+		}
+		@Override
+		public View getView(int position, View convertView, ViewGroup parent) {
+			try {
+				CarData carData = mCarsStorage.getStoredCars().get(position);
+				ImageView iv = convertView != null ? (ImageView) convertView : new ImageView(parent.getContext());
+				iv.setLayoutParams(new Gallery.LayoutParams(
+						ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+				iv.setScaleType(ImageView.ScaleType.FIT_START);
+				iv.setAdjustViewBounds(true);
+				iv.setImageResource(Ui.getDrawableIdentifier(parent.getContext(), carData.sel_vehicle_image));
+				return iv;
+			} catch (Exception e) {
+				return null;
+			}
+		}
+	}
+
+
+	@Override
 	public void update(CarData pCarData) {
 
+		// while mCarChanger is defined, updates are inhibited to avoid
+		// interference from scripts or incoming updates during interaction
+		if (mCarChanger != null) {
+			Log.d(TAG, "update: inhibited, UI car change is in progress");
+			return;
+		}
+
+		// store pointer to new car:
 		mCarData = pCarData;
 
-		getCompatActivity().invalidateOptionsMenu();
-
 		// update UI:
+		getCompatActivity().invalidateOptionsMenu();
 		updateLastUpdatedView(pCarData);
 		updateCarInfoView(pCarData);
 		updateChargeAlerts();
@@ -588,6 +678,13 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		TextView tv = (TextView) findViewById(R.id.txt_title);
 		tv.setText(pCarData.sel_vehicle_label);
 
+		int carPos = mCarsStorage.getStoredCars().indexOf(pCarData);
+		if (carPos != mCarSelectPos) {
+			Log.d(TAG, "updateCarInfoView: id=" + pCarData.sel_vehicleid + " pos=" + carPos);
+			mCarSelectPos = carPos;
+			mCarSelect.setSelection(mCarSelectPos);
+		}
+
 		tv = (TextView) findViewById(R.id.tabInfoTextSOC);
 		tv.setText(pCarData.car_soc);
 
@@ -733,10 +830,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		ImageView iv = (ImageView) findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(),
 				"signal_strength_" + pCarData.car_gsm_bars));
-
-		iv = (ImageView) findViewById(R.id.tabInfoImageCar);
-		iv.setImageResource(Ui.getDrawableIdentifier(getActivity(),
-				pCarData.sel_vehicle_image));
 	}
 
 }

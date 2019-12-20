@@ -1,26 +1,28 @@
 package com.openvehicles.OVMS.ui;
 
 import android.app.Activity;
-import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import android.support.v4.app.Fragment;
 
-import com.openvehicles.OVMS.R;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
+import com.openvehicles.OVMS.utils.CarsStorage;
 
 import java.util.HashMap;
 
 public class BaseFragment extends Fragment implements ApiObserver {
+	private static final String TAG = "BaseFragment";
 
 	public HashMap<String, String> mSentCommandMessage;
 
@@ -171,6 +173,17 @@ public class BaseFragment extends Fragment implements ApiObserver {
 	}
 
 	public void changeCar(CarData pCarData) {
+		AppPrefes prefs = new AppPrefes(getActivity(), "ovms");
+		Database database = new Database(getActivity());
+		Log.i(TAG, "changeCar: switching to vehicle ID " + pCarData.sel_vehicleid);
+
+		// select car:
+		CarsStorage.get().setSelectedCarId(pCarData.sel_vehicleid);
+		prefs.SaveData("sel_vehicle_label", pCarData.sel_vehicle_label);
+		prefs.SaveData("autotrack", "on");
+		prefs.SaveData("Id", database.getConnectionFilter(pCarData.sel_vehicle_label));
+
+		// inform API service:
 		ApiService service = getService();
 		if (service == null)
 			return;

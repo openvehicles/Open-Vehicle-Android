@@ -1,12 +1,10 @@
 package com.openvehicles.OVMS.utils;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -20,7 +18,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.entities.BatteryData;
 import com.openvehicles.OVMS.entities.CarData;
 
 public class CarsStorage {
@@ -44,7 +41,7 @@ public class CarsStorage {
 		boolean doSave = false;
 
 		// Already loaded?
-		if (mStoredCars != null) {
+		if (mStoredCars != null && mStoredCars.size() > 0) {
 			return mStoredCars;
 		}
 
@@ -143,7 +140,6 @@ public class CarsStorage {
 		demoCar.sel_server = mServers[0];
 		demoCar.sel_gcm_senderid = mGcmSenders[0];
 
-		mStoredCars = new ArrayList<CarData>();
 		mStoredCars.add(demoCar);
 	}
 	
@@ -164,6 +160,17 @@ public class CarsStorage {
 	public void setSelectedCarId(String pCarId) {
 		mLastSelectedCarId = pCarId;
 		getPrefs().edit().putString("LASTSELECTEDCARID", mLastSelectedCarId).commit();
+	}
+
+	public int getSelectedCarIndex() {
+		String id = getLastSelectedCarId();
+		if (id != null && mStoredCars.size() > 0) {
+			for (int i = 0; i < mStoredCars.size(); i++) {
+				if (mStoredCars.get(i).sel_vehicleid.equals(id))
+					return i;
+			}
+		}
+		return 0;
 	}
 
 	public SharedPreferences getPrefs() {
