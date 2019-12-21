@@ -39,7 +39,6 @@ import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.maps.model.LatLng;
 import com.luttu.AppPrefes;
 
-import com.luttu.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
@@ -52,11 +51,13 @@ import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.ConnectionsListener;
 
-import org.json.JSONObject;
-
 
 public class MainActivity extends ApiActivity implements
-		ActionBar.OnNavigationListener, GetMapDetailsListener, ConnectionsListener, UpdateLocation {
+		ApiObserver,
+		ActionBar.OnNavigationListener,
+		GetMapDetailsListener,
+		ConnectionsListener,
+		UpdateLocation {
 
 	private static final String TAG = "MainActivity";
 
@@ -218,23 +219,28 @@ public class MainActivity extends ApiActivity implements
 	protected void onStart() {
 		super.onStart();
 		Log.d(TAG, "onStart");
+		ApiObservable.get().addObserver(this);
+	}
+
+	@Override
+	protected void onStop() {
+		Log.d(TAG, "onStop");
+		ApiObservable.get().deleteObserver(this);
+		super.onStop();
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
 		Log.d(TAG, "onResume");
-
-		ApiService apiService = getService();
-
 		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
 				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
 	}
 
 	@Override
 	protected void onPause() {
-		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 		Log.d(TAG, "onPause");
+		LocalBroadcastManager.getInstance(this).unregisterReceiver(mGcmRegistrationBroadcastReceiver);
 		super.onPause();
 	}
 
@@ -479,6 +485,22 @@ public class MainActivity extends ApiActivity implements
 			}
 		}
 	};
+
+	@Override
+	public void update(CarData pCarData) {
+		// In case we missed the onLoginComplete message:
+		// …hide progress indicator:
+		setSupportProgressBarIndeterminateVisibility(false);
+		// …hide error dialog:
+		if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
+			mApiErrorDialog.hide();
+		}
+	}
+
+	@Override
+	public void onServiceAvailable(ApiService pService) {
+		// nop
+	}
 
 
 	/**
