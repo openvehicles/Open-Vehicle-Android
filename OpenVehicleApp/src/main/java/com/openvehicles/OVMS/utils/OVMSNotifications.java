@@ -1,13 +1,7 @@
 package com.openvehicles.OVMS.utils;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.TimeZone;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.ui.utils.Database;
@@ -110,17 +104,15 @@ public class OVMSNotifications {
 	}
 
 
-	public boolean addNotification(String title, String message, Date timestamp) {
-
+	public static String guessType(String message) {
 		// if the type classification is missing, we can only
 		// try to derive the type from the text:
-		int type;
+		String type;
 		if (message.contains("ALERT") || message.contains("WARNING"))
-			type = NotificationData.TYPE_ALERT;
+			type = "A";
 		else
-			type = NotificationData.TYPE_INFO;
-
-		return addNotification(type, title, message, timestamp);
+			type = "I";
+		return type;
 	}
 
 
@@ -137,5 +129,30 @@ public class OVMSNotifications {
 		}
 	}
 
+
+	public NotificationData[] getArray(String filterId) {
+
+		ArrayList<NotificationData> list;
+
+		// filter notifications:
+		if (filterId == null || filterId.isEmpty()) {
+			list = notifications;
+			Log.d(TAG, "getArray: unfiltered => " + list.size() + " notification(s)");
+		} else {
+			list = new ArrayList<NotificationData>();
+			for (int i = 0; i < notifications.size(); i++) {
+				NotificationData n = notifications.get(i);
+				if (n.isVehicleId(filterId)) {
+					list.add(n);
+				}
+			}
+			Log.d(TAG, "getArray: filtered for " + filterId + " => " + list.size() + " notification(s)");
+		}
+
+		// convert to array:
+		NotificationData[] data = new NotificationData[list.size()];
+		list.toArray(data);
+		return data;
+	}
 
 }

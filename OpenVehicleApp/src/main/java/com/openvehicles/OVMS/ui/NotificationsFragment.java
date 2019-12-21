@@ -4,7 +4,6 @@ import java.text.SimpleDateFormat;
 
 import android.annotation.TargetApi;
 import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
 import android.app.NotificationManager;
@@ -12,7 +11,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
-import android.text.TextUtils;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.util.TypedValue;
@@ -28,7 +26,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,15 +37,10 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.entities.CmdSeries;
-import com.openvehicles.OVMS.ui.settings.CarGroupFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
-
-import static android.util.TypedValue.COMPLEX_UNIT_DIP;
-import static android.util.TypedValue.COMPLEX_UNIT_SP;
 
 
 public class NotificationsFragment extends BaseFragment
@@ -64,7 +56,10 @@ public class NotificationsFragment extends BaseFragment
 
 	private AppPrefes appPrefes;
 	public boolean mFontMonospace = false;
+	public boolean mFilterList = false, mFilterInfo = false, mFilterAlert = false;
 	public float mFontSize = 10;
+
+	public String mVehicleId;
 
 	
 	@Override
@@ -73,12 +68,17 @@ public class NotificationsFragment extends BaseFragment
 		// Load prefs:
 
 		appPrefes = new AppPrefes(getActivity(), "ovms");
+
 		mFontMonospace = appPrefes.getData("notifications_font_monospace").equals("on");
 		try {
 			mFontSize = Float.parseFloat(appPrefes.getData("notifications_font_size"));
 		} catch(Exception e) {
 			mFontSize = 10;
 		}
+
+		mFilterList = appPrefes.getData("notifications_filter_list").equals("on");
+		mFilterInfo = appPrefes.getData("notifications_filter_info").equals("on");
+		mFilterAlert = appPrefes.getData("notifications_filter_alert").equals("on");
 
 		// Create UI:
 
@@ -101,6 +101,9 @@ public class NotificationsFragment extends BaseFragment
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		inflater.inflate(R.menu.notifications_options, menu);
 		menu.findItem(R.id.mi_chk_monospace).setChecked(mFontMonospace);
+		menu.findItem(R.id.mi_chk_filter_list).setChecked(mFilterList);
+		menu.findItem(R.id.mi_chk_filter_info).setChecked(mFilterInfo);
+		menu.findItem(R.id.mi_chk_filter_alert).setChecked(mFilterAlert);
 	}
 
 	@Override
@@ -113,6 +116,7 @@ public class NotificationsFragment extends BaseFragment
 		mNotificationManager.cancelAll();
 
 		// update list:
+		mVehicleId = CarsStorage.get().getLastSelectedCarId();
 		update();
 	}
 
@@ -187,7 +191,7 @@ public class NotificationsFragment extends BaseFragment
 			clipboard.setText(message);
 		}
 
-		Toast.makeText(getActivity().getApplicationContext(),
+		Toast.makeText(getContext(),
 				R.string.notifications_toast_copied, Toast.LENGTH_SHORT).show();
 
 		return true;
@@ -202,11 +206,30 @@ public class NotificationsFragment extends BaseFragment
 		switch(menuId) {
 
 			case R.id.mi_help:
-				new AlertDialog.Builder(getActivity())
+				new AlertDialog.Builder(getContext())
 						.setTitle(R.string.notifications_btn_help)
 						.setMessage(Html.fromHtml(getString(R.string.notifications_help)))
 						.setPositiveButton(android.R.string.ok, null)
 						.show();
+				return true;
+
+			case R.id.mi_chk_filter_list:
+				mFilterList = newState;
+				appPrefes.SaveData("notifications_filter_list", newState ? "on" : "off");
+				item.setChecked(newState);
+				initUi();
+				return true;
+
+			case R.id.mi_chk_filter_info:
+				mFilterInfo = newState;
+				appPrefes.SaveData("notifications_filter_info", newState ? "on" : "off");
+				item.setChecked(newState);
+				return true;
+
+			case R.id.mi_chk_filter_alert:
+				mFilterAlert = newState;
+				appPrefes.SaveData("notifications_filter_alert", newState ? "on" : "off");
+				item.setChecked(newState);
 				return true;
 
 			case R.id.mi_chk_monospace:
@@ -243,22 +266,38 @@ public class NotificationsFragment extends BaseFragment
 	}
 
 	public void update() {
-		Context context = getActivity();
-		if (context != null)
-			initUi(context);
+		initUi();
 	}
 
-	private void initUi(Context pContext) {
+	@Override
+	public void update(CarData pCarData) {
+		super.update(pCarData);
 
-		Log.d(TAG, "initUi: (re-)loading notifications");
+		// check if the car filter needs to be reapplied:
+		if (mFilterList && !pCarData.sel_vehicleid.equals(mVehicleId)) {
+			String vehicleId = CarsStorage.get().getLastSelectedCarId();
+			if (!vehicleId.equals(mVehicleId)) {
+				Log.d(TAG, "update: vehicle changed to '" + vehicleId + "' => filter reload");
+				mVehicleId = vehicleId;
+				initUi();
+			}
+		}
+	}
+
+	private void initUi() {
+
+		Context context = getActivity();
+		if (context == null)
+			return;
+
+		Log.d(TAG, "initUi: (re-)loading notifications, filter=" + mFilterInfo + ", vehicle=" + mVehicleId);
 
 		// (re-)load notifications:
-		mNotifications = new OVMSNotifications(pContext);
-		NotificationData[] data = new NotificationData[mNotifications.notifications.size()];
-		mNotifications.notifications.toArray(data);
-		
+		mNotifications = new OVMSNotifications(context);
+		NotificationData[] data = mNotifications.getArray(mFilterList ? mVehicleId : "");
+
 		// attach array to ListView:
-		mItemsAdapter = new ItemsAdapter(pContext, this, data);
+		mItemsAdapter = new ItemsAdapter(context, this, data);
 		mListView.setAdapter(mItemsAdapter);
 
 	}
@@ -277,7 +316,7 @@ public class NotificationsFragment extends BaseFragment
 				String vehicle_id = CarsStorage.get().getLastSelectedCarId();
 				mNotifications.addNotification(
 						NotificationData.TYPE_COMMAND, vehicle_id + ": " + cmd, cmd);
-				initUi(getActivity());
+				initUi();
 
 				// send command:
 				if (cmd.startsWith("*")) {
@@ -341,14 +380,14 @@ public class NotificationsFragment extends BaseFragment
 					mNotifications.addNotification(
 							type, vehicle_id + ": " + cmdMessage,
 							(cmdOutput != null) ? cmdOutput : getString(R.string.msg_ok));
-					initUi(getActivity());
+					initUi();
 				}
 				break;
 			case 1: // failed: result[2] = command output
 				mNotifications.addNotification(
 						NotificationData.TYPE_RESULT_ERROR, vehicle_id + ": " + cmdMessage,
 						getString(R.string.err_failed_smscmd));
-				initUi(getActivity());
+				initUi();
 				break;
 			case 2: // unsupported
 				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),

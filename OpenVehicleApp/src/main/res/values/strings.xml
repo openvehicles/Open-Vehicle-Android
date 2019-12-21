@@ -364,6 +364,9 @@
     <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
     <string name="notifications_toast_copied">Message has been copied to clipboard</string>
     <string name="notifications_menu">Options</string>
+    <string name="notifications_chk_filter_list">Car filter list</string>
+    <string name="notifications_chk_filter_info">Car filter info notify</string>
+    <string name="notifications_chk_filter_alert">Car filter alert notify</string>
     <string name="notifications_chk_monospace">Monospace</string>
     <string name="notifications_set_fontsize">Font size</string>
     <string name="notifications_btn_help">Info</string>
@@ -371,6 +374,9 @@
  		<h1>Notifications &amp; Commands</h1>
 
 		<p>This screen will hold the latest 200 notifications, alerts, commands and command results.</p>
+
+		<p>You can filter the list and optionally informational and alert system notifications
+		 to only show for the currently selected vehicle.</p>
 
         <p>Touch a notification to show it in a dialog, do a long touch to copy it to the clipboard.
          Touching a command history entry loads the command into the input box so you can

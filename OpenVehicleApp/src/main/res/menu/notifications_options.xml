@@ -13,9 +13,24 @@
             <group android:checkableBehavior="all">
 
                 <item
+                    android:id="@+id/mi_chk_filter_list"
+                    android:title="@string/notifications_chk_filter_list"
+                    app:showAsAction="ifRoom"/>
+
+                <item
+                    android:id="@+id/mi_chk_filter_info"
+                    android:title="@string/notifications_chk_filter_info"
+                    app:showAsAction="never"/>
+
+                <item
+                    android:id="@+id/mi_chk_filter_alert"
+                    android:title="@string/notifications_chk_filter_alert"
+                    app:showAsAction="never"/>
+
+                <item
                     android:id="@+id/mi_chk_monospace"
                     android:title="@string/notifications_chk_monospace"
-                    app:showAsAction="ifRoom"/>
+                    app:showAsAction="never"/>
 
             </group>
 

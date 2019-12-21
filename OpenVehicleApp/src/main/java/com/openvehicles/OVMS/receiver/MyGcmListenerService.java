@@ -7,18 +7,17 @@
 package com.openvehicles.OVMS.receiver;
 
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.google.android.gms.gcm.GcmListenerService;
 
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
@@ -36,6 +35,8 @@ public class MyGcmListenerService extends GcmListenerService {
 
     private static final String TAG = "MyGcmListenerService";
 
+    AppPrefes appPrefes;
+
 	// lock to prevent concurrent uses of OVMSNotifications:
 	// 	(necessary for dupe check)
 	private final ReentrantLock dbAccess = new ReentrantLock();
@@ -43,10 +44,11 @@ public class MyGcmListenerService extends GcmListenerService {
 	// timestamp parser:
 	SimpleDateFormat serverTime;
 
+	@Override
+	public void onCreate() {
+		super.onCreate();
 
-	public MyGcmListenerService() {
-
-		super();
+		appPrefes = new AppPrefes(this, "ovms");
 
 		// create timestamp parser:
 		serverTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -72,6 +74,9 @@ public class MyGcmListenerService extends GcmListenerService {
             Log.w(TAG, "no title/message => abort");
             return;
         }
+		if (contentType == null) {
+			contentType = OVMSNotifications.guessType(contentText);
+		}
 
 		// parse timestamp:
 		Date timeStamp;
@@ -96,16 +101,23 @@ public class MyGcmListenerService extends GcmListenerService {
 		dbAccess.lock();
 		try {
 			OVMSNotifications savedList = new OVMSNotifications(this);
-			if (contentType != null)
-				is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
-			else
-				is_new = savedList.addNotification(contentTitle, contentText, timeStamp);
+			is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
 		} finally {
 			dbAccess.unlock();
 		}
 
+		// prepare user notification filter check:
+		boolean filterInfo = appPrefes.getData("notifications_filter_info").equals("on");
+		boolean filterAlert = appPrefes.getData("notifications_filter_alert").equals("on");
+		String selectedCarId = CarsStorage.get().getLastSelectedCarId();
+		boolean isSelectedCar = car.sel_vehicleid.equals(selectedCarId);
+
 		if (!is_new) {
-			Log.d(TAG, "message is duplicate => ignore");
+			Log.d(TAG, "message is duplicate => skip user notification");
+		} else if (!isSelectedCar && filterInfo && contentType.equals("I")) {
+			Log.d(TAG, "info notify for other car => skip user notification");
+		} else if (!isSelectedCar && filterAlert && !contentType.equals("I")) {
+			Log.d(TAG, "alert/error notify for other car => skip user notification");
 		} else {
             // add notification to system & UI:
 

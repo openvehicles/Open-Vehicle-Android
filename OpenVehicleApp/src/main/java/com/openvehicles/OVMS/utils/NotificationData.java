@@ -1,7 +1,6 @@
 package com.openvehicles.OVMS.utils;
 
 import java.io.Serializable;
-import java.sql.Time;
 import java.util.Date;
 
 public class NotificationData implements Serializable {
@@ -75,4 +74,9 @@ public class NotificationData implements Serializable {
 		}
 	}
 
+	public boolean isVehicleId(String vehicleId) {
+		return (Title.equals(vehicleId) ||
+				Title.startsWith(vehicleId + ":") ||
+				Title.startsWith(vehicleId + " "));
+	}
 }
