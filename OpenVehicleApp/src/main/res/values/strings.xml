@@ -626,17 +626,19 @@
         <p>Open Vehicles Monitoring System is a community project enabling remote monitoring and control of vehicles
          with Open Source software and hardware.</p>
         <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
-        <p>· <a href="https://docs.google.com/document/d/16JrXR7rybp-18DrEoeh1rg6GqQT_jVBvhaXh2oEWRHw">User guide (OVMS v3)</a></p>
+        <p>· <a href="https://docs.openvehicles.com/en/latest/">User guide (OVMS v3)</a></p>
         <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
         <p>&nbsp;</p>
         <p><b><u>Main changes in this App release</u></b>:</p>
-        <p>· OpenChargeMap API updates &amp; map enhancements</p>
-        <p>· Map view coupled to auto track / my location</p>
-        <p>· Simplify cars configuration</p>
-        <p>· Prevent cars configuration loss on future updates</p>
-        <p>· Keep OVMS service alive &amp; connected on Android &gt;= 7</p>
-        <p>· 12V battery history chart</p>
+        <p>· Nissan Leaf Gen2 images</p>
+        <p>· New color option "Planet Blue" for Nissan Leaf</p>
+        <p>· Image optimizations for all vehicles</p>
+        <p>· Chart library upgrade (MPAndroidChart v3)</p>
+        <p>· 12V history now uses time based X axis</p>
+        <p>· Quick vehicle selection (slide image on main page)</p>
+        <p>· Optional notification filtering by selected vehicle</p>
+        <p>· Service stability improvements</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>

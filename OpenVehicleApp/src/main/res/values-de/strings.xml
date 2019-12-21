@@ -622,17 +622,19 @@
         <p>Open Vehicles Monitoring System ist ein Community-Projekt zur Fernüberwachung und -steuerung von Fahrzeugen
          mit Open-Source Soft- und Hardware.</p>
         <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
-        <p>· <a href="https://docs.google.com/document/d/16JrXR7rybp-18DrEoeh1rg6GqQT_jVBvhaXh2oEWRHw">Anleitung (OVMS v3)</a></p>
+        <p>· <a href="https://docs.openvehicles.com/en/latest/">Anleitung (OVMS v3)</a></p>
         <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· OpenChargeMap API-Aktualisierungen und Verbesserungen</p>
-        <p>· Kartenansicht mit Fahrzeugverfolgung / "Meine Position" gekoppelt</p>
-        <p>· Vereinfachte Fahrzeugkonfiguration</p>
-        <p>· Schutz gegen Verlust der Fahrzeugkonfiguration bei zukünftigen Updates</p>
-        <p>· OVMS-Service bleibt auch unter Android &gt;= 7 online</p>
-        <p>· 12V-Batterieverlauf</p>
+        <p>· Bilder für Nissan Leaf Gen2</p>
+        <p>· Neue Farboption "Planet Blue" für Nissan Leaf</p>
+        <p>· Bildoptimierungen für alle Fahrzeuge</p>
+        <p>· Upgrade der Chart-Bibliothek (MPAndroidChart v3)</p>
+        <p>· 12V-Verlauf verwendet jetzt zeitbasierte X-Achse</p>
+        <p>· Schnellumschaltung des ausgewählten Fahrzeugs (per Slide des Bilds)</p>
+        <p>· Optionale Nachrichtenfilter nach gewähltem Fahrzeug</p>
+        <p>· Verbesserte Servicestabilität</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
