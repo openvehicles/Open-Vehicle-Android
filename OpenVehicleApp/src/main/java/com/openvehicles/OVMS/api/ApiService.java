@@ -58,7 +58,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 		mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-		appPrefes = new AppPrefes(getApplicationContext(), "ovms");
+		appPrefes = new AppPrefes(this, "ovms");
 
 		createNotificationChannel();
 
@@ -222,7 +222,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			mCarData.sel_paranoid = false;
 
 			// start the new ApiTask:
-			mApiTask = new ApiTask(getApplicationContext(), mCarData, this);
+			mApiTask = new ApiTask(this, mCarData, this);
 			mApiTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 		}
 	}
