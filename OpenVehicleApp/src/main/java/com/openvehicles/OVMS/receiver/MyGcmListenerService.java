@@ -57,8 +57,8 @@ public class MyGcmListenerService extends GcmListenerService {
     public void onMessageReceived(String from, Bundle data) {
 
         // get notification text:
-		String contentTitle = data.getString("title");
-		String contentType = data.getString("type");
+		String contentTitle = data.getString("title");		// vehicle id
+		String contentType = data.getString("type");		// A=alert / I=info / E=error
         String contentText = data.getString("message");
         String contentTime = data.getString("time");
 
@@ -81,7 +81,17 @@ public class MyGcmListenerService extends GcmListenerService {
 			timeStamp = new Date();
 		}
 
-        // add notification to database:
+		// identify the vehicle:
+		CarData car = CarsStorage.get().getCarById(contentTitle);
+		if (car == null) {
+			Log.w(TAG, "vehicle ID '" + contentTitle + "' not found => drop message");
+			return;
+		}
+
+		// add vehicle label to title:
+		contentTitle += " (" + car.sel_vehicle_label + ")";
+
+		// add notification to database:
 		boolean is_new;
 		dbAccess.lock();
 		try {
@@ -106,21 +116,16 @@ public class MyGcmListenerService extends GcmListenerService {
             PendingIntent launchOVMSIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                     PendingIntent.FLAG_ONE_SHOT);
 
-            // try to find the correct icon for this car
-            int icon = 0;
-            CarData car = CarsStorage.get().getCarById(contentTitle);
-            if (car != null) {
-				if (car.sel_vehicle_image.startsWith("car_imiev_"))
-					icon = R.drawable.map_car_imiev; // one map icon for all colors
-				else if (car.sel_vehicle_image.startsWith("car_smart_"))
-					icon = R.drawable.map_car_smart; // one map icon for all colors
-				else if (car.sel_vehicle_image.startsWith("car_kianiro_"))
-					icon = R.drawable.map_car_kianiro_grey; // one map icon for all colors
-				else
-            		icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
-			}
-            if (icon == 0)
-                icon = android.R.drawable.ic_lock_idle_alarm;
+            // determine icon for this car:
+            int icon;
+			if (car.sel_vehicle_image.startsWith("car_imiev_"))
+				icon = R.drawable.map_car_imiev; // one map icon for all colors
+			else if (car.sel_vehicle_image.startsWith("car_smart_"))
+				icon = R.drawable.map_car_smart; // one map icon for all colors
+			else if (car.sel_vehicle_image.startsWith("car_kianiro_"))
+				icon = R.drawable.map_car_kianiro_grey; // one map icon for all colors
+			else
+				icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
 
             // create Notification builder:
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
