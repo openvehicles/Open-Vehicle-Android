@@ -21,7 +21,6 @@ import android.view.MenuItem;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
@@ -852,27 +851,29 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		}
 
 		// Car locked
-		if (pCarData.car_type.equals("SE") || pCarData.car_type.equals("RZ")) {
-			// Car locked Smart ED 451 and Renault ZOE
+		if (pCarData.car_type.equals("TR")) {
+			// Lock status Tesla Roadster
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
+			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock_roadster : R.drawable.carunlock_roadster);
+		} else {
+			// Lock status default
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
 			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock_clean : R.drawable.carunlock_clean);
-		} else {
-			iv = (ImageView) findViewById(R.id.tabCarImageCarLocked);
-			iv.setImageResource(pCarData.car_locked ? R.drawable.carlock : R.drawable.carunlock);
 		}
 
 		// Valet mode
-		if (pCarData.car_type.equals("SE")) {
+		if (pCarData.car_type.equals("TR")) {
+			// Valet mode Tesla Roadster
+			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
+			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_roadster : R.drawable.carvaletoff_roadster);
+		} else if (pCarData.car_type.equals("SE")) {
 			// Valet mode Smart ED 451
 			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
 			iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
-		} else if (pCarData.car_type.equals("RZ")) {
-			// Valet mode Renault ZOE
+		} else {
+			// Valet mode default
 			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
 			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_clean : R.drawable.carvaletoff_clean);
-		} else {
-			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton : R.drawable.carvaletoff);
 		}
 
 		// Charge Port
