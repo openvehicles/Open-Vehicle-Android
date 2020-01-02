@@ -276,7 +276,7 @@ public class NotificationsFragment extends BaseFragment
 		// check if the car filter needs to be reapplied:
 		if (mFilterList && !pCarData.sel_vehicleid.equals(mVehicleId)) {
 			String vehicleId = CarsStorage.get().getLastSelectedCarId();
-			if (!vehicleId.equals(mVehicleId)) {
+			if (vehicleId != null && !vehicleId.equals(mVehicleId)) {
 				Log.d(TAG, "update: vehicle changed to '" + vehicleId + "' => filter reload");
 				mVehicleId = vehicleId;
 				initUi();

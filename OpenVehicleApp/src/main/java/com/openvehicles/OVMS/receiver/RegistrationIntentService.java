@@ -49,6 +49,12 @@ public class RegistrationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
+		// Android bug?
+    	if (intent == null) {
+			Log.e(TAG, "invalid intent -- abort");
+			return;
+		}
+
 		String vehicleId = intent.getStringExtra("ovmsVehicleId");
 		String gcmSenderId = intent.getStringExtra("ovmsGcmSenderId");
 		Log.i(TAG, "doing registration for vehicleId=" + vehicleId
