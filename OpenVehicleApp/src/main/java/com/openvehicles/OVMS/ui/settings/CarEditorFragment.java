@@ -323,6 +323,7 @@ public class CarEditorFragment extends BaseFragment {
 			"car_holdenvolt_silvernitrate",
 			"car_holdenvolt_urbanfresh",
 			"car_holdenvolt_whitediamond",
+			"car_ioniq_polarwhite",
 			"car_twizy_diamondblackwithivygreen",
 			"car_twizy_snowwhiteandflameorange",
 			"car_twizy_snowwhiteandurbanblue",
