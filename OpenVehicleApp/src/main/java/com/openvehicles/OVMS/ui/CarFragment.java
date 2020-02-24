@@ -113,7 +113,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		img2 = (ImageView) findViewById(R.id.tabCarImageAC);
 
 		// The V3 framework does not support capabilities yet, but
-		//	the Leaf, Smart and VWe-Up are the only cars providing command 26 up to now, so:
+		//	the Leaf, Smart and VW e-Up are the only cars providing command 26 up to now, so:
 		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL") || pCarData.car_type.equals("SE") || pCarData.car_type.equals("VWUP")) {
 			// enable
 			img1.setVisibility(View.VISIBLE);
