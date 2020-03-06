@@ -203,6 +203,7 @@
 
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
+    <string name="textCAB">CABINA</string>
     <string name="textBATTERY">BATERÍA</string>
     <string name="textHOMELINK">HOMELINK</string>
     <string name="textPROFILE">PERFIL</string>

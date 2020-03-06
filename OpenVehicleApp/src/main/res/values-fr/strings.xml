@@ -186,6 +186,7 @@
   <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
   <string name="textMOTOR">MOTEUR</string>
   <string name="textPEM">M.E.P</string>
+  <string name="textCAB">CABIN</string>
   <string name="textBATTERY">BATTERIE</string>
   <string name="textHOMELINK">HOMELINK</string>
   <string name="textPROFILE">PROFIL</string>

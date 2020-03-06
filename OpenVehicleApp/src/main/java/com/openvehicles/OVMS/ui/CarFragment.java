@@ -654,7 +654,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// "Temp PEM" box:
 		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
-		pemtvl.setText(R.string.textPEM);
+		// Quick workaround for display of cabin temperature
+		if (pCarData.car_type.equals("VWUP")) {
+		    pemtvl.setText(R.string.textCAB);
+		} else {
+		    pemtvl.setText(R.string.textPEM);
+		}
 		if (pCarData.stale_car_temps == DataStale.NoValue) {
 			pemtv.setText("");
 		} else {
