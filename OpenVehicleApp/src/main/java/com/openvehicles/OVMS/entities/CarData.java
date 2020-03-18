@@ -73,6 +73,7 @@ public class CarData implements Serializable {
 	public String car_temp_battery = "";
 	public String car_temp_charger = "";
 	public String car_temp_ambient = "";
+	public String car_temp_cabin = "";
 	public DataStale stale_car_temps = DataStale.NoValue;
 	public DataStale stale_ambient_temp = DataStale.NoValue;
 
@@ -153,6 +154,7 @@ public class CarData implements Serializable {
 	public float car_temp_battery_raw = 0;
 	public float car_temp_charger_raw = 0;
 	public float car_temp_ambient_raw = 0;
+	public float car_temp_cabin_raw = 0;
 	public float car_tripmeter_raw = 0;
 	public float car_odometer_raw = 0;
 	public float car_speed_raw = 0;
@@ -584,6 +586,14 @@ public class CarData implements Serializable {
 			if (dataParts.length >= 20) {
 				car_12v_current = Double.parseDouble(dataParts[19]);
 			}
+			if (dataParts.length >= 21) {
+				car_temp_cabin_raw = Float.parseFloat(dataParts[20]);
+				if (appPrefes.getData("showfahrenheit").equals("on")) {
+					car_temp_cabin = String.format("%.1f\u00B0F", (car_temp_cabin_raw * (9.0 / 5.0)) + 32.0);
+				} else {
+					car_temp_cabin = String.format("%.1f\u00B0C", car_temp_cabin_raw);
+				}
+			}
 
 		} catch(Exception e) {
 			Log.e(TAG, "processEnvironment: ERROR", e);
@@ -840,6 +850,7 @@ public class CarData implements Serializable {
 			b.putFloat("car_temp_battery", car_temp_battery_raw);
 			b.putFloat("car_temp_ambient", car_temp_ambient_raw);
 			b.putFloat("car_temp_charger", car_temp_charger_raw);
+			b.putFloat("car_temp_cabin", car_temp_cabin_raw);
 
 			b.putFloat("car_odometer", car_odometer_raw);
 

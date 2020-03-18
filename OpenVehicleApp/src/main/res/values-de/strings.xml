@@ -628,14 +628,8 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· Bilder für Nissan Leaf Gen2</p>
-        <p>· Neue Farboption "Planet Blue" für Nissan Leaf</p>
-        <p>· Bildoptimierungen für alle Fahrzeuge</p>
-        <p>· Upgrade der Chart-Bibliothek (MPAndroidChart v3)</p>
-        <p>· 12V-Verlauf verwendet jetzt zeitbasierte X-Achse</p>
-        <p>· Schnellumschaltung des ausgewählten Fahrzeugs (per Slide des Bilds)</p>
-        <p>· Optionale Nachrichtenfilter nach gewähltem Fahrzeug</p>
-        <p>· Verbesserte Servicestabilität</p>
+        <p>· VW e-Up! / Seat Mii electric / Škoda CitiGOe IV</p>
+        <p>· Weitere Bildoptimierungen für Fahrzeuge und Icons</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
