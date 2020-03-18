@@ -244,6 +244,7 @@
     <string name="textHVBATT">HV BATT</string>
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
+    <string name="textCAB">INNEN</string>
 
     <string name="textAC">KLIMASTEUERUNG</string>
     <string name="mi_ac_on">A/C AN</string>

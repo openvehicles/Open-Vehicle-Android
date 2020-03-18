@@ -245,6 +245,7 @@
 
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
+    <string name="textCAB">CABIN</string>
     <string name="textBATTERY">BATTERY</string>
     <string name="textCHARGER">CHARGER</string>
     <string name="textHOMELINK">HOMELINK</string>
