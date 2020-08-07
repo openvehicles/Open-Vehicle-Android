@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
-    android:versionCode="2020031801"
-    android:versionName="3.16.1" >
+    android:versionCode="2020070101"
+    android:versionName="3.16.2" >
 
 
     <!-- Only this application can receive the messages and registration result -->
@@ -48,7 +48,7 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyCepznTQOhuy_IN1npQOgVTTWE4QbPONRc" />
+            android:value="AIzaSyCuzjTXOvR8c4GZJ830z_1I0P4Ak5ojMpA" />
         <meta-data
             android:name="org.openchargemap.api.v2.API_KEY"
             android:value="59284e43-14f7-4d0a-8fec-f2a255611974" />
