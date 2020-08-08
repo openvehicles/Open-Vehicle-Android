@@ -114,7 +114,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// The V3 framework does not support capabilities yet, but
 		//	the Leaf, Smart and VW e-Up are the only cars providing command 26 up to now, so:
-		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL") || pCarData.car_type.equals("SE") || pCarData.car_type.equals("VWUP")) {
+		if (pCarData.hasCommand(26) || pCarData.car_type.equals("NL") || pCarData.car_type.equals("SE") || pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26")) {
 			// enable
 			img1.setVisibility(View.VISIBLE);
 			img2.setVisibility(View.VISIBLE);
@@ -655,7 +655,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
 		// Quick workaround for display of cabin temperature
-		if (pCarData.car_type.equals("VWUP")) {
+		if (pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26")) {
 		    pemtvl.setText(R.string.textCAB);
 		} else {
 		    pemtvl.setText(R.string.textPEM);
