@@ -383,6 +383,12 @@ public class CarEditorFragment extends BaseFragment {
 			"car_zoe_lila",
 			"car_zoe_red",
 			"car_zoe_white",
-			"car_zoe_ytriumgrau"
+			"car_zoe_ytriumgrau",
+			"car_mgzs_white",
+			"car_mgzs_blue",
+			"car_mgzs_lightblue",
+			"car_mgzs_red",
+			"car_mgzs_black"
+
 	};
 }
