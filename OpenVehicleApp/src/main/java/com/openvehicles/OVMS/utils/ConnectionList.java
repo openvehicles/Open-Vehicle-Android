@@ -6,7 +6,7 @@ import java.util.HashMap;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import android.support.v7.app.AppCompatDialog;
+import androidx.appcompat.app.AppCompatDialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;

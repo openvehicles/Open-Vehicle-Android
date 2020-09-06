@@ -2,8 +2,8 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.text.TextUtils;
+import androidx.fragment.app.FragmentActivity;
+
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;

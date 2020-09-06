@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import android.annotation.TargetApi;
 import android.content.ClipData;
 import android.graphics.Typeface;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;

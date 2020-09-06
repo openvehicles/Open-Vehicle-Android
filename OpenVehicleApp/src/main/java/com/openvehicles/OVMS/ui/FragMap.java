@@ -25,10 +25,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentManager;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentManager;
 
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;

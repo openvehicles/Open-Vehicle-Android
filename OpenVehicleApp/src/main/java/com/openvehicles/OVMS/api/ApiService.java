@@ -71,7 +71,7 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 					PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
 			Notification notification =
-					(new android.support.v4.app.NotificationCompat.Builder(this, "default"))
+					(new androidx.core.app.NotificationCompat.Builder(this, "default"))
 							.setContentTitle(getText(R.string.service_notification_title))
 							.setContentText(getText(R.string.service_notification_text))
 							.setTicker(getText(R.string.service_notification_ticker))

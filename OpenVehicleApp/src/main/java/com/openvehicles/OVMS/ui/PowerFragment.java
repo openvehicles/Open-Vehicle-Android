@@ -1,7 +1,7 @@
 package com.openvehicles.OVMS.ui;
 
 import android.graphics.Canvas;
-import android.support.v7.app.AlertDialog;
+import androidx.appcompat.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
