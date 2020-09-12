@@ -785,6 +785,37 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
 			iv.setImageResource(R.drawable.zoe_carlights);
 
+		} else if (pCarData.sel_vehicle_image.startsWith("car_mgzs_")) {
+			// Left Door MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_outline_ld);
+
+			// Right Door MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_outline_rd);
+
+			// Rear Left Door MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_outline_rld);
+
+			// Rear Right Door MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_outline_rrd);
+
+			// Trunk MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_outline_tr);
+
+			// Headlights MGZS
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.mgzs_carlights);
+
 		} else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
 			// Left Door Smart
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
@@ -899,6 +930,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 				// Kia Niro: use i-MiEV charge overlays
+				if (pCarData.car_charge_mode.equals("performance"))
+					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+				else
+					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+			} else if (pCarData.sel_vehicle_image.startsWith("car_mgzs_")) {
+				// MG ZS: use i-MiEV charge overlays
 				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
