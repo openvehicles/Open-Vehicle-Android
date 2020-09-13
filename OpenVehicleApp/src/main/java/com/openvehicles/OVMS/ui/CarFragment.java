@@ -655,19 +655,29 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
 		// Quick workaround for display of cabin temperature
-		if (pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26")) {
+		if (pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26") ||  pCarData.car_type.equals("NL")) {
 		    pemtvl.setText(R.string.textCAB);
+			if (pCarData.stale_car_temps == DataStale.NoValue) {
+				pemtv.setText("");
+			} else {
+				pemtv.setText(pCarData.car_temp_cabin);
+				if (pCarData.stale_car_temps == DataStale.Stale) {
+					pemtv.setTextColor(0xFF808080);
+				} else {
+					pemtv.setTextColor(0xFFFFFFFF);
+				}
+			}
 		} else {
 		    pemtvl.setText(R.string.textPEM);
-		}
-		if (pCarData.stale_car_temps == DataStale.NoValue) {
-			pemtv.setText("");
-		} else {
-			pemtv.setText(pCarData.car_temp_pem);
-			if (pCarData.stale_car_temps == DataStale.Stale) {
-				pemtv.setTextColor(0xFF808080);
+			if (pCarData.stale_car_temps == DataStale.NoValue) {
+				pemtv.setText("");
 			} else {
-				pemtv.setTextColor(0xFFFFFFFF);
+				pemtv.setText(pCarData.car_temp_pem);
+				if (pCarData.stale_car_temps == DataStale.Stale) {
+					pemtv.setTextColor(0xFF808080);
+				} else {
+					pemtv.setTextColor(0xFFFFFFFF);
+				}
 			}
 		}
 
@@ -675,10 +685,15 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView motortvl = (TextView) findViewById(R.id.tabCarTextMotorLabel);
 		TextView motortv = (TextView) findViewById(R.id.tabCarTextMotor);
 
-		// Renault Zoe, Smart ED: display HVBatt state
-		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE")) {
+		// Renault Zoe, Smart ED, Nissan LEAF, MG ZS EV display HVBatt voltage instead of motor temp
+		if (mCarData.car_type.equals("RZ") || mCarData.car_type.equals("SE") || mCarData.car_type.equals("NL") || mCarData.car_type.equals("MGEV")) {
 			motortvl.setText(R.string.textHVBATT);
 			motortv.setText(String.format("%.1fV", mCarData.car_battery_voltage));
+			if (pCarData.stale_car_temps == DataStale.Stale) {
+				motortv.setTextColor(0xFF808080);
+			} else {
+				motortv.setTextColor(0xFFFFFFFF);
+			}
 		} else {
 			// Standard car: display Motor temperature
 			motortvl.setText(R.string.textMOTOR);
