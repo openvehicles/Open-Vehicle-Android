@@ -876,9 +876,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
 			iv.setImageResource(pCarData.car_valetmode ? R.drawable.smart_on : R.drawable.smart_off);
 		} else {
-			// Valet mode default
+			// Don't display valet mode by default since it's only supported by TR
 			iv = (ImageView) findViewById(R.id.tabCarImageCarValetMode);
-			iv.setImageResource(pCarData.car_valetmode ? R.drawable.carvaleton_clean : R.drawable.carvaletoff_clean);
+			iv.setImageResource(android.R.color.transparent);
 		}
 
 		// Charge Port
