@@ -64,6 +64,9 @@ global_chgmins = getInt("car_chargefull_minsremaining", 0);
 global_chgkwh = getFloat("car_charge_kwhconsumed", 0);
 global_chgcurr = getFloat("car_charge_current", 0);
 global_chgcurrlim = getFloat("car_charge_currentlimit", 0);
+global_chgpwr = getFloat("car_charge_power_kw", 0);
+global_chgpwrin = getFloat("car_charge_power_input_kw", 0);
+global_chgeff = getFloat("car_charger_efficiency", 0);
 
 global_speed = getDouble("car_speed", 0);
 global_drivemode = getInt("car_drivemode", 0);
@@ -71,6 +74,9 @@ global_trip = getFloat("car_tripmeter", 0)/10.0;
 global_energyused = getFloat("car_energyused", 0);
 global_energyrecd = getFloat("car_energyrecd", 0);
 global_odo = getFloat("car_odometer", 0)/10.0;
+global_invpwr = getFloat("car_inv_power_motor", 0);
+global_inveff = getFloat("car_inv_efficiency", 0);
+
 global_tmpmot = getFloat("car_temp_motor", 0);
 global_tmppem = getFloat("car_temp_pem", 0);
 

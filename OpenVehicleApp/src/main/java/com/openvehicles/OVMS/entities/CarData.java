@@ -199,6 +199,8 @@ public class CarData implements Serializable {
 	public double car_charge_power_kw = 0;
 	public double car_battery_voltage = 0;
 	public float car_soh = 0;
+	public float car_charge_power_input_kw = 0;
+	public float car_charger_efficiency = 0;
 
 	// Car Update Time Message "T"
 	public long car_lastupdate_raw = 0;
@@ -206,6 +208,8 @@ public class CarData implements Serializable {
 	// Car Location Message "L"
 	public int car_gpslock_raw = -1;
 	public int car_stale_gps_raw = -1;
+	public float car_inv_power_motor_kw = 0;
+	public float car_inv_efficiency = 0;
 
 	// Car TPMS Message "W"
 	public double car_tpms_fl_p_raw = 0.0D;
@@ -361,6 +365,10 @@ public class CarData implements Serializable {
 				car_energyused = Float.parseFloat(dataParts[10]);
 				car_energyrecd = Float.parseFloat(dataParts[11]);
 			}
+			if (dataParts.length >= 14) {
+				car_inv_power_motor_kw = Float.parseFloat(dataParts[12]);
+				car_inv_efficiency = Float.parseFloat(dataParts[13]);
+			}
 
 		} catch(Exception e) {
 			Log.e(TAG, "processLocation: ERROR", e);
@@ -464,6 +472,10 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 34) {
 				car_soh = Float.parseFloat(dataParts[33]);
+			}
+			if (dataParts.length >= 36) {
+				car_charge_power_input_kw = Float.parseFloat(dataParts[34]);
+				car_charger_efficiency = Float.parseFloat(dataParts[35]);
 			}
 
 		} catch(Exception e) {
@@ -786,6 +798,8 @@ public class CarData implements Serializable {
 			b.putDouble("car_charge_power_kw", car_charge_power_kw);
 			b.putFloat("car_charge_kwhconsumed", car_charge_kwhconsumed);
 			b.putBoolean("car_charge_timer", car_charge_timer);
+			b.putFloat("car_charge_power_input_kw", car_charge_power_input_kw);
+			b.putFloat("car_charger_efficiency", car_charger_efficiency);
 
 			b.putInt("car_chargeestimate", car_chargeestimate);
 			b.putInt("car_chargefull_minsremaining", car_chargefull_minsremaining);
@@ -822,6 +836,9 @@ public class CarData implements Serializable {
 			b.putDouble("car_power", car_power);
 			b.putFloat("car_energyused", car_energyused);
 			b.putFloat("car_energyrecd", car_energyrecd);
+
+			b.putFloat("car_inv_power_motor", car_inv_power_motor_kw);
+			b.putFloat("car_inv_efficiency", car_inv_efficiency);
 
 
 			//
