@@ -883,6 +883,36 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
 			iv.setImageResource(R.drawable.leaf_carlights);
 
+		} else if (pCarData.sel_vehicle_image.startsWith("car_vwup_")) {
+			// Left Door VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_outline_ld);
+
+			// Right Door VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_outline_rd);
+
+			// Rear Left Door VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_outline_rld);
+
+			// Rear Right Door VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_outline_rrd);
+
+			// Trunk VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_outline_tr);
+
+			// Headlights VW e-Up
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.vwup_carlights);
 		} else {
 			// Left Door
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
@@ -951,6 +981,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_mgzs_")) {
 				// MG ZS: use i-MiEV charge overlays
+				if (pCarData.car_charge_mode.equals("performance"))
+					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+				else
+					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+			} else if (pCarData.sel_vehicle_image.startsWith("car_vwup_")) {
+				// VW e-Up: use i-MiEV charge overlays
 				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
