@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -434,23 +435,26 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		String resText = (result.length > 2) ? result[2] : "";
 		String cmdMessage = getSentCommandMessage(result[0]);
 
-		switch (resCode) {
-			case 0: // ok
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.msg_ok),
-						Toast.LENGTH_SHORT).show();
-				break;
-			case 1: // failed
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_failed, resText),
-						Toast.LENGTH_SHORT).show();
-				break;
-			case 2: // unsupported
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),
-						Toast.LENGTH_SHORT).show();
-				break;
-			case 3: // unimplemented
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
-						Toast.LENGTH_SHORT).show();
-				break;
+		Context context = getActivity();
+		if (context != null) {
+			switch (resCode) {
+				case 0: // ok
+					Toast.makeText(context, cmdMessage + " => " + getString(R.string.msg_ok),
+							Toast.LENGTH_SHORT).show();
+					break;
+				case 1: // failed
+					Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_failed, resText),
+							Toast.LENGTH_SHORT).show();
+					break;
+				case 2: // unsupported
+					Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unsupported_operation),
+							Toast.LENGTH_SHORT).show();
+					break;
+				case 3: // unimplemented
+					Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
+							Toast.LENGTH_SHORT).show();
+					break;
+			}
 		}
 
 		cancelCommand();

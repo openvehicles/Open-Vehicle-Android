@@ -390,12 +390,16 @@ public class NotificationsFragment extends BaseFragment
 				initUi();
 				break;
 			case 2: // unsupported
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),
-						Toast.LENGTH_SHORT).show();
+				if (getActivity() != null) {
+					Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),
+							Toast.LENGTH_SHORT).show();
+				}
 				break;
 			case 3: // unimplemented
-				Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
-						Toast.LENGTH_SHORT).show();
+				if (getActivity() != null) {
+					Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
+							Toast.LENGTH_SHORT).show();
+				}
 				break;
 		}
 	}
