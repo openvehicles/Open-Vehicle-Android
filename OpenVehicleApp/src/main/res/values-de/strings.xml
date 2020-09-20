@@ -628,9 +628,10 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-        <p>· Neues Fahrzeug: MG ZS EV</p>
-        <p>· VW UpMiiGo Aktualisierung & Klimasteuerung</p>
-        <p>· Android Bibliotheksaktualisierungen</p>
+        <p>· MG ZS EV: optimierte Overlay-Bilder</p>
+        <p>· VW UpMiiGo: Overlay-Bilder zugefügt</p>
+        <p>· Nissan Leaf: Spannung der Hauptbatterie anzeigen</p>
+        <p>· Alle Fahrzeuge: Anzeige der Innentemperatur falls unterstützt</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
          nachlesbar.</p>
