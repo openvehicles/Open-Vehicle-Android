@@ -181,7 +181,7 @@
     <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_charger_perform">Regelmäßige Verwendung des Performance-Modus\nreduziert die langfristige Akku-Lebensdauer</string>
-    <string name="msg_wakeup_car">Wecke auto auf&#8230;</string>
+    <string name="msg_wakeup_car">Wecke Auto auf&#8230;</string>
     <string name="msg_issuing_homelink">Erteile Homelink-Kommando&#8230;</string>
     <string name="msg_setting_charge_mc">Setze Lade-Modus und Stromstärke&#8230;</string>
     <string name="msg_setting_charge_m">Setze Lade-Modus&#8230;</string>
