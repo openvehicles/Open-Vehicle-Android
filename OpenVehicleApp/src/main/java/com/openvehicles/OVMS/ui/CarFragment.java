@@ -552,6 +552,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		} else if (pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")) {
 			// Holdenvolt: one ol image for all colors (same as ampera):
 			iv.setImageResource(R.drawable.ol_car_ampera);
+		} else if (pCarData.sel_vehicle_image.startsWith("car_twizy_")) {
+			// Twizy: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_twizy);
 		}else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 			iv.setImageResource(R.drawable.ol_car_kianiro_grey);
 		} else {
