@@ -780,6 +780,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// Car Hood
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
 		iv.setVisibility(pCarData.car_bonnet_open ? View.VISIBLE : View.INVISIBLE);
+		if (pCarData.car_type.startsWith("VA")) {
+			// Volt, Ampera
+			iv.setImageResource(R.drawable.voltampera_outline_hd);
+		}
 
 		// Doors, Trunks & Headlights:
 		if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
@@ -926,6 +930,39 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
 			iv.setImageResource(R.drawable.vwup_carlights);
+
+		} else if ((pCarData.sel_vehicle_image.startsWith("car_ampera_")) ||
+				((pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")))){
+			// Left Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_ld);
+
+			// Right Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rd);
+
+			// Rear Left Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rld);
+
+			// Rear Right Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rrd);
+
+			// Trunk Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_tr);
+
+			// Headlights Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_carlights);
+
 		} else {
 			// Left Door
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
@@ -1014,6 +1051,15 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_yellow);
 				else
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_green);
+			} else if ((pCarData.sel_vehicle_image.startsWith("car_ampera_")) ||
+						((pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")))){
+				// Volt, Ampera
+				if (pCarData.car_charge_state.equals("charging"))
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_orange);
+				else if (pCarData.car_charge_state.equals("done"))
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_green);
+				else
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red);
 			} else {
 				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {
