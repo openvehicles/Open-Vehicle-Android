@@ -58,6 +58,7 @@
     <string name="Type">Typ</string>
     <string name="GMC">GSM</string>
     <string name="Charged">Geladen</string>
+    <string name="Service">Service</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     <string name="CAC">Kapazität</string>
