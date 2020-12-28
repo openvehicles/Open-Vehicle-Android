@@ -178,6 +178,7 @@
 		android:text="@string/Charged" />
 
 	<TextView
+		android:id="@+id/service_info"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
 		android:layout_alignBaseline="@id/txt_service_info"

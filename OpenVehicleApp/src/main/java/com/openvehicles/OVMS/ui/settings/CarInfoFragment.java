@@ -83,9 +83,12 @@ public class CarInfoFragment extends BaseFragment {
 			serviceInfo += String.format("%d days", mCarData.car_servicedays);
 		}
 		TextView serviceTextView = (TextView) rootView.findViewById(R.id.txt_service_info);
+		TextView serviceView = (TextView) rootView.findViewById(R.id.service_info);
 		if (serviceInfo.equals("")) {
+			serviceView.setVisibility(View.GONE);
 			serviceTextView.setVisibility(View.GONE);
 		} else {
+			serviceView.setVisibility(View.VISIBLE);
 			serviceTextView.setVisibility(View.VISIBLE);
 			serviceTextView.setText(serviceInfo);
 		}
