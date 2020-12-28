@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
@@ -70,7 +71,24 @@ public class CarInfoFragment extends BaseFragment {
 
 		Ui.setValue(rootView, R.id.txt_charge_info, String.format("%.1f kWh", mCarData.car_charge_kwhconsumed));
 
-		Ui.setValue(rootView, R.id.txt_service_info, String.format("%d km / %d days", mCarData.car_servicedist, mCarData.car_servicedays));
+		// Show known car service interval info:
+		String serviceInfo = "";
+		if (mCarData.car_servicedist >= 0) {
+			serviceInfo += String.format("%d km", mCarData.car_servicedist);
+		}
+		if (mCarData.car_servicedist >= 0) {
+			if (!serviceInfo.equals("")) {
+				serviceInfo += " / ";
+			}
+			serviceInfo += String.format("%d days", mCarData.car_servicedays);
+		}
+		TextView serviceTextView = (TextView) rootView.findViewById(R.id.txt_service_info);
+		if (serviceInfo.equals("")) {
+			serviceTextView.setVisibility(View.GONE);
+		} else {
+			serviceTextView.setVisibility(View.VISIBLE);
+			serviceTextView.setText(serviceInfo);
+		}
 
 		ImageView iv = (ImageView)rootView.findViewById(R.id.img_signal_rssi);
 		iv.setImageResource(Ui.getDrawableIdentifier(context, "signal_strength_" + mCarData.car_gsm_bars));

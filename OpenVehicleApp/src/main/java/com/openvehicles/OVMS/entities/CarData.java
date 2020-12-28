@@ -165,6 +165,8 @@ public class CarData implements Serializable {
 
 	// Car Firmware Message "F"
 	public int car_gsm_signal_raw = 0;
+	public int car_servicedist = -1;
+	public int car_servicedays = -1;
 
 	// Car State Message "S"
 	public float car_soc_raw = 0;
@@ -232,8 +234,6 @@ public class CarData implements Serializable {
 	public double car_power = 0.0;
 	public float car_energyused = 0;
 	public float car_energyrecd = 0;
-	public int car_servicedist = 0;
-	public int car_servicedays = 0;
 
 	
 	//
@@ -480,10 +480,6 @@ public class CarData implements Serializable {
 				car_charge_power_input_kw = Float.parseFloat(dataParts[34]);
 				car_charger_efficiency = Float.parseFloat(dataParts[35]);
 			}
-			if (dataParts.length >= 38) {
-				car_servicedist = Integer.parseInt(dataParts[36]);
-				car_servicedays = Integer.parseInt(dataParts[37]);
-			}
 
 		} catch(Exception e) {
 			Log.e(TAG, "processStatus: ERROR", e);
@@ -670,6 +666,18 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 6) {
 				car_gsmlock = dataParts[5];
+			}
+			if (dataParts.length >= 8) {
+				if (!dataParts[6].equals("")) {
+					car_servicedist = Integer.parseInt(dataParts[6]);
+				} else {
+					car_servicedist = -1;
+				}
+				if (!dataParts[7].equals("")) {
+					car_servicedays = Integer.parseInt(dataParts[7]);
+				} else {
+					car_servicedays = -1;
+				}
 			}
 
 		} catch(Exception e) {
@@ -907,6 +915,8 @@ public class CarData implements Serializable {
 
 			b.putInt("car_canwrite", car_canwrite_raw);
 
+			b.putInt("car_servicedays", car_servicedays);
+			b.putInt("car_servicedist", car_servicedist);
 
 			//
 			// TPMS (msgCode 'W')
