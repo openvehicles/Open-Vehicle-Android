@@ -119,7 +119,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			// enable
 			img1.setVisibility(View.VISIBLE);
 			img2.setVisibility(View.VISIBLE);
-			if ((pCarData.car_doors5_raw & 0x80) > 0) {
+			if (pCarData.car_hvac_on) {
 				img2.setImageResource(R.drawable.ic_ac_on);
 			} else {
 				img2.setImageResource(R.drawable.ic_ac_off);
@@ -546,7 +546,16 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		} else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
 			// smart ED: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_smart);
-		} else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+		} else if (pCarData.sel_vehicle_image.startsWith("car_ampera_")) {
+			// Ampera: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_ampera);
+		} else if (pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")) {
+			// Holdenvolt: one ol image for all colors (same as ampera):
+			iv.setImageResource(R.drawable.ol_car_ampera);
+		} else if (pCarData.sel_vehicle_image.startsWith("car_twizy_")) {
+			// Twizy: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_twizy);
+		}else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 			iv.setImageResource(R.drawable.ol_car_kianiro_grey);
 		} else {
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
@@ -659,7 +668,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		TextView pemtvl = (TextView) findViewById(R.id.tabCarTextPEMLabel);
 		TextView pemtv = (TextView) findViewById(R.id.tabCarTextPEM);
 		// Display of cabin temperature for all vehicles that support it: VWUP VWUP.T26 NL KS KN VA MI SE
-		if (pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26") || pCarData.car_type.equals("KS") || pCarData.car_type.equals("KN")|| pCarData.car_type.equals("VA") || pCarData.car_type.equals("MI") || pCarData.car_type.equals("SE") || pCarData.car_type.equals("NL")) {
+		if (pCarData.car_type.equals("VWUP") || pCarData.car_type.equals("VWUP.T26") || pCarData.car_type.equals("KS") || pCarData.car_type.equals("KN")|| pCarData.car_type.startsWith("VA") || pCarData.car_type.equals("MI") || pCarData.car_type.equals("SE") || pCarData.car_type.equals("NL")) {
 		    pemtvl.setText(R.string.textCAB);
 			if (pCarData.stale_car_temps == DataStale.NoValue) {
 				pemtv.setText("");
@@ -771,6 +780,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		// Car Hood
 		iv = (ImageView) findViewById(R.id.tabCarImageCarHoodOpen);
 		iv.setVisibility(pCarData.car_bonnet_open ? View.VISIBLE : View.INVISIBLE);
+		if (pCarData.car_type.startsWith("VA")) {
+			// Volt, Ampera
+			iv.setImageResource(R.drawable.voltampera_outline_hd);
+		}
 
 		// Doors, Trunks & Headlights:
 		if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
@@ -917,6 +930,39 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
 			iv.setImageResource(R.drawable.vwup_carlights);
+
+		} else if ((pCarData.sel_vehicle_image.startsWith("car_ampera_")) ||
+				((pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")))){
+			// Left Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_ld);
+
+			// Right Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rd);
+
+			// Rear Left Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rld);
+
+			// Rear Right Door Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_rrd);
+
+			// Trunk Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_outline_tr);
+
+			// Headlights Volt, Ampera
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.voltampera_carlights);
+
 		} else {
 			// Left Door
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
@@ -1005,6 +1051,15 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_yellow);
 				else
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_green);
+			} else if ((pCarData.sel_vehicle_image.startsWith("car_ampera_")) ||
+						((pCarData.sel_vehicle_image.startsWith("car_holdenvolt_")))){
+				// Volt, Ampera
+				if (pCarData.car_charge_state.equals("charging"))
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_orange);
+				else if (pCarData.car_charge_state.equals("done"))
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_green);
+				else
+					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red);
 			} else {
 				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {
@@ -1035,7 +1090,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// A/C status:
 		iv = (ImageView) findViewById(R.id.tabCarImageAC);
-		if ((pCarData.car_doors5_raw & 0x80) > 0) {
+		if (pCarData.car_hvac_on) {
 			iv.setImageResource(R.drawable.ic_ac_on);
 		} else {
 			iv.setImageResource(R.drawable.ic_ac_off);

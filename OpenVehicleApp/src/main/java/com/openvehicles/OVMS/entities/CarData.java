@@ -64,6 +64,7 @@ public class CarData implements Serializable {
 	public boolean car_awake = false;
 	public boolean car_alarm_sounding = false;
 	public boolean car_charge_timer = false;
+	public boolean car_hvac_on = false;
 	public Date car_parked_time = null;
 	public DataStale stale_environment = DataStale.NoValue;
 
@@ -592,6 +593,7 @@ public class CarData implements Serializable {
 				car_charging_12v = ((dataField & 0x10) == 0x10);
 				car_rearleftdoor_open = ((dataField & 0x1) == 0x1);
 				car_rearrightdoor_open = ((dataField & 0x2) == 0x2);
+				car_hvac_on = ((dataField & 0x80) == 0x80);
 			}
 			if (dataParts.length >= 19) {
 				car_temp_charger_raw = Float.parseFloat(dataParts[18]);
@@ -867,6 +869,7 @@ public class CarData implements Serializable {
 			b.putBoolean("car_trunk_open", car_trunk_open);
 			b.putBoolean("car_awake", car_awake);
 			b.putBoolean("car_alarm_sounding", car_alarm_sounding);
+			b.putBoolean("car_hvac_on", car_hvac_on);
 
 			b.putFloat("car_temp_pem", car_temp_pem_raw);
 			b.putFloat("car_temp_motor", car_temp_motor_raw);
