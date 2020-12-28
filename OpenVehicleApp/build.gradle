@@ -5,7 +5,7 @@ android {
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
         minSdkVersion 16
-        targetSdkVersion targetSdk
+        targetSdkVersion 29
     }
     buildTypes {
         release {
