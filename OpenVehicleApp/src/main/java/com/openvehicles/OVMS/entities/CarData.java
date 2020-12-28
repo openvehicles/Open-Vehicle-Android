@@ -231,6 +231,8 @@ public class CarData implements Serializable {
 	public double car_power = 0.0;
 	public float car_energyused = 0;
 	public float car_energyrecd = 0;
+	public int car_servicedist = 0;
+	public int car_servicedays = 0;
 
 	
 	//
@@ -477,6 +479,10 @@ public class CarData implements Serializable {
 				car_charge_power_input_kw = Float.parseFloat(dataParts[34]);
 				car_charger_efficiency = Float.parseFloat(dataParts[35]);
 			}
+			if (dataParts.length >= 38) {
+				car_servicedist = Integer.parseInt(dataParts[36]);
+				car_servicedays = Integer.parseInt(dataParts[37]);
+			}
 
 		} catch(Exception e) {
 			Log.e(TAG, "processStatus: ERROR", e);
@@ -639,7 +645,7 @@ public class CarData implements Serializable {
 				car_gsm_dbm = 0;
 				if (car_gsm_signal_raw <= 31)
 					car_gsm_dbm = -113 + (car_gsm_signal_raw * 2);
-				car_gsm_signal = String.format("%d%s", car_gsm_dbm, " dbm");
+				car_gsm_signal = String.format("%d%s", car_gsm_dbm, " dBm");
 				if ((car_gsm_dbm < -121) || (car_gsm_dbm >= 0))
 					car_gsm_bars = 0;
 				else if (car_gsm_dbm < -107)

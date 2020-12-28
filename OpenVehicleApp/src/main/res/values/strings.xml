@@ -61,6 +61,7 @@
     <string name="SOH">SOH</string>
     <string name="Info12V">12V</string>
     <string name="Charged">Charged</string>
+    <string name="Service">Service</string>
     <string name="Server">Server</string>
     <string name="App">App</string>
     <string name="Options">Options</string>
@@ -251,6 +252,7 @@
     <string name="textHOMELINK">HOMELINK</string>
     <string name="textPROFILE">PROFILE</string>
     <string name="textAMBIENT">AMBIENT</string>
+    <string name="textCABIN">CABIN</string>
     <string name="text12VBATT">12V BATT</string>
     <string name="textHVBATT">HV BATT</string>
 
