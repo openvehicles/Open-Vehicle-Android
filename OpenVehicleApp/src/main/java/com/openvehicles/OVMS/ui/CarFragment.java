@@ -119,7 +119,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			// enable
 			img1.setVisibility(View.VISIBLE);
 			img2.setVisibility(View.VISIBLE);
-			if ((pCarData.car_doors5_raw & 0x80) > 0) {
+			if (pCarData.car_hvac_on) {
 				img2.setImageResource(R.drawable.ic_ac_on);
 			} else {
 				img2.setImageResource(R.drawable.ic_ac_off);
@@ -1090,7 +1090,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		// A/C status:
 		iv = (ImageView) findViewById(R.id.tabCarImageAC);
-		if ((pCarData.car_doors5_raw & 0x80) > 0) {
+		if (pCarData.car_hvac_on) {
 			iv.setImageResource(R.drawable.ic_ac_on);
 		} else {
 			iv.setImageResource(R.drawable.ic_ac_off);
