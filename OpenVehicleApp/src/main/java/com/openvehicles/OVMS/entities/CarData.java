@@ -165,8 +165,8 @@ public class CarData implements Serializable {
 
 	// Car Firmware Message "F"
 	public int car_gsm_signal_raw = 0;
-	public int car_servicedist = -1;
-	public int car_servicedays = -1;
+	public int car_servicerange = -1;
+	public int car_servicetime = -1;
 
 	// Car State Message "S"
 	public float car_soc_raw = 0;
@@ -669,14 +669,14 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 8) {
 				if (!dataParts[6].equals("")) {
-					car_servicedist = Integer.parseInt(dataParts[6]);
+					car_servicerange = Integer.parseInt(dataParts[6]);
 				} else {
-					car_servicedist = -1;
+					car_servicerange = -1;
 				}
 				if (!dataParts[7].equals("")) {
-					car_servicedays = Integer.parseInt(dataParts[7]);
+					car_servicetime = Integer.parseInt(dataParts[7]);
 				} else {
-					car_servicedays = -1;
+					car_servicetime = -1;
 				}
 			}
 
@@ -915,8 +915,8 @@ public class CarData implements Serializable {
 
 			b.putInt("car_canwrite", car_canwrite_raw);
 
-			b.putInt("car_servicedays", car_servicedays);
-			b.putInt("car_servicedist", car_servicedist);
+			b.putInt("car_servicedays", car_servicetime);
+			b.putInt("car_servicedist", car_servicerange);
 
 			//
 			// TPMS (msgCode 'W')
