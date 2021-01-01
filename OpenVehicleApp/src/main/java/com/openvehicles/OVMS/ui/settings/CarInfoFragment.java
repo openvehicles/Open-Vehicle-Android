@@ -6,6 +6,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import androidx.fragment.app.FragmentActivity;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,14 +75,16 @@ public class CarInfoFragment extends BaseFragment {
 
 		// Show known car service interval info:
 		String serviceInfo = "";
-		if (mCarData.car_servicedist >= 0) {
-			serviceInfo += String.format("%d km", mCarData.car_servicedist);
+		if (mCarData.car_servicerange >= 0) {
+			serviceInfo += String.format("%d km", mCarData.car_servicerange);
 		}
-		if (mCarData.car_servicedist >= 0) {
+		if (mCarData.car_servicetime >= 0) {
 			if (!serviceInfo.equals("")) {
 				serviceInfo += " / ";
 			}
-			serviceInfo += String.format("%d days", mCarData.car_servicedays);
+			long now = System.currentTimeMillis() / 1000;
+			long serviceDays = (mCarData.car_servicetime - now) / 86400;
+			serviceInfo += String.format("%d days", serviceDays);
 		}
 		TextView serviceTextView = (TextView) rootView.findViewById(R.id.txt_service_info);
 		TextView serviceView = (TextView) rootView.findViewById(R.id.service_info);
