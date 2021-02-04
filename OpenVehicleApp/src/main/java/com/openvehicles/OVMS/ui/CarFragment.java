@@ -615,8 +615,62 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		iv = (ImageView) findViewById(R.id.tabCarImageCarTPMSBoxes);
 
-		if (pCarData.stale_tpms == DataStale.NoValue) {
+		// Determine value layout:
+		DataStale stale1 = DataStale.NoValue, stale2 = DataStale.NoValue;
+		String[] val1 = pCarData.car_tpms_wheelname, val2 = null;
+		int[] alert;
+
+		if (pCarData.car_tpms_wheelname != null && pCarData.car_tpms_wheelname.length >= 4) {
+			// New data (msg code 'Y'):
+			if (pCarData.stale_tpms_pressure != DataStale.NoValue && pCarData.car_tpms_pressure.length >= 4) {
+				stale1 = pCarData.stale_tpms_pressure;
+				val1 = pCarData.car_tpms_pressure;
+			}
+			if (pCarData.stale_tpms_temp != DataStale.NoValue && pCarData.car_tpms_temp.length >= 4) {
+				stale2 = pCarData.stale_tpms_temp;
+				val2 = pCarData.car_tpms_temp;
+			}
+			if (pCarData.stale_tpms_health != DataStale.NoValue && pCarData.car_tpms_health.length >= 4) {
+				if (stale1 == DataStale.NoValue) {
+					stale1 = pCarData.stale_tpms_health;
+					val1 = pCarData.car_tpms_health;
+				} else if (stale2 == DataStale.NoValue) {
+					stale2 = pCarData.stale_tpms_health;
+					val2 = pCarData.car_tpms_health;
+				}
+			}
+			if (pCarData.stale_tpms_alert != DataStale.NoValue && pCarData.car_tpms_alert.length >= 4) {
+				alert = pCarData.car_tpms_alert_raw;
+				if (stale1 == DataStale.NoValue) {
+					stale1 = pCarData.stale_tpms_alert;
+					val1 = pCarData.car_tpms_alert;
+				} else if (stale2 == DataStale.NoValue) {
+					stale2 = pCarData.stale_tpms_alert;
+					val2 = pCarData.car_tpms_alert;
+				}
+			} else {
+				alert = new int[]{ 0, 0, 0, 0 };
+			}
+			// display single value in the bottom field:
+			if (stale2 == DataStale.NoValue && stale1 != DataStale.NoValue) {
+				stale2 = stale1;
+				val2 = val1;
+				val1 = pCarData.car_tpms_wheelname;
+			}
+		} else {
+			// Legacy data (msg code 'W'): only pressures & temperatures available
+			val1 = new String[]{ pCarData.car_tpms_fl_p, pCarData.car_tpms_fr_p, pCarData.car_tpms_rl_p, pCarData.car_tpms_rr_p };
+			stale1 = pCarData.stale_tpms;
+			val2 = new String[]{ pCarData.car_tpms_fl_t, pCarData.car_tpms_fr_t, pCarData.car_tpms_rl_t, pCarData.car_tpms_rr_t };
+			stale2 = pCarData.stale_tpms;
+			alert = new int[]{ 0, 0, 0, 0 };
+		}
+
+		// Update display:
+		if (stale1 == DataStale.NoValue) {
+
 			iv.setVisibility(View.INVISIBLE);
+
 			fltv.setText(null);
 			frtv.setText(null);
 			rltv.setText(null);
@@ -628,40 +682,32 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			rrtvv.setText(null);
 
 		} else {
+
 			iv.setVisibility(View.VISIBLE);
 
-			fltv.setText(pCarData.car_tpms_fl_p);
-			frtv.setText(pCarData.car_tpms_fr_p);
-			rltv.setText(pCarData.car_tpms_rl_p);
-			rrtv.setText(pCarData.car_tpms_rr_p);
+			fltv.setText(val1[0]);
+			frtv.setText(val1[1]);
+			rltv.setText(val1[2]);
+			rrtv.setText(val1[3]);
 
-			fltvv.setText(pCarData.car_tpms_fl_t);
-			frtvv.setText(pCarData.car_tpms_fr_t);
-			rltvv.setText(pCarData.car_tpms_rl_t);
-			rrtvv.setText(pCarData.car_tpms_rr_t);
+			fltvv.setText(val2[0]);
+			frtvv.setText(val2[1]);
+			rltvv.setText(val2[2]);
+			rrtvv.setText(val2[3]);
 
-			if (pCarData.stale_tpms == DataStale.Stale) {
-				fltv.setTextColor(0xFF808080);
-				frtv.setTextColor(0xFF808080);
-				rltv.setTextColor(0xFF808080);
-				rrtv.setTextColor(0xFF808080);
+			int trans1 = (stale1 == DataStale.Stale) ? 0x80000000 : 0xFF000000;
+			int trans2 = (stale2 == DataStale.Stale) ? 0x80000000 : 0xFF000000;
+			int[] alertcol = new int[]{ 0xFFFFFF, 0xFFAA44, 0xFF4444 };
 
-				fltvv.setTextColor(0xFF808080);
-				frtvv.setTextColor(0xFF808080);
-				rltvv.setTextColor(0xFF808080);
-				rrtvv.setTextColor(0xFF808080);
+			fltv.setTextColor(trans1 | alertcol[alert[0]]);
+			frtv.setTextColor(trans1 | alertcol[alert[1]]);
+			rltv.setTextColor(trans1 | alertcol[alert[2]]);
+			rrtv.setTextColor(trans1 | alertcol[alert[3]]);
 
-			} else {
-				fltv.setTextColor(0xFFFFFFFF);
-				frtv.setTextColor(0xFFFFFFFF);
-				rltv.setTextColor(0xFFFFFFFF);
-				rrtv.setTextColor(0xFFFFFFFF);
-
-				fltvv.setTextColor(0xFFFFFFFF);
-				frtvv.setTextColor(0xFFFFFFFF);
-				rltvv.setTextColor(0xFFFFFFFF);
-				rrtvv.setTextColor(0xFFFFFFFF);
-			}
+			fltvv.setTextColor(trans2 | alertcol[alert[0]]);
+			frtvv.setTextColor(trans2 | alertcol[alert[1]]);
+			rltvv.setTextColor(trans2 | alertcol[alert[2]]);
+			rrtvv.setTextColor(trans2 | alertcol[alert[3]]);
 		}
 
 		// "Temp PEM" box:

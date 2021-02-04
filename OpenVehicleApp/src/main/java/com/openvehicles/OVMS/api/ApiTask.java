@@ -557,13 +557,19 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					Log.w(TAG, "D MSG Invalid");
 				break;
 
-			case 'W': // TPMS
-				if (mCarData.processTPMS(msgData))
+			case 'W': // old TPMS
+				if (mCarData.processOldTPMS(msgData))
 					publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				else
 					Log.w(TAG, "W MSG Invalid");
 				break;
 
+			case 'Y': // new TPMS
+				if (mCarData.processNewTPMS(msgData))
+					publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				else
+					Log.w(TAG, "Y MSG Invalid");
+				break;
 
 			/**
 			 * CUSTOM MESSAGES

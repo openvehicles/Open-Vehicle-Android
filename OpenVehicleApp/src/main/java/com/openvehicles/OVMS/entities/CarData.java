@@ -11,7 +11,9 @@ import com.openvehicles.OVMS.R;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.Vector;
 
 public class CarData implements Serializable {
 	private static final String TAG = "CarData";
@@ -215,7 +217,7 @@ public class CarData implements Serializable {
 	public float car_inv_power_motor_kw = 0;
 	public float car_inv_efficiency = 0;
 
-	// Car TPMS Message "W"
+	// Car TPMS Message "W" (obsolete)
 	public double car_tpms_fl_p_raw = 0.0D;
 	public double car_tpms_fl_t_raw = 0.0D;
 	public double car_tpms_fr_p_raw = 0.0D;
@@ -225,6 +227,21 @@ public class CarData implements Serializable {
 	public double car_tpms_rr_p_raw = 0.0D;
 	public double car_tpms_rr_t_raw = 0.0D;
 	public int car_stale_tpms_raw = -1;
+
+	// Car TPMS Message "Y"
+	public String[] car_tpms_wheelname = null;
+	public double[] car_tpms_pressure_raw = null;
+	public String[] car_tpms_pressure = null;
+	public DataStale stale_tpms_pressure = DataStale.NoValue;
+	public double[] car_tpms_temp_raw = null;
+	public String[] car_tpms_temp = null;
+	public DataStale stale_tpms_temp = DataStale.NoValue;
+	public double[] car_tpms_health_raw = null;
+	public String[] car_tpms_health = null;
+	public DataStale stale_tpms_health = DataStale.NoValue;
+	public int[] car_tpms_alert_raw = null;
+	public String[] car_tpms_alert = null;
+	public DataStale stale_tpms_alert = DataStale.NoValue;
 
 	// Car Capabilities Message "V"
 	public String car_capabilities = "";
@@ -692,11 +709,11 @@ public class CarData implements Serializable {
 
 
 	/**
-	 * Process TPMS message ("W")
+	 * Process old TPMS message ("W")
 	 */
-	public boolean processTPMS(String msgdata) {
+	public boolean processOldTPMS(String msgdata) {
 		Init();
-		Log.d(TAG, "processTPMS: " + msgdata);
+		Log.d(TAG, "processOldTPMS: " + msgdata);
 
 		try {
 			String[] dataParts = msgdata.split(",\\s*");
@@ -710,6 +727,15 @@ public class CarData implements Serializable {
 				car_tpms_fl_t_raw = Double.parseDouble(dataParts[5]);
 				car_tpms_rl_p_raw = Double.parseDouble(dataParts[6]);
 				car_tpms_rl_t_raw = Double.parseDouble(dataParts[7]);
+				car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
+				if (car_stale_tpms_raw < 0)
+					stale_tpms = DataStale.NoValue;
+				else if (car_stale_tpms_raw == 0)
+					stale_tpms = DataStale.Stale;
+				else
+					stale_tpms = DataStale.Good;
+
+				// Create string representations based on user unit prefs:
 				if (appPrefes.getData("showtpmsbar").equals("on")) {
 					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar");
 					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar");
@@ -732,17 +758,10 @@ public class CarData implements Serializable {
 					car_tpms_rl_t = String.format("%.0f%s", car_tpms_rl_t_raw, "\u00B0C");
 					car_tpms_rr_t = String.format("%.0f%s", car_tpms_rr_t_raw, "\u00B0C");
 				}
-				car_stale_tpms_raw = Integer.parseInt(dataParts[8]);
-				if (car_stale_tpms_raw < 0)
-					stale_tpms = DataStale.NoValue;
-				else if (car_stale_tpms_raw == 0)
-					stale_tpms = DataStale.Stale;
-				else
-					stale_tpms = DataStale.Good;
 			}
 
 		} catch(Exception e) {
-			Log.e(TAG, "processTPMS: ERROR", e);
+			Log.e(TAG, "processOldTPMS: ERROR", e);
 			return false;
 		}
 
@@ -754,6 +773,140 @@ public class CarData implements Serializable {
 		return true;
 	}
 
+
+	/**
+	 * Process new TPMS message ("Y")
+	 */
+	public boolean processNewTPMS(String msgdata) {
+		Init();
+		Log.d(TAG, "processNewTPMS: " + msgdata);
+
+		boolean dspBar = (appPrefes.getData("showtpmsbar").equals("on"));
+		boolean dspFahrenheit = (appPrefes.getData("showfahrenheit").equals("on"));
+
+		try {
+			String[] dataParts = msgdata.split(",\\s*");
+			int i = 0, j = 0;
+			int cnt = 0, end = 0, valid = 0;
+			double dval;
+			int ival;
+			String sval;
+
+			// Process wheel names:
+			if (i < dataParts.length) {
+				cnt = Integer.parseInt(dataParts[i++]);
+				if (car_tpms_wheelname == null || car_tpms_wheelname.length != cnt) {
+					car_tpms_wheelname = new String[cnt];
+				}
+				for (j = 0, end = i+cnt; i < end; i++, j++) {
+					car_tpms_wheelname[j] = dataParts[i];
+				}
+			}
+
+			// Process pressures:
+			if (i < dataParts.length) {
+				cnt = Integer.parseInt(dataParts[i++]);
+				if (car_tpms_pressure == null || car_tpms_pressure.length != cnt) {
+					car_tpms_pressure_raw = new double[cnt];
+					car_tpms_pressure = new String[cnt];
+				}
+				for (j = 0, end = i+cnt; i < end; i++, j++) {
+					dval = Double.parseDouble(dataParts[i]);
+					if (dspBar)
+						sval = String.format("%.1f%s", dval / 100, "bar");
+					else
+						sval = String.format("%.1f%s", dval * 0.1450377, "psi");
+					car_tpms_pressure_raw[j] = dval;
+					car_tpms_pressure[j] = sval;
+				}
+				valid = Integer.parseInt(dataParts[i++]);
+				stale_tpms_pressure = (valid < 0) ? DataStale.NoValue
+						: (valid == 0) ? DataStale.Stale : DataStale.Good;
+			}
+
+			// Process temperatures:
+			if (i < dataParts.length) {
+				cnt = Integer.parseInt(dataParts[i++]);
+				if (car_tpms_temp == null || car_tpms_temp.length != cnt) {
+					car_tpms_temp_raw = new double[cnt];
+					car_tpms_temp = new String[cnt];
+				}
+				for (j = 0, end = i+cnt; i < end; i++, j++) {
+					dval = Double.parseDouble(dataParts[i]);
+					if (dspFahrenheit)
+						sval = String.format("%.0f%s", (dval * (9.0 / 5.0)) + 32.0, "\u00B0F");
+					else
+						sval = String.format("%.0f%s", dval, "\u00B0C");
+					car_tpms_temp_raw[j] = dval;
+					car_tpms_temp[j] = sval;
+				}
+				valid = Integer.parseInt(dataParts[i++]);
+				stale_tpms_temp = (valid < 0) ? DataStale.NoValue
+						: (valid == 0) ? DataStale.Stale : DataStale.Good;
+			}
+
+			// Process health levels:
+			if (i < dataParts.length) {
+				cnt = Integer.parseInt(dataParts[i++]);
+				if (car_tpms_health == null || car_tpms_health.length != cnt) {
+					car_tpms_health_raw = new double[cnt];
+					car_tpms_health = new String[cnt];
+				}
+				for (j = 0, end = i+cnt; i < end; i++, j++) {
+					dval = Double.parseDouble(dataParts[i]);
+					sval = String.format("%.0f%%", dval);
+					car_tpms_health_raw[j] = dval;
+					car_tpms_health[j] = sval;
+				}
+				valid = Integer.parseInt(dataParts[i++]);
+				stale_tpms_health = (valid < 0) ? DataStale.NoValue
+						: (valid == 0) ? DataStale.Stale : DataStale.Good;
+			}
+
+			// Process alerts:
+			if (i < dataParts.length) {
+				cnt = Integer.parseInt(dataParts[i++]);
+				if (car_tpms_alert == null || car_tpms_alert.length != cnt) {
+					car_tpms_alert_raw = new int[cnt];
+					car_tpms_alert = new String[cnt];
+				}
+				for (j = 0, end = i+cnt; i < end; i++, j++) {
+					ival = Integer.parseInt(dataParts[i]);
+					if (ival > 2)
+						ival = 2;
+					else if (ival < 0)
+						ival = 0;
+					if (ival == 0)
+						sval = "✔";
+					else if (ival == 1)
+						sval = "⛛";
+					else
+						sval = "⚠";
+					car_tpms_alert_raw[j] = ival;
+					car_tpms_alert[j] = sval;
+				}
+				valid = Integer.parseInt(dataParts[i++]);
+				stale_tpms_alert = (valid < 0) ? DataStale.NoValue
+						: (valid == 0) ? DataStale.Stale : DataStale.Good;
+			}
+
+			Log.d(TAG, "processNewTPMS: processed " + i + " parts");
+
+		} catch(Exception e) {
+			Log.e(TAG, "processNewTPMS: ERROR", e);
+			return false;
+		}
+
+		// Car specific handling:
+		if (car_type.equals("RT") || car_type.equals("SE")) {
+			stale_tpms_pressure = DataStale.NoValue;
+			stale_tpms_temp = DataStale.NoValue;
+			stale_tpms_health = DataStale.NoValue;
+			stale_tpms_alert = DataStale.NoValue;
+		}
+
+		return true;
+	}
 
 
 	/**
@@ -922,18 +1075,41 @@ public class CarData implements Serializable {
 			b.putInt("car_servicedist", car_servicerange);
 
 			//
-			// TPMS (msgCode 'W')
+			// TPMS new flexible wheel layout (msgCode 'Y')
 			//
 
-			b.putDouble("car_tpms_fr_p", car_tpms_fr_p_raw);
-			b.putDouble("car_tpms_fr_t", car_tpms_fr_t_raw);
-			b.putDouble("car_tpms_rr_p", car_tpms_rr_p_raw);
-			b.putDouble("car_tpms_rr_t", car_tpms_rr_t_raw);
-			b.putDouble("car_tpms_fl_p", car_tpms_fl_p_raw);
-			b.putDouble("car_tpms_fl_t", car_tpms_fl_t_raw);
-			b.putDouble("car_tpms_rl_p", car_tpms_rl_p_raw);
-			b.putDouble("car_tpms_rl_t", car_tpms_rl_t_raw);
+			b.putStringArray("car_tpms_wheelname", car_tpms_wheelname);
+			b.putDoubleArray("car_tpms_pressure", car_tpms_pressure_raw);
+			b.putDoubleArray("car_tpms_temp", car_tpms_temp_raw);
+			b.putDoubleArray("car_tpms_health", car_tpms_health_raw);
+			b.putIntArray("car_tpms_alert", car_tpms_alert_raw);
 
+			//
+			// TPMS old fixed four wheel layout values
+			//
+
+			if (car_tpms_pressure_raw != null && car_tpms_pressure_raw.length >= 4 &&
+					car_tpms_temp_raw != null && car_tpms_temp_raw.length >= 4) {
+				// Values from msgCode 'Y':
+				b.putDouble("car_tpms_fl_p", car_tpms_pressure_raw[0] * 0.1450377);
+				b.putDouble("car_tpms_fl_t", car_tpms_temp_raw[0]);
+				b.putDouble("car_tpms_fr_p", car_tpms_pressure_raw[1] * 0.1450377);
+				b.putDouble("car_tpms_fr_t", car_tpms_temp_raw[1]);
+				b.putDouble("car_tpms_rl_p", car_tpms_pressure_raw[2] * 0.1450377);
+				b.putDouble("car_tpms_rl_t", car_tpms_temp_raw[2]);
+				b.putDouble("car_tpms_rr_p", car_tpms_pressure_raw[3] * 0.1450377);
+				b.putDouble("car_tpms_rr_t", car_tpms_temp_raw[3]);
+			} else {
+				// Legacy, values from msgCode 'W':
+				b.putDouble("car_tpms_fl_p", car_tpms_fl_p_raw);
+				b.putDouble("car_tpms_fl_t", car_tpms_fl_t_raw);
+				b.putDouble("car_tpms_fr_p", car_tpms_fr_p_raw);
+				b.putDouble("car_tpms_fr_t", car_tpms_fr_t_raw);
+				b.putDouble("car_tpms_rl_p", car_tpms_rl_p_raw);
+				b.putDouble("car_tpms_rl_t", car_tpms_rl_t_raw);
+				b.putDouble("car_tpms_rr_p", car_tpms_rr_p_raw);
+				b.putDouble("car_tpms_rr_t", car_tpms_rr_t_raw);
+			}
 
 			//
 			// Capabilities (msgCode 'V')
