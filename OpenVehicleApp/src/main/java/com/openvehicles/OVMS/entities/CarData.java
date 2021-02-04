@@ -54,6 +54,7 @@ public class CarData implements Serializable {
 	public boolean car_pilot_present = false;
 	public boolean car_charging = false;
 	public boolean car_charging_12v = false;
+	public boolean car_auxiliary_12v = false;
 	public boolean car_handbrake_on = false;
 	public boolean car_started = false;
 	public boolean car_locked = false;
@@ -587,6 +588,7 @@ public class CarData implements Serializable {
 				dataField = Integer.parseInt(dataParts[17]);
 				car_doors5_raw = dataField;
 				car_charging_12v = ((dataField & 0x10) == 0x10);
+				car_auxiliary_12v = ((dataField & 0x20) == 0x20);
 				car_rearleftdoor_open = ((dataField & 0x1) == 0x1);
 				car_rearrightdoor_open = ((dataField & 0x2) == 0x2);
 				car_hvac_on = ((dataField & 0x80) == 0x80);
@@ -897,6 +899,7 @@ public class CarData implements Serializable {
 			}
 
 			b.putBoolean("car_charging_12v", car_charging_12v);
+			b.putBoolean("car_auxiliary_12v", car_auxiliary_12v);
 			b.putDouble("car_12vline_voltage", car_12vline_voltage);
 			b.putDouble("car_12vline_ref", car_12vline_ref);
 			b.putDouble("car_12v_current", car_12v_current);
