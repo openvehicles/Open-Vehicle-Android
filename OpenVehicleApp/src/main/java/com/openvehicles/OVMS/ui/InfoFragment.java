@@ -698,6 +698,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		TextView tvl = (TextView) findViewById(R.id.tabInfoTextChargeStatusLeft);
 		TextView tvr = (TextView) findViewById(R.id.tabInfoTextChargeStatusRight);
 		TextView tvf = (TextView) findViewById(R.id.tabInfoTextChargeStatus);
+		TextView tvPowerInput = (TextView) findViewById(R.id.tabInfoTextChargePowerInput);
+		TextView tvPowerLoss = (TextView) findViewById(R.id.tabInfoTextChargePowerLoss);
 
 		if ((!pCarData.car_chargeport_open)
 				|| (pCarData.car_charge_substate_i_raw == 0x07)) {
@@ -711,6 +713,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			tvl.setVisibility(View.INVISIBLE);
 			tvr.setVisibility(View.INVISIBLE);
 			tvf.setVisibility(View.INVISIBLE);
+			tvPowerInput.setVisibility(View.INVISIBLE);
+			tvPowerLoss.setVisibility(View.INVISIBLE);
 
 		} else {
 			// Car is plugged in
@@ -781,6 +785,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						tvr.setText(getText(R.string.slidetocharge));
 						coiv.setVisibility(View.VISIBLE);
 						cmtv.setVisibility(View.INVISIBLE);
+						tvPowerInput.setVisibility(View.INVISIBLE);
+						tvPowerLoss.setVisibility(View.INVISIBLE);
 						break;
 					case 0x0e: // Wait for schedule charge
 						// Slider on the left, message is "Timed Charge"
@@ -789,6 +795,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						tvr.setText(getText(R.string.timedcharge));
 						coiv.setVisibility(View.VISIBLE);
 						cmtv.setVisibility(View.INVISIBLE);
+						tvPowerInput.setVisibility(View.INVISIBLE);
+						tvPowerLoss.setVisibility(View.INVISIBLE);
 						break;
 					case 0x01: // Charging
 					case 0x101: // Starting
@@ -805,6 +813,18 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						cmtv.setText(cmst);
 						coiv.setVisibility(View.VISIBLE);
 						cmtv.setVisibility(View.VISIBLE);
+						if (pCarData.car_charge_power_input_kw_raw > 0) {
+							tvPowerInput.setText(pCarData.car_charge_power_input_kw);
+							tvPowerInput.setVisibility(View.VISIBLE);
+						} else {
+							tvPowerInput.setVisibility(View.INVISIBLE);
+						}
+						if (pCarData.car_charge_power_loss_kw_raw > 0) {
+							tvPowerLoss.setText(pCarData.car_charge_power_loss_kw);
+							tvPowerLoss.setVisibility(View.VISIBLE);
+						} else {
+							tvPowerLoss.setVisibility(View.INVISIBLE);
+						}
 						break;
 					default:
 						// Slider on the right, message blank
@@ -813,6 +833,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						tvr.setText(null);
 						cmtv.setVisibility(View.INVISIBLE);
 						coiv.setVisibility(View.INVISIBLE);
+						tvPowerInput.setVisibility(View.INVISIBLE);
+						tvPowerLoss.setVisibility(View.INVISIBLE);
 						break;
 				}
 			}

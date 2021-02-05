@@ -11,9 +11,7 @@ import com.openvehicles.OVMS.R;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Vector;
 
 public class CarData implements Serializable {
 	private static final String TAG = "CarData";
@@ -202,11 +200,15 @@ public class CarData implements Serializable {
 	public int car_chargelimit_minsremaining_soc = -1;
 	public int car_max_idealrange_raw = 0;
 	public int car_charge_plugtype = 0;
-	public double car_charge_power_kw = 0;
+	public double car_charge_power_kw_raw = 0;
+	public String car_charge_power_kw = "";
 	public double car_battery_voltage = 0;
 	public float car_soh = 0;
-	public float car_charge_power_input_kw = 0;
+	public float car_charge_power_input_kw_raw = 0;
+	public String car_charge_power_input_kw = "";
 	public float car_charger_efficiency = 0;
+	public double car_charge_power_loss_kw_raw = 0;
+	public String car_charge_power_loss_kw = "";
 
 	// Car Update Time Message "T"
 	public long car_lastupdate_raw = 0;
@@ -488,14 +490,23 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 33) {
 				car_charge_plugtype = Integer.parseInt(dataParts[30]);
-				car_charge_power_kw = Double.parseDouble(dataParts[31]);
+				car_charge_power_kw_raw = Double.parseDouble(dataParts[31]);
+				car_charge_power_kw = String.format("%.1fkW", car_charge_power_kw_raw);
 				car_battery_voltage = Double.parseDouble(dataParts[32]);
 			}
 			if (dataParts.length >= 34) {
 				car_soh = Float.parseFloat(dataParts[33]);
 			}
 			if (dataParts.length >= 36) {
-				car_charge_power_input_kw = Float.parseFloat(dataParts[34]);
+				car_charge_power_input_kw_raw = Float.parseFloat(dataParts[34]);
+				car_charge_power_input_kw = String.format("%.1fkW", car_charge_power_input_kw_raw);
+				if (car_charge_power_kw_raw != 0) {
+					car_charge_power_loss_kw_raw = car_charge_power_input_kw_raw - car_charge_power_kw_raw;
+					car_charge_power_loss_kw = String.format("↳ %.1fkW", car_charge_power_loss_kw_raw);
+				} else {
+					car_charge_power_loss_kw_raw = 0;
+					car_charge_power_loss_kw = "";
+				}
 				car_charger_efficiency = Float.parseFloat(dataParts[35]);
 			}
 
@@ -966,11 +977,12 @@ public class CarData implements Serializable {
 			b.putFloat("car_charge_currentlimit", car_charge_currentlimit_raw);
 			b.putInt("car_charge_duration", car_charge_duration_raw);
 			b.putInt("car_charge_plugtype", car_charge_plugtype);
-			b.putDouble("car_charge_power_kw", car_charge_power_kw);
+			b.putDouble("car_charge_power_kw", car_charge_power_kw_raw);
 			b.putFloat("car_charge_kwhconsumed", car_charge_kwhconsumed);
 			b.putBoolean("car_charge_timer", car_charge_timer);
-			b.putFloat("car_charge_power_input_kw", car_charge_power_input_kw);
+			b.putFloat("car_charge_power_input_kw", car_charge_power_input_kw_raw);
 			b.putFloat("car_charger_efficiency", car_charger_efficiency);
+			b.putDouble("car_charge_power_loss_kw", car_charge_power_loss_kw_raw);
 
 			b.putInt("car_chargeestimate", car_chargeestimate);
 			b.putInt("car_chargefull_minsremaining", car_chargefull_minsremaining);

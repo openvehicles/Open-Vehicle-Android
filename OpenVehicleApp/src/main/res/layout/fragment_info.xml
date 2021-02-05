@@ -190,7 +190,33 @@
 			android:textSize="16px"
 			android:gravity="center_vertical|right"/>
 
-        <TextView
+		<TextView
+			android:id="@+id/tabInfoTextChargePowerInput"
+			style="@style/TabCarTextBox"
+			android:textColor="#fff07d00"
+			android:layout_width="104px"
+			android:layout_height="30px"
+			android:layout_x="328px"
+			android:layout_y="372px"
+			android:text="@string/DefaultChargingPower"
+			android:textSize="20px"
+			android:textStyle="bold"
+			android:gravity="bottom|left"/>
+
+		<TextView
+			android:id="@+id/tabInfoTextChargePowerLoss"
+			style="@style/TabCarTextBox"
+			android:textColor="#ffddbb00"
+			android:layout_width="100px"
+			android:layout_height="30px"
+			android:layout_x="432px"
+			android:layout_y="372px"
+			android:text="@string/DefaultChargingPowerLoss"
+			android:textSize="16px"
+			android:textStyle="bold"
+			android:gravity="bottom|right"/>
+
+		<TextView
             android:id="@+id/tabInfoTextChargeStatus"
             style="@style/TabCarTextBox"
             android:layout_height="46px"
@@ -202,7 +228,7 @@
             android:gravity="center"
             android:visibility="invisible"/>
 
-        <com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
+		<com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
 			android:id="@+id/tabInfoSliderChargerControl"
 			android:layout_width="212px"
 			android:layout_height="42px"
@@ -214,6 +240,6 @@
 			android:progress="0"
 			android:progressDrawable="@android:color/transparent"/>
 
-    </com.openvehicles.OVMS.ui.witdet.ScaleLayout>
+	</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 
 </LinearLayout>

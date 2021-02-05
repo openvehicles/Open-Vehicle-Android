@@ -32,6 +32,8 @@
     <string name="SignalStrength">Signal Strength</string>
     <string name="ChargerPlug">Charger Plug</string>
     <string name="DefaultCharging">70A/220V</string>
+    <string name="DefaultChargingPower">15.4kW</string>
+    <string name="DefaultChargingPowerLoss">↳ 0.7kW</string>
     <string name="DefaultSlidetoCharge">SLIDE TO\nCHARGE</string>
     <string name="DefaultMode">STANDARD</string>
     <string name="ChargingOverlay">Charging</string>
