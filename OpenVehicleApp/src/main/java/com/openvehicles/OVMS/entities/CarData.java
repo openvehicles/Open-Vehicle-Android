@@ -502,7 +502,7 @@ public class CarData implements Serializable {
 				car_charge_power_input_kw = String.format("%.1fkW", car_charge_power_input_kw_raw);
 				if (car_charge_power_kw_raw != 0) {
 					car_charge_power_loss_kw_raw = car_charge_power_input_kw_raw - car_charge_power_kw_raw;
-					car_charge_power_loss_kw = String.format("↳ %.1fkW", car_charge_power_loss_kw_raw);
+					car_charge_power_loss_kw = String.format("➘ %.1fkW", car_charge_power_loss_kw_raw);
 				} else {
 					car_charge_power_loss_kw_raw = 0;
 					car_charge_power_loss_kw = "";
