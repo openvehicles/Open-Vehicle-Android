@@ -704,6 +704,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			rltv.setTextColor(trans1 | alertcol[alert[2]]);
 			rrtv.setTextColor(trans1 | alertcol[alert[3]]);
 
+			// Display alert state "OK" icons in green:
+			if (val2 == pCarData.car_tpms_alert) {
+				alertcol[0] = 0x44FF44;
+			}
 			fltvv.setTextColor(trans2 | alertcol[alert[0]]);
 			frtvv.setTextColor(trans2 | alertcol[alert[1]]);
 			rltvv.setTextColor(trans2 | alertcol[alert[2]]);

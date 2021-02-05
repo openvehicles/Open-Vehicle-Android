@@ -813,9 +813,9 @@ public class CarData implements Serializable {
 				for (j = 0, end = i+cnt; i < end; i++, j++) {
 					dval = Double.parseDouble(dataParts[i]);
 					if (dspBar)
-						sval = String.format("%.1f%s", dval / 100, "bar");
+						sval = String.format("%.1f%s", Math.floor(dval / 10) / 10, "bar");
 					else
-						sval = String.format("%.1f%s", dval * 0.1450377, "psi");
+						sval = String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi");
 					car_tpms_pressure_raw[j] = dval;
 					car_tpms_pressure[j] = sval;
 				}
@@ -834,9 +834,9 @@ public class CarData implements Serializable {
 				for (j = 0, end = i+cnt; i < end; i++, j++) {
 					dval = Double.parseDouble(dataParts[i]);
 					if (dspFahrenheit)
-						sval = String.format("%.0f%s", (dval * (9.0 / 5.0)) + 32.0, "\u00B0F");
+						sval = String.format("%.0f°F", Math.ceil((dval * (9.0 / 5.0)) + 32.0));
 					else
-						sval = String.format("%.0f%s", dval, "\u00B0C");
+						sval = String.format("%.0f°C", Math.ceil(dval));
 					car_tpms_temp_raw[j] = dval;
 					car_tpms_temp[j] = sval;
 				}
@@ -854,7 +854,7 @@ public class CarData implements Serializable {
 				}
 				for (j = 0, end = i+cnt; i < end; i++, j++) {
 					dval = Double.parseDouble(dataParts[i]);
-					sval = String.format("%.0f%%", dval);
+					sval = String.format("%.0f%%", Math.floor(dval));
 					car_tpms_health_raw[j] = dval;
 					car_tpms_health[j] = sval;
 				}
