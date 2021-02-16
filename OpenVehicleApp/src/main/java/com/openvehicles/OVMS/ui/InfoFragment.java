@@ -733,6 +733,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 				bar.setVisibility(View.INVISIBLE);
 				tvl.setVisibility(View.INVISIBLE);
 				tvr.setVisibility(View.INVISIBLE);
+				tvPowerInput.setVisibility(View.INVISIBLE);
+				tvPowerLoss.setVisibility(View.INVISIBLE);
 
 				int chargeStateInfo = 0;
 				switch (pCarData.car_charge_state_i_raw) {
