@@ -555,7 +555,10 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		} else if (pCarData.sel_vehicle_image.startsWith("car_twizy_")) {
 			// Twizy: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_twizy);
-		}else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
+		} else if (pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
+			// Kangoo: one ol image for all colors:
+			iv.setImageResource(R.drawable.ol_car_kangoo);
+		} else if (pCarData.sel_vehicle_image.startsWith("car_kianiro_")) {
 			iv.setImageResource(R.drawable.ol_car_kianiro_grey);
 		} else {
 			iv.setImageResource(Ui.getDrawableIdentifier(getActivity(), "ol_" + pCarData.sel_vehicle_image));
@@ -1013,6 +1016,36 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
 			iv.setImageResource(R.drawable.voltampera_carlights);
 
+		} else if (pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
+			// Left Door Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
+			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_outline_ld);
+
+			// Right Door Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
+			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_outline_rd);
+
+			// Rear Left Door Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
+			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_outline_rld);
+
+			// Rear Right Door Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
+			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_outline_rrd);
+
+			// Trunk Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
+			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_outline_tr);
+
+			// Headlights Kangoo
+			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
+			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
+			iv.setImageResource(R.drawable.kangoo_carlights);
 		} else {
 			// Left Door
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
@@ -1110,6 +1143,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_green);
 				else
 					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red);
+			} else if (pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
+				// Kangoo: use i-MiEV charge overlays
+				if (pCarData.car_charge_mode.equals("performance"))
+					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+				else
+					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			} else {
 				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {

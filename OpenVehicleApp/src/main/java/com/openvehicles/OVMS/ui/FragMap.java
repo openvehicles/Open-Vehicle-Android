@@ -526,6 +526,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			drawable = getResources().getDrawable(R.drawable.map_car_smart); // one map icon for all colors
 		else if (mCarData.sel_vehicle_image.startsWith("car_kianiro_"))
 			drawable = getResources().getDrawable(R.drawable.map_car_kianiro_grey); // one map icon for all colors
+		else if (mCarData.sel_vehicle_image.startsWith("car_kangoo_"))
+			drawable = getResources().getDrawable(R.drawable.map_car_kangoo); // one map icon for all colors
 		else
 			drawable = getResources().getDrawable(Ui.getDrawableIdentifier(getActivity(),
 					"map_" + mCarData.sel_vehicle_image));
