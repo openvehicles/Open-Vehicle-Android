@@ -366,6 +366,7 @@ public class CarEditorFragment extends BaseFragment {
 			"car_mgzs_lightblue",
 			"car_mgzs_red",
 			"car_mgzs_black",
+			"car_edeliver3_white",
 			"car_ampera_black",
 			"car_ampera_crystalred",
 			"car_ampera_cybergray",
