@@ -1124,8 +1124,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
-			} else if (pCarData.sel_vehicle_image.startsWith("car_zoe_")) {
-				// Renault ZOE
+			} else if (pCarData.sel_vehicle_image.startsWith("car_zoe_") ||
+					  pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
+				// Renault ZOE/Kangoo
 				if (pCarData.car_charge_state.equals("charging"))
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_orange);
 				else if (pCarData.car_charge_state.equals("stopped"))
@@ -1143,12 +1144,6 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_green);
 				else
 					iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red);
-			} else if (pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
-				// Kangoo: use i-MiEV charge overlays
-				if (pCarData.car_charge_mode.equals("performance"))
-					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
-				else
-					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			} else {
 				// Tesla Roadster:
 				if (pCarData.car_charge_substate_i_raw == 0x07) {
