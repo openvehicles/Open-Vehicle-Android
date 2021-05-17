@@ -1118,7 +1118,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
-			} else if (pCarData.sel_vehicle_image.startsWith("car_leaf_")) {
+			} else if (pCarData.sel_vehicle_image.startsWith("car_leaf")) {
 				// Nissan Leaf: use i-MiEV charge overlays
 				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
