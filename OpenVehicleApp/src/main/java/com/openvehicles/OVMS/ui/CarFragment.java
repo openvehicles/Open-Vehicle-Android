@@ -926,32 +926,34 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 			// Left Door Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarLeftDoorOpen);
 			iv.setVisibility(pCarData.car_frontleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-			//iv.setImageResource(R.drawable.leaf_outline_ld);
+			iv.setImageResource(R.drawable.leaf_outline_ld);
 
 			// Right Door Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarRightDoorOpen);
 			iv.setVisibility(pCarData.car_frontrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-			//iv.setImageResource(R.drawable.leaf_outline_rd);
+			iv.setImageResource(R.drawable.leaf_outline_rd);
 
 			// Rear Left Door Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarRearLeftDoorOpen);
 			iv.setVisibility(pCarData.car_rearleftdoor_open ? View.VISIBLE : View.INVISIBLE);
-			//iv.setImageResource(R.drawable.leaf_outline_rld);
+			iv.setImageResource(R.drawable.leaf_outline_rld);
 
 			// Rear Right Door Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarRearRightDoorOpen);
 			iv.setVisibility(pCarData.car_rearrightdoor_open ? View.VISIBLE : View.INVISIBLE);
-			//iv.setImageResource(R.drawable.leaf_outline_rrd);
+			iv.setImageResource(R.drawable.leaf_outline_rrd);
 
 			// Trunk Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarTrunkOpen);
 			iv.setVisibility(pCarData.car_trunk_open ? View.VISIBLE : View.INVISIBLE);
-			//iv.setImageResource(R.drawable.leaf_outline_tr);
+			iv.setImageResource(R.drawable.leaf_outline_tr);
 
 			// Headlights Leaf
 			iv = (ImageView) findViewById(R.id.tabCarImageCarHeadlightsON);
 			iv.setVisibility(pCarData.car_headlights_on ? View.VISIBLE : View.INVISIBLE);
-			iv.setImageResource(R.drawable.leaf_carlights);
+			if (pCarData.sel_vehicle_image.startsWith("car_leaf2")) {
+			  iv.setImageResource(R.drawable.leaf2_carlights);}
+			else iv.setImageResource(R.drawable.leaf_carlights);
 
 		} else if (pCarData.sel_vehicle_image.startsWith("car_vwup_")) {
 			// Left Door VW e-Up
@@ -1119,11 +1121,8 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				else
 					iv.setImageResource(R.drawable.ol_car_imiev_charge);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_leaf")) {
-				// Nissan Leaf: use i-MiEV charge overlays
-				if (pCarData.car_charge_mode.equals("performance"))
-					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
-				else
-					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+				// Nissan Leaf: use Leaf charge overlay
+					iv.setImageResource(R.drawable.ol_car_leaf_charge);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_vwup_")) {
 				// VW e-Up: use i-MiEV charge overlays
 				if (pCarData.car_charge_mode.equals("performance"))
