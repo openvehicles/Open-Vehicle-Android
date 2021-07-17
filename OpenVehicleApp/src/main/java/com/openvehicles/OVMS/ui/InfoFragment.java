@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Gallery;
@@ -719,10 +718,19 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		} else {
 			// Car is plugged in
 
-			String cmst = String.format("%s ≤%s ▾%.1fkWh",
-					pCarData.car_charge_mode.toUpperCase(),
-					pCarData.car_charge_currentlimit,
-					pCarData.car_charge_kwhconsumed);
+			String cmst;
+			if (!pCarData.car_battery_rangespeed.equals("")) {
+				cmst = String.format("%s ≤%s ⏲%s ▾%.1fkWh",
+						pCarData.car_charge_mode.toUpperCase(),
+						pCarData.car_charge_currentlimit,
+						pCarData.car_battery_rangespeed,
+						pCarData.car_charge_kwhconsumed);
+			} else {
+				cmst = String.format("%s ≤%s ▾%.1fkWh",
+						pCarData.car_charge_mode.toUpperCase(),
+						pCarData.car_charge_currentlimit,
+						pCarData.car_charge_kwhconsumed);
+			}
 
 			if (mCarData.car_type.equals("RT")) {
 

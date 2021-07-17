@@ -77,9 +77,9 @@
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeMode"
-			android:layout_width="470px"
+			android:layout_width="510px"
 			android:layout_height="40px"
-			android:layout_x="40px"
+			android:layout_x="20px"
 			android:layout_y="410px"
 			android:gravity="bottom|center"
 			android:textColor="#ffffffff"
