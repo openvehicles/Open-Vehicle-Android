@@ -310,6 +310,7 @@ public class CarEditorFragment extends BaseFragment {
 			"car_roadster_thundergray",
 			"car_roadster_twilightblue",
 			"car_roadster_veryorange",
+			"car_i3_grey",
 			"car_twizy_diamondblackwithivygreen",
 			"car_twizy_snowwhiteandflameorange",
 			"car_twizy_snowwhiteandurbanblue",
