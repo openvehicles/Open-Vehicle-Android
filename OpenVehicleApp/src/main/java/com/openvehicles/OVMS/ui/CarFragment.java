@@ -543,6 +543,9 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		if (pCarData.sel_vehicle_image.startsWith("car_imiev_")) {
 			// Mitsubishi i-MiEV: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_imiev);
+		} else if (pCarData.sel_vehicle_image.startsWith("car_i3_")) {
+			// BMW i3: one ol image for all colors since roof is same:
+			iv.setImageResource(R.drawable.ol_car_i3);
 		} else if (pCarData.sel_vehicle_image.startsWith("car_smart_")) {
 			// smart ED: one ol image for all colors:
 			iv.setImageResource(R.drawable.ol_car_smart);
