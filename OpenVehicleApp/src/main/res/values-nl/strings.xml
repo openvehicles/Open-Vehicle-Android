@@ -126,7 +126,7 @@
   <string name="lb_cp_rt_profile1">#%d: Profiel #1 (binary)</string>
   <string name="lb_cp_rt_profile2">#%d: Profiel #2 (binary)</string>
   <string name="lb_cp_rt_profile3">#%d: Profiel #3 (binary)</string>
-  <string name="lb_ovms_firmware">OVMS Firmware:</string>
+  <string name="lb_ovms_firmware">OVMS Version:</string>
   <string name="lb_vehicle_info">Voertuig Info</string>
   <string name="lb_charger_setting_twizy">Oplaad Meldingen </string>
   <string name="lb_charger_setting_twizy_hint">Hint: stel in op 0 om meldingen te deactiveren.</string>

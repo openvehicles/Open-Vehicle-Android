@@ -95,7 +95,7 @@
     <string name="lb_cp_paranoid_mode">#%d: Paranoiamodus</string>
     <string name="lb_cp_social_group_1">#%d: Sosialgruppe #1</string>
     <string name="lb_cp_social_group_2">#%d: Sosialgruppe #2</string>
-    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_ovms_firmware">OVMS Version:</string>
     <string name="lb_vehicle_info">Kjøretøyinfo</string>
 
     <string name="msg_charger_range">Rekkevidde Modus begrenser effekten\nGjentatt bruk vil redusere batteri levetiden</string>

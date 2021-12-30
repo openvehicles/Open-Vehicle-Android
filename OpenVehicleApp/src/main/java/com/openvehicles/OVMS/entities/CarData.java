@@ -81,6 +81,7 @@ public class CarData implements Serializable {
 
 	// Firmware
 	public String car_firmware = "";
+	public String car_hardware = "";
 	public String car_vin = "";
 	public String car_type = "";
 	public int car_canwrite_raw = 0;
@@ -722,6 +723,9 @@ public class CarData implements Serializable {
 					car_servicetime = -1;
 				}
 			}
+			if (dataParts.length >= 9) {
+				car_hardware = dataParts[8];
+			}
 
 		} catch(Exception e) {
 			Log.e(TAG, "processFirmware: ERROR", e);
@@ -1090,6 +1094,7 @@ public class CarData implements Serializable {
 			//
 
 			b.putString("car_firmware", car_firmware);
+			b.putString("car_hardware", car_hardware);
 			b.putString("car_vin", car_vin);
 
 			b.putInt("car_gsm_dbm", car_gsm_dbm);

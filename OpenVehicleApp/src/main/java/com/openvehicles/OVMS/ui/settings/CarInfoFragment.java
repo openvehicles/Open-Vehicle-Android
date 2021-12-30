@@ -56,6 +56,7 @@ public class CarInfoFragment extends BaseFragment {
 		Ui.setValue(rootView, R.id.txt_type, mCarData.car_type);
 		Ui.setValue(rootView, R.id.txt_server, mCarData.server_firmware);
 		Ui.setValue(rootView, R.id.txt_car, mCarData.car_firmware);
+		Ui.setValue(rootView, R.id.txt_hardware, mCarData.car_hardware);
 		Ui.setValue(rootView, R.id.txt_gsm, mCarData.car_gsm_signal);
 		Ui.setValue(rootView, R.id.txt_cac, (mCarData.car_CAC_percent > 0)
 				? String.format("%.2f Ah = %.1f%%", mCarData.car_CAC, mCarData.car_CAC_percent)

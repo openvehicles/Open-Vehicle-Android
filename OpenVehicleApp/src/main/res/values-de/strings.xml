@@ -152,7 +152,7 @@
     <string name="lb_cp_rt_profile2">#%d: Profil #2 (binär)</string>
     <string name="lb_cp_rt_profile3">#%d: Profil #3 (binär)</string>
 
-    <string name="lb_ovms_firmware">OVMS Firmware:</string>
+    <string name="lb_ovms_firmware">OVMS-Version:</string>
     <string name="lb_vehicle_info">Fahrzeug Info</string>
 
     <string name="lb_charger_setting_twizy">Lade-Einstellungen</string>
