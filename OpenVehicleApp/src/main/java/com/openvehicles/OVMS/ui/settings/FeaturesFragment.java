@@ -267,6 +267,17 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						// fall through to standard
 				}
 			}
+			// Nissan Leaf:
+			if (mCarData.car_type.equals("NL")) {
+				switch (position) {
+					case FEATURE_SUFFSOC:
+						return context.getString(R.string.lb_ft_rt_suffsoc, position);
+					case FEATURE_SUFFRANGE:
+						return context.getString(R.string.lb_ft_rt_suffrange, position);
+					default:
+						// fall through to standard
+				}
+			}
 
 			// Standard:
 			switch (position) {
