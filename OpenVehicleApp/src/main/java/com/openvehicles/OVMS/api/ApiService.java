@@ -15,6 +15,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.IBinder;
@@ -31,6 +32,9 @@ import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.utils.CarsStorage;
+
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 
 public class ApiService extends Service implements OnUpdateStatusListener {
 
@@ -338,6 +342,10 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 				intent.putExtras(mCarData.getBroadcastData());
 
 				sendBroadcast(intent);
+
+				// Kustom needs a kustom broadcast…
+				sendKustomBroadcast(intent);
+
 			}
 		}
 	}
@@ -490,6 +498,57 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			NotificationManager notificationManager = getSystemService(NotificationManager.class);
 			notificationManager.createNotificationChannel(channel);
 		}
+	}
+
+	/**
+	 * Kustom support:
+	 *  The KustomWidget App (KWGT) cannot read generic intent extras, data
+	 *  needs to be sent as string arrays. See:
+	 *  https://help.kustom.rocks/i195-send-variables-to-kustom-via-broadcast
+	 */
+	public static final String KUSTOM_ACTION = "org.kustom.action.SEND_VAR";
+	public static final String KUSTOM_ACTION_EXT_NAME = "org.kustom.action.EXT_NAME";
+	public static final String KUSTOM_ACTION_VAR_NAME_ARRAY = "org.kustom.action.VAR_NAME_ARRAY";
+	public static final String KUSTOM_ACTION_VAR_VALUE_ARRAY = "org.kustom.action.VAR_VALUE_ARRAY";
+
+	public void sendKustomBroadcast(Intent srcIntent) {
+		Bundle extras = srcIntent.getExtras();
+		if (extras == null) return;
+
+		// create Kustom intent:
+		Intent kIntent = new Intent(KUSTOM_ACTION);
+		kIntent.putExtra(KUSTOM_ACTION_EXT_NAME, "ovms");
+
+		// create string arrays from extras:
+		ArrayList<String> names = new ArrayList<String>(extras.size());
+		ArrayList<String> values = new ArrayList<String>(extras.size());
+		for (String key : extras.keySet()) {
+			Object value = extras.get(key);
+			if (value == null) {
+				names.add(key);
+				values.add("");
+			}
+			else if (value.getClass().isArray()) {
+				// unroll arrays by adding index suffix:
+				int cnt = Array.getLength(value);
+				names.add(key + "_cnt");
+				values.add("" + cnt);
+				for (int i = 0; i < cnt; i++) {
+					names.add(key + "_" + (i+1));
+					values.add(Array.get(value, i).toString());
+				}
+			} else {
+				names.add(key);
+				values.add(value.toString());
+			}
+		}
+
+		// send to Kustom:
+		String[] name_array = names.toArray(new String[0]);
+		String[] value_array = values.toArray(new String[0]);
+		kIntent.putExtra(KUSTOM_ACTION_VAR_NAME_ARRAY, name_array);
+		kIntent.putExtra(KUSTOM_ACTION_VAR_VALUE_ARRAY, value_array);
+		sendBroadcast(kIntent);
 	}
 
 }
