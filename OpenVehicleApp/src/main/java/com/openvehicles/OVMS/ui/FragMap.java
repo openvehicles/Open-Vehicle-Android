@@ -439,16 +439,18 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		Log.d(TAG, "updateMapDetails: addMarkers avail=" + cursor.getCount());
 
 		if (cursor.getCount() != 0) {
+			int columnLatitude = cursor.getColumnIndex("Latitude");
+			int columnLongitude = cursor.getColumnIndex("Longitude");
+			int columnCPID = cursor.getColumnIndex("cpid");
+			int columnTitle = cursor.getColumnIndex("Title");
+			int columnInfo = cursor.getColumnIndex("OperatorInfo");
 			int cnt_added = 0;
 			if (cursor.moveToFirst()) {
 				do {
 					// check position:
-
 					try {
-						double Latitude = Double.parseDouble(cursor
-								.getString(cursor.getColumnIndex("Latitude")));
-						double Longitude = Double.parseDouble(cursor
-								.getString(cursor.getColumnIndex("Longitude")));
+						double Latitude = Double.parseDouble(cursor.getString(columnLatitude));
+						double Longitude = Double.parseDouble(cursor.getString(columnLongitude));
 
 						if (check_range) {
 							if (distance(carPosition.latitude, carPosition.longitude, Latitude, Longitude) > maxrange_m)
@@ -456,10 +458,9 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 						}
 
 						// add marker:
-
-						String cpid = cursor.getString(cursor.getColumnIndex("cpid"));
-						String title = cursor.getString(cursor.getColumnIndex("Title"));
-						String snippet = cursor.getString(cursor.getColumnIndex("OperatorInfo"));
+						String cpid = cursor.getString(columnCPID);
+						String title = cursor.getString(columnTitle);
+						String snippet = cursor.getString(columnInfo);
 
 						MarkerGenerator.addMarkers(map,
 								title, snippet,
@@ -476,6 +477,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 			Log.d(TAG, "updateMapDetails: addMarkers added=" + cnt_added);
 		}
+
+		cursor.close();
 	}
 
 

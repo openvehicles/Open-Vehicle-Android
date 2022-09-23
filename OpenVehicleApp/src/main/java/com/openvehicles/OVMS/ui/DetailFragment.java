@@ -44,8 +44,10 @@ public class DetailFragment extends Fragment {
 		// load chargepoint data:
 
 		Cursor row = database.getChargePoint(cpId);
-		if (!row.moveToFirst())
+		if (!row.moveToFirst()) {
+			row.close();
 			return null;
+		}
 
 		slat = row.getString(row.getColumnIndex("Latitude"));
 		slng = row.getString(row.getColumnIndex("Longitude"));

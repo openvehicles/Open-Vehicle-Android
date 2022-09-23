@@ -367,23 +367,27 @@ public class Database extends SQLiteOpenHelper {
 	public String get_DateLastStatusUpdate() {
 		open();
 		Cursor cursor = db.rawQuery("select MAX(DateLastStatusUpdate) from mapdetails", null);
+		String result = "";
 		if (cursor.moveToFirst()) {
-			return ifNull(cursor.getString(0), "");
+			result = ifNull(cursor.getString(0), "");
 		}
-		return "";
+		cursor.close();
+		return result;
 	}
 
 	public String get_DateLastStatusUpdate(int lat, int lng) {
 		// Note: the local Android timestamp will be used as the "modified since"
 		// 	query parameter for OCM. We subtract 1 hour to accomodate for differences.
 		Cursor cursor = getlatlngdetail(lat, lng);
+		String result = "";
 		if (cursor.moveToFirst()) {
 			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
 			if (last_update > 0) {
-				return isoDateTime.format(new Date((last_update - 3600) * 1000));
+				result = isoDateTime.format(new Date((last_update - 3600) * 1000));
 			}
 		}
-		return "";
+		cursor.close();
+		return result;
 	}
 	public String get_DateLastStatusUpdate(LatLng pos) {
 		return get_DateLastStatusUpdate((int)pos.latitude, (int)pos.longitude);
@@ -424,10 +428,12 @@ public class Database extends SQLiteOpenHelper {
 	public String getConnectionFilter(String vehicleLabel) {
 		open();
 		Cursor cursor = get_ConnectionTypesdetails(vehicleLabel);
-		StringBuffer idList = new StringBuffer(1000);
+		int colCheck = cursor.getColumnIndex("chec");
+		int colID = cursor.getColumnIndex("tId");
+		StringBuilder idList = new StringBuilder(1000);
 		while (cursor.moveToNext()) {
-			if (cursor.getString(cursor.getColumnIndex("chec")).equals("true"))
-				idList.append("," + cursor.getString(cursor.getColumnIndex("tId")));
+			if (cursor.getString(colCheck).equals("true"))
+				idList.append(",").append(cursor.getString(colID));
 		}
 		cursor.close();
 		return (idList.length() > 1) ? idList.substring(1) : "";
@@ -456,10 +462,12 @@ public class Database extends SQLiteOpenHelper {
 		int deletedRows = 0;
 		open();
 		Cursor maxIdCursor = db.rawQuery("SELECT MAX(nID) AS maxID FROM Notifications", null);
+		int colMaxId = maxIdCursor.getColumnIndex("maxID");
 		if (maxIdCursor.moveToFirst()) {
-			long maxId = maxIdCursor.getLong(maxIdCursor.getColumnIndex("maxID"));
+			long maxId = maxIdCursor.getLong(colMaxId);
 			deletedRows = db.delete("Notification", "nID <= " + (maxId - keepSize), null);
 		}
+		maxIdCursor.close();
 		return deletedRows;
 	}
 
@@ -483,8 +491,10 @@ public class Database extends SQLiteOpenHelper {
 		// get latest entry:
 
 		Cursor latest = db.rawQuery("SELECT * FROM Notification ORDER BY nID DESC LIMIT 1", null);
-		if (latest == null || !latest.moveToNext())
+		if (!latest.moveToNext()) {
+			latest.close();
 			return;
+		}
 
 		try {
 			ts1 = isoDateTime.parse(latest.getString(latest.getColumnIndex("nTimestamp")));
@@ -499,7 +509,7 @@ public class Database extends SQLiteOpenHelper {
 				"SELECT * FROM Notification WHERE nTimestamp > ?",
 				new String[] { latest.getString(latest.getColumnIndex("nTimestamp")) });
 
-		while (wrongts != null && wrongts.moveToNext()) {
+		while (wrongts.moveToNext()) {
 			try {
 
 				// fix timestamp by replacing the year with the current or last year:
@@ -528,8 +538,7 @@ public class Database extends SQLiteOpenHelper {
 			}
 		}
 
-		if (wrongts != null)
-			wrongts.close();
+		wrongts.close();
 		latest.close();
 	}
 

@@ -681,17 +681,21 @@ public class MainActivity extends ApiActivity implements
 
 		Cursor cursor = database.getlatlngdetail(latitude, longitude);
 		if (cursor.getCount() == 0) {
+			cursor.close();
 			return false;
 		}
 		else if (cursor.moveToFirst()) {
 			// check if last tile update was more than 24 hours ago:
 			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
 			long now = System.currentTimeMillis() / 1000;
-			if (now > last_update + (3600 * 24))
+			if (now > last_update + (3600 * 24)) {
+				cursor.close();
 				return false;
+			}
 		}
 
 		Log.d(TAG, "isMapCacheValid: cache valid for lat/lng=" + latitude + "/" + longitude);
+		cursor.close();
 		return true;
 	}
 
