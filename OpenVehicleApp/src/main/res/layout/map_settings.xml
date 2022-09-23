@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+<TableLayout
     android:layout_width="match_parent"
-    android:layout_height="fill_parent"
+    android:layout_height="wrap_content"
     android:baselineAligned="false"
     android:measureWithLargestChild="false"
-    android:stretchColumns="1">
+    android:stretchColumns="1"
+    android:shrinkColumns="0" >
 
     <TableRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#e3e3e3"
         android:orientation="vertical"
-        android:paddingLeft="20dip"
-        android:paddingTop="20dip"
-        android:paddingRight="20dip"
-        android:paddingBottom="20dip">
+        android:paddingLeft="0dip"
+        android:paddingTop="10dip"
+        android:paddingRight="0dip"
+        android:paddingBottom="10dip">
 
         <TextView
             android:layout_width="match_parent"
@@ -30,15 +34,15 @@
 
     <TableRow
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="20dip"
+        android:paddingLeft="0dip"
         android:paddingTop="20dip"
-        android:paddingRight="20dip"
-        android:paddingBottom="20dip">
+        android:paddingRight="0dip"
+        android:paddingBottom="5dip">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="286dp"
             android:layout_height="fill_parent"
             android:layout_column="0"
             android:layout_gravity="center_horizontal"
@@ -47,9 +51,10 @@
             android:clickable="true"
             android:focusable="true"
             android:linksClickable="true"
+            android:minHeight="48dip"
             android:text="@string/ocm_subtitle_charge_points"
             android:textAllCaps="false"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
     </TableRow>
 
@@ -63,8 +68,10 @@
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dip"
-            android:text="@string/ocm_lb_cluster_enable" />
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
+            android:text="@string/ocm_lb_cluster_enable"
+            android:layout_marginEnd="10dip" />
 
         <CheckBox
             android:id="@+id/checkbox_cluster"
@@ -72,8 +79,11 @@
             android:layout_height="wrap_content"
             android:layout_column="1"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dip"
-            android:checked="true" />
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
+            android:checked="true"
+            android:minHeight="48dp"
+            android:layout_marginEnd="20dip" />
 
     </TableRow>
 
@@ -87,9 +97,11 @@
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dip"
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
             android:singleLine="false"
-            android:text="@string/ocm_lb_cluster_size" />
+            android:text="@string/ocm_lb_cluster_size"
+            android:layout_marginEnd="10dip" />
 
         <SeekBar
             android:id="@+id/seekbar_cluster_size"
@@ -97,9 +109,12 @@
             android:layout_height="wrap_content"
             android:layout_column="1"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dip"
+            android:layout_marginEnd="20dip"
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
             android:indeterminate="false"
-            android:max="4" />
+            android:max="4"
+            android:minHeight="48dp" />
 
     </TableRow>
 
@@ -113,8 +128,10 @@
             android:layout_height="wrap_content"
             android:layout_column="0"
             android:layout_gravity="center_vertical"
-            android:layout_marginRight="20dip"
-            android:text="@string/ocm_lb_max_results" />
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
+            android:text="@string/ocm_lb_max_results"
+            android:layout_marginEnd="10dip" />
 
         <Spinner
             android:id="@+id/ocm_maxresults"
@@ -122,9 +139,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_marginRight="20dip"
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
             android:background="@drawable/spinner_ab_focused_ovms"
-            android:entries="@array/ocm_options_maxresults" />
+            android:entries="@array/ocm_options_maxresults"
+            android:minHeight="48dp"
+            android:layout_marginEnd="0dip" />
 
     </TableRow>
 
@@ -138,7 +158,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_marginRight="20dip"
+            android:layout_marginEnd="0dip"
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
             android:text="@string/connections" />
 
     </TableRow>
@@ -153,8 +175,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_column="1"
-            android:layout_marginRight="20dip"
-            android:text="@string/clearcache" />
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
+            android:text="@string/clearcache"
+            android:layout_marginEnd="0dip" />
     </TableRow>
 
 </TableLayout>
+
+</ScrollView>
