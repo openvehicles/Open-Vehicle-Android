@@ -129,21 +129,25 @@ public class MyGcmListenerService extends GcmListenerService {
                     PendingIntent.FLAG_ONE_SHOT);
 
             // determine icon for this car:
-            int icon;
+			int icon;
 			if (car.sel_vehicle_image.startsWith("car_imiev_"))
 				icon = R.drawable.map_car_imiev; // one map icon for all colors
+			else if (car.sel_vehicle_image.startsWith("car_i3_"))
+				icon = R.drawable.map_car_i3; // one map icon for all colors
 			else if (car.sel_vehicle_image.startsWith("car_smart_"))
 				icon = R.drawable.map_car_smart; // one map icon for all colors
 			else if (car.sel_vehicle_image.startsWith("car_kianiro_"))
 				icon = R.drawable.map_car_kianiro_grey; // one map icon for all colors
+			else if (car.sel_vehicle_image.startsWith("car_kangoo_"))
+				icon = R.drawable.map_car_kangoo; // one map icon for all colors
 			else
-				icon = Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image);
+				icon = Ui.getDrawableIdentifier(this,"map_" + car.sel_vehicle_image);
 
             // create Notification builder:
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
                             .setAutoCancel(true)
                             .setDefaults(Notification.DEFAULT_ALL)
-                            .setSmallIcon(icon)
+                            .setSmallIcon((icon != 0) ? icon : R.drawable.map_car_default)
                             .setContentTitle(contentTitle)
                             .setContentText(contentText.replace('\r', '\n'))
                             .setContentIntent(launchOVMSIntent);

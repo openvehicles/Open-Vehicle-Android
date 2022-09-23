@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentManager;
 
 import androidx.core.content.ContextCompat;
@@ -519,21 +520,25 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		// update car position marker:
 
-		Drawable drawable;
+		// determine icon for this car:
+		int icon;
 		if (mCarData.sel_vehicle_image.startsWith("car_imiev_"))
-			drawable = getResources().getDrawable(R.drawable.map_car_imiev); // one map icon for all colors
+			icon = R.drawable.map_car_imiev; // one map icon for all colors
 		else if (mCarData.sel_vehicle_image.startsWith("car_i3_"))
-			drawable = getResources().getDrawable(R.drawable.map_car_i3); // one map icon for all colors
+			icon = R.drawable.map_car_i3; // one map icon for all colors
 		else if (mCarData.sel_vehicle_image.startsWith("car_smart_"))
-			drawable = getResources().getDrawable(R.drawable.map_car_smart); // one map icon for all colors
+			icon = R.drawable.map_car_smart; // one map icon for all colors
 		else if (mCarData.sel_vehicle_image.startsWith("car_kianiro_"))
-			drawable = getResources().getDrawable(R.drawable.map_car_kianiro_grey); // one map icon for all colors
+			icon = R.drawable.map_car_kianiro_grey; // one map icon for all colors
 		else if (mCarData.sel_vehicle_image.startsWith("car_kangoo_"))
-			drawable = getResources().getDrawable(R.drawable.map_car_kangoo); // one map icon for all colors
+			icon = R.drawable.map_car_kangoo; // one map icon for all colors
 		else
-			drawable = getResources().getDrawable(Ui.getDrawableIdentifier(getActivity(),
-					"map_" + mCarData.sel_vehicle_image));
+			icon = Ui.getDrawableIdentifier(getActivity(),"map_" + mCarData.sel_vehicle_image);
+
+		Drawable drawable = ResourcesCompat.getDrawable(getResources(),
+				(icon != 0) ? icon : R.drawable.map_car_default, null);
 		Bitmap myLogo = ((BitmapDrawable) drawable).getBitmap();
+
 		MarkerOptions marker = new MarkerOptions().position(carPosition)
 				.title(mCarData.sel_vehicle_label)
 				.rotation((float) mCarData.car_direction)
