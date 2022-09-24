@@ -3,12 +3,12 @@ package com.openvehicles.OVMS.ui.settings;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -18,9 +18,7 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.ui.BaseFragment;
-import com.openvehicles.OVMS.ui.utils.Ui;
-import com.openvehicles.OVMS.utils.CarsStorage;
-import com.openvehicles.OVMS.utils.ConnectionList;
+
 
 /**
  * Created by balzer on 03.12.16.
@@ -39,7 +37,7 @@ public class GlobalOptionsFragment extends BaseFragment
 
 	private boolean serviceEnabled;
 	private boolean broadcastEnabled;
-	private String broadcastCodes;
+	private String broadcastCodes;			// Currently unused, may be reused if single messages shall be sent
 	private boolean commandsEnabled;
 
 
@@ -98,6 +96,8 @@ public class GlobalOptionsFragment extends BaseFragment
 			case R.id.cb_options_service:
 				serviceEnabled = ((CheckBox) v).isChecked();
 				appPrefes.SaveData("option_service_enabled", serviceEnabled ? "1" : "0");
+				Intent intent = new Intent(serviceEnabled ? ApiService.ACTION_ENABLE : ApiService.ACTION_DISABLE);
+				getContext().sendBroadcast(intent);
 				break;
 			case R.id.cb_options_broadcast:
 				broadcastEnabled = ((CheckBox) v).isChecked();

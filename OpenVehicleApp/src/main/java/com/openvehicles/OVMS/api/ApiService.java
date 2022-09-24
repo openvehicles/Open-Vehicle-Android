@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,21 +28,32 @@ import android.widget.Toast;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.ApiTask.OnUpdateStatusListener;
+import com.openvehicles.OVMS.api.ApiTask.ApiTaskListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
-import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class ApiService extends Service implements OnUpdateStatusListener {
+public class ApiService extends Service implements ApiTaskListener, ApiObserver {
 
 	private static final String TAG = "ApiService";
 	private static final int ONGOING_NOTIFICATION_ID = 0x4f564d53; // "OVMS"
 
-	private static final String ACTION_PING = "com.openvehicles.OVMS.intent.action.PING";
+	// Internal broadcast actions:
+	public static final String ACTION_APIEVENT = "com.openvehicles.OVMS.ApiEvent";
+	public static final String ACTION_PING = "com.openvehicles.OVMS.service.intent.PING";
+	public static final String ACTION_ENABLE = "com.openvehicles.OVMS.service.intent.ENABLE";
+	public static final String ACTION_DISABLE = "com.openvehicles.OVMS.service.intent.DISABLE";
+
+	// System broadcast actions for Tasker et al:
+	public static final String ACTION_UPDATE = "com.openvehicles.OVMS.Update";
+	public static final String ACTION_NOTIFICATION = "com.openvehicles.OVMS.Notification";
+	public static final String ACTION_SENDCOMMAND = "com.openvehicles.OVMS.SendCommand";
+	public static final String ACTION_COMMANDRESULT = "com.openvehicles.OVMS.CommandResult";
+
 	private static final int PING_INTERVAL = 5; // Minutes
 
 	private final IBinder mBinder = new ApiBinder();
@@ -50,15 +62,18 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	private OnResultCommandListener mOnResultCommandListener;
 	private AppPrefes appPrefes;
 
+	private boolean mEnabled = false;	// Service in "foreground" mode
+	private boolean mStopped = false;	// Service stopped
+
 	private ConnectivityManager mConnectivityManager;
 	private AlarmManager mAlarmManager;
-	private Handler mHandler;
 	private volatile Looper mServiceLooper;
 	private volatile ApiServiceHandler mServiceHandler;
 
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		mStopped = false;
 
 		mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
@@ -69,39 +84,32 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		// check if the service shall run in foreground:
 		boolean foreground = appPrefes.getData("option_service_enabled", "0").equals("1");
 		if (foreground) {
-
-			Intent notificationIntent = new Intent(this, MainActivity.class);
-			PendingIntent pendingIntent =
-					PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-			Notification notification =
-					(new androidx.core.app.NotificationCompat.Builder(this, "default"))
-							.setContentTitle(getText(R.string.service_notification_title))
-							.setContentText(getText(R.string.service_notification_text))
-							.setTicker(getText(R.string.service_notification_ticker))
-							.setSmallIcon(R.drawable.ic_service)
-							.setPriority(Notification.PRIORITY_MIN)
-							.setContentIntent(pendingIntent)
-							.build();
-
-			startForeground(ONGOING_NOTIFICATION_ID, notification);
+			enableService();
 		}
 
 		// Register command receiver:
-		Log.d(TAG, "Registering command receiver for Intent: " + getPackageName() + ".SendCommand");
+		Log.d(TAG, "Registering command receiver for Intent: " + ACTION_SENDCOMMAND);
 		registerReceiver(mCommandReceiver,
-				new IntentFilter(getPackageName() + ".SendCommand"));
+				new IntentFilter(ACTION_SENDCOMMAND));
 
 		// Register network status receiver:
 		registerReceiver(mNetworkStatusReceiver,
 				new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
 
 		// Start intent handler thread:
-		mHandler = new Handler();
 		final HandlerThread thread = new HandlerThread("ApiServiceHandler");
 		thread.start();
 		mServiceLooper = thread.getLooper();
 		mServiceHandler = new ApiServiceHandler(mServiceLooper);
+
+		// Register action receiver:
+		IntentFilter actionFilter = new IntentFilter();
+		actionFilter.addAction(ACTION_ENABLE);
+		actionFilter.addAction(ACTION_DISABLE);
+		registerReceiver(mActionReceiver, actionFilter);
+
+		// Register as an ApiObserver:
+		ApiObservable.get().addObserver(this);
 
 		// Login for selected car:
 		openConnection();
@@ -112,11 +120,14 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		long pingIntervalMs = PING_INTERVAL * 60 * 1000;
 		mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis() + pingIntervalMs, pingIntervalMs, pi);
+
+		sendApiEvent("ServiceCreated");
 	}
 
 	@Override
 	public void onDestroy() {
 		Log.d(TAG, "onDestroy: close");
+		mStopped = true;
 
 		// Stop ping:
 		final PendingIntent pi = PendingIntent.getService(this, 0,
@@ -128,7 +139,13 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 		unregisterReceiver(mCommandReceiver);
 		unregisterReceiver(mNetworkStatusReceiver);
+		unregisterReceiver(mActionReceiver);
 
+		ApiObservable.get().deleteObserver(this);
+
+		sendApiEvent("ServiceDestroyed");
+
+		Log.d(TAG, "onDestroy: done");
 		super.onDestroy();
 	}
 
@@ -152,6 +169,22 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		return mBinder;
 	}
 
+	public void onStop() {
+		if (!mEnabled) {
+			Log.d(TAG, "onStop (not enabled)");
+			mStopped = true;
+			sendApiEvent("ServiceStopped");
+		}
+	}
+
+	public void onStart() {
+		if (mStopped) {
+			Log.d(TAG, "onStart");
+			mStopped = false;
+			sendApiEvent("ServiceStarted");
+		}
+	}
+
 	public class ApiBinder extends Binder {
 		public ApiService getService() {
 			return ApiService.this;
@@ -169,11 +202,25 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		}
 	}
 
+	private final BroadcastReceiver mActionReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			handleIntent(intent);
+		}
+	};
+
 	private void handleIntent(final Intent intent) {
-		Log.d(TAG, "handleIntent:" + intent);
+		Log.d(TAG, "handleIntent: " + intent);
 		if (intent == null) return;
-		if (ACTION_PING.equals(intent.getAction())) {
+		String action = intent.getAction();
+		if (ACTION_PING.equals(action)) {
 			checkConnection();
+		}
+		else if (ACTION_ENABLE.equals(action)) {
+			enableService();
+		}
+		else if (ACTION_DISABLE.equals(action)) {
+			disableService();
 		}
 	}
 
@@ -203,6 +250,39 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		} catch (Exception e) {
 			Log.e(TAG, "closeConnection: ERROR stopping ApiTask", e);
 		}
+	}
+
+	/**
+	 * enableService: ask Android to keep this service running ("foreground") after stopping the MainActivity
+	 */
+	private void enableService() {
+		Log.i(TAG, "enableService: starting foreground mode");
+		Intent notificationIntent = new Intent(this, MainActivity.class);
+		PendingIntent pendingIntent =
+				PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		Notification notification =
+				(new androidx.core.app.NotificationCompat.Builder(this, "default"))
+						.setContentTitle(getText(R.string.service_notification_title))
+						.setContentText(getText(R.string.service_notification_text))
+						.setTicker(getText(R.string.service_notification_ticker))
+						.setSmallIcon(R.drawable.ic_service)
+						.setPriority(Notification.PRIORITY_MIN)
+						.setContentIntent(pendingIntent)
+						.build();
+		startForeground(ONGOING_NOTIFICATION_ID, notification);
+		mEnabled = true;
+		mStopped = false;
+		sendApiEvent("ServiceEnabled");
+	}
+
+	/**
+	 * disableService: ask Android to stop this service when the MainActivity is stopped
+	 */
+	private void disableService() {
+		Log.i(TAG, "disableService: stopping foreground mode");
+		stopForeground(true);
+		mEnabled = false;
+		sendApiEvent("ServiceDisabled");
 	}
 
 
@@ -242,11 +322,13 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 
 
 	/**
-	 * Check for network availability.
+	 * Check for service / network availability.
 	 *
-	 * @return true if any network is available
+	 * @return true if service is running and has network access
 	 */
 	public boolean isOnline() {
+		if (mStopped)
+			return false;
 		NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
 		return (info != null && info.isConnected());
 	}
@@ -260,10 +342,12 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		public void onReceive(Context context, Intent intent) {
 			Log.d(TAG, "mNetworkStatusReceiver: new state: "
 					+ (isOnline() ? "ONLINE" : "OFFLINE"));
-			if (!isOnline() && mApiTask != null)
+			if (!isOnline() && mApiTask != null) {
 				closeConnection();
-			else if (isOnline() && mApiTask == null)
+			}
+			else if (isOnline() && mApiTask == null) {
 				openConnection();
+			}
 		}
 	};
 
@@ -306,58 +390,103 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 	}
 
 
-	@Override
-	public void onUpdateStatus(char msgCode, String msgData) {
-		Log.d(TAG, "onUpdateStatus " + msgCode);
-
-		// Update internal observers:
-		ApiObservable.get().notifyUpdate(mCarData);
-
-		// Send system broadcast for Automagic / Tasker / ...
-		if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
-			// for these message codes:
-			String broadcastCodes = appPrefes.getData("option_broadcast_codes",
-					GlobalOptionsFragment.defaultBroadcastCodes);
-			if (broadcastCodes.indexOf(msgCode) >= 0) {
-
-				Log.d(TAG, "onUpdateStatus " + msgCode + ": sending broadcast");
-				Intent intent = new Intent(getPackageName() + ".Update");
-
-				intent.putExtra("sel_server", mCarData.sel_server);
-				intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
-				intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
-
-				intent.putExtra("msg_code", "" + msgCode);
-				intent.putExtra("msg_data", msgData);
-
-				if (msgCode == 'P' && msgData.length() > 1) {
-					intent.putExtra("msg_notify_class", msgData.substring(0, 1));
-					intent.putExtra("msg_notify_text", msgData.substring(1));
-				} else {
-					intent.putExtra("msg_notify_class", "");
-					intent.putExtra("msg_notify_text", "");
-				}
-
-				// Add car status:
-				intent.putExtras(mCarData.getBroadcastData());
-
-				sendBroadcast(intent);
-
-				// Kustom needs a kustom broadcast…
-				sendKustomBroadcast(intent);
-
-			}
+	public class ApiEvent extends Intent {
+		public ApiEvent(String event) {
+			super(ACTION_APIEVENT);
+			setPackage(getPackageName());
+			putExtra("event", event);
+			putExtra("isOnline", isOnline());
+			putExtra("isLoggedIn", isLoggedIn());
+		}
+		public ApiEvent(String event, Serializable detail) {
+			this(ACTION_APIEVENT);
+			putExtra("detail", detail);
+		}
+		public void send() {
+			sendBroadcast(this);
 		}
 	}
 
+	public void sendApiEvent(String event) {
+		new ApiEvent(event).send();
+	}
+
+	/* sendBroadcast debug helper
 	@Override
-	public void onServerSocketError(Throwable e) {
-		Intent intent = new Intent(getPackageName() + ".ApiEvent");
-		intent.putExtra("onServerSocketError", e);
-		intent.putExtra("message", getString((mApiTask != null && mApiTask.isLoggedIn())
-				? R.string.err_connection_lost
-				: R.string.err_check_following));
-		sendBroadcast(intent);
+	public void sendBroadcast(Intent intent) {
+		Log.v(TAG, "sendBroadcast: " + intent + ":" + intent.getExtras().toString());
+		super.sendBroadcast(intent);
+	}
+	*/
+
+	@Override
+	public void onUpdateStatus(char msgCode, String msgData) {
+		Log.d(TAG, "onUpdateStatus " + msgCode);
+		// Route the update through the ApiObservable queue to merge multiple
+		//  adjacent server messages into one broadcast:
+		ApiObservable.get().notifyUpdate(mCarData);
+	}
+
+	@Override
+	public void onPushNotification(char msgClass, String msgText) {
+		// Send system broadcast for Automagic / Tasker / ...
+		if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
+			Log.d(TAG, "onPushNotification class=" + msgClass + ": sending broadcast");
+			Intent intent = new Intent(ACTION_NOTIFICATION);
+			intent.putExtra("sel_server", mCarData.sel_server);
+			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
+			intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
+			intent.putExtra("msg_notify_class", "" + msgClass);
+			intent.putExtra("msg_notify_text", msgText);
+			intent.putExtras(mCarData.getBroadcastData());
+			sendBroadcast(intent);
+			sendKustomBroadcast(intent);
+		}
+	}
+
+	// ApiObserver interface:
+	@Override
+	public void update(CarData pCarData) {
+		// Update ApiEvent listeners (App Widgets):
+		sendApiEvent("UpdateStatus");
+
+		// Send system broadcast for Automagic / Tasker / ...
+		if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
+
+			Log.d(TAG, "update: sending system broadcast " + ACTION_UPDATE);
+			Intent intent = new Intent(ACTION_UPDATE);
+
+			intent.putExtra("sel_server", mCarData.sel_server);
+			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
+			intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
+
+			// Avoid issues with scripts relying on the existence of these:
+			intent.putExtra("msg_code", "");
+			intent.putExtra("msg_data", "");
+			intent.putExtra("msg_notify_class", "");
+			intent.putExtra("msg_notify_text", "");
+
+			// Add car status:
+			intent.putExtras(mCarData.getBroadcastData());
+
+			sendBroadcast(intent);
+			sendKustomBroadcast(intent);
+		}
+	}
+
+	// ApiObserver interface:
+	@Override
+	public void onServiceAvailable(ApiService pService) {
+		// nop
+	}
+
+	@Override
+	public void onServerSocketError(Throwable error) {
+		ApiEvent apiEvent = new ApiEvent("ServerSocketError", error);
+		apiEvent.putExtra("message", getString((mApiTask != null && mApiTask.isLoggedIn())
+						? R.string.err_connection_lost
+						: R.string.err_check_following));
+		apiEvent.send();
 	}
 
 	@Override
@@ -377,9 +506,8 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 		// Check broadcast API configuration:
 		if (appPrefes.getData("option_commands_enabled", "0").equals("1")) {
 
-			Log.v(TAG, "onResultCommand: sending broadcast: " +
-					getPackageName() + ".CommandResult = " + pCmd);
-			Intent intent = new Intent(getPackageName() + ".CommandResult");
+			Log.v(TAG, "onResultCommand: sending broadcast " + ACTION_COMMANDRESULT + ": " + pCmd);
+			Intent intent = new Intent(ACTION_COMMANDRESULT);
 
 			intent.putExtra("sel_server", mCarData.sel_server);
 			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
@@ -395,25 +523,20 @@ public class ApiService extends Service implements OnUpdateStatusListener {
 			intent.putExtra("cmd_result", data);
 
 			sendBroadcast(intent);
+			sendKustomBroadcast(intent);
 		}
 	}
 
 	@Override
 	public void onLoginBegin() {
 		Log.d(TAG, "onLoginBegin");
-		
-		Intent intent = new Intent(getPackageName() + ".ApiEvent");
-		intent.putExtra("onLoginBegin", true);
-		sendBroadcast(intent);
+		sendApiEvent("LoginBegin");
 	}
 
 	@Override
 	public void onLoginComplete() {
 		Log.d(TAG, "onLoginComplete");
-		
-		Intent intent = new Intent(getPackageName() + ".ApiEvent");
-		intent.putExtra("onLoginComplete", true);
-		sendBroadcast(intent);
+		sendApiEvent("LoginComplete");
 	}
 	
 

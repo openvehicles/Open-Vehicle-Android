@@ -32,7 +32,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 	private Context mContext;
 	private final CarData mCarData;
-	private final OnUpdateStatusListener mListener;
+	private final ApiTaskListener mListener;
 
 	private Socket mSocket;
 	private Cipher mTxCipher, mRxCipher, mPmCipher;
@@ -51,7 +51,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * @param pCarData -- car model to use (= mCarData in ApiService)
 	 * @param pListener -- message listener (= ApiService)
 	 */
-	public ApiTask(Context pContext, CarData pCarData, OnUpdateStatusListener pListener) {
+	public ApiTask(Context pContext, CarData pCarData, ApiTaskListener pListener) {
 		mContext = pContext;
 		mCarData = pCarData;
 		mListener = pListener;
@@ -77,15 +77,18 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 		msgError,
 		msgCommand,
 		msgLoginBegin,
-		msgLoginComplete
+		msgLoginComplete,
+		msgPushNotification,
 	}
 
-	public interface OnUpdateStatusListener {
+	// Interface to ApiService:
+	public interface ApiTaskListener {
 		public void onUpdateStatus(char msgCode, String msgText);
 		public void onServerSocketError(Throwable e);
 		public void onResultCommand(String pCmd);
 		public void onLoginBegin();
 		public void onLoginComplete();
+		public void onPushNotification(char msgClass, String msgText);
 	}
 
 	@Override
@@ -110,6 +113,9 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 				break;
 			case msgCommand:
 				mListener.onResultCommand((String) pParam[1]);
+				break;
+			case msgPushNotification:
+				mListener.onPushNotification((char) pParam[1], (String) pParam[2]);
 				break;
 		}
 	}
@@ -500,6 +506,8 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 			case 'a':
 				Log.d(TAG, "Server acknowledged ping");
+				// No model change, but publish for "last updated" displays:
+				publishProgress(MsgType.msgUpdate, msgCode, msgData);
 				break;
 
 			case 'c':
@@ -509,7 +517,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 
 			case 'P':
 				Log.i(TAG, "Push notification received: " + msgData);
-				publishProgress(MsgType.msgUpdate, msgCode, msgData);
+				publishProgress(MsgType.msgPushNotification, msgData.charAt(0), msgData.substring(1));
 				break;
 
 

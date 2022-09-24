@@ -207,7 +207,7 @@
     <string name="msg_invalid_id_already_registered">Vehicle ID %s is already registered. Please enter a another ID.</string>
     <string name="msg_delete_this_car">Delete this car?</string>
     <string name="msg_mmi_ssd_code">Enter MMI/USSD Code, then tap SEND to transmit the code to your vehicle\'s cellular provider</string>
-    
+
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
     <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
     <string name="err_failed">Failed: %s</string>
@@ -289,7 +289,7 @@
     <string name="mi_map_filter_connections">My plugs</string>
     <string name="mi_map_filter_range">My range</string>
     <string name="mi_map_settings">Settings</string>
-    
+
     <string name="mi_car_details_temp">Fahrenheit</string>
     <string name="mi_car_details_tpms">TPMS in bar</string>
 
@@ -601,7 +601,7 @@
     <string name="lb_options_service_cb">Enable background connection</string>
     <string name="lb_options_service_info">Allows the server connection to stay alive when the App is not running.</string>
     <string name="lb_options_broadcast">Broadcast:</string>
-    <string name="lb_options_broadcast_cb">Enable update broadcasting for messages…</string>
+    <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps</string>
     <string name="lb_options_broadcast_codes">Enter code letters</string>
     <string name="lb_options_commands">Commands:</string>
     <string name="lb_options_commands_cb">Enable vehicle command service</string>
@@ -619,6 +619,8 @@
     <string name="service_notification_title">OVMS</string>
     <string name="service_notification_text">Service running</string>
     <string name="service_notification_ticker">OVMS Service started</string>
+
+    <string name="info_widget_description">SOC and range, battery temperature and charge time</string>
 
     <string name="play_services_recommended">This App uses Google Play Services for push notifications
         and maps integration. It will run without, but you might consider installing the Play Services

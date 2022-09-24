@@ -219,6 +219,9 @@ public class MainActivity extends ApiActivity implements
 	protected void onStart() {
 		super.onStart();
 		Log.d(TAG, "onStart");
+		if (getService() != null) {
+			getService().onStart();
+		}
 		ApiObservable.get().addObserver(this);
 	}
 
@@ -226,6 +229,9 @@ public class MainActivity extends ApiActivity implements
 	protected void onStop() {
 		Log.d(TAG, "onStop");
 		ApiObservable.get().deleteObserver(this);
+		if (getService() != null) {
+			getService().onStop();
+		}
 		super.onStop();
 	}
 
@@ -439,15 +445,17 @@ public class MainActivity extends ApiActivity implements
 	private final BroadcastReceiver mApiEventReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			String event = intent.getStringExtra("event");
+			Log.v(TAG, "mApiEventReceiver: event=" + event);
 
-			if (intent.getBooleanExtra("onLoginBegin", false)) {
+			if ("LoginBegin".equals(event)) {
 				Log.d(TAG, "mApiEventReceiver: login process started");
 
 				// show progress indicator:
 				setSupportProgressBarIndeterminateVisibility(true);
 			}
 
-			else if (intent.getBooleanExtra("onLoginComplete", false)) {
+			else if ("LoginComplete".equals(event)) {
 				Log.d(TAG, "mApiEventReceiver: login successful");
 
 				// hide progress indicator:
@@ -462,7 +470,7 @@ public class MainActivity extends ApiActivity implements
 				gcmStartRegistration();
 			}
 
-			else if (intent.getSerializableExtra("onServerSocketError") != null) {
+			else if ("ServerSocketError".equals(event)) {
 				Log.d(TAG, "mApiEventReceiver: server/login error");
 
 				// hide progress indicator:

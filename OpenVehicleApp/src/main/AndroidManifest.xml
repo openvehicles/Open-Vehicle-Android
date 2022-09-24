@@ -69,7 +69,9 @@
             android:enabled="true"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.openvehicles.OVMS.intent.action.PING" />
+                <action android:name="com.openvehicles.OVMS.service.intent.PING" />
+                <action android:name="com.openvehicles.OVMS.service.intent.ENABLE" />
+                <action android:name="com.openvehicles.OVMS.service.intent.DISABLE" />
             </intent-filter>
         </service>
 
@@ -110,6 +112,18 @@
             android:name=".receiver.RegistrationIntentService"
             android:exported="false">
         </service>
+
+        <receiver
+            android:name=".appwidgets.InfoWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.openvehicles.OVMS.ApiEvent" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/info_widget_info" />
+        </receiver>
 
     </application>
 
