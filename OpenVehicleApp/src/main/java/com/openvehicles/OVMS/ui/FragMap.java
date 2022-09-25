@@ -14,6 +14,7 @@ import com.androidmapsextensions.OnMapReadyCallback;
 import com.androidmapsextensions.SupportMapFragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -25,8 +26,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import androidx.core.content.ContextCompat;
@@ -64,7 +67,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		GetMapDetailsListener, OnClickListener, FragMapSettings.UpdateMap, OnMapReadyCallback {
 	private static final String TAG = "FragMap";
 
-	private SupportMapFragment fragment;
 	private GoogleMap map;
 
 	Database database;
@@ -87,7 +89,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	static float maxrange = 160;
 	static String distance_units = "KM";
 
-	List<Marker> lis;
+	List<Marker> markerList;
 
 	public interface UpdateLocation {
 		public void updatelocation();
@@ -98,24 +100,30 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	// 	see: http://developer.android.com/about/versions/android-4.2.html#NestedFragments
 	// 	and: https://developers.google.com/android/reference/com/google/android/gms/maps/SupportMapFragment
 	private void getMap() {
+		try {
+			FragmentManager fm = getChildFragmentManager();
+			SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
+			if (fragment == null) {
+				Log.d(TAG, "getMap: create newInstance()");
+				fragment = SupportMapFragment.newInstance();
+				fm.beginTransaction().replace(R.id.mmap, fragment).commit();
+			}
+			Log.d(TAG, "getMap: fragment=" + fragment);
 
-		FragmentManager fm = getChildFragmentManager();
-
-		fragment = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
-		if (fragment == null) {
-			Log.d(TAG, "getMap: create newInstance()");
-			fragment = SupportMapFragment.newInstance();
-			fm.beginTransaction().replace(R.id.mmap, fragment).commit();
-		}
-		Log.d(TAG, "getMap: fragment=" + fragment);
-
-		if (fragment != null) {
 			fragment.getExtendedMapAsync(this);
+		} catch (Exception e) {
+			Log.e(TAG, "getMap:" + e);
 		}
 	}
 
 	@Override
 	public void onMapReady(GoogleMap googleMap) {
+
+		MainActivity mainActivity = (MainActivity) getActivity();
+		if (mainActivity == null) {
+			Log.e(TAG, "getMap/onMapReady: MainActivity unavailable");
+			return;
+		}
 
 		map = googleMap;
 		Log.i(TAG, "getMap/onMapReady: map=" + map);
@@ -143,7 +151,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
 		map.getUiSettings().setMapToolbarEnabled(true); // enable Google Maps shortcuts
 
-		if (ContextCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+		if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
 				== PackageManager.PERMISSION_GRANTED) {
 			map.setMyLocationEnabled(true);
 			map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
@@ -152,7 +160,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			Log.w(TAG, "getMap/onMapReady: MyLocation unavailable, permission FINE_LOCATION not granted");
 			if (!permRequested) {
 				permRequested = true;
-				ActivityCompat.requestPermissions(getActivity(),
+				ActivityCompat.requestPermissions(mainActivity,
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						MainActivity.REQUEST_LOCATION);
 			}
@@ -166,7 +174,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
 				Log.i(TAG, "getMap/onMyLocationButtonClick: enabling autotrack");
 				autotrack = true;
-				appPrefes.SaveData("autotrack", autotrack ? "on" : "off");
+				appPrefes.SaveData("autotrack", "on");
 				if (autoTrackMenuItem != null)
 					autoTrackMenuItem.setChecked(autotrack);
 				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
@@ -198,7 +206,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 						if (moved > 300 * Math.pow(2, 15 - mapZoomLevel)) {
 							Log.i(TAG, "getMap/onCameraChange: moved " + moved + "m, disabling autotrack");
 							autotrack = false;
-							appPrefes.SaveData("autotrack", autotrack ? "on" : "off");
+							appPrefes.SaveData("autotrack", "off");
 							if (autoTrackMenuItem != null)
 								autoTrackMenuItem.setChecked(autotrack);
 							if (map.isMyLocationEnabled())
@@ -219,7 +227,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				// fetch chargepoints for view:
 				CameraPosition cameraPosition = map.getCameraPosition();
 				Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target);
-				((MainActivity)getActivity()).StartGetMapDetails(cameraPosition.target);
+				mainActivity.StartGetMapDetails(cameraPosition.target);
 			}
 		});
 
@@ -237,8 +245,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+							 Bundle savedInstanceState) {
 
 		rootView = inflater.inflate(R.layout.mmap, null);
 		setHasOptionsMenu(true);
@@ -279,7 +287,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 
 		inflater.inflate(R.menu.map_options, menu);
 
@@ -295,7 +303,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
@@ -308,7 +316,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				autotrack = newState;
 				if (autotrack)
 					update();
-				if (map.isMyLocationEnabled()) {
+				if (map != null && map.isMyLocationEnabled()) {
 					Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autotrack);
 					map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
 				}
@@ -371,7 +379,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	// marker click event
 	@Override
-	public void onInfoWindowClick(Marker marker) {
+	public void onInfoWindowClick(@NonNull Marker marker) {
 		// TODO Auto-generated method stub
 		int j = marker.getClusterGroup();
 		Log.d(TAG, "click: ClusterGroup=" + j);
@@ -396,12 +404,12 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		if (clearmap) {
 			map.clear();
 		} else {
-			lis = map.getMarkers();
-			for (int i = 0; i < lis.size(); i++) {
-				Marker carmarker = lis.get(i);
+			markerList = map.getMarkers();
+			for (int i = 0; i < markerList.size(); i++) {
+				Marker carmarker = markerList.get(i);
 				int j = carmarker.getClusterGroup();
 				if (j == -1) {
-					lis.remove(i);
+					markerList.remove(i);
 				} else {
 					carmarker.remove();
 				}
@@ -483,7 +491,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 
 	// click marker event
-	private void dialog(Marker marker) {
+	private void dialog(@NonNull Marker marker) {
 		// open dialog:
 		Bundle args = new Bundle();
 		args.putString("cpId", (String) marker.getData());
@@ -622,7 +630,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	}
 
 	// calculate distance in meters:
-	public static double distance(LatLng pos1, LatLng pos2) {
+	public static double distance(@NonNull LatLng pos1, @NonNull LatLng pos2) {
 		return distance(pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
 	}
 	public static double distance(double lat1, double lon1, double lat2, double lon2) {
@@ -637,15 +645,13 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 
 	@Override
-	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		switch (v.getId()) {
-		case R.id.bt_route:
-			direction();
-			break;
-
-		default:
-			break;
+	public void onClick(@NonNull View view) {
+		switch (view.getId()) {
+			case R.id.bt_route:
+				direction();
+				break;
+			default:
+				break;
 		}
 	}
 
