@@ -11,11 +11,22 @@ import android.util.Log;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.api.ApiService;
 
+/**
+ * ApiWidget: use this as the base class for an application widget
+ * 	processing vehicle data updates.
+ *
+ *  ApiWidget takes care of enabling the ApiService and listening to ApiEvent broadcasts.
+ *
+ *  The subclass only needs to define the actual widget rendering by implementing the
+ *  updateWidget() method. See InfoWidget for an example.
+ *
+ * @param <T> -- the actual widget class
+ */
 public class ApiWidget<T> extends AppWidgetProvider {
 	private static final String TAG = "ApiWidget";
 
 	// We need to know our specific subtype to be able to query our widget instances:
-	private Class<T> mWidgetClass;
+	private final Class<T> mWidgetClass;
 	public ApiWidget(Class<T> widgetClass) {
 		mWidgetClass = widgetClass;
 	}
@@ -119,7 +130,13 @@ public class ApiWidget<T> extends AppWidgetProvider {
 		}
 	}
 
-	// Update specific widget instance:
+	/**
+	 * updateWidget: Update specific widget instance
+	 *
+	 * @param context - the current execution Context
+	 * @param appWidgetManager - the AppWidgetManager instance
+	 * @param appWidgetId - the ID of the widget to update
+	 */
 	public void updateWidget(Context context, AppWidgetManager appWidgetManager,
 							 int appWidgetId) {
 		// override me

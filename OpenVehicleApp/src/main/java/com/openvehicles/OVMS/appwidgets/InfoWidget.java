@@ -21,19 +21,34 @@ import java.text.SimpleDateFormat;
 
 
 /**
- * Implementation of InfoWidget functionality.
+ * InfoWidget: Application Widget providing a SOC gauge.
  *
+ *  Displays SOC, estimated range, battery temperature and charge time estimation.
+ *  Charge SOC limit is shown if set & current SOC is below, charge time estimation
+ *  changes to 100% estimation when above SOC limit. While charging, the energy
+ *  gained (kWh) is shown above the SOC.
+ *
+ *  The vehicle name is shown in the upper left corner. The upper right corner
+ *  displays the last update time if older than 2 minutes or "OFFLINE" if the
+ *  ApiService currently isn't connected to the server.
  */
-public class InfoWidget extends ApiWidget {
+public class InfoWidget extends ApiWidget<InfoWidget> {
     private static final String TAG = "InfoWidget";
 
     public InfoWidget() {
         super(InfoWidget.class);
     }
 
-    // Update a specific widget instance:
+    /**
+     * updateWidget: Update specific widget instance
+     *
+     * @param context - the current execution Context
+     * @param appWidgetManager - the AppWidgetManager instance
+     * @param appWidgetId - the ID of the widget to update
+     */
+    @Override
     public void updateWidget(Context context, AppWidgetManager appWidgetManager,
-                                    int appWidgetId) {
+                             int appWidgetId) {
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.info_widget);
