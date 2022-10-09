@@ -7,10 +7,11 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -22,7 +23,12 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.text.style.TypefaceSpan;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,12 +36,20 @@ import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiTask.ApiTaskListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.DialogActivity;
 import com.openvehicles.OVMS.ui.MainActivity;
+import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.CarsStorage;
+import com.openvehicles.OVMS.utils.NotificationData;
+import com.openvehicles.OVMS.utils.Sys;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class ApiService extends Service implements ApiTaskListener, ApiObserver {
 
@@ -54,16 +68,23 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	public static final String ACTION_SENDCOMMAND = "com.openvehicles.OVMS.SendCommand";
 	public static final String ACTION_COMMANDRESULT = "com.openvehicles.OVMS.CommandResult";
 
+	// MP command response result codes:
+	public static final int COMMAND_RESULT_OK = 0;
+	public static final int COMMAND_RESULT_FAILED = 1;
+	public static final int COMMAND_RESULT_UNSUPPORTED = 2;
+	public static final int COMMAND_RESULT_UNIMPLEMENTED = 3;
+
 	private static final int PING_INTERVAL = 5; // Minutes
 
 	private final IBinder mBinder = new ApiBinder();
 	private volatile CarData mCarData;
-    private ApiTask mApiTask;
+	private ApiTask mApiTask;
 	private OnResultCommandListener mOnResultCommandListener;
 	private AppPrefes appPrefes;
+	private Database mDatabase;
 
-	private boolean mEnabled = false;	// Service in "foreground" mode
-	private boolean mStopped = false;	// Service stopped
+	private boolean mEnabled = false;    // Service in "foreground" mode
+	private boolean mStopped = false;    // Service stopped
 
 	private ConnectivityManager mConnectivityManager;
 	private AlarmManager mAlarmManager;
@@ -78,6 +99,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		mConnectivityManager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		mAlarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		appPrefes = new AppPrefes(this, "ovms");
+		mDatabase = new Database(getApplicationContext());
 
 		createNotificationChannel();
 
@@ -89,8 +111,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 		// Register command receiver:
 		Log.d(TAG, "Registering command receiver for Intent: " + ACTION_SENDCOMMAND);
-		registerReceiver(mCommandReceiver,
-				new IntentFilter(ACTION_SENDCOMMAND));
+		registerReceiver(mCommandReceiver, new IntentFilter(ACTION_SENDCOMMAND));
 
 		// Register network status receiver:
 		registerReceiver(mNetworkStatusReceiver,
@@ -116,7 +137,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 		// Schedule ping:
 		final PendingIntent pi = PendingIntent.getService(this, 0,
-				new Intent(ACTION_PING), PendingIntent.FLAG_UPDATE_CURRENT);
+				new Intent(ACTION_PING), Sys.getMutableFlags(PendingIntent.FLAG_UPDATE_CURRENT, false));
 		long pingIntervalMs = PING_INTERVAL * 60 * 1000;
 		mAlarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
 				System.currentTimeMillis() + pingIntervalMs, pingIntervalMs, pi);
@@ -131,7 +152,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 		// Stop ping:
 		final PendingIntent pi = PendingIntent.getService(this, 0,
-				new Intent(ACTION_PING), PendingIntent.FLAG_UPDATE_CURRENT);
+				new Intent(ACTION_PING), Sys.getMutableFlags(PendingIntent.FLAG_UPDATE_CURRENT, false));
 		mAlarmManager.cancel(pi);
 
 		// Logout:
@@ -142,6 +163,8 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		unregisterReceiver(mActionReceiver);
 
 		ApiObservable.get().deleteObserver(this);
+
+		mDatabase.close();
 
 		sendApiEvent("ServiceDestroyed");
 
@@ -196,6 +219,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		public ApiServiceHandler(final Looper looper) {
 			super(looper);
 		}
+
 		@Override
 		public void handleMessage(final Message msg) {
 			handleIntent((Intent) msg.obj);
@@ -215,11 +239,9 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		String action = intent.getAction();
 		if (ACTION_PING.equals(action)) {
 			checkConnection();
-		}
-		else if (ACTION_ENABLE.equals(action)) {
+		} else if (ACTION_ENABLE.equals(action)) {
 			enableService();
-		}
-		else if (ACTION_DISABLE.equals(action)) {
+		} else if (ACTION_DISABLE.equals(action)) {
 			disableService();
 		}
 	}
@@ -230,8 +252,12 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	 */
 	public void checkConnection() {
 		if (!isLoggedIn()) {
-			Log.i(TAG, "checkConnection: doing reconnect");
-			openConnection();
+			if (!isOnline()) {
+				Log.i(TAG, "checkConnection: no network, skipping reconnect");
+			} else {
+				Log.i(TAG, "checkConnection: doing reconnect");
+				openConnection();
+			}
 		} else {
 			Log.i(TAG, "checkConnection: connection OK");
 		}
@@ -246,6 +272,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 				Log.v(TAG, "closeConnection: shutting down TCP connection");
 				mApiTask.cancel(true);
 				mApiTask = null;
+				sendApiEvent("UpdateStatus");
 			}
 		} catch (Exception e) {
 			Log.e(TAG, "closeConnection: ERROR stopping ApiTask", e);
@@ -257,9 +284,11 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	 */
 	private void enableService() {
 		Log.i(TAG, "enableService: starting foreground mode");
+
 		Intent notificationIntent = new Intent(this, MainActivity.class);
-		PendingIntent pendingIntent =
-				PendingIntent.getActivity(this, 0, notificationIntent, 0);
+		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
+				notificationIntent, Sys.getMutableFlags(0, false));
+
 		Notification notification =
 				(new androidx.core.app.NotificationCompat.Builder(this, "default"))
 						.setContentTitle(getText(R.string.service_notification_title))
@@ -269,7 +298,9 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 						.setPriority(Notification.PRIORITY_MIN)
 						.setContentIntent(pendingIntent)
 						.build();
+
 		startForeground(ONGOING_NOTIFICATION_ID, notification);
+
 		mEnabled = true;
 		mStopped = false;
 		sendApiEvent("ServiceEnabled");
@@ -344,8 +375,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 					+ (isOnline() ? "ONLINE" : "OFFLINE"));
 			if (!isOnline() && mApiTask != null) {
 				closeConnection();
-			}
-			else if (isOnline() && mApiTask == null) {
+			} else if (isOnline() && mApiTask == null) {
 				openConnection();
 			}
 		}
@@ -365,28 +395,109 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		openConnection();
 	}
 
-	
-	public void sendCommand(int pResIdMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
-		sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListener);
+
+	public boolean sendCommand(int pResIdMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
+		return sendCommand(getString(pResIdMessage), pCommand, pOnResultCommandListener);
 	}
 
-	public void sendCommand(String pMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
-		if (mApiTask == null) return;
-
-		mOnResultCommandListener = pOnResultCommandListener;
-		mApiTask.sendMessage(String.format("MP-0 C%s", pCommand));
-		Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
+	public boolean sendCommand(String pMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
+		if (sendCommand(pCommand, pOnResultCommandListener)) {
+			if (!TextUtils.isEmpty(pMessage)) {
+				// TODO: remove UI interaction from Service
+				Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
+			}
+			return true;
+		} else {
+			return false;
+		}
 	}
-	
+
 	public boolean sendCommand(String pCommand, OnResultCommandListener pOnResultCommandListener) {
 		if (mApiTask == null || TextUtils.isEmpty(pCommand)) return false;
-		
+		// TODO: use command request queue, move result listener into command request
 		mOnResultCommandListener = pOnResultCommandListener;
 		return mApiTask.sendMessage(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
 	}
-	
+
 	public void cancelCommand() {
+		// TODO: use command request queue, move result listener into command request
 		mOnResultCommandListener = null;
+	}
+
+	/**
+	 * convertUserCommand: convert user command input to the corresponding MP command
+	 *
+	 * User input syntax support:
+	 * 	- MMI/USSD commands: prefix "*", example: "*100#"
+	 * 	- Modem commands:    prefix "@", example: "@ATI"
+	 * 	- MP MSG commands:   prefix "#", example: "#31"
+	 * 	- Text commands:     everything else, example: "stat"
+	 *
+	 * @param userCmd - user command input
+	 * @return MP command
+	 */
+	@NonNull
+	public static String makeMsgCommand(@Nullable String userCmd) {
+		String mpCmd;
+		if (userCmd == null || userCmd.isEmpty()) {
+			mpCmd = "";
+		}
+		else if (userCmd.startsWith("*")) {
+			// MMI/USSD command
+			mpCmd = "41," + userCmd;
+		}
+		else if (userCmd.startsWith("@")) {
+			// Modem command
+			mpCmd = "49," + userCmd.substring(1);
+		}
+		else if (userCmd.startsWith("#")) {
+			// MSG protocol command
+			mpCmd = userCmd.substring(1);
+		}
+		else {
+			// Text (former SMS) command
+			mpCmd = "7," + userCmd;
+		}
+		return mpCmd;
+	}
+
+	@NonNull
+	public static String getCommandName(final int cmdCode) {
+		// TODO: localize command names?
+		switch (cmdCode) {
+			case 1:		return "Get Features";
+			case 2:		return "Set Feature";
+			case 3:		return "Get Parameters";
+			case 4:		return "Set Parameter";
+			case 5:		return "Reboot";
+			case 6:		return "Status";
+			case 7:		return "Command";
+			case 10:	return "Set Charge Mode";
+			case 11:	return "Start Charge";
+			case 12:	return "Stop Charge";
+			case 15:	return "Set Charge Current";
+			case 16:	return "Set Charge Parameters";
+			case 17:	return "Set Charge Timer";
+			case 18:	return "Wakeup Car";
+			case 19:	return "Wakeup Subsystem";
+			case 20:	return "Lock Car";
+			case 21:	return "Set Valet Mode";
+			case 22:	return "Unlock Car";
+			case 23:	return "Clear Valet Mode";
+			case 24:	return "Home Link";
+			case 25:	return "Cooldown";
+			case 30:	return "Get Usage";
+			case 31:	return "Get Data Summary";
+			case 32:	return "Get Data Records";
+			case 40:	return "Send SMS";
+			case 41:	return "Send MMI/USSD";
+			case 49:	return "Modem Command";
+			default:	return "#" + cmdCode;
+		}
+	}
+
+	public static boolean hasMultiRowResponse(int cmdCode) {
+		return (cmdCode == 1 || cmdCode == 3 || cmdCode == 30 || cmdCode == 31 || cmdCode == 32);
 	}
 
 
@@ -398,10 +509,12 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 			putExtra("isOnline", isOnline());
 			putExtra("isLoggedIn", isLoggedIn());
 		}
+
 		public ApiEvent(String event, Serializable detail) {
-			this(ACTION_APIEVENT);
+			this(event);
 			putExtra("detail", detail);
 		}
+
 		public void send() {
 			sendBroadcast(this);
 		}
@@ -421,7 +534,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 	@Override
 	public void onUpdateStatus(char msgCode, String msgData) {
-		Log.d(TAG, "onUpdateStatus " + msgCode);
+		Log.v(TAG, "onUpdateStatus " + msgCode);
 		// Route the update through the ApiObservable queue to merge multiple
 		//  adjacent server messages into one broadcast:
 		ApiObservable.get().notifyUpdate(mCarData);
@@ -429,19 +542,8 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 	@Override
 	public void onPushNotification(char msgClass, String msgText) {
-		// Send system broadcast for Automagic / Tasker / ...
-		if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
-			Log.d(TAG, "onPushNotification class=" + msgClass + ": sending broadcast");
-			Intent intent = new Intent(ACTION_NOTIFICATION);
-			intent.putExtra("sel_server", mCarData.sel_server);
-			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
-			intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
-			intent.putExtra("msg_notify_class", "" + msgClass);
-			intent.putExtra("msg_notify_text", msgText);
-			intent.putExtras(mCarData.getBroadcastData());
-			sendBroadcast(intent);
-			sendKustomBroadcast(intent);
-		}
+		// This callback only receives MP push notifications for the currently selected vehicle.
+		// See MyGcmListenerService for system notification broadcasting.
 	}
 
 	// ApiObserver interface:
@@ -452,25 +554,14 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 		// Send system broadcast for Automagic / Tasker / ...
 		if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
-
 			Log.d(TAG, "update: sending system broadcast " + ACTION_UPDATE);
 			Intent intent = new Intent(ACTION_UPDATE);
-
 			intent.putExtra("sel_server", mCarData.sel_server);
 			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
 			intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
-
-			// Avoid issues with scripts relying on the existence of these:
-			intent.putExtra("msg_code", "");
-			intent.putExtra("msg_data", "");
-			intent.putExtra("msg_notify_class", "");
-			intent.putExtra("msg_notify_text", "");
-
-			// Add car status:
 			intent.putExtras(mCarData.getBroadcastData());
-
 			sendBroadcast(intent);
-			sendKustomBroadcast(intent);
+			sendKustomBroadcast(this, intent);
 		}
 	}
 
@@ -484,48 +575,137 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	public void onServerSocketError(Throwable error) {
 		ApiEvent apiEvent = new ApiEvent("ServerSocketError", error);
 		apiEvent.putExtra("message", getString((mApiTask != null && mApiTask.isLoggedIn())
-						? R.string.err_connection_lost
-						: R.string.err_check_following));
+				? R.string.err_connection_lost
+				: R.string.err_check_following));
 		apiEvent.send();
 	}
 
 	@Override
-	public void onResultCommand(String pCmd) {
+	public void onResultCommand(String pCmdResponse) {
 
-		if (TextUtils.isEmpty(pCmd))
+		if (TextUtils.isEmpty(pCmdResponse)) {
+			Log.d(TAG, "onResultCommand: response: null");
 			return;
+		}
+		Log.d(TAG, "onResultCommand: response: " + pCmdResponse.replace('\r', '|'));
 
-		String[] data = pCmd.split(",\\s*");
-		if (data.length < 2)
+		// Parse command response:
+		int cmd_code, cmd_error;
+		String cmd_data = "";
+		String[] data = pCmdResponse.split(",\\s*");
+		try {
+			cmd_code = Integer.parseInt(data[0]);
+			cmd_error = Integer.parseInt(data[1]);
+			int offset = data[0].length() + data[1].length() + 2;
+			if (pCmdResponse.length() > offset)
+				cmd_data = pCmdResponse.substring(offset);
+		} catch (Exception e) {
+			Log.e(TAG, "onResultCommand: invalid response: " + pCmdResponse);
 			return;
+		}
 
 		if (mOnResultCommandListener != null) {
+
+			// TODO: use command request queue, move result listener into command request
+			// Forward command response to listener:
+			//Log.d(TAG, "onResultCommand: forward to listener");
 			mOnResultCommandListener.onResultCommand(data);
+
+		} else {
+
+			//Log.d(TAG, "onResultCommand: no listener, display to user");
+			boolean displayResult = true;
+
+			if (cmd_error == COMMAND_RESULT_OK && hasMultiRowResponse(cmd_code)) {
+				try {
+					int recNr = Integer.parseInt(data[2]);
+					// Feature & parameter lists begin at recNr 0, other at 1:
+					if (recNr > 0 && (cmd_code == 1 || cmd_code == 3))
+						displayResult = false;
+					else if (recNr > 1)
+						displayResult = false;
+				} catch (Exception e) {
+					// if data[2] is no integer, display the message
+				}
+			}
+
+			if (displayResult) {
+
+				String title = mCarData.sel_vehicleid + ":";	// TODO: add command sent?
+
+				// Add command to notifications:
+				if (cmd_error == COMMAND_RESULT_OK) {
+					int type = (cmd_code == 41) ? NotificationData.TYPE_USSD : NotificationData.TYPE_RESULT_SUCCESS;
+					// suppress first (empty) OK result for cmd 41:
+					if (cmd_code == 7 || !cmd_data.isEmpty()) {
+						mDatabase.addNotification(new NotificationData(type, new Date(), title,
+								cmd_data.isEmpty() ? getString(R.string.msg_ok) : cmd_data));
+						sendBroadcast(new Intent(ApiService.ACTION_NOTIFICATION)
+								.putExtra("onNotification", true));
+					}
+				} else {
+					mDatabase.addNotification(new NotificationData(NotificationData.TYPE_ERROR, new Date(), title,
+							getString(R.string.err_failed_smscmd)));
+					sendBroadcast(new Intent(ApiService.ACTION_NOTIFICATION)
+							.putExtra("onNotification", true));
+				}
+
+				// TODO: remove UI interaction from Service
+				// Display the command result to the user:
+				SpannableStringBuilder text = new SpannableStringBuilder();
+				int start = 0;
+				if (cmd_code != 7) {
+					text.append(getCommandName(cmd_code));
+					text.setSpan(new StyleSpan(Typeface.ITALIC), start, text.length(), 0);
+					text.append(" ");
+					start = text.length();
+				}
+				switch (cmd_error) {
+					case COMMAND_RESULT_OK:
+						if (!cmd_data.isEmpty()) {
+							text.append(cmd_data.replace('\r', '\n'));
+							text.setSpan(new TypefaceSpan("monospace"), start, text.length(), 0);
+							text.setSpan(new RelativeSizeSpan(0.8f), start, text.length(), 0);
+						} else {
+							text.append(getString(R.string.msg_ok));
+							text.setSpan(new ForegroundColorSpan(Color.GREEN), start, text.length(), 0);
+						}
+						break;
+					case COMMAND_RESULT_FAILED:
+						text.append(getString(R.string.err_failed, cmd_data));
+						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
+						break;
+					case COMMAND_RESULT_UNSUPPORTED:
+						text.append(getString(R.string.err_unsupported_operation));
+						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
+						break;
+					case COMMAND_RESULT_UNIMPLEMENTED:
+						text.append(getString(R.string.err_unimplemented_operation));
+						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
+						break;
+				}
+
+				DialogActivity.show(getApplicationContext(), title, text);
+			}
 		}
 
 		// Check broadcast API configuration:
 		if (appPrefes.getData("option_commands_enabled", "0").equals("1")) {
-
-			Log.v(TAG, "onResultCommand: sending broadcast " + ACTION_COMMANDRESULT + ": " + pCmd);
+			Log.v(TAG, "onResultCommand: sending broadcast " + ACTION_COMMANDRESULT + ": " + pCmdResponse);
 			Intent intent = new Intent(ACTION_COMMANDRESULT);
-
 			intent.putExtra("sel_server", mCarData.sel_server);
 			intent.putExtra("sel_vehicleid", mCarData.sel_vehicleid);
 			intent.putExtra("sel_vehicle_label", mCarData.sel_vehicle_label);
-
-			intent.putExtra("cmd_code", data[0]);
-			intent.putExtra("cmd_error", Integer.parseInt(data[1]));
-			int offset = data[0].length() + data[1].length() + 2;
-			if (pCmd.length() > offset)
-				intent.putExtra("cmd_data", pCmd.substring(offset));
-			else
-				intent.putExtra("cmd_data", "");
+			intent.putExtra("cmd_vehicleid", mCarData.sel_vehicleid);
+			intent.putExtra("cmd_code", cmd_code);
+			intent.putExtra("cmd_error", cmd_error);
+			intent.putExtra("cmd_data", cmd_data);
 			intent.putExtra("cmd_result", data);
-
 			sendBroadcast(intent);
-			sendKustomBroadcast(intent);
+			sendKustomBroadcast(this, intent);
 		}
 	}
+
 
 	@Override
 	public void onLoginBegin() {
@@ -538,20 +718,21 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		Log.d(TAG, "onLoginComplete");
 		sendApiEvent("LoginComplete");
 	}
-	
+
 
 	/**
 	 * Broadcast Command Receiver for Automagic / Tasker / ...
 	 *
 	 * Intent extras:
-	 * - sel_vehicleid
-	 * - sel_server_password
-	 * - msg_command (optional) (fixed to "C" sends, max length 199 chars)
+	 * - apikey or sel_vehicleid + sel_server_password
+	 * - msg_command or command
+	 *
+	 * msg_command: MP command syntax, e.g. "7,stat" / "20,1234"
+	 * command: user command syntax, e.g. "stat" / "#20,1234"
 	 *
 	 * Car will be changed as necessary (persistent change).
 	 * Fails silently on errors.
-	 * Results will be broadcasted by onResultCommand().
-	 *
+	 * Results will be broadcasted & displayed by onResultCommand().
 	 */
 	private final BroadcastReceiver mCommandReceiver = new BroadcastReceiver() {
 		@Override
@@ -563,40 +744,55 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 				Log.e(TAG, "CommandReceiver: disabled");
 				return;
 			}
+			else if (!isLoggedIn()) {
+				Log.e(TAG, "CommandReceiver: not logged in");
+				return;
+			}
+
+			// Get parameters:
+			String apikey = intent.getStringExtra("apikey");
+			String vehicleid = intent.getStringExtra("sel_vehicleid");
+			String vehiclepass = intent.getStringExtra("sel_server_password");
+
+			// Get vehicle config:
+			String carApiKey = appPrefes.getData("APIKey");
+			CarData carData;
+			if (vehicleid != null && !vehicleid.isEmpty()) {
+				carData = CarsStorage.get().getCarById(vehicleid);
+			} else {
+				carData = CarsStorage.get().getSelectedCarData();
+			}
+
+			// Check authorization:
+			if ((carData == null) || (apikey == null && vehiclepass == null) ||
+					(apikey != null && !carApiKey.equals(apikey)) ||
+					(vehiclepass != null && !carData.sel_server_password.equals(vehiclepass))) {
+				Log.e(TAG, "CommandReceiver: vehicle/authorization invalid");
+				return;
+			}
 
 			// Get command parameters:
-			String vehID = intent.getStringExtra("sel_vehicleid");
-			String vehPassword = intent.getStringExtra("sel_server_password");
-			String vehCommand = intent.getStringExtra("msg_command");
+			String msgCommand = intent.getStringExtra("msg_command");
+			String userCommand = intent.getStringExtra("command");
 
-			// Verify command:
-			if (vehCommand != null && vehCommand.length() > 199) {
-				Log.e(TAG, "CommandReceiver: invalid command");
-				return;
+			if (msgCommand == null || msgCommand.isEmpty()) {
+				msgCommand = makeMsgCommand(userCommand);
 			}
 
-			// Check vehicle access:
-			CarData vehCarData = CarsStorage.get().getCarById(vehID);
-			if (vehCarData == null ||
-					vehCarData.sel_server_password == null ||
-					vehCarData.sel_server_password.equals("") ||
-					!vehCarData.sel_server_password.equals(vehPassword)) {
-				// Unknown car
-				Log.e(TAG, "CommandReceiver: unknown car / wrong password");
-				return;
-			}
+			// Note: command may be empty/missing, to only change the current vehicle
 
 			// Change car if necessary:
-			if (!mCarData.sel_vehicleid.equals(vehCarData.sel_vehicleid)) {
-				Log.i(TAG, "CommandReceiver: changing car to: " + vehID);
-				changeCar(vehCarData);
-				CarsStorage.get().setSelectedCarId(vehID);
+			if (!mCarData.sel_vehicleid.equals(carData.sel_vehicleid)) {
+				Log.i(TAG, "CommandReceiver: changing car to: " + carData.sel_vehicleid);
+				changeCar(carData);
+				CarsStorage.get().setSelectedCarId(carData.sel_vehicleid);
 			}
 
 			// Send command:
-			if (vehCommand != null && vehCommand.length() > 0) {
-				Log.i(TAG, "CommandReceiver: sending command: " + vehCommand);
-				if (!mApiTask.sendMessage(String.format("MP-0 C%s", vehCommand))) {
+			if (!msgCommand.isEmpty()) {
+				Log.i(TAG, "CommandReceiver: sending command: " + msgCommand);
+				cancelCommand();
+				if (!mApiTask.sendMessage(String.format("MP-0 C%s", msgCommand))) {
 					Log.e(TAG, "CommandReceiver: sendCommand failed");
 				}
 			}
@@ -608,7 +804,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	 * Create NotificationChannel "default" for Android >= 8.0
 	 * This is done here in ApiService because the service may start
 	 * on boot, independant of the MainActivity.
- 	 */
+	 */
 	private void createNotificationChannel() {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			CharSequence name = getString(R.string.app_name);
@@ -625,16 +821,16 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 
 	/**
 	 * Kustom support:
-	 *  The KustomWidget App (KWGT) cannot read generic intent extras, data
-	 *  needs to be sent as string arrays. See:
-	 *  https://help.kustom.rocks/i195-send-variables-to-kustom-via-broadcast
+	 * The KustomWidget App (KWGT) cannot read generic intent extras, data
+	 * needs to be sent as string arrays. See:
+	 * https://help.kustom.rocks/i195-send-variables-to-kustom-via-broadcast
 	 */
 	public static final String KUSTOM_ACTION = "org.kustom.action.SEND_VAR";
 	public static final String KUSTOM_ACTION_EXT_NAME = "org.kustom.action.EXT_NAME";
 	public static final String KUSTOM_ACTION_VAR_NAME_ARRAY = "org.kustom.action.VAR_NAME_ARRAY";
 	public static final String KUSTOM_ACTION_VAR_VALUE_ARRAY = "org.kustom.action.VAR_VALUE_ARRAY";
 
-	public void sendKustomBroadcast(Intent srcIntent) {
+	public static void sendKustomBroadcast(Context context, Intent srcIntent) {
 		Bundle extras = srcIntent.getExtras();
 		if (extras == null) return;
 
@@ -643,22 +839,22 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		kIntent.putExtra(KUSTOM_ACTION_EXT_NAME, "ovms");
 
 		// create string arrays from extras:
-		ArrayList<String> names = new ArrayList<String>(extras.size());
-		ArrayList<String> values = new ArrayList<String>(extras.size());
+		ArrayList<String> names = new ArrayList<>(extras.size());
+		ArrayList<String> values = new ArrayList<>(extras.size());
 		for (String key : extras.keySet()) {
 			Object value = extras.get(key);
 			if (value == null) {
 				names.add(key);
 				values.add("");
-			}
-			else if (value.getClass().isArray()) {
+			} else if (value.getClass().isArray()) {
 				// unroll arrays by adding index suffix:
 				int cnt = Array.getLength(value);
 				names.add(key + "_cnt");
 				values.add("" + cnt);
 				for (int i = 0; i < cnt; i++) {
-					names.add(key + "_" + (i+1));
-					values.add(Array.get(value, i).toString());
+					names.add(key + "_" + (i + 1));
+					Object elem = Array.get(value, i);
+					if (elem != null) values.add(elem.toString());
 				}
 			} else {
 				names.add(key);
@@ -671,7 +867,6 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		String[] value_array = values.toArray(new String[0]);
 		kIntent.putExtra(KUSTOM_ACTION_VAR_NAME_ARRAY, name_array);
 		kIntent.putExtra(KUSTOM_ACTION_VAR_VALUE_ARRAY, value_array);
-		sendBroadcast(kIntent);
+		context.sendBroadcast(kIntent);
 	}
-
 }

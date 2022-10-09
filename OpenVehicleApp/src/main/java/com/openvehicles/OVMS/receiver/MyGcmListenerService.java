@@ -19,11 +19,13 @@ import com.google.android.gms.gcm.GcmListenerService;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
+import com.openvehicles.OVMS.utils.Sys;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,7 +72,7 @@ public class MyGcmListenerService extends GcmListenerService {
                 + ", message=" + contentText
                 + ", time=" + contentTime);
 
-        if (contentTitle == null || contentText == null) {
+		if (contentTitle == null || contentText == null) {
             Log.w(TAG, "no title/message => abort");
             return;
         }
@@ -79,12 +81,13 @@ public class MyGcmListenerService extends GcmListenerService {
 		}
 
 		// parse timestamp:
-		Date timeStamp;
+		Date timeStamp = null;
 		try {
 			timeStamp = serverTime.parse(contentTime);
-		} catch (Exception e) {
-			timeStamp = new Date();
+		} catch (Exception ignored) {
 		}
+		if (timeStamp == null)
+			timeStamp = new Date();
 
 		// identify the vehicle:
 		CarData car = CarsStorage.get().getCarById(contentTitle);
@@ -106,6 +109,27 @@ public class MyGcmListenerService extends GcmListenerService {
 			dbAccess.unlock();
 		}
 
+		boolean ui_notified = false;
+		if (is_new) {
+			// Send system broadcast for Automagic / Tasker / ...
+			if (appPrefes.getData("option_broadcast_enabled", "0").equals("1")) {
+				Log.d(TAG, "onMessageReceived: sending broadcast");
+				SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Intent intent = new Intent(ApiService.ACTION_NOTIFICATION);
+				intent.putExtra("msg_notify_vehicleid", car.sel_vehicleid);
+				intent.putExtra("msg_notify_vehicle_label", car.sel_vehicle_label);
+				intent.putExtra("msg_notify_from", from);
+				intent.putExtra("msg_notify_title", contentTitle);
+				intent.putExtra("msg_notify_type", contentType);
+				intent.putExtra("msg_notify_text", contentText);
+				intent.putExtra("msg_notify_time", timeFormat.format(timeStamp));
+				sendBroadcast(intent);
+				ApiService.sendKustomBroadcast(this, intent);
+
+				ui_notified = true;
+			}
+		}
+
 		// prepare user notification filter check:
 		boolean filterInfo = appPrefes.getData("notifications_filter_info").equals("on");
 		boolean filterAlert = appPrefes.getData("notifications_filter_alert").equals("on");
@@ -120,13 +144,14 @@ public class MyGcmListenerService extends GcmListenerService {
 			Log.d(TAG, "alert/error notify for other car => skip user notification");
 		} else {
             // add notification to system & UI:
+			Log.d(TAG, "adding notification to system & UI");
 
             // create App launch Intent:
             Intent notificationIntent = new Intent(this, MainActivity.class);
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             notificationIntent.putExtra("onNotification", true);
             PendingIntent launchOVMSIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                    PendingIntent.FLAG_ONE_SHOT);
+					Sys.getMutableFlags(PendingIntent.FLAG_ONE_SHOT, false));
 
             // determine icon for this car:
 			int icon;
@@ -157,10 +182,11 @@ public class MyGcmListenerService extends GcmListenerService {
                     (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
             mNotificationManager.notify(1, mBuilder.build());
 
-            // update UI (NotificationsFragment):
-            Log.d(TAG, "Notifications: sending Intent: " + getPackageName() + ".Notification");
-            Intent uiNotify = new Intent(getPackageName() + ".Notification");
-            sendBroadcast(uiNotify);
+            // update UI (NotificationsFragment) if not done already:
+			if (!ui_notified) {
+				Intent uiNotify = new Intent(ApiService.ACTION_NOTIFICATION);
+				sendBroadcast(uiNotify);
+			}
         }
 
     }

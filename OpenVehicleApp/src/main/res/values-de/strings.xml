@@ -10,8 +10,13 @@
     <string name="Cancel">Abbrechen</string>
     <string name="Delete">Entfernen</string>
     <string name="Save">Speichern</string>
+    <string name="DatabaseError">Datenbankfehler</string>
+    <string name="PinShortcut">Anpinnen</string>
+    <string name="PinRequestSuccess">Anpinnen OK: siehe Starter</string>
+    <string name="PinRequestFailure">Anpinnen fehlgeschlagen</string>
     <string name="Send">Absenden</string>
     <string name="Error">Fehler</string>
+    <string name="CommandAuthFailed">Kommando-Autorisierung fehlgeschlagen</string>
     <string name="Set">Einstellen</string>
     <string name="Control">Kontrolle</string>
     <string name="ServerNameOrIP">Serveradresse (Domain oder IP)</string>
@@ -346,6 +351,7 @@
     <string name="err_failed_smscmd">Fehler: unbekanntes Kommando / keine Authorisierung</string>
     <string name="notifications_toast_copied">Nachricht wurde in das Clipboard kopiert</string>
     <string name="notifications_menu">Optionen</string>
+    <string name="notifications_stored_commands">Kommandos</string>
     <string name="notifications_chk_filter_list">Fzg.-Filter Liste</string>
     <string name="notifications_chk_filter_info">Fzg.-Filter Info-Nachricht</string>
     <string name="notifications_chk_filter_alert">Fzg.-Filter Alarm-Nachricht</string>
@@ -596,17 +602,30 @@
     <string name="lb_options_broadcast_codes">Codes eingeben</string>
     <string name="lb_options_commands">Befehle:</string>
     <string name="lb_options_commands_cb">Fahrzeug-Kommandos freigeben</string>
+    <string name="lb_options_apikey">API-Schlüssel:</string>
+    <string name="lb_options_apikey_renew">Verwerfen &amp; erneuern</string>
+    <string name="lb_options_apikey_renew_confirm">Wirklich den API-Schlüssel erneuern (deaktiviert alle angepinnten Kommandos)?</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Die Fahrzeug-Statusdaten sowie Nachrichteninhalte werden für die angegebenen Nachrichten-Codes
          an andere Apps wie Automagic oder Tasker weitergeleitet.</p>
         <p>Die Befehlsfreigabe erlaubt Apps zusätzlich, Befehle an registrierte Fahrzeuge zu senden,
-         dazu benötigt die jeweilige App die Fahrzeugkennung und das Passwort.
+         dazu benötigt die jeweilige App die Fahrzeugkennung und das Passwort oder den API-Schlüssel.
          Hinweis: alle Kommando-Rückgaben werden an alle Apps weitergeleitet.</p>
+        <p>Der API-Schlüssel ist die lokale Autorisation für Kommandoausführung unabhängig vom aktuell
+         gewählten Fahrzeug. Das Verwerfen des Schlüssels entzieht allen installierten oder angepinnten
+         Kommandos die Ausführungserlaubnis.</p>
         <p>Die Nachrichtentypen und -inhalte werden im
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">OVMS Android-Wiki</a>
          und der <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS-Protokolldokumentation (PDF)</a>
          erklärt.</p>
     ]]></string>
+
+    <string name="stored_commands_edit">Kommando bearbeiten</string>
+    <string name="stored_commands_add">Kommando zufügen</string>
+    <string name="stored_commands_title">Gemerkte Kommandos</string>
+    <string name="stored_commands_pin">Möchten Sie ein Icon für dieses Kommando auf Ihrem Startbildschirm erstellen?</string>
+    <string name="lb_enter_title">Bezeichnung</string>
+    <string name="lb_enter_command">Kommando</string>
 
     <string name="service_notification_title">OVMS</string>
     <string name="service_notification_text">Service läuft</string>

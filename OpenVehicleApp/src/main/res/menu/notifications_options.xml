@@ -3,6 +3,12 @@
       xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/mi_stored_commands"
+        android:icon="@drawable/ic_bookmarks"
+        android:title="@string/notifications_stored_commands"
+        app:showAsAction="always|withText"/>
+
+    <item
         android:id="@+id/notifications_menu"
         android:icon="@android:drawable/ic_menu_more"
         android:title="@string/notifications_menu"

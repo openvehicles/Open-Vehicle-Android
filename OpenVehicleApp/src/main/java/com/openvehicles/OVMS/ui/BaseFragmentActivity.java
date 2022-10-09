@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -15,8 +16,11 @@ import com.openvehicles.OVMS.R;
 public class BaseFragmentActivity extends ApiActivity {
 	private static final String EXT_FRAGMENT_CLASS_NAME = "ext_fragmentclassname";
 	private static final String EXT_ONLY_ORIENTATION = "ext_only_orientation";
-	private static final String EXT_FOR_RESULT = "ext_for_result";
-	
+	public static final String EXT_FOR_RESULT = "ext_for_result";
+	public static final String EXT_REQUEST_CODE = "ext_request_code";
+
+	private static BaseFragmentActivity mCurrent;
+
 	public static void show(Context pContext, Class<? extends Fragment> pClazz,
 			Bundle pArgs, int pOnlyOrientation) {
 		Intent intent = new Intent(pContext, BaseFragmentActivity.class);
@@ -27,36 +31,64 @@ public class BaseFragmentActivity extends ApiActivity {
 	}
 	
 	public static void showForResult(Fragment pFragment, Class<? extends Fragment> pClazz,
-			Bundle pArgs, int pRequestCode, int pOnlyOrientation) {
+									 int pRequestCode, Bundle pArgs, int pOnlyOrientation) {
 		Intent intent = new Intent(pFragment.getActivity(), BaseFragmentActivity.class);
 		intent.putExtra(EXT_FRAGMENT_CLASS_NAME, pClazz.getName());
 		intent.putExtra(EXT_ONLY_ORIENTATION, pOnlyOrientation);
 		intent.putExtra(EXT_FOR_RESULT, true);
+		intent.putExtra(EXT_REQUEST_CODE, pRequestCode);
 		if (pArgs != null) intent.putExtras(pArgs);
 		pFragment.startActivityForResult(intent, pRequestCode);
 	}
 
-    @Override
+	public static void showForResult(Activity pActivity, Class<? extends Fragment> pClazz,
+									 int pRequestCode, Bundle pArgs, int pOnlyOrientation) {
+		Intent intent = new Intent(pActivity, BaseFragmentActivity.class);
+		intent.putExtra(EXT_FRAGMENT_CLASS_NAME, pClazz.getName());
+		intent.putExtra(EXT_ONLY_ORIENTATION, pOnlyOrientation);
+		intent.putExtra(EXT_FOR_RESULT, true);
+		intent.putExtra(EXT_REQUEST_CODE, pRequestCode);
+		if (pArgs != null) intent.putExtras(pArgs);
+		pActivity.startActivityForResult(intent, pRequestCode);
+	}
+
+	@Override
     public void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        String fragmentClassName = getIntent().getStringExtra(EXT_FRAGMENT_CLASS_NAME);
-        if (TextUtils.isEmpty(fragmentClassName)) {
-        	finish();
-        	return;
-        }
-        
-        int orientation = getIntent().getIntExtra(EXT_ONLY_ORIENTATION, Configuration.ORIENTATION_UNDEFINED);
-        if (orientation != Configuration.ORIENTATION_UNDEFINED && orientation !=  
-    			getResources().getConfiguration().orientation) {
-        	finish();
-        	return;
-    	}
-        
+
+		Intent intent = getIntent();
+		if (intent == null) {
+			finish();
+			return;
+		}
+
+		String fragmentClassName = intent.getStringExtra(EXT_FRAGMENT_CLASS_NAME);
+		if (TextUtils.isEmpty(fragmentClassName)) {
+			finish();
+			return;
+		}
+
+		int orientation = intent.getIntExtra(EXT_ONLY_ORIENTATION, Configuration.ORIENTATION_UNDEFINED);
+		if (orientation != Configuration.ORIENTATION_UNDEFINED && orientation !=
+				getResources().getConfiguration().orientation) {
+			finish();
+			return;
+		}
+
         setDefaultContentView();
-        if (getCurrentFragment() == null) setStartFragment(fragmentClassName);
+        if (getCurrentFragment() == null) {
+			setStartFragment(fragmentClassName);
+		}
+
+		mCurrent = this;
     }
-    
+
+	@Override
+	protected void onDestroy() {
+		mCurrent = null;
+		super.onDestroy();
+	}
+
 	protected void setDefaultContentView() {
         FrameLayout fl = new FrameLayout(this);
         fl.setId(R.id.content);
@@ -137,5 +169,11 @@ public class BaseFragmentActivity extends ApiActivity {
         ft.commit();
         return fragment;
 	}
-	
+
+	public static void finishCurrent() {
+		if (mCurrent != null) {
+			mCurrent.finish();
+		}
+	}
+
 }

@@ -1,15 +1,20 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion targetSdk
+    compileSdkVersion 33
     defaultConfig {
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 33
     }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            multiDexEnabled true
+        }
+        debug {
+            minifyEnabled false
+            multiDexEnabled true
         }
     }
     productFlavors {

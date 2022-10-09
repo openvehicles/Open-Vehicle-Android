@@ -141,6 +141,7 @@ public class CarsStorage {
 		demoCar.sel_gcm_senderid = mGcmSenders[0];
 
 		mStoredCars.add(demoCar);
+		setSelectedCarId(demoCar.sel_vehicleid);
 	}
 	
 	public String getLastSelectedCarId() {
@@ -153,6 +154,7 @@ public class CarsStorage {
 		CarData result = getCarById(getLastSelectedCarId());
 		if (result == null && mStoredCars.size() > 0) {
 			result = mStoredCars.get(0);
+			setSelectedCarId(result.sel_vehicleid);
 		}
 		return result;
 	}

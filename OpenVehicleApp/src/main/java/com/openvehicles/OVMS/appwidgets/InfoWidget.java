@@ -17,6 +17,8 @@ import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.utils.CarsStorage;
+import com.openvehicles.OVMS.utils.Sys;
+
 import java.text.SimpleDateFormat;
 
 
@@ -55,7 +57,8 @@ public class InfoWidget extends ApiWidget<InfoWidget> {
 
         // Register click intent:
         Intent configIntent = new Intent(context, MainActivity.class);
-        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0, configIntent, 0);
+        PendingIntent configPendingIntent = PendingIntent.getActivity(context, 0,
+                configIntent, Sys.getMutableFlags(0, false));
         views.setOnClickPendingIntent(R.id.info_widget_image, configPendingIntent);
 
         // Get current widget size:

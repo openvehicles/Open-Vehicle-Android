@@ -1,5 +1,7 @@
 package com.openvehicles.OVMS.utils;
 
+import com.openvehicles.OVMS.R;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -64,7 +66,7 @@ public class NotificationData implements Serializable {
 			case NotificationData.TYPE_USSD:
 				return android.R.drawable.ic_menu_call;
 			case NotificationData.TYPE_COMMAND:
-				return android.R.drawable.ic_menu_send;
+				return R.drawable.ic_action_send;
 			case NotificationData.TYPE_RESULT_SUCCESS:
 				return android.R.drawable.ic_menu_revert;
 			case NotificationData.TYPE_RESULT_ERROR:

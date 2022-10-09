@@ -5,7 +5,7 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:shrinkColumns="1"
         android:stretchColumns="1">
 
@@ -132,6 +132,49 @@
                 android:id="@+id/cb_options_commands"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_apikey"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="monospace"
+                android:textIsSelectable="true"
+                android:selectAllOnFocus="true"
+                android:padding="10dp"
+                android:id="@+id/tv_options_apikey"
+                android:text="12345678901234567890" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <FrameLayout>
+                <Button
+                    android:text="@string/lb_options_apikey_renew"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/cb_options_apikey_renew"
+                    android:layout_gravity="center_vertical" />
+            </FrameLayout>
+
         </TableRow>
 
         <TableRow

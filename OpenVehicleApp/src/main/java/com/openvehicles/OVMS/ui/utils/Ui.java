@@ -6,6 +6,7 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
+import android.graphics.drawable.Drawable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.openvehicles.OVMS.R;
@@ -126,12 +128,26 @@ public final class Ui {
 		}
 	}
 
+	public static void setOnClick(View pRootView, int pId, Object pTag,
+								  OnClickListener pListener,
+								  View.OnLongClickListener pLongListener) {
+		try {
+			View view = pRootView.findViewById(pId);
+			view.setTag(pTag);
+			view.setOnClickListener(pListener);
+			if (pLongListener != null)
+				view.setOnLongClickListener(pLongListener);
+		} catch (Exception e) {
+			Log.e(TAG, e.toString());
+		}
+	}
+
 	public static void setValue(View pRootView, int pId, String pVal) {
 		try {
 			TextView tv = (TextView) pRootView.findViewById(pId);
 			tv.setText(pVal);
 		} catch (Exception e) {
-			Log.e(TAG, "string: " + e);
+			Log.e(TAG, "setValue: " + e);
 		}
 	}
 
@@ -153,6 +169,14 @@ public final class Ui {
 		}
 		return value; 
 	}
-	
-	
+
+	public static void setButtonImage(View pRootView, int pId, Drawable pIcon) {
+		try {
+			ImageButton btn = (ImageButton) pRootView.findViewById(pId);
+			btn.setImageDrawable(pIcon);
+		} catch (Exception e) {
+			Log.e(TAG, "setValue: " + e);
+		}
+	}
+
 }

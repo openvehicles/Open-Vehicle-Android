@@ -1,14 +1,12 @@
 package com.openvehicles.OVMS.ui;
 
-import java.text.SimpleDateFormat;
-
-import android.annotation.TargetApi;
-import android.content.ClipData;
-import android.graphics.Typeface;
-import androidx.appcompat.app.AlertDialog;
 import android.app.NotificationManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.util.Linkify;
@@ -35,12 +33,20 @@ import android.widget.Toast;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.settings.StoredCommandFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
+
+import java.text.SimpleDateFormat;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 
 public class NotificationsFragment extends BaseFragment
@@ -63,11 +69,10 @@ public class NotificationsFragment extends BaseFragment
 
 	
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		// Load prefs:
-
-		appPrefes = new AppPrefes(getActivity(), "ovms");
+		appPrefes = new AppPrefes(requireActivity(), "ovms");
 
 		mFontMonospace = appPrefes.getData("notifications_font_monospace").equals("on");
 		try {
@@ -98,7 +103,7 @@ public class NotificationsFragment extends BaseFragment
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 		inflater.inflate(R.menu.notifications_options, menu);
 		menu.findItem(R.id.mi_chk_monospace).setChecked(mFontMonospace);
 		menu.findItem(R.id.mi_chk_filter_list).setChecked(mFilterList);
@@ -111,8 +116,8 @@ public class NotificationsFragment extends BaseFragment
 		super.onResume();
 
 		// cancel Android system notification:
-		NotificationManager mNotificationManager = (NotificationManager) getActivity()
-				.getSystemService(Context.NOTIFICATION_SERVICE);
+		NotificationManager mNotificationManager = (NotificationManager)
+				requireActivity().getSystemService(Context.NOTIFICATION_SERVICE);
 		mNotificationManager.cancelAll();
 
 		// update list:
@@ -121,7 +126,7 @@ public class NotificationsFragment extends BaseFragment
 	}
 
 	@Override
-	public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	public void onItemClick(@NonNull AdapterView<?> parent, View view, int position, long id) {
 
 		NotificationData data = (NotificationData) parent.getAdapter().getItem(position);
 
@@ -133,7 +138,7 @@ public class NotificationsFragment extends BaseFragment
 				@Override
 				public void run() {
 					InputMethodManager keyboard = (InputMethodManager)
-							getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+							requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 					keyboard.showSoftInput(mCmdInput, 0);
 				}
 			},200);
@@ -155,21 +160,20 @@ public class NotificationsFragment extends BaseFragment
 					.show();
 
 			TextView textView = (TextView) dialog.findViewById(android.R.id.message);
-
-			if (mFontMonospace) {
-				textView.setTypeface(Typeface.MONOSPACE);
+			if (textView != null) {
+				if (mFontMonospace) {
+					textView.setTypeface(Typeface.MONOSPACE);
+				}
+				textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize * 1.2f);
+				Linkify.addLinks(textView, Linkify.WEB_URLS);
 			}
-			textView.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize * 1.2f);
-
-			Linkify.addLinks(textView, Linkify.WEB_URLS);
 
 		}
 	}
 
 
 	@Override
-	@TargetApi(11)
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+	public boolean onItemLongClick(@NonNull AdapterView<?> parent, View view, int position, long id) {
 		Log.d(TAG, "Long click on notification: #" + position);
 
 		// copy message text to clipboard:
@@ -177,19 +181,10 @@ public class NotificationsFragment extends BaseFragment
 		NotificationData data = (NotificationData) parent.getAdapter().getItem(position);
 		String message = data.getMessageFormatted();
 
-		int currentApiVersion = android.os.Build.VERSION.SDK_INT;
-		if (currentApiVersion >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-			// Android >= 3.0:
-			android.content.ClipboardManager clipboard =  (android.content.ClipboardManager)
-					getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-			ClipData clip = ClipData.newPlainText("label", message);
-			clipboard.setPrimaryClip(clip);
-		} else {
-			// Android < 3.0:
-			android.text.ClipboardManager clipboard = (android.text.ClipboardManager)
-					getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-			clipboard.setText(message);
-		}
+		android.content.ClipboardManager clipboard = (android.content.ClipboardManager)
+				requireActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+		ClipData clip = ClipData.newPlainText("label", message);
+		clipboard.setPrimaryClip(clip);
 
 		Toast.makeText(getContext(),
 				R.string.notifications_toast_copied, Toast.LENGTH_SHORT).show();
@@ -198,75 +193,83 @@ public class NotificationsFragment extends BaseFragment
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
 
-		switch(menuId) {
-
-			case R.id.mi_help:
-				new AlertDialog.Builder(getContext())
-						.setTitle(R.string.notifications_btn_help)
-						.setMessage(Html.fromHtml(getString(R.string.notifications_help)))
-						.setPositiveButton(android.R.string.ok, null)
-						.show();
-				return true;
-
-			case R.id.mi_chk_filter_list:
-				mFilterList = newState;
-				appPrefes.SaveData("notifications_filter_list", newState ? "on" : "off");
-				item.setChecked(newState);
-				initUi();
-				return true;
-
-			case R.id.mi_chk_filter_info:
-				mFilterInfo = newState;
-				appPrefes.SaveData("notifications_filter_info", newState ? "on" : "off");
-				item.setChecked(newState);
-				return true;
-
-			case R.id.mi_chk_filter_alert:
-				mFilterAlert = newState;
-				appPrefes.SaveData("notifications_filter_alert", newState ? "on" : "off");
-				item.setChecked(newState);
-				return true;
-
-			case R.id.mi_chk_monospace:
-				mFontMonospace = newState;
-				appPrefes.SaveData("notifications_font_monospace", newState ? "on" : "off");
-				item.setChecked(newState);
-				mItemsAdapter.notifyDataSetChanged();
-				return true;
-
-			case R.id.mi_set_fontsize:
-				Ui.showPinDialog(getActivity(),
-						getString(R.string.notifications_set_fontsize),
-						Float.toString(mFontSize), R.string.Set, false,
-						new Ui.OnChangeListener<String>() {
-							@Override
-							public void onAction(String pData) {
-								float val;
-								try {
-									val = Float.parseFloat(pData);
-								} catch (Exception e) {
-									val = 10;
-								}
-								mFontSize = val;
-								appPrefes.SaveData("notifications_font_size",
-										Float.toString(mFontSize));
-								mItemsAdapter.notifyDataSetChanged();
-								mCmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize*1.2f);
+		if (menuId == R.id.mi_help) {
+			new AlertDialog.Builder(getContext())
+					.setTitle(R.string.notifications_btn_help)
+					.setMessage(Html.fromHtml(getString(R.string.notifications_help)))
+					.setPositiveButton(android.R.string.ok, null)
+					.show();
+			return true;
+		} else if (menuId == R.id.mi_chk_filter_list) {
+			mFilterList = newState;
+			appPrefes.SaveData("notifications_filter_list", newState ? "on" : "off");
+			item.setChecked(newState);
+			initList();
+			return true;
+		} else if (menuId == R.id.mi_chk_filter_info) {
+			mFilterInfo = newState;
+			appPrefes.SaveData("notifications_filter_info", newState ? "on" : "off");
+			item.setChecked(newState);
+			return true;
+		} else if (menuId == R.id.mi_chk_filter_alert) {
+			mFilterAlert = newState;
+			appPrefes.SaveData("notifications_filter_alert", newState ? "on" : "off");
+			item.setChecked(newState);
+			return true;
+		} else if (menuId == R.id.mi_chk_monospace) {
+			mFontMonospace = newState;
+			appPrefes.SaveData("notifications_font_monospace", newState ? "on" : "off");
+			item.setChecked(newState);
+			mItemsAdapter.notifyDataSetChanged();
+			return true;
+		} else if (menuId == R.id.mi_set_fontsize) {
+			Ui.showPinDialog(getActivity(),
+					getString(R.string.notifications_set_fontsize),
+					Float.toString(mFontSize), R.string.Set, false,
+					new Ui.OnChangeListener<String>() {
+						@Override
+						public void onAction(String pData) {
+							float val;
+							try {
+								val = Float.parseFloat(pData);
+							} catch (Exception e) {
+								val = 10;
 							}
-						});
-				return true;
+							mFontSize = val;
+							appPrefes.SaveData("notifications_font_size",
+									Float.toString(mFontSize));
+							mItemsAdapter.notifyDataSetChanged();
+							mCmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize * 1.2f);
+						}
+					});
+			return true;
+		} else if (menuId == R.id.mi_stored_commands) {
+			BaseFragmentActivity.showForResult(this, StoredCommandFragment.class,
+					StoredCommandFragment.REQUEST_SELECT_EXECUTE, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return false;
 		}
 
 		return super.onOptionsItemSelected(item);
 	}
 
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+		String command = null;
+		if (data != null) {
+			command = data.getStringExtra("command");
+		}
+		Log.d(TAG, "onActivityResult: reqCode=" + requestCode + ", resCode=" + resultCode + ", command: " + command);
+		sendUserCommand(command);
+	}
+
 	public void update() {
-		initUi();
+		initList();
 	}
 
 	@Override
@@ -279,27 +282,41 @@ public class NotificationsFragment extends BaseFragment
 			if (vehicleId != null && !vehicleId.equals(mVehicleId)) {
 				Log.d(TAG, "update: vehicle changed to '" + vehicleId + "' => filter reload");
 				mVehicleId = vehicleId;
-				initUi();
+				initList();
 			}
 		}
 	}
 
-	private void initUi() {
-
+	private void initList() {
 		Context context = getActivity();
-		if (context == null)
-			return;
+		if (context == null) return;
 
 		Log.d(TAG, "initUi: (re-)loading notifications, filter=" + mFilterInfo + ", vehicle=" + mVehicleId);
 
 		// (re-)load notifications:
+		// TODO: this scheme of recreating the OVMSNotifications object on every change is a PITA,
+		//       it needs to be replaced by a singleton or service
 		mNotifications = new OVMSNotifications(context);
 		NotificationData[] data = mNotifications.getArray(mFilterList ? mVehicleId : "");
 
 		// attach array to ListView:
 		mItemsAdapter = new ItemsAdapter(context, this, data);
 		mListView.setAdapter(mItemsAdapter);
+	}
 
+	// ATTENTION: use this only to display local updates to mNotifications!
+	//            (will not show changes from other OVMSNotifications instances)
+	private void updateList() {
+		Context context = getActivity();
+		if (context == null) return;
+
+		if (mNotifications == null || mItemsAdapter == null) {
+			initList();
+		} else {
+			NotificationData[] data = mNotifications.getArray(mFilterList ? mVehicleId : "");
+			mItemsAdapter = new ItemsAdapter(context, this, data);
+			mListView.setAdapter(mItemsAdapter);
+		}
 	}
 
 	private int lastCommandSent = 0;
@@ -308,52 +325,46 @@ public class NotificationsFragment extends BaseFragment
 	public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
 		boolean handled = false;
 		if (actionId == EditorInfo.IME_ACTION_SEND) {
-
-			String cmd = textView.getText().toString();
-			if (cmd.length() > 0) {
-
-				// add cmd to notifications:
-				String vehicle_id = CarsStorage.get().getLastSelectedCarId();
-				mNotifications.addNotification(
-						NotificationData.TYPE_COMMAND, vehicle_id + ": " + cmd, cmd);
-				initUi();
-
-				// send command:
-				if (cmd.startsWith("*")) {
-					// MMI/USSD command
-					sendCommand(cmd, "41," + cmd, this);
-				}
-				else if (cmd.startsWith("@")) {
-					// Modem command
-					sendCommand(cmd, "49," + cmd.substring(1), this);
-				}
-				else if (cmd.startsWith("#")) {
-					// MSG command
-					String cp[] = cmd.substring(1).split(",");
-					try {
-						lastCommandSent = Integer.parseInt(cp[0]);
-						sendCommand(cmd, cmd.substring(1), this);
-					} catch (Exception e) {
-						Toast.makeText(getActivity(), getString(R.string.err_unimplemented_operation),
-								Toast.LENGTH_SHORT).show();
-					}
-				}
-				else {
-					// SMS command
-					sendCommand(cmd, "7," + cmd, this);
-				}
-
-				handled = true;
-			}
+			String userCmd = textView.getText().toString();
+			handled = sendUserCommand(userCmd);
 		}
 		return handled;
 	}
 
+	public boolean sendUserCommand(String userCmd) {
+		if (userCmd == null || userCmd.isEmpty())
+			return false;
+
+		if (mNotifications == null)
+			initList();
+
+		// Add command to history:
+		String vehicle_id = CarsStorage.get().getLastSelectedCarId();
+		mNotifications.addNotification(
+				NotificationData.TYPE_COMMAND, vehicle_id + ": " + userCmd, userCmd);
+		updateList();
+
+		// Send command:
+		String mpCmd = ApiService.makeMsgCommand(userCmd);
+		String[] cp = mpCmd.split(",");
+		try {
+			lastCommandSent = Integer.parseInt(cp[0]);
+			sendCommand(userCmd, mpCmd, this);
+			return true;
+		} catch (Exception e) {
+			Toast.makeText(getActivity(), getString(R.string.err_unimplemented_operation),
+					Toast.LENGTH_SHORT).show();
+			return false;
+		}
+	}
 
 	@Override
-	public void onResultCommand(String[] result) {
+	public void onResultCommand(@NonNull String[] result) {
 		if (result.length <= 1)
 			return;
+
+		if (mNotifications == null)
+			initList();
 
 		int command = Integer.parseInt(result[0]);
 		String cmdMessage = getSentCommandMessage(result[0]);
@@ -377,25 +388,29 @@ public class NotificationsFragment extends BaseFragment
 						: NotificationData.TYPE_RESULT_SUCCESS;
 				// suppress first (empty) OK result for cmd 41:
 				if (command == 7 || cmdOutput != null) {
+					cancelCommand();
 					mNotifications.addNotification(
 							type, vehicle_id + ": " + cmdMessage,
 							(cmdOutput != null) ? cmdOutput : getString(R.string.msg_ok));
-					initUi();
+					updateList();
 				}
 				break;
 			case 1: // failed: result[2] = command output
+				cancelCommand();
 				mNotifications.addNotification(
 						NotificationData.TYPE_RESULT_ERROR, vehicle_id + ": " + cmdMessage,
 						getString(R.string.err_failed_smscmd));
-				initUi();
+				updateList();
 				break;
 			case 2: // unsupported
+				cancelCommand();
 				if (getActivity() != null) {
 					Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unsupported_operation),
 							Toast.LENGTH_SHORT).show();
 				}
 				break;
 			case 3: // unimplemented
+				cancelCommand();
 				if (getActivity() != null) {
 					Toast.makeText(getActivity(), cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
 							Toast.LENGTH_SHORT).show();
@@ -408,7 +423,7 @@ public class NotificationsFragment extends BaseFragment
 	private static class ItemsAdapter extends ArrayAdapter<NotificationData> {
 		private final LayoutInflater mInflater;
 		private final SimpleDateFormat mDateFormat = new SimpleDateFormat("MMM d, HH:mm");
-		private NotificationsFragment mFragment;
+		private final NotificationsFragment mFragment;
 
 		public ItemsAdapter(Context context, NotificationsFragment fragment, NotificationData[] items) {
 			super(context, R.layout.item_notifications, items);
@@ -416,8 +431,9 @@ public class NotificationsFragment extends BaseFragment
 			mFragment = fragment;
 		}
 
+		@NonNull
 		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
+		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 			View v = convertView;
 			if (v == null) {
 				v = mInflater.inflate(R.layout.item_notifications, null);

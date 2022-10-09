@@ -9,10 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
+import com.openvehicles.OVMS.entities.StoredCommand;
 import com.openvehicles.OVMS.utils.NotificationData;
-import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
@@ -22,10 +21,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Objects;
+
+import androidx.annotation.Nullable;
 
 public class Database extends SQLiteOpenHelper {
 	private static final String TAG = "Database";
-	private static final int SCHEMA_VERSION = 6;
+	private static final int SCHEMA_VERSION = 7;
 
 	Context context;
 	SQLiteDatabase db;
@@ -56,7 +58,7 @@ public class Database extends SQLiteOpenHelper {
 	public void onCreate(SQLiteDatabase db) {
 		Log.i(TAG, "Database creation");
 
-		db.execSQL("CREATE TABLE mapdetails(cpid INTEGER PRIMARY KEY," +
+		db.execSQL("CREATE TABLE IF NOT EXISTS mapdetails(cpid INTEGER PRIMARY KEY," +
 				"Latitude TEXT, Longitude TEXT, Title TEXT," +
 				"OperatorInfo TEXT, StatusType TEXT, UsageType TEXT," +
 				"AddressLine1 TEXT, RelatedURL TEXT, UsageCost TEXT," +
@@ -84,10 +86,16 @@ public class Database extends SQLiteOpenHelper {
 		db.execSQL("CREATE INDEX conCp ON Connection (conCpId)");
 		db.execSQL("CREATE INDEX conType ON Connection (conTypeId)");
 
+		// Version 6:
 		// create Notifications table:
 		db.execSQL("CREATE TABLE IF NOT EXISTS Notification(" +
 				"nID INTEGER PRIMARY KEY AUTOINCREMENT," +
 				"nType TEXT, nTimestamp TEXT, nTitle TEXT, nMessage TEXT)");
+
+		// create StoredCommand table:
+		db.execSQL("CREATE TABLE IF NOT EXISTS StoredCommand(" +
+				"scKey INTEGER PRIMARY KEY AUTOINCREMENT," +
+				"scTitle TEXT, scCommand TEXT)");
 	}
 
 	@Override
@@ -204,6 +212,14 @@ public class Database extends SQLiteOpenHelper {
 			db.execSQL("DELETE FROM latlngdetail");
 		}
 
+		if (oldVersion < 7) {
+			// Version 7:
+
+			// create StoredCommand table:
+			db.execSQL("CREATE TABLE IF NOT EXISTS StoredCommand(" +
+					"scKey INTEGER PRIMARY KEY AUTOINCREMENT," +
+					"scTitle TEXT, scCommand TEXT)");
+		}
 	}
 
 
@@ -345,7 +361,7 @@ public class Database extends SQLiteOpenHelper {
 		ContentValues contentValues = new ContentValues();
 		contentValues.put("chec", "false");
 		String whereClause = "CompanyName=?";
-		String whereArgs[] = { CompanyName };
+		String[] whereArgs = { CompanyName };
 		db.update("ConnectionTypes", contentValues, whereClause, whereArgs);
 	}
 
@@ -379,9 +395,10 @@ public class Database extends SQLiteOpenHelper {
 		// Note: the local Android timestamp will be used as the "modified since"
 		// 	query parameter for OCM. We subtract 1 hour to accomodate for differences.
 		Cursor cursor = getlatlngdetail(lat, lng);
+		int column = cursor.getColumnIndex("last_update");
 		String result = "";
-		if (cursor.moveToFirst()) {
-			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
+		if (column >= 0 && cursor.moveToFirst()) {
+			long last_update = cursor.getLong(column);
 			if (last_update > 0) {
 				result = isoDateTime.format(new Date((last_update - 3600) * 1000));
 			}
@@ -395,7 +412,7 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getChargePoint(String cpId) {
 		open();
-		if (cpId == "") cpId = "-1";
+		if (Objects.equals(cpId, "")) cpId = "-1";
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM mapdetails WHERE cpid=" + cpId, null);
 		return cursor;
@@ -403,7 +420,7 @@ public class Database extends SQLiteOpenHelper {
 
 	public Cursor getChargePointConnections(String cpId) {
 		open();
-		if (cpId == "") cpId = "-1";
+		if (Objects.equals(cpId, "")) cpId = "-1";
 		Cursor cursor = db.rawQuery(
 				"SELECT * FROM Connection WHERE conCpId=" + cpId, null);
 		return cursor;
@@ -491,30 +508,35 @@ public class Database extends SQLiteOpenHelper {
 		// get latest entry:
 
 		Cursor latest = db.rawQuery("SELECT * FROM Notification ORDER BY nID DESC LIMIT 1", null);
-		if (!latest.moveToNext()) {
+		int latestTimestamp = latest.getColumnIndex("nTimestamp");
+		if (latestTimestamp < 0 || !latest.moveToNext()) {
 			latest.close();
 			return;
 		}
 
 		try {
-			ts1 = isoDateTime.parse(latest.getString(latest.getColumnIndex("nTimestamp")));
+			ts1 = isoDateTime.parse(latest.getString(latestTimestamp));
 		} catch (Exception e) {
 			ts1 = new Date();
 		}
+		if (ts1 == null) ts1 = new Date();
 		cal1.setTime(ts1);
 
 		// get entries with timestamps after latest:
 
 		Cursor wrongts = db.rawQuery(
 				"SELECT * FROM Notification WHERE nTimestamp > ?",
-				new String[] { latest.getString(latest.getColumnIndex("nTimestamp")) });
+				new String[] { latest.getString(latestTimestamp) });
+		int wrongtsTimestamp = wrongts.getColumnIndex("nTimestamp");
+		int wrongtsID = wrongts.getColumnIndex("nID");
 
 		while (wrongts.moveToNext()) {
 			try {
 
 				// fix timestamp by replacing the year with the current or last year:
 
-				ts2 = isoDateTime.parse(wrongts.getString(wrongts.getColumnIndex("nTimestamp")));
+				ts2 = isoDateTime.parse(wrongts.getString(wrongtsTimestamp));
+				if (ts2 == null) continue;
 
 				cal2.setTime(ts2);
 				cal2.set(Calendar.YEAR, cal1.get(Calendar.YEAR));
@@ -530,7 +552,7 @@ public class Database extends SQLiteOpenHelper {
 						"UPDATE Notification SET nTimestamp = ? WHERE nID = ?",
 						new String[] {
 								isoDateTime.format(ts3),
-								wrongts.getString(wrongts.getColumnIndex("nID"))
+								wrongts.getString(wrongtsID)
 						});
 
 			} catch (Exception e) {
@@ -543,27 +565,86 @@ public class Database extends SQLiteOpenHelper {
 	}
 
 	public NotificationData getNextNotification(Cursor cursor) {
-		if (cursor == null || !cursor.moveToNext())
+
+		int colTimestamp = cursor.getColumnIndex("nTimestamp");
+		int colID = cursor.getColumnIndex("nID");
+		int colType = cursor.getColumnIndex("nType");
+		int colTitle = cursor.getColumnIndex("nTitle");
+		int colMessage = cursor.getColumnIndex("nMessage");
+
+		if (colTimestamp < 0 || colID < 0 || colType < 0 || colTitle < 0 || colMessage < 0 || !cursor.moveToNext())
 			return null;
 
 		Date timestamp;
 		try {
-			timestamp = isoDateTime.parse(cursor.getString(cursor.getColumnIndex("nTimestamp")));
+			timestamp = isoDateTime.parse(cursor.getString(colTimestamp));
 		} catch (Exception e) {
 			timestamp = new Date();
 		}
 
 		NotificationData data = new NotificationData(
-				cursor.getLong(cursor.getColumnIndex("nID")),
-				cursor.getInt(cursor.getColumnIndex("nType")),
+				cursor.getLong(colID),
+				cursor.getInt(colType),
 				timestamp,
-				cursor.getString(cursor.getColumnIndex("nTitle")),
-				cursor.getString(cursor.getColumnIndex("nMessage")));
+				cursor.getString(colTitle),
+				cursor.getString(colMessage));
 
 		//Log.d(TAG, "getNextNotification: index=" + cursor.getPosition() + " => nID=" + data.ID
 		//	+ " nTitle='" + data.Title + "' nTimestamp='" + data.Timestamp + "'");
 
 		return data;
+	}
+
+
+	public boolean saveStoredCommand(@Nullable StoredCommand cmd) {
+		if (cmd == null) return false;
+		open();
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put("scTitle", cmd.mTitle);
+		contentValues.put("scCommand", cmd.mCommand);
+
+		long rowId;
+		if (cmd.mKey == 0) {
+			rowId = db.insert("StoredCommand", null, contentValues);
+			if (rowId > 0)
+				cmd.mKey = rowId;
+		} else {
+			contentValues.put("scKey", cmd.mKey);
+			rowId = db.replace("StoredCommand", null, contentValues);
+		}
+
+		return (rowId > 0);
+	}
+
+	public boolean deleteStoredCommand(@Nullable StoredCommand cmd) {
+		if (cmd == null) return false;
+		open();
+		int rows = 0;
+		if (cmd.mKey > 0) {
+			rows = db.delete("StoredCommand", "scKey=" + cmd.mKey, null);
+		}
+		return (rows > 0);
+	}
+
+	public ArrayList<StoredCommand> getStoredCommands() {
+		open();
+
+		Cursor cursor = db.rawQuery("SELECT * FROM StoredCommand ORDER BY LOWER(scTitle), scKey", null);
+		int colKey = cursor.getColumnIndex("scKey");
+		int colTitle = cursor.getColumnIndex("scTitle");
+		int colCommand = cursor.getColumnIndex("scCommand");
+
+		ArrayList<StoredCommand> list = new ArrayList<>(cursor.getCount());
+		while (cursor.moveToNext()) {
+			list.add(new StoredCommand(
+					cursor.getLong(colKey),
+					cursor.getString(colTitle),
+					cursor.getString(colCommand)));
+		}
+		cursor.close();
+
+		return list;
 	}
 
 

@@ -275,50 +275,40 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-
-			case R.id.mi_battery_stats:
-				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_power_stats:
-				BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_carinfo:
-				BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_aux_battery_stats:
-				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_features:
-				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_globaloptions:
-				BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_cellular_usage:
-				BaseFragmentActivity.show(getActivity(), CellularStatsFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_app_about:
-				((MainActivity)getActivity()).showVersion();
-				return true;
-
-			default:
-				return false;
+		int itemId = item.getItemId();
+		if (itemId == R.id.mi_battery_stats) {
+			BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_power_stats) {
+			BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_show_carinfo) {
+			BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_aux_battery_stats) {
+			BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_show_features) {
+			BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_globaloptions) {
+			BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_cellular_usage) {
+			BaseFragmentActivity.show(getActivity(), CellularStatsFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (itemId == R.id.mi_app_about) {
+			((MainActivity) getActivity()).showVersion();
+			return true;
 		}
+		return false;
 	}
 
 	@Override
@@ -358,6 +348,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 					break;
 			}
 		}
+
+		cancelCommand();
 	}
 
 

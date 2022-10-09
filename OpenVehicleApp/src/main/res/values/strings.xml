@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation" >
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Open Vehicle</string>
     <string name="Loading">Please wait</string>
     <string name="Settings">Settings</string>
@@ -10,8 +10,13 @@
     <string name="Cancel">Cancel</string>
     <string name="Delete">Delete</string>
     <string name="Save">Save</string>
+    <string name="DatabaseError">Database error</string>
+    <string name="PinShortcut">Pin</string>
+    <string name="PinRequestSuccess">Pin requested, check launcher</string>
+    <string name="PinRequestFailure">Pin request failed</string>
     <string name="Send">Send</string>
     <string name="Error">Error</string>
+    <string name="CommandAuthFailed">Command authorization failed</string>
     <string name="Set">Set</string>
     <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
@@ -217,13 +222,13 @@
 
     <string name="msg_retrieving_data">Retrieving data&#8230;</string>
     <string name="msg_processing_data">Processing data&#8230;</string>
-    <string formatted="false" name="cellular_usage_info_car">Car: %.1f MB/month (%d days)</string>
-    <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/month (%d days)</string>
+    <string name="cellular_usage_info_car" formatted="false">Car: %.1f MB/month (%d days)</string>
+    <string name="cellular_usage_info_app" formatted="false">App: %.1f MB/month (%d days)</string>
     <string name="chart_axis_date">Date</string>
     <string name="chart_axis_datavolume">Volume (KB)</string>
 
-    <string formatted="false" name="lb_chargepoint_conn_level">Level #%d</string>
-    <string formatted="false" name="lb_chargepoint_conn_type">Connection type #%d</string>
+    <string name="lb_chargepoint_conn_level" formatted="false">Level #%d</string>
+    <string name="lb_chargepoint_conn_type" formatted="false">Connection type #%d</string>
 
     <string name="live">live</string>
     <string name="ndays">%d days</string>
@@ -238,14 +243,14 @@
     <string name="pushnotifications">Push Notifications</string>
     <string name="pushnotifications_welcome">Push notifications received for your registered vehicles are archived here.</string>
 
-    <string formatted="false" name="state_charging">CHARGING\n%s %s</string>
-    <string formatted="false" name="state_topping_off">TOPPING OFF\n%s %s</string>
-    <string formatted="false" name="state_done">DONE\n%s %s</string>
-    <string formatted="false" name="state_stopped">STOPPED\n%s %s</string>
+    <string name="state_charging" formatted="false">CHARGING\n%s %s</string>
+    <string name="state_topping_off" formatted="false">TOPPING OFF\n%s %s</string>
+    <string name="state_done" formatted="false">DONE\n%s %s</string>
+    <string name="state_stopped" formatted="false">STOPPED\n%s %s</string>
 
-    <string formatted="false" name="info_etr_full">100%%: ~%s</string>
-    <string formatted="false" name="info_etr_suffsoc">%d%%: ~%s</string>
-    <string formatted="false" name="info_etr_suffrange">%d%s: ~%s</string>
+    <string name="info_etr_full" formatted="false">100%%: ~%s</string>
+    <string name="info_etr_suffsoc" formatted="false">%d%%: ~%s</string>
+    <string name="info_etr_suffrange" formatted="false">%d%s: ~%s</string>
 
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
@@ -265,7 +270,7 @@
     <string name="msg_issuing_climatecontrol">Issuing climate control…</string>
 
     <string-array name="en_charger">
-    	<item>Standard</item>
+        <item>Standard</item>
         <item>Storage</item>
         <item>Range</item>
         <item>Perform</item>
@@ -280,7 +285,7 @@
         <item>5000</item>
     </string-array>
 
-    <string formatted="false" name="ocm_read_failed">OpenChargeMap read failed: %s</string>
+    <string name="ocm_read_failed" formatted="false">OpenChargeMap read failed: %s</string>
     <string name="ocm_toast_autotrack_off">Auto track disabled\nClick Home [⌖] to reactivate</string>
     <string name="ocm_toast_autotrack_on">Auto track enabled</string>
 
@@ -370,6 +375,7 @@
     <string name="err_failed_smscmd">Failure: unknown command / auth error</string>
     <string name="notifications_toast_copied">Message has been copied to clipboard</string>
     <string name="notifications_menu">Options</string>
+    <string name="notifications_stored_commands">Stored Commands</string>
     <string name="notifications_chk_filter_list">Car filter list</string>
     <string name="notifications_chk_filter_info">Car filter info notify</string>
     <string name="notifications_chk_filter_alert">Car filter alert notify</string>
@@ -605,16 +611,29 @@
     <string name="lb_options_broadcast_codes">Enter code letters</string>
     <string name="lb_options_commands">Commands:</string>
     <string name="lb_options_commands_cb">Enable vehicle command service</string>
+    <string name="lb_options_apikey">API key:</string>
+    <string name="lb_options_apikey_renew">Revoke &amp; Renew</string>
+    <string name="lb_options_apikey_renew_confirm">Really revoke &amp; renew the API key, invalidating all pinned commands?</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Update broadcasting allows to send car data updates to other Apps like Automagic or Tasker
          for the message codes given.</p>
         <p>The command service allows Apps to issue vehicle commands and receive command results. To
-         issue commands, the sending App needs to know the vehicle ID and password. Note: all Apps
-         will receive all command results.</p>
+         issue commands, the sending App needs to know the vehicle ID and password or the API key.
+         Note: all Apps will receive all command results.</p>
+        <p>The API key is your local command authorization allowing commands independent of the currently
+         selected vehicle. Renewing the API key will invalidate all installed or pinned command shortcuts.
+         Use this to revoke all stored command authorizations in other Apps at once.</p>
         <p>See <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">OVMS Android Wiki</a>
          and <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS protocol (PDF)</a>
          for message details.</p>
     ]]></string>
+
+    <string name="stored_commands_title">Stored Commands</string>
+    <string name="stored_commands_add">Add Command</string>
+    <string name="stored_commands_edit">Edit Command</string>
+    <string name="stored_commands_pin">Do you want to add an icon for this command to your home screen?</string>
+    <string name="lb_enter_title">Title/name</string>
+    <string name="lb_enter_command">Command</string>
 
     <string name="service_notification_title">OVMS</string>
     <string name="service_notification_text">Service running</string>

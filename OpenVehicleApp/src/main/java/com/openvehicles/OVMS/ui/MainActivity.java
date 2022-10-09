@@ -50,6 +50,7 @@ import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.ConnectionList;
 import com.openvehicles.OVMS.utils.ConnectionList.ConnectionsListener;
+import com.openvehicles.OVMS.utils.Sys;
 
 
 public class MainActivity extends ApiActivity implements
@@ -101,6 +102,16 @@ public class MainActivity extends ApiActivity implements
 			Log.d(TAG, "onCreate: using UUID: " + uuid);
 		}
 
+		// Check/create API key:
+		String apiKey = appPrefes.getData("APIKey");
+		if (apiKey.length() == 0) {
+			apiKey = Sys.getRandomString(25);
+			appPrefes.SaveData("APIKey", apiKey);
+			Log.d(TAG, "onCreate: generated new APIKey: " + apiKey);
+		} else {
+			Log.d(TAG, "onCreate: using APIKey: " + apiKey);
+		}
+
 		// OCM init:
 		getMapDetails = null;
 		getMapDetailList = new ArrayList<LatLng>();
@@ -117,13 +128,10 @@ public class MainActivity extends ApiActivity implements
 		}
 
 		// set up receiver for server communication service:
-		registerReceiver(mApiEventReceiver, new IntentFilter(
-				getPackageName() + ".ApiEvent"));
+		registerReceiver(mApiEventReceiver, new IntentFilter(ApiService.ACTION_APIEVENT));
 
 		// set up receiver for notifications:
-		Log.d(TAG, "onCreate: registering receiver for Intent: " + getPackageName() + ".Notification");
-		registerReceiver(mNotificationReceiver, new IntentFilter(
-				getPackageName() + ".Notification"));
+		registerReceiver(mNotificationReceiver, new IntentFilter(ApiService.ACTION_NOTIFICATION));
 
 		// init UI tabs:
 		mViewPager = new ViewPager(this);
@@ -241,6 +249,7 @@ public class MainActivity extends ApiActivity implements
 		Log.d(TAG, "onResume");
 		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
 				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
+		onNewIntent(getIntent());
 	}
 
 	@Override
@@ -634,13 +643,18 @@ public class MainActivity extends ApiActivity implements
 
 		@Override
 		public void onReceive(Context context, Intent intent) {
-			Log.d(TAG, "Notifications: received " + intent.toString());
+			Log.d(TAG, "mNotificationReceiver: received " + intent.toString());
 
 			// update messages list:
 			NotificationsFragment frg = (NotificationsFragment) mPagerAdapter.getItemByTitle(R.string.Messages);
 			if (frg != null) {
-				Log.d(TAG, "Notifications: calling frg.update()");
+				Log.d(TAG, "mNotificationReceiver: update notifications fragment");
 				frg.update();
+				if (intent.getBooleanExtra("onNotification", false)) {
+					Log.d(TAG, "mNotificationReceiver: switch to notifications fragment");
+					BaseFragmentActivity.finishCurrent();
+					onNavigationItemSelected(mPagerAdapter.getPosition(R.string.Messages), 0);
+				}
 			}
 		}
 	};
@@ -688,13 +702,14 @@ public class MainActivity extends ApiActivity implements
 		int longitude = (int) center.longitude;
 
 		Cursor cursor = database.getlatlngdetail(latitude, longitude);
+		int colLastUpdate = cursor.getColumnIndex("last_update");
 		if (cursor.getCount() == 0) {
 			cursor.close();
 			return false;
 		}
 		else if (cursor.moveToFirst()) {
 			// check if last tile update was more than 24 hours ago:
-			long last_update = cursor.getLong(cursor.getColumnIndex("last_update"));
+			long last_update = (colLastUpdate >= 0) ? cursor.getLong(colLastUpdate) : 0;
 			long now = System.currentTimeMillis() / 1000;
 			if (now > last_update + (3600 * 24)) {
 				cursor.close();

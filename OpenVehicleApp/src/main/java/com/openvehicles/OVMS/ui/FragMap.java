@@ -1,20 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
-import java.util.Arrays;
-import java.util.List;
-
-import com.androidmapsextensions.CircleOptions;
-import com.androidmapsextensions.ClusterGroup;
-import com.androidmapsextensions.ClusteringSettings;
-import com.androidmapsextensions.GoogleMap;
-import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
-import com.androidmapsextensions.Marker;
-import com.androidmapsextensions.MarkerOptions;
-import com.androidmapsextensions.OnMapReadyCallback;
-import com.androidmapsextensions.SupportMapFragment;
-
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -25,29 +11,27 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.fragment.app.FragmentActivity;
-import androidx.fragment.app.FragmentManager;
-
-import androidx.core.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.style.RelativeSizeSpan;
 import android.util.Log;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.androidmapsextensions.CircleOptions;
+import com.androidmapsextensions.ClusterGroup;
+import com.androidmapsextensions.ClusteringSettings;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.OnMapReadyCallback;
+import com.androidmapsextensions.SupportMapFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -62,6 +46,15 @@ import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider;
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
 import com.openvehicles.OVMS.ui.utils.Ui;
+
+import java.util.Arrays;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentManager;
 
 public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		GetMapDetailsListener, OnClickListener, FragMapSettings.UpdateMap, OnMapReadyCallback {
@@ -238,9 +231,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		SpannableStringBuilder text = new SpannableStringBuilder(msg);
 		text.setSpan(new RelativeSizeSpan(1.15f), 0, text.length(), 0);
 		Toast toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
-		toast.setGravity(Gravity.TOP|Gravity.CENTER_HORIZONTAL, 0,
-				(int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 60f,
-						getResources().getDisplayMetrics()));
 		toast.show();
 	}
 
@@ -308,37 +298,28 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
 
-		switch(menuId) {
-
-			case R.id.mi_map_autotrack:
-				appPrefes.SaveData("autotrack", newState ? "on" : "off");
-				item.setChecked(newState);
-				autotrack = newState;
-				if (autotrack)
-					update();
-				if (map != null && map.isMyLocationEnabled()) {
-					Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autotrack);
-					map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
-				}
-				break;
-
-			case R.id.mi_map_filter_connections:
-				appPrefes.SaveData("filter", newState ? "on" : "off");
-				item.setChecked(newState);
-				updateMapDetails(false);
-				break;
-
-			case R.id.mi_map_filter_range:
-				appPrefes.SaveData("inrange", newState ? "on" : "off");
-				item.setChecked(newState);
-				updateMapDetails(false);
-				break;
-
-			case R.id.mi_map_settings:
-				Bundle args = new Bundle();
-				BaseFragmentActivity.show(getActivity(), FragMapSettings.class, args,
-						Configuration.ORIENTATION_UNDEFINED);
-				break;
+		if (menuId == R.id.mi_map_autotrack) {
+			appPrefes.SaveData("autotrack", newState ? "on" : "off");
+			item.setChecked(newState);
+			autotrack = newState;
+			if (autotrack)
+				update();
+			if (map != null && map.isMyLocationEnabled()) {
+				Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autotrack);
+				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+			}
+		} else if (menuId == R.id.mi_map_filter_connections) {
+			appPrefes.SaveData("filter", newState ? "on" : "off");
+			item.setChecked(newState);
+			updateMapDetails(false);
+		} else if (menuId == R.id.mi_map_filter_range) {
+			appPrefes.SaveData("inrange", newState ? "on" : "off");
+			item.setChecked(newState);
+			updateMapDetails(false);
+		} else if (menuId == R.id.mi_map_settings) {
+			Bundle args = new Bundle();
+			BaseFragmentActivity.show(getActivity(), FragMapSettings.class, args,
+					Configuration.ORIENTATION_UNDEFINED);
 		}
 
 		return false;
@@ -646,12 +627,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 	@Override
 	public void onClick(@NonNull View view) {
-		switch (view.getId()) {
-			case R.id.bt_route:
-				direction();
-				break;
-			default:
-				break;
+		if (view.getId() == R.id.bt_route) {
+			direction();
 		}
 	}
 

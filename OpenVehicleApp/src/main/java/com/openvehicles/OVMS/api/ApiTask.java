@@ -1,5 +1,14 @@
 package com.openvehicles.OVMS.api;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
+import android.util.Base64;
+import android.util.Log;
+
+import com.openvehicles.OVMS.entities.CarData;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,18 +23,12 @@ import java.util.Date;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import javax.crypto.Cipher;
 import javax.crypto.Mac;
-
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
-import android.util.Base64;
-import android.util.Log;
-
-import com.openvehicles.OVMS.entities.CarData;
 
 public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private static final String TAG = "ApiTask";
@@ -39,6 +42,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	private byte[] mPmDigestBuf;
 	private PrintWriter mOutputstream;
 	private BufferedReader mInputstream;
+	private Semaphore mOutputLock = new Semaphore(1);
 	private boolean isLoggedIn = false;
 	private final Random sRnd = new Random();
 	private Timer pingTimer;
@@ -165,7 +169,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 					Log.d(TAG, String.format("RX: %s (%s)", msg, rx));
 
 					// Process message:
-					if (msg.substring(0, 5).equals("MP-0 ")) {
+					if (msg.startsWith("MP-0 ")) {
 						// is valid message (for protocol version 0):
 						handleMessage(msg.substring(5));
 					} else {
@@ -248,19 +252,34 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 	 * @param message -- complete protocol message with header
 	 * @return true if command has been sent, false on error
 	 */
-	public synchronized boolean sendMessage(String message) {
-		Log.i(TAG, "TX: " + message);
+	public boolean sendMessage(String message) {
+
 		if (!isLoggedIn) {
-			Log.w(TAG, "Server not ready. TX aborted.");
+			Log.e(TAG, "TX: Server not ready. TX aborted.");
 			return false;
 		}
 
+		// Network activity shall not run on the UI thread, so we start a
+		//	thread for the transmission and serialize concurrent transmissions
+		//	using a semaphore:
 		try {
-			mOutputstream.println(Base64.encodeToString(mTxCipher.update(message.getBytes()), Base64.NO_WRAP));
+			if (!mOutputLock.tryAcquire(1000, TimeUnit.MILLISECONDS))
+				throw new TimeoutException();
 		} catch (Exception e) {
-			publishProgress(MsgType.msgError, e);
+			Log.e(TAG, "TX: Socket unavailable:" + e);
 			return false;
 		}
+
+		new Thread(() -> {
+			try {
+				Log.i(TAG, "TX: " + message);
+				mOutputstream.println(Base64.encodeToString(mTxCipher.update(message.getBytes()), Base64.NO_WRAP));
+			} catch (Exception e) {
+				Log.e(TAG, "TX: " + e);
+				publishProgress(MsgType.msgError, e);
+			}
+			mOutputLock.release();
+		}).start();
 
 		return true;
 	}
@@ -311,6 +330,7 @@ public class ApiTask extends AsyncTask<Void, Object, Void> {
 			mSocket = new Socket(mCarData.sel_server, 6867);
 			mOutputstream = new PrintWriter(new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream())), true);
 			mInputstream = new BufferedReader(new InputStreamReader(mSocket.getInputStream()));
+			mOutputLock = new Semaphore(1);
 
 			// Encrypt password:
 			Mac client_hmac = Mac.getInstance("HmacMD5");

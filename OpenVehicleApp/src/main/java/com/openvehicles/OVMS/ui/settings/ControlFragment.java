@@ -84,60 +84,53 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 		BaseFragmentActivity activity = (BaseFragmentActivity) getActivity();
 		Bundle args;
 
-		switch (v.getId()) {
-			case R.id.btn_mmi_ussd_code:
-				Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
-						"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
-							@Override
-							public void onAction(String pData) {
+		int id = v.getId();
+		if (id == R.id.btn_mmi_ussd_code) {
+			Ui.showEditDialog(v.getContext(), getString(R.string.msg_mmi_ssd_code),
+					"*100#", R.string.Send, false, new Ui.OnChangeListener<String>() {
+						@Override
+						public void onAction(String pData) {
 
-								if (TextUtils.isEmpty(pData))
-									return;
-								ussdCmd = pData;
+							if (TextUtils.isEmpty(pData))
+								return;
+							ussdCmd = pData;
 
-								Context context = getActivity();
+							Context context = getActivity();
 
-								if (ovmsNotifications == null)
-									ovmsNotifications = new OVMSNotifications(context);
+							if (ovmsNotifications == null)
+								ovmsNotifications = new OVMSNotifications(context);
 
-								boolean is_new = ovmsNotifications.addNotification(
-										NotificationData.TYPE_COMMAND,
-										mCarData.sel_vehicleid + ": " + ussdCmd,
-										ussdCmd);
-								if (is_new) {
-									// signal App to reload notifications:
-									Intent uiNotify = new Intent(context.getPackageName() + ".Notification");
-									context.sendBroadcast(uiNotify);
-								}
-
-								sendCommand(R.string.lb_mmi_ussd_code, "41," + pData, ControlFragment.this);
+							boolean is_new = ovmsNotifications.addNotification(
+									NotificationData.TYPE_COMMAND,
+									mCarData.sel_vehicleid + ": " + ussdCmd,
+									ussdCmd);
+							if (is_new) {
+								// signal App to reload notifications:
+								Intent uiNotify = new Intent(context.getPackageName() + ".Notification");
+								context.sendBroadcast(uiNotify);
 							}
-						});
-				break;
-			case R.id.btn_features:
-				args = new Bundle();
-				args.putInt("position", mEditPosition);
-				activity.setNextFragment(FeaturesFragment.class, args);
-				break;
-			case R.id.btn_parameters:
-				args = new Bundle();
-				args.putInt("position", mEditPosition);
-				activity.setNextFragment(ControlParametersFragment.class, args);
-				break;
-			case R.id.btn_reset_ovms_module:
-				sendCommand(R.string.msg_rebooting_car_module, "5", this);
-				break;
-			case R.id.btn_connections:
-				connectionList.sublist();
-				break;
-			case R.id.btn_cellular_usage:
-				activity.setNextFragment(CellularStatsFragment.class);
-				break;
-			case R.id.btn_diag_logs:
-				args = new Bundle();
-				args.putInt("position", mEditPosition);
-				activity.setNextFragment(LogsFragment.class, args);
-				break;
+
+							sendCommand(R.string.lb_mmi_ussd_code, "41," + pData, ControlFragment.this);
+						}
+					});
+		} else if (id == R.id.btn_features) {
+			args = new Bundle();
+			args.putInt("position", mEditPosition);
+			activity.setNextFragment(FeaturesFragment.class, args);
+		} else if (id == R.id.btn_parameters) {
+			args = new Bundle();
+			args.putInt("position", mEditPosition);
+			activity.setNextFragment(ControlParametersFragment.class, args);
+		} else if (id == R.id.btn_reset_ovms_module) {
+			sendCommand(R.string.msg_rebooting_car_module, "5", this);
+		} else if (id == R.id.btn_connections) {
+			connectionList.sublist();
+		} else if (id == R.id.btn_cellular_usage) {
+			activity.setNextFragment(CellularStatsFragment.class);
+		} else if (id == R.id.btn_diag_logs) {
+			args = new Bundle();
+			args.putInt("position", mEditPosition);
+			activity.setNextFragment(LogsFragment.class, args);
 		}
 	}
 
@@ -158,8 +151,9 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 				if (command == 41) {
 					// only process second cmd result carrying data:
 					if (result.length >= 3) {
-						// add MMI/USSD result to Notifications:
+						cancelCommand();
 
+						// add MMI/USSD result to Notifications:
 						if (ovmsNotifications == null)
 							ovmsNotifications = new OVMSNotifications(context);
 
@@ -183,20 +177,24 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 					}
 				} else {
 					// default:
+					cancelCommand();
 					Toast.makeText(context, cmdMessage + " => " + getString(R.string.msg_ok),
 							Toast.LENGTH_SHORT).show();
 				}
 
 				break;
 			case 1: // failed
+				cancelCommand();
 				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_failed, resText),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 2: // unsupported
+				cancelCommand();
 				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unsupported_operation),
 						Toast.LENGTH_SHORT).show();
 				break;
 			case 3: // unimplemented
+				cancelCommand();
 				Toast.makeText(context, cmdMessage + " => " + getString(R.string.err_unimplemented_operation),
 						Toast.LENGTH_SHORT).show();
 				break;
