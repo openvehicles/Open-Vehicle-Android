@@ -210,7 +210,7 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 			showProgressOverlay();
 
 			// Request cellular usage data:
-			mService.sendCommand("30", this);
+			sendCommand("30", this);
 
 		} else {
 			// need to hide explicitly because onStart=true:

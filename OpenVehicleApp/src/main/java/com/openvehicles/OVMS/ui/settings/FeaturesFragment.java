@@ -117,6 +117,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		String resText = (result.length > 2) ? result[2] : "";
 
 		if (command == 2) {
+			// Set feature (single) response:
 			cancelCommand();
 			switch (resCode) {
 			case 0:
@@ -140,7 +141,8 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		}
 
 		if (command != 1) return; // Not for us
-		
+
+		// Get feature list (multiple) responses:
 		switch (resCode) {
 		case 0:
 			if (result.length > 4) {
@@ -159,6 +161,7 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 				}
 
 				if (fn == (fm - 1)) {
+					// got all, cancel listening:
 					cancelCommand();
 				}
 			}

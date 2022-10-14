@@ -25,6 +25,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 	private static final String TAG = "BaseFragment";
 
 	public HashMap<String, String> mSentCommandMessage;
+	public OnResultCommandListener mOnResultCommandListener;
 
 	public ProgressOverlay mProgressOverlay;
 	public boolean mProgressShowOnStart;
@@ -90,6 +91,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 
 	@Override
 	public void onStart() {
+		Log.d(TAG, "onStart " + getClass());
 		super.onStart();
 
 		if (mProgressOverlay != null && mProgressShowOnStart)
@@ -106,7 +108,10 @@ public class BaseFragment extends Fragment implements ApiObserver {
 
 	@Override
 	public void onStop() {
+		Log.d(TAG, "onStop " + getClass());
 		super.onStop();
+
+		cancelCommand();
 
 		ApiObservable.get().deleteObserver(this);
 
@@ -132,7 +137,11 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		ApiService service = getService();
 		if (service == null)
 			return;
-		service.cancelCommand();
+		if (mOnResultCommandListener != null) {
+			Log.d(TAG, "cancelCommand listener=" + mOnResultCommandListener);
+			service.cancelCommand(mOnResultCommandListener);
+			mOnResultCommandListener = null;
+		}
 		mSentCommandMessage.clear();
 	}
 
@@ -161,6 +170,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		}
 
 		// pass on to API service:
+		mOnResultCommandListener = pOnResultCommandListener;
 		service.sendCommand(pMessage, pCommand, pOnResultCommandListener);
 	}
 
@@ -169,6 +179,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		ApiService service = getService();
 		if (service == null)
 			return;
+		mOnResultCommandListener = pOnResultCommandListener;
 		service.sendCommand(pCommand, pOnResultCommandListener);
 	}
 
@@ -176,6 +187,8 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		AppPrefes prefs = new AppPrefes(getActivity(), "ovms");
 		Database database = new Database(getActivity());
 		Log.i(TAG, "changeCar: switching to vehicle ID " + pCarData.sel_vehicleid);
+
+		cancelCommand();
 
 		// select car:
 		CarsStorage.get().setSelectedCarId(pCarData.sel_vehicleid);

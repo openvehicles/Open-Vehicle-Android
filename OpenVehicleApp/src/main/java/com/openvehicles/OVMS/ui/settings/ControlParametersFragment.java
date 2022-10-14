@@ -118,6 +118,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		String resText = (result.length > 2) ? result[2] : "";
 
 		if (command == 4) {
+			// Set parameter (single) response:
 			cancelCommand();
 			switch (resCode) {
 			case 0:
@@ -141,7 +142,8 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 		}
 
 		if (command != 3) return; // Not for us
-		
+
+		// Get parameter list (multiple) responses:
 		switch (resCode) {
 		case 0:
 			if (result.length >= 4) {
@@ -156,6 +158,7 @@ public class ControlParametersFragment extends BaseFragment implements OnResultC
 				}
 				
 				if (fn == (fm - 1)) {
+					// got all, cancel listening:
 					cancelCommand();
 				}
 			}

@@ -227,7 +227,7 @@ public class CmdSeries implements OnResultCommandListener {
 		Cmd cmd = getCurrent();
 		if (cmd == null) {
 			// we're not active, cancel subscription:
-			mService.cancelCommand();
+			mService.cancelCommand(this);
 			return;
 		} else if (cmd.commandCode != commandCode) {
 			// not for us:
@@ -251,7 +251,7 @@ public class CmdSeries implements OnResultCommandListener {
 			} else if (returnCode != 0) {
 				// error: stop execution
 				Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
-				mService.cancelCommand();
+				mService.cancelCommand(this);
 				if (mListener != null)
 					mListener.onCmdSeriesFinish(this, returnCode);
 
@@ -272,7 +272,7 @@ public class CmdSeries implements OnResultCommandListener {
 		} else if (returnCode != 0) {
 			// single result command error: stop execution
 			Log.e(TAG, "ABORT: cmd failed: key=" + cmd.commandCode + " => returnCode=" + cmd.returnCode);
-			mService.cancelCommand();
+			mService.cancelCommand(this);
 			if (mListener != null)
 				mListener.onCmdSeriesFinish(this, returnCode);
 
@@ -290,7 +290,7 @@ public class CmdSeries implements OnResultCommandListener {
 	 */
 	public void cancel() {
 		Log.v(TAG, "cancelled");
-		mService.cancelCommand();
+		mService.cancelCommand(this);
 		if (mListener != null)
 			mListener.onCmdSeriesFinish(this, -1);
 	}

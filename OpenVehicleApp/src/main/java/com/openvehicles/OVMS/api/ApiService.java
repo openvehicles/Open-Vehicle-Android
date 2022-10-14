@@ -419,9 +419,10 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		return mApiTask.sendMessage(pCommand.startsWith("MP-0") ? pCommand : String.format("MP-0 C%s", pCommand));
 	}
 
-	public void cancelCommand() {
+	public void cancelCommand(OnResultCommandListener pOnResultCommandListener) {
 		// TODO: use command request queue, move result listener into command request
-		mOnResultCommandListener = null;
+		if (mOnResultCommandListener == pOnResultCommandListener || pOnResultCommandListener == null)
+			mOnResultCommandListener = null;
 	}
 
 	/**
@@ -791,7 +792,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 			// Send command:
 			if (!msgCommand.isEmpty()) {
 				Log.i(TAG, "CommandReceiver: sending command: " + msgCommand);
-				cancelCommand();
+				cancelCommand(null);
 				if (!mApiTask.sendMessage(String.format("MP-0 C%s", msgCommand))) {
 					Log.e(TAG, "CommandReceiver: sendCommand failed");
 				}
