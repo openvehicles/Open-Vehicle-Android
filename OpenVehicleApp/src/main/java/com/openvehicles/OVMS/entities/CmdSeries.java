@@ -282,6 +282,11 @@ public class CmdSeries implements OnResultCommandListener {
 			if (mListener != null)
 				mListener.onCmdSeriesFinish(this, returnCode);
 
+		} else if (commandCode == 41) {
+			// ignore initial empty response
+			if (!returnText.isEmpty())
+				executeNext();
+
 		} else {
 			// single result command success:
 			executeNext();
