@@ -15,7 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 /**
  * DialogActivity: custom Toast replacement triggered by an Intent, key advantages:
  * 	- not limited to 2 lines on API >= 31
- * 	- working from background (service) on Huawei devices
+ * 	- working from background (service) on Huawei devices (only on API < ?)
  * 	- custom title
  * 	- scrollable text content
  * 	- user can keep message on screen by interacting with it (holding/scrolling)

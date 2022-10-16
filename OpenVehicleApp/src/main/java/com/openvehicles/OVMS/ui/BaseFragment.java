@@ -2,10 +2,13 @@ package com.openvehicles.OVMS.ui;
 
 import android.app.Activity;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -121,11 +124,18 @@ public class BaseFragment extends Fragment implements ApiObserver {
 
 	@Override
 	public void update(CarData pCarData) {
+		// Override as needed
 	}
 
 	@Override
 	public void onServiceAvailable(ApiService pService) {
+		// Override as needed, default:
 		update(pService.getCarData());
+	}
+
+	@Override
+	public void onServiceLoggedIn(ApiService pService, boolean pIsLoggedIn) {
+		// Override as needed
 	}
 
 	public String getSentCommandMessage(String cmd) {
@@ -167,6 +177,11 @@ public class BaseFragment extends Fragment implements ApiObserver {
 			mSentCommandMessage.put(cmd, pMessage);
 		} catch (Exception e) {
 			// ignore
+		}
+
+		// Display message:
+		if (!TextUtils.isEmpty(pMessage)) {
+			Toast.makeText(getContext(), pMessage, Toast.LENGTH_SHORT).show();
 		}
 
 		// pass on to API service:

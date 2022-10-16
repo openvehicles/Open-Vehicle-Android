@@ -69,7 +69,7 @@ public class CreateShortcutActivity extends Activity {
 		intent.setAction("com.openvehicles.OVMS.action.COMMAND");
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_NO_HISTORY|Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 		intent.putExtra("apikey", appPrefes.getData("APIKey"));
-		intent.putExtra("command", command);
+		intent.putExtras(data);
 
 		shortcut = new ShortcutInfoCompat.Builder(appContext, "StoredCommand_" + key)
 				.setShortLabel(title)

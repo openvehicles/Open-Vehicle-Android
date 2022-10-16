@@ -67,7 +67,9 @@
         <activity
             android:name=".api.CommandActivity"
             android:exported="true"
-            android:theme="@android:style/Theme.NoDisplay">
+            android:launchMode="singleTop"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.AppDialog">
             <intent-filter>
                 <action android:name="com.openvehicles.OVMS.action.COMMAND" />
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -85,6 +87,8 @@
 
         <activity
             android:name=".ui.DialogActivity"
+            android:excludeFromRecents="true"
+            android:launchMode="singleTop"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.AppDialog"
             android:exported="false">

@@ -16,7 +16,6 @@
     <string name="PinRequestFailure">Anpinnen fehlgeschlagen</string>
     <string name="Send">Absenden</string>
     <string name="Error">Fehler</string>
-    <string name="CommandAuthFailed">Kommando-Autorisierung fehlgeschlagen</string>
     <string name="Set">Einstellen</string>
     <string name="Control">Kontrolle</string>
     <string name="ServerNameOrIP">Serveradresse (Domain oder IP)</string>
@@ -187,6 +186,8 @@
     <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Reichweiten-Modus beschränkt die Leistung\nRegelmäßiger Gebrauch reduziert die langfristige Akku-Lebensdauer</string>
     <string name="msg_charger_perform">Regelmäßige Verwendung des Performance-Modus\nreduziert die langfristige Akku-Lebensdauer</string>
+    <string name="msg_connecting_service">Verbinde zum Server&#8230;</string>
+    <string name="msg_connecting_vehicle">Verbinde zum Fahrzeug&#8230;</string>
     <string name="msg_wakeup_car">Wecke Auto auf&#8230;</string>
     <string name="msg_issuing_homelink">Erteile Homelink-Kommando&#8230;</string>
     <string name="msg_setting_charge_mc">Setze Lade-Modus und Stromstärke&#8230;</string>
@@ -205,12 +206,19 @@
     <string name="err_connection_lost">OVMS Server Verbindung verloren</string>
     <string name="err_check_following">Bitte überprüfe die folgenden Daten:\n1. OVMS Server Adresse\n2. Deine Fahrzeug-ID und Passwörter</string>
     <string name="err_failed">Gescheitert: %s</string>
+    <string name="err_command_failed">Fehler bei Kommandoausführung</string>
+    <string name="err_command_cancelled">Kommandoausführung abgebrochen</string>
     <string name="err_unsupported_operation">Nicht unterstütze Operation</string>
     <string name="err_unimplemented_operation">Nicht implementierte Operation</string>
     <string name="err_param_not_editable">Sorry, dieser Parameter ist nicht editierbar!</string>
+    <string name="err_command_auth_failed">Kommando-Autorisierung fehlgeschlagen</string>
+    <string name="err_offline">Keine oder gesperrte Netzwerkverbindung</string>
+    <string name="err_vehicle_unknown">Fahrzeug-ID "%1$s" unbekannt</string>
 
     <string name="msg_retrieving_data">Rufe Daten ab&#8230;</string>
     <string name="msg_processing_data">Verarbeite Daten&#8230;</string>
+    <string name="msg_more_rows_omitted">(%1$d weitere Zeilen ausgelassen)</string>
+
     <string formatted="false" name="cellular_usage_info_car">Fahrzeug: %.1f MB/Monat (%d Tage)</string>
     <string formatted="false" name="cellular_usage_info_app">App: %.1f MB/Monat (%d Tage)</string>
     <string name="chart_axis_date">Datum</string>

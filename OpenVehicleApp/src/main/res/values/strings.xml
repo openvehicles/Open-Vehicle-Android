@@ -16,7 +16,6 @@
     <string name="PinRequestFailure">Pin request failed</string>
     <string name="Send">Send</string>
     <string name="Error">Error</string>
-    <string name="CommandAuthFailed">Command authorization failed</string>
     <string name="Set">Set</string>
     <string name="Control">Control</string>
     <string name="ServerNameOrIP">Server Address (Domain or IP)</string>
@@ -198,6 +197,8 @@
     <string name="msg_ok">OK</string>
     <string name="msg_charger_range">Range Mode limits power\nFrequent use will reduce long-term battery life</string>
     <string name="msg_charger_perform">Frequent use of Performance Mode\nwill reduce long-term battery life</string>
+    <string name="msg_connecting_service">Connecting to service&#8230;</string>
+    <string name="msg_connecting_vehicle">Connecting to vehicle&#8230;</string>
     <string name="msg_wakeup_car">Waking up Car&#8230;</string>
     <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
     <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
@@ -216,12 +217,19 @@
     <string name="err_connection_lost">OVMS Server Connection Lost</string>
     <string name="err_check_following">Please check the following:\n1. OVMS Server address\n2. Your vehicle ID and passwords</string>
     <string name="err_failed">Failed: %s</string>
+    <string name="err_command_failed">Command returned error</string>
+    <string name="err_command_cancelled">Command cancelled</string>
     <string name="err_unsupported_operation">Unsupported operation</string>
     <string name="err_unimplemented_operation">Unimplemented operation</string>
     <string name="err_param_not_editable">Sorry, this parameter is not editable!</string>
+    <string name="err_command_auth_failed">Command authorization failed</string>
+    <string name="err_offline">Network offline or blocked</string>
+    <string name="err_vehicle_unknown">Vehicle ID "%1$s" unknown</string>
 
     <string name="msg_retrieving_data">Retrieving data&#8230;</string>
     <string name="msg_processing_data">Processing data&#8230;</string>
+    <string name="msg_more_rows_omitted">(%1$d more rows omitted)</string>
+
     <string name="cellular_usage_info_car" formatted="false">Car: %.1f MB/month (%d days)</string>
     <string name="cellular_usage_info_app" formatted="false">App: %.1f MB/month (%d days)</string>
     <string name="chart_axis_date">Date</string>

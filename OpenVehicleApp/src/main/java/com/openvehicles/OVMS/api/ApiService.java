@@ -10,8 +10,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -23,30 +21,21 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
-import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
-import android.text.style.StyleSpan;
-import android.text.style.TypefaceSpan;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiTask.ApiTaskListener;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.ui.DialogActivity;
 import com.openvehicles.OVMS.ui.MainActivity;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.CarsStorage;
-import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.Sys;
 
 import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Date;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -192,21 +181,23 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		return mBinder;
 	}
 
-	public void onStop() {
-		if (!mEnabled) {
-			Log.d(TAG, "onStop (not enabled)");
+
+	public void onActivityStop() {
+		if (!mEnabled && !isOnline()) {
+			Log.d(TAG, "onActivityStop (without background connectivity)");
 			mStopped = true;
 			sendApiEvent("ServiceStopped");
 		}
 	}
 
-	public void onStart() {
+	public void onActivityStart() {
 		if (mStopped) {
-			Log.d(TAG, "onStart");
+			Log.d(TAG, "onActivityStart");
 			mStopped = false;
 			sendApiEvent("ServiceStarted");
 		}
 	}
+
 
 	public class ApiBinder extends Binder {
 		public ApiService getService() {
@@ -272,6 +263,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 				Log.v(TAG, "closeConnection: shutting down TCP connection");
 				mApiTask.cancel(true);
 				mApiTask = null;
+				ApiObservable.get().notifyLoggedIn(this, false);
 				sendApiEvent("UpdateStatus");
 			}
 		} catch (Exception e) {
@@ -361,7 +353,8 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		if (mStopped)
 			return false;
 		NetworkInfo info = mConnectivityManager.getActiveNetworkInfo();
-		return (info != null && info.isConnected());
+		return (info != null && info.isConnected() &&
+				info.getDetailedState() != NetworkInfo.DetailedState.BLOCKED);
 	}
 
 
@@ -371,6 +364,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	private final BroadcastReceiver mNetworkStatusReceiver = new BroadcastReceiver() {
 		@Override
 		public void onReceive(Context context, Intent intent) {
+			Log.d(TAG, "mNetworkStatusReceiver: " + intent + intent.getExtras());
 			Log.d(TAG, "mNetworkStatusReceiver: new state: "
 					+ (isOnline() ? "ONLINE" : "OFFLINE"));
 			if (!isOnline() && mApiTask != null) {
@@ -401,15 +395,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	}
 
 	public boolean sendCommand(String pMessage, String pCommand, OnResultCommandListener pOnResultCommandListener) {
-		if (sendCommand(pCommand, pOnResultCommandListener)) {
-			if (!TextUtils.isEmpty(pMessage)) {
-				// TODO: remove UI interaction from Service
-				Toast.makeText(this, pMessage, Toast.LENGTH_SHORT).show();
-			}
-			return true;
-		} else {
-			return false;
-		}
+		return sendCommand(pCommand, pOnResultCommandListener);
 	}
 
 	public boolean sendCommand(String pCommand, OnResultCommandListener pOnResultCommandListener) {
@@ -573,9 +559,15 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	}
 
 	@Override
+	public void onServiceLoggedIn(ApiService pService, boolean pIsLoggedIn) {
+		// nop
+	}
+
+	@Override
 	public void onServerSocketError(Throwable error) {
+		ApiObservable.get().notifyLoggedIn(this, isLoggedIn());
 		ApiEvent apiEvent = new ApiEvent("ServerSocketError", error);
-		apiEvent.putExtra("message", getString((mApiTask != null && mApiTask.isLoggedIn())
+		apiEvent.putExtra("message", getString(isLoggedIn()
 				? R.string.err_connection_lost
 				: R.string.err_check_following));
 		apiEvent.send();
@@ -606,88 +598,10 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		}
 
 		if (mOnResultCommandListener != null) {
-
 			// TODO: use command request queue, move result listener into command request
 			// Forward command response to listener:
 			//Log.d(TAG, "onResultCommand: forward to listener");
 			mOnResultCommandListener.onResultCommand(data);
-
-		} else {
-
-			//Log.d(TAG, "onResultCommand: no listener, display to user");
-			boolean displayResult = true;
-
-			if (cmd_error == COMMAND_RESULT_OK && hasMultiRowResponse(cmd_code)) {
-				try {
-					int recNr = Integer.parseInt(data[2]);
-					// Feature & parameter lists begin at recNr 0, other at 1:
-					if (recNr > 0 && (cmd_code == 1 || cmd_code == 3))
-						displayResult = false;
-					else if (recNr > 1)
-						displayResult = false;
-				} catch (Exception e) {
-					// if data[2] is no integer, display the message
-				}
-			}
-
-			if (displayResult) {
-
-				String title = mCarData.sel_vehicleid + ":";	// TODO: add command sent?
-
-				// Add command to notifications:
-				if (cmd_error == COMMAND_RESULT_OK) {
-					int type = (cmd_code == 41) ? NotificationData.TYPE_USSD : NotificationData.TYPE_RESULT_SUCCESS;
-					// suppress first (empty) OK result for cmd 41:
-					if (cmd_code == 7 || !cmd_data.isEmpty()) {
-						mDatabase.addNotification(new NotificationData(type, new Date(), title,
-								cmd_data.isEmpty() ? getString(R.string.msg_ok) : cmd_data));
-						sendBroadcast(new Intent(ApiService.ACTION_NOTIFICATION)
-								.putExtra("onNotification", true));
-					}
-				} else {
-					mDatabase.addNotification(new NotificationData(NotificationData.TYPE_ERROR, new Date(), title,
-							getString(R.string.err_failed_smscmd)));
-					sendBroadcast(new Intent(ApiService.ACTION_NOTIFICATION)
-							.putExtra("onNotification", true));
-				}
-
-				// TODO: remove UI interaction from Service
-				// Display the command result to the user:
-				SpannableStringBuilder text = new SpannableStringBuilder();
-				int start = 0;
-				if (cmd_code != 7) {
-					text.append(getCommandName(cmd_code));
-					text.setSpan(new StyleSpan(Typeface.ITALIC), start, text.length(), 0);
-					text.append(" ");
-					start = text.length();
-				}
-				switch (cmd_error) {
-					case COMMAND_RESULT_OK:
-						if (!cmd_data.isEmpty()) {
-							text.append(cmd_data.replace('\r', '\n'));
-							text.setSpan(new TypefaceSpan("monospace"), start, text.length(), 0);
-							text.setSpan(new RelativeSizeSpan(0.8f), start, text.length(), 0);
-						} else {
-							text.append(getString(R.string.msg_ok));
-							text.setSpan(new ForegroundColorSpan(Color.GREEN), start, text.length(), 0);
-						}
-						break;
-					case COMMAND_RESULT_FAILED:
-						text.append(getString(R.string.err_failed, cmd_data));
-						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
-						break;
-					case COMMAND_RESULT_UNSUPPORTED:
-						text.append(getString(R.string.err_unsupported_operation));
-						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
-						break;
-					case COMMAND_RESULT_UNIMPLEMENTED:
-						text.append(getString(R.string.err_unimplemented_operation));
-						text.setSpan(new ForegroundColorSpan(Color.RED), start, text.length(), 0);
-						break;
-				}
-
-				DialogActivity.show(getApplicationContext(), title, text);
-			}
 		}
 
 		// Check broadcast API configuration:
@@ -711,12 +625,14 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	@Override
 	public void onLoginBegin() {
 		Log.d(TAG, "onLoginBegin");
+		ApiObservable.get().notifyLoggedIn(this, false);
 		sendApiEvent("LoginBegin");
 	}
 
 	@Override
 	public void onLoginComplete() {
 		Log.d(TAG, "onLoginComplete");
+		ApiObservable.get().notifyLoggedIn(this, true);
 		sendApiEvent("LoginComplete");
 	}
 

@@ -2,8 +2,10 @@ package com.openvehicles.OVMS.utils;
 
 import android.app.PendingIntent;
 import android.os.Build;
+import android.os.Bundle;
 
 import java.util.Random;
+import java.util.Set;
 
 public class Sys {
 
@@ -38,6 +40,31 @@ public class Sys {
 			sb.append(charset.charAt(random.nextInt(charset.length())));
 		}
 		return sb.toString();
+	}
+
+	/**
+	 * toString(Bundle): create text representation of any Bundle, parceled or unparceled
+	 * Credit: https://github.com/android-hacker/VirtualXposed/blob/master/VirtualApp/lib/src/main/java/com/lody/virtual/helper/utils/VLog.java
+	 * @param bundle parceled/standard Bundle
+	 * @return text representation suitable for logging, or null if bundle is null
+	 */
+	public static String toString(Bundle bundle) {
+		if (bundle == null) return null;
+		if (bundle.get("mParcelledData") != null) {
+			Set<String> keys=bundle.keySet();
+			StringBuilder stringBuilder = new StringBuilder("Bundle[");
+			if (keys != null) {
+				for (String key : keys) {
+					stringBuilder.append(key);
+					stringBuilder.append("=");
+					stringBuilder.append(bundle.get(key));
+					stringBuilder.append(",");
+				}
+			}
+			stringBuilder.append("]");
+			return stringBuilder.toString();
+		}
+		return bundle.toString();
 	}
 
 }

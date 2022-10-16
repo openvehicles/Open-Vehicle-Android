@@ -14,6 +14,7 @@ public class ApiObservable {
 	
 	private final List<ApiObserver> mObservers = new ArrayList<ApiObserver>();
 	private final NotifyOneHandler mHandler;
+	private boolean mIsLoggedIn = false;
 	
 	public static ApiObservable get() {
 		if (sInstance == null) {
@@ -49,20 +50,38 @@ public class ApiObservable {
     }
     
     public void notifyOnBind(ApiService pService) {
-        int size = 0;
+        mIsLoggedIn = pService.isLoggedIn();
+		int size = 0;
         ApiObserver[] arrays = null;
         synchronized (this) {
             size = mObservers.size();
             arrays = new ApiObserver[size];
             mObservers.toArray(arrays);
         }
-        if (arrays != null) {
-            for (ApiObserver observer : arrays) {
-                observer.onServiceAvailable(pService);
-            }
-        }
+		for (ApiObserver observer : arrays) {
+			observer.onServiceAvailable(pService);
+			observer.onServiceLoggedIn(pService, mIsLoggedIn);
+		}
     }
-    
+
+	public void notifyLoggedIn(ApiService pService, boolean pIsLoggedIn) {
+		// Only notify on state changes:
+		if (mIsLoggedIn == pIsLoggedIn) return;
+		mIsLoggedIn = pIsLoggedIn;
+
+		// OK, notify observers:
+		int size = 0;
+		ApiObserver[] arrays = null;
+		synchronized (this) {
+			size = mObservers.size();
+			arrays = new ApiObserver[size];
+			mObservers.toArray(arrays);
+		}
+		for (ApiObserver observer : arrays) {
+			observer.onServiceLoggedIn(pService, pIsLoggedIn);
+		}
+	}
+
     public void notifyUpdate(CarData pCarData) {
     	mHandler.notifyUpdate(pCarData);
     }

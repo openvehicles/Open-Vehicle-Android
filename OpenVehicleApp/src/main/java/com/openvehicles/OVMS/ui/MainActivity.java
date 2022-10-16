@@ -40,8 +40,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.luttu.AppPrefes;
 
 import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.ApiObservable;
-import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.receiver.RegistrationIntentService;
@@ -54,7 +52,6 @@ import com.openvehicles.OVMS.utils.Sys;
 
 
 public class MainActivity extends ApiActivity implements
-		ApiObserver,
 		ActionBar.OnNavigationListener,
 		GetMapDetailsListener,
 		ConnectionsListener,
@@ -221,26 +218,6 @@ public class MainActivity extends ApiActivity implements
 		}
 
 		super.onDestroy();
-	}
-
-	@Override
-	protected void onStart() {
-		super.onStart();
-		Log.d(TAG, "onStart");
-		if (getService() != null) {
-			getService().onStart();
-		}
-		ApiObservable.get().addObserver(this);
-	}
-
-	@Override
-	protected void onStop() {
-		Log.d(TAG, "onStop");
-		ApiObservable.get().deleteObserver(this);
-		if (getService() != null) {
-			getService().onStop();
-		}
-		super.onStop();
 	}
 
 	@Override
@@ -512,11 +489,6 @@ public class MainActivity extends ApiActivity implements
 		if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
 			mApiErrorDialog.hide();
 		}
-	}
-
-	@Override
-	public void onServiceAvailable(ApiService pService) {
-		// nop
 	}
 
 

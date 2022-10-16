@@ -216,6 +216,8 @@ public class StoredCommandFragment extends BaseFragment
 		intent.setAction("com.openvehicles.OVMS.action.COMMAND");
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_NO_HISTORY|Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 		intent.putExtra("apikey", appPrefes.getData("APIKey"));
+		intent.putExtra("key", cmd.mKey);
+		intent.putExtra("title", cmd.mTitle);
 		intent.putExtra("command", cmd.mCommand);
 
 		shortcut = new ShortcutInfoCompat.Builder(context, "StoredCommand_" + cmd.mKey)

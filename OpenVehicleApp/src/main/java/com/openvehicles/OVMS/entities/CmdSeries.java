@@ -25,9 +25,6 @@ import java.util.ArrayList;
 public class CmdSeries implements OnResultCommandListener {
 	private static final transient String TAG = "CmdSeries";
 
-	private transient static final Context context = BaseApp.getApp();
-
-
 	public interface Listener {
 		/**
 		 * Progress callback.
@@ -82,23 +79,30 @@ public class CmdSeries implements OnResultCommandListener {
 	}
 
 
-	private ApiService mService;
-	private Listener mListener;
-	private ArrayList<Cmd> cmdList;
+	private final Context context;
+	private final ApiService mService;
+	private final Listener mListener;
+	private final ArrayList<Cmd> cmdList;
 	private int current;
-
 
 	/**
 	 * Create new CmdSeries
 	 *
+	 * @param pContext -- the Context
 	 * @param pService -- the ApiService (i.e. getService())
 	 * @param pListener -- the Listener (optional)
 	 */
-	public CmdSeries(ApiService pService, Listener pListener) {
+
+	public CmdSeries(Context pContext, ApiService pService, Listener pListener) {
+		context = pContext;
 		mService = pService;
 		mListener = pListener;
 		cmdList = new ArrayList<Cmd>();
 		current = -1;
+	}
+
+	public CmdSeries(ApiService pService, Listener pListener) {
+		this(BaseApp.getApp(), pService, pListener);
 	}
 
 
@@ -195,6 +199,7 @@ public class CmdSeries implements OnResultCommandListener {
 		}
 		else {
 			// series finished:
+			mService.cancelCommand(this);
 			if (mListener != null)
 				mListener.onCmdSeriesFinish(this, 0);
 		}
@@ -206,7 +211,7 @@ public class CmdSeries implements OnResultCommandListener {
 	 * 	to the command results. On success, the next command will be executed,
 	 *  on failure the series aborts.
 	 *
-	 * Commands 30-32: multiple results are handled by checking the
+	 * Commands 1,3,30-32: multiple results are handled by checking the
 	 * 	result records count and position. Error "no historical messages"
 	 *  is handled as a normal result (no failure = no abort). The record
 	 *  count/position are told to the listener as sub step progress.
@@ -241,7 +246,7 @@ public class CmdSeries implements OnResultCommandListener {
 		Log.v(TAG, "onResult: " + cmd.message + " / key=" + cmd.commandCode
 				+ " => returnCode=" + cmd.returnCode);
 
-		if (commandCode == 30 || commandCode == 31 || commandCode == 32) {
+		if (ApiService.hasMultiRowResponse(commandCode)) {
 			// multiple result command:
 
 			if (returnText.equals("No historical data available")) {
@@ -259,6 +264,7 @@ public class CmdSeries implements OnResultCommandListener {
 				// success: check record count
 				int recNr = Integer.parseInt(result[2]);
 				int recCnt = Integer.parseInt(result[3]);
+				if (commandCode <= 3) recNr++; // fix record numbering for feature & param lists
 				if (recNr == recCnt) {
 					// got all records
 					executeNext();
@@ -291,8 +297,9 @@ public class CmdSeries implements OnResultCommandListener {
 	public void cancel() {
 		Log.v(TAG, "cancelled");
 		mService.cancelCommand(this);
-		if (mListener != null)
+		if (mListener != null && current >= 0 && current < cmdList.size()) {
 			mListener.onCmdSeriesFinish(this, -1);
+		}
 	}
 
 
