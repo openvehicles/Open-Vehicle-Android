@@ -303,8 +303,12 @@ public class CommandActivity extends ApiActivity
 			mCmdSeries.add(mTitle, mMsgCommand);
 			mCmdSeries.start();
 
-			String command = (mMsgCommandCode == 7)
-					? mCommand : ApiService.getCommandName(mMsgCommandCode);
+			String command;
+			if (mMsgCommandCode == 7) {
+				command = mCommand;
+			} else {
+				command = ApiService.getCommandName(mMsgCommandCode) + " (" + mCommand + ")";
+			}
 			showStatus("> " + command);
 		}
 	}
