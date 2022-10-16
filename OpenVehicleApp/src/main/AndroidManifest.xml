@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.openvehicles.OVMS"
-    android:versionCode="2022100901"
+    android:versionCode="2022101601"
     android:versionName="3.19.1">
     <!-- Only this application can receive the messages and registration result -->
     <permission
