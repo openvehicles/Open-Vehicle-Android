@@ -6,6 +6,8 @@ import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnShowListener;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
@@ -179,4 +181,60 @@ public final class Ui {
 		}
 	}
 
+
+	/**
+	 * Draw a text consisting of a value and a unit, applying a smaller text size to the
+	 * unit part and separating the unit from the value by some space. The unit size is
+	 * currently fixed to 70% of the value size. Alignment and value size is taken from
+	 * paint.
+	 *
+	 * The default separator size is 1/6, but depending on the actual text size and unit
+	 * text, this may not look good and need to be smaller or larger.
+	 *
+	 * @param canvas        Canvas to paint on
+	 * @param paint         Paint template to use
+	 * @param value         Value string
+	 * @param unit          Unit string
+	 * @param x             Position
+	 * @param y             Position
+	 * @param sepSizeFactor Relative to the unit text size
+	 * @return complete width of the rendered text (value + separator + unit)
+	 */
+	public static float drawUnitText(Canvas canvas, Paint paint, String value, String unit,
+							   float x, float y, float sepSizeFactor) {
+
+		final float unitSizeFactor = 0.7f; // Relative unit text size
+
+		Paint p1 = new Paint(paint);
+		p1.setTextAlign(Paint.Align.LEFT);
+		Paint p2 = new Paint(p1);
+		float unitTextSize = p1.getTextSize() * unitSizeFactor;
+		float sepSize = unitTextSize * sepSizeFactor;
+		p2.setTextSize(unitTextSize);
+
+		float w1 = p1.measureText(value) + sepSize;
+		float w2 = p2.measureText(unit);
+
+		float x0;
+		if (paint.getTextAlign() == Paint.Align.LEFT) {
+			x0 = x;
+		} else if (paint.getTextAlign() == Paint.Align.RIGHT) {
+			x0 = x - (w1 + w2);
+		} else {
+			x0 = x - (w1 + w2) / 2 + sepSize;
+			// Due to the smaller text size for the unit, a mathematically centered
+			// placement appears to be unbalanced. Shifting x0 to the right by the sepSize
+			// works as a rebalancement (may need refinement for very small/large sizes).
+		}
+
+		canvas.drawText(value, x0, y, p1);
+		canvas.drawText(unit,x0 + w1, y, p2);
+
+		return w1 + w2;
+	}
+
+	public static float drawUnitText(Canvas canvas, Paint paint, String value, String unit,
+							   float x, float y) {
+		return drawUnitText(canvas, paint, value, unit, x, y, 1/6f);
+	}
 }

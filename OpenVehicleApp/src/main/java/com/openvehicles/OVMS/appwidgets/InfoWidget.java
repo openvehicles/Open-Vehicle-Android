@@ -13,9 +13,11 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
+import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 import com.openvehicles.OVMS.utils.Sys;
 
@@ -37,9 +39,9 @@ import java.text.SimpleDateFormat;
 public class InfoWidget extends ApiWidget<InfoWidget> {
     private static final String TAG = "InfoWidget";
 
-    public InfoWidget() {
-        super(InfoWidget.class);
-    }
+    public InfoWidget() { super(InfoWidget.class); }
+
+    private AppPrefes appPrefes;
 
     /**
      * updateWidget: Update specific widget instance
@@ -51,6 +53,8 @@ public class InfoWidget extends ApiWidget<InfoWidget> {
     @Override
     public void updateWidget(Context context, AppWidgetManager appWidgetManager,
                              int appWidgetId) {
+
+        appPrefes = new AppPrefes(context, "ovms");
 
         // Construct the RemoteViews object
         RemoteViews views = new RemoteViews(context.getPackageName(), R.layout.info_widget);
@@ -91,7 +95,7 @@ public class InfoWidget extends ApiWidget<InfoWidget> {
         paint.setColor(context.getResources().getColor(R.color.colorPrimary));
         paint.setStyle(Paint.Style.FILL);
         paint.setStrokeWidth(0);
-        canvas.drawRoundRect(bg, 10*dps,10*dps, paint);
+        canvas.drawRoundRect(bg, 5*dps,5*dps, paint);
 
         // Check for car data availability:
         if (carData == null) {
@@ -197,39 +201,47 @@ public class InfoWidget extends ApiWidget<InfoWidget> {
         paint.setTextAlign(Paint.Align.CENTER);
 
         // kWh charged:
-        if (carData.car_charging) {
-            String textKwh = String.format("%.1fkWh", carData.car_charge_kwhconsumed);
+        float shiftdown = 0;
+        if (carData.car_chargeport_open) {
+            String textKwh = String.format("%.1f", carData.car_charge_kwhconsumed);
             paint.setTextSize(11 * dps);
             paint.setColor(textColorKwh);
-            canvas.drawText(textKwh, 50 * dps, 34 * dps, paint);
+            Ui.drawUnitText(canvas, paint, textKwh, "kWh", 50 * dps, 35 * dps);
+            shiftdown = 1.5f;
         }
 
         // SOC:
-        String textSOC = String.format("%d%%", (int)Math.floor(carData.car_soc_raw));
+        String textSOC = String.format("%d", (int)Math.floor(carData.car_soc_raw));
         paint.setTextSize(25*dps);
         paint.setColor(textColorMain);
-        canvas.drawText(textSOC, 50*dps,58*dps, paint);
+        Ui.drawUnitText(canvas, paint, textSOC, "%", 50*dps, (57+2*shiftdown)*dps, 1/10f);
 
         // Estimated range:
-        String textRange = String.format("%d%s", (int)Math.floor(carData.car_range_estimated_raw), carData.car_distance_units);
+        String textRange = String.format("%d", (int)Math.floor(carData.car_range_estimated_raw));
         paint.setTextSize(15*dps);
-        canvas.drawText(textRange, 50*dps,75*dps, paint);
+        Ui.drawUnitText(canvas, paint, textRange, carData.car_distance_units, 50*dps, (76.5f+shiftdown)*dps);
 
         // Battery temperature:
         paint.setTextSize(12*dps);
         paint.setColor(textColorAux);
         paint.setTextAlign(Paint.Align.LEFT);
-        canvas.drawText(carData.car_temp_battery, 5*dps,96*dps, paint);
+        if (appPrefes.getData("showfahrenheit").equals("on")) {
+            double fahrenheit = (carData.car_temp_battery_raw * (9.0 / 5.0)) + 32.0;
+            Ui.drawUnitText(canvas, paint, String.format("%.1f", fahrenheit), "\u00B0F", 5*dps, 96*dps);
+        } else {
+            Ui.drawUnitText(canvas, paint, String.format("%.1f", carData.car_temp_battery_raw), "\u00B0C", 5*dps, 96*dps);
+        }
 
         // Estimated charge time:
         if (etr > 0) {
-            String textEtr;
-            if (etr > 60)
-                textEtr = String.format("%dh %dm", etr / 60, etr % 60);
-            else
-                textEtr = String.format("%dm", etr);
             paint.setTextAlign(Paint.Align.RIGHT);
-            canvas.drawText(textEtr, 95*dps,96*dps, paint);
+            if (etr > 60) {
+                float w = Ui.drawUnitText(canvas, paint, String.format(" %d", etr % 60), "m", 95*dps, 96*dps);
+                Ui.drawUnitText(canvas, paint, String.format("%d", etr / 60), "h", 95*dps-w, 96*dps);
+            }
+            else {
+                Ui.drawUnitText(canvas, paint, String.format("%d", etr), "m", 95*dps, 96*dps);
+            }
         }
 
         return bitmap;
