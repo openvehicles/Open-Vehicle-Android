@@ -2,6 +2,8 @@ package com.openvehicles.OVMS.ui;
 
 import android.content.Context;
 import android.os.Handler;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatDialog;
 import android.content.DialogInterface;
@@ -85,7 +87,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						mHandler.removeCallbacks(mCarChanger);
 					mCarChanger = () -> {
 						CarData carData = mCarsStorage.getStoredCars().get(mCarSelectPos);
-						if (carData.sel_vehicleid != mCarData.sel_vehicleid) {
+						if (!carData.sel_vehicleid.equals(mCarData.sel_vehicleid)) {
 							Log.d(TAG, "onItemSelected: pos=" + mCarSelectPos + ", id=" + carData.sel_vehicleid);
 							changeCar(carData);
 							mCarChanger = null; // car is changed, allow updates
@@ -146,12 +148,12 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	}
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 		inflater.inflate(R.menu.battery_options, menu);
 	}
 
 	@Override
-	public void onPrepareOptionsMenu(Menu menu) {
+	public void onPrepareOptionsMenu(@NonNull Menu menu) {
 		super.onPrepareOptionsMenu(menu);
 		if (mCarData != null && mCarData.car_type != null) {
 			menu.findItem(R.id.mi_battery_stats).setVisible(mCarData.car_type.equals("RT"));
@@ -723,6 +725,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						pCarData.car_charge_currentlimit,
 						pCarData.car_charge_kwhconsumed);
 			}
+			cmtv.setText(cmst);
+			cmtv.setVisibility(View.VISIBLE);
 
 			if (mCarData.car_type.equals("RT")) {
 
@@ -761,8 +765,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 				}
 
 				coiv.setVisibility(View.VISIBLE);
-				cmtv.setText(cmst);
-				cmtv.setVisibility(View.VISIBLE);
 
 			} else {
 
@@ -785,8 +787,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						bar.setProgress(100);
 						tvl.setText(null);
 						tvr.setText(getText(R.string.slidetocharge));
-						coiv.setVisibility(View.VISIBLE);
-						cmtv.setVisibility(View.INVISIBLE);
+						coiv.setVisibility(View.INVISIBLE);
 						tvPowerInput.setVisibility(View.INVISIBLE);
 						tvPowerLoss.setVisibility(View.INVISIBLE);
 						break;
@@ -795,8 +796,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						bar.setProgress(100);
 						tvl.setText(null);
 						tvr.setText(getText(R.string.timedcharge));
-						coiv.setVisibility(View.VISIBLE);
-						cmtv.setVisibility(View.INVISIBLE);
+						coiv.setVisibility(View.INVISIBLE);
 						tvPowerInput.setVisibility(View.INVISIBLE);
 						tvPowerLoss.setVisibility(View.INVISIBLE);
 						break;
@@ -812,9 +812,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 								pCarData.car_charge_linevoltage,
 								pCarData.car_charge_current));
 						tvr.setText("");
-						cmtv.setText(cmst);
 						coiv.setVisibility(View.VISIBLE);
-						cmtv.setVisibility(View.VISIBLE);
 						if (pCarData.car_charge_power_input_kw_raw > 0) {
 							tvPowerInput.setText(pCarData.car_charge_power_input_kw);
 							tvPowerInput.setVisibility(View.VISIBLE);
@@ -833,7 +831,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 						bar.setProgress(100);
 						tvl.setText(null);
 						tvr.setText(null);
-						cmtv.setVisibility(View.INVISIBLE);
 						coiv.setVisibility(View.INVISIBLE);
 						tvPowerInput.setVisibility(View.INVISIBLE);
 						tvPowerLoss.setVisibility(View.INVISIBLE);
