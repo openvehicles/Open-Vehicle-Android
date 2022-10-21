@@ -32,6 +32,8 @@ import com.openvehicles.OVMS.ui.settings.LogsFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
+import androidx.annotation.NonNull;
+
 public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListener {
 	private static final String TAG = "CarFragment";
 
@@ -139,7 +141,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 
 	@Override
-	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
 		inflater.inflate(R.menu.car_options, menu);
 
 		optionsMenu = menu;
@@ -169,59 +171,47 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 		int menuId = item.getItemId();
 		boolean newState = !item.isChecked();
-		Bundle args;
 
-
-		switch (menuId) {
-
-			case R.id.mi_power_stats:
-				BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_battery_stats:
-				BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_carinfo:
-				BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_aux_battery_stats:
-				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_features:
-				BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_diag_logs:
-				BaseFragmentActivity.show(getActivity(), LogsFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			case R.id.mi_show_fahrenheit:
-				appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
-				item.setChecked(newState);
-				return true;
-			
-			case R.id.mi_show_tpms_bar:
-				appPrefes.SaveData("showtpmsbar", newState ? "on" : "off");
-				item.setChecked(newState);
-				return true;
-
-			case R.id.mi_globaloptions:
-				BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				return true;
-
-			default:
-				return false;
+		if (menuId == R.id.mi_power_stats) {
+			BaseFragmentActivity.show(getActivity(), PowerFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_battery_stats) {
+			BaseFragmentActivity.show(getActivity(), BatteryFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_show_carinfo) {
+			BaseFragmentActivity.show(getActivity(), CarInfoFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_aux_battery_stats) {
+			BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_show_features) {
+			BaseFragmentActivity.show(getActivity(), FeaturesFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_show_diag_logs) {
+			BaseFragmentActivity.show(getActivity(), LogsFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
+		} else if (menuId == R.id.mi_show_fahrenheit) {
+			appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
+			item.setChecked(newState);
+			triggerCarDataUpdate();
+			return true;
+		} else if (menuId == R.id.mi_show_tpms_bar) {
+			appPrefes.SaveData("showtpmsbar", newState ? "on" : "off");
+			item.setChecked(newState);
+			triggerCarDataUpdate();
+			return true;
+		} else if (menuId == R.id.mi_globaloptions) {
+			BaseFragmentActivity.show(getActivity(), GlobalOptionsFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+			return true;
 		}
+		return false;
 	}
 
 
@@ -250,7 +240,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	}
 	
 	@Override
-	public void registerForContextMenu(View view) {
+	public void registerForContextMenu(@NonNull View view) {
 		super.registerForContextMenu(view);
 		view.setOnClickListener(this);
 	}
@@ -262,92 +252,80 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 		final int dialogTitle, dialogButton;
 		boolean isPinEntry;
 
-		switch (v.getId()) {
+		int id = v.getId();
+		if (id == R.id.btn_lock_car) {// get dialog mode & labels:
+			if (mCarData.car_type.equals("RT")) {
+				dialogTitle = R.string.lb_lock_mode_twizy;
+				dialogButton = mCarData.car_locked
+						? (mCarData.car_valetmode
+						? R.string.lb_valet_mode_extend_twizy
+						: R.string.lb_unlock_car_twizy)
+						: R.string.lb_lock_car_twizy;
+				isPinEntry = false;
+			} else {
+				dialogTitle = mCarData.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car;
+				dialogButton = dialogTitle;
+				isPinEntry = true;
+			}
 
-			case R.id.btn_lock_car:
-
-				// get dialog mode & labels:
-				if (mCarData.car_type.equals("RT")) {
-					dialogTitle = R.string.lb_lock_mode_twizy;
-					dialogButton = mCarData.car_locked
-							? (mCarData.car_valetmode
-								? R.string.lb_valet_mode_extend_twizy
-								: R.string.lb_unlock_car_twizy)
-							: R.string.lb_lock_car_twizy;
-					isPinEntry = false;
-				} else {
-					dialogTitle = mCarData.car_locked ? R.string.lb_unlock_car : R.string.lb_lock_car;
-					dialogButton = dialogTitle;
-					isPinEntry = true;
-				}
-
-				// show dialog:
-				Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
-						new Ui.OnChangeListener<String>() {
-							@Override
-							public void onAction(String pData) {
-								String cmd;
-								int resId;
-								if (mCarData.car_locked) {
-									resId = dialogButton;
-									cmd = "22," + pData;
-								} else {
-									resId = dialogButton;
-									cmd = "20," + pData;
-								}
-								sendCommand(resId, cmd, CarFragment.this);
+			// show dialog:
+			Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
+					new Ui.OnChangeListener<String>() {
+						@Override
+						public void onAction(String pData) {
+							String cmd;
+							int resId;
+							if (mCarData.car_locked) {
+								resId = dialogButton;
+								cmd = "22," + pData;
+							} else {
+								resId = dialogButton;
+								cmd = "20," + pData;
 							}
-						});
-				break;
+							sendCommand(resId, cmd, CarFragment.this);
+						}
+					});
+		} else if (id == R.id.btn_valet_mode) {// get dialog mode & labels:
+			if (mCarData.car_type.equals("RT")) {
+				dialogTitle = R.string.lb_valet_mode_twizy;
+				dialogButton = mCarData.car_valetmode
+						? (mCarData.car_locked
+						? R.string.lb_unvalet_unlock_twizy
+						: R.string.lb_valet_mode_off_twizy)
+						: R.string.lb_valet_mode_on_twizy;
+				isPinEntry = false;
+			} else if (mCarData.car_type.equals("SE")) {
+				dialogTitle = R.string.lb_valet_mode_smart;
+				dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_smart_off : R.string.lb_valet_mode_smart_on;
+				isPinEntry = true;
+			} else {
+				dialogTitle = R.string.lb_valet_mode;
+				dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on;
+				isPinEntry = true;
+			}
 
-			case R.id.btn_valet_mode:
-
-				// get dialog mode & labels:
-				if (mCarData.car_type.equals("RT")) {
-					dialogTitle = R.string.lb_valet_mode_twizy;
-					dialogButton = mCarData.car_valetmode
-							? (mCarData.car_locked
-								? R.string.lb_unvalet_unlock_twizy
-								: R.string.lb_valet_mode_off_twizy)
-							: R.string.lb_valet_mode_on_twizy;
-					isPinEntry = false;
-				} else if(mCarData.car_type.equals("SE")) {
-					dialogTitle = R.string.lb_valet_mode_smart;
-					dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_smart_off : R.string.lb_valet_mode_smart_on;
-					isPinEntry = true;
-				} else {
-					dialogTitle = R.string.lb_valet_mode;
-					dialogButton = mCarData.car_valetmode ? R.string.lb_valet_mode_off : R.string.lb_valet_mode_on;
-					isPinEntry = true;
-				}
-
-				// show dialog:
-				Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
-						new Ui.OnChangeListener<String>() {
-							@Override
-							public void onAction(String pData) {
-								String cmd;
-								int resId;
-								if (mCarData.car_valetmode) {
-									resId = dialogButton;
-									cmd = "23," + pData;
-								} else {
-									resId = dialogButton;
-									cmd = "21," + pData;
-								}
-								sendCommand(resId, cmd, CarFragment.this);
+			// show dialog:
+			Ui.showPinDialog(getActivity(), dialogTitle, dialogButton, isPinEntry,
+					new Ui.OnChangeListener<String>() {
+						@Override
+						public void onAction(String pData) {
+							String cmd;
+							int resId;
+							if (mCarData.car_valetmode) {
+								resId = dialogButton;
+								cmd = "23," + pData;
+							} else {
+								resId = dialogButton;
+								cmd = "21," + pData;
 							}
-						});
-				break;
-
-			case R.id.tabCarText12V:
-			case R.id.tabCarText12VLabel:
-				BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
-						Configuration.ORIENTATION_UNDEFINED);
-				break;
-
-			default:
-				v.performLongClick();
+							sendCommand(resId, cmd, CarFragment.this);
+						}
+					});
+		} else if (id == R.id.tabCarText12V || id == R.id.tabCarText12VLabel) {
+			BaseFragmentActivity.show(getActivity(), AuxBatteryFragment.class, null,
+					Configuration.ORIENTATION_UNDEFINED);
+		} else {
+			v.performLongClick();
 		}
 	}
 
@@ -360,39 +338,32 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	private static final int MI_AC_OFF		= Menu.FIRST + 6;
 
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, ContextMenuInfo menuInfo) {
 		super.onCreateContextMenu(menu, v, menuInfo);
-		switch (v.getId()) {
-
-			case R.id.btn_wakeup:
-				if (mCarData.car_type.equals("RT"))
-					break; // no wakeup support for Twizy
-				menu.setHeaderTitle(R.string.lb_wakeup_car);
-				menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
-				menu.add(R.string.Cancel);
-				break;
-
-			case R.id.tabCarImageHomelink:
-			case R.id.txt_homelink:
-				if (mCarData.car_type.equals("RT")) {
-					// Renault Twizy: use Homelink for profile switching:
-					menu.setHeaderTitle(R.string.textPROFILE);
-					menu.add(0, MI_HL_DEFAULT, 0, R.string.Default);
-				} else {
-					menu.setHeaderTitle(R.string.textHOMELINK);
-				}
-				menu.add(0, MI_HL_01, 0, "1");
-				menu.add(0, MI_HL_02, 0, "2");
-				menu.add(0, MI_HL_03, 0, "3");
-				menu.add(R.string.Cancel);
-				break;
-
-			case R.id.tabCarImageAC:
-				menu.setHeaderTitle(R.string.textAC);
-				menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on);
-				menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off);
-				menu.add(R.string.Cancel);
-				break;
+		int id = v.getId();
+		if (id == R.id.btn_wakeup) {
+			if (mCarData.car_type.equals("RT"))
+				return; // no wakeup support for Twizy
+			menu.setHeaderTitle(R.string.lb_wakeup_car);
+			menu.add(0, MI_WAKEUP, 0, R.string.Wakeup);
+			menu.add(R.string.Cancel);
+		} else if (id == R.id.tabCarImageHomelink || id == R.id.txt_homelink) {
+			if (mCarData.car_type.equals("RT")) {
+				// Renault Twizy: use Homelink for profile switching:
+				menu.setHeaderTitle(R.string.textPROFILE);
+				menu.add(0, MI_HL_DEFAULT, 0, R.string.Default);
+			} else {
+				menu.setHeaderTitle(R.string.textHOMELINK);
+			}
+			menu.add(0, MI_HL_01, 0, "1");
+			menu.add(0, MI_HL_02, 0, "2");
+			menu.add(0, MI_HL_03, 0, "3");
+			menu.add(R.string.Cancel);
+		} else if (id == R.id.tabCarImageAC) {
+			menu.setHeaderTitle(R.string.textAC);
+			menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on);
+			menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off);
+			menu.add(R.string.Cancel);
 		}
 	}
 	

@@ -302,6 +302,81 @@ public class CarData implements Serializable {
 			decimalFormat1 = new DecimalFormat("0.#");
 	}
 
+	/**
+	 * Calculate derived variables including prefs dependencies
+	 */
+	public void recalc() {
+		boolean showTpmsBar = (appPrefes.getData("showtpmsbar").equals("on"));
+		boolean showFahrenheit = (appPrefes.getData("showfahrenheit").equals("on"));
+
+		if (showFahrenheit) {
+			car_temp_pem = String.format("%.1f\u00B0F", (car_temp_pem_raw * (9.0 / 5.0)) + 32.0);
+			car_temp_motor = String.format("%.1f\u00B0F", (car_temp_motor_raw * (9.0 / 5.0)) + 32.0);
+			car_temp_battery = String.format("%.1f\u00B0F", (car_temp_battery_raw * (9.0 / 5.0)) + 32.0);
+			car_temp_ambient = String.format("%.1f\u00B0F", (car_temp_ambient_raw * (9.0 / 5.0)) + 32.0);
+			car_temp_charger = String.format("%.1f\u00B0F", (car_temp_charger_raw * (9.0 / 5.0)) + 32.0);
+			car_temp_cabin = String.format("%.1f\u00B0F", (car_temp_cabin_raw * (9.0 / 5.0)) + 32.0);
+		} else {
+			car_temp_pem = String.format("%.1f\u00B0C", car_temp_pem_raw);
+			car_temp_motor = String.format("%.1f\u00B0C", car_temp_motor_raw);
+			car_temp_battery = String.format("%.1f\u00B0C", car_temp_battery_raw);
+			car_temp_ambient = String.format("%.1f\u00B0C", car_temp_ambient_raw);
+			car_temp_charger = String.format("%.1f\u00B0C", car_temp_charger_raw);
+			car_temp_cabin = String.format("%.1f\u00B0C", car_temp_cabin_raw);
+		}
+
+		if (showTpmsBar) {
+			car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar");
+			car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar");
+			car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar");
+			car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar");
+		} else {
+			car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
+			car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
+			car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
+			car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
+		}
+
+		if (showFahrenheit) {
+			car_tpms_fl_t = String.format("%.0f%s", (car_tpms_fl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
+			car_tpms_fr_t = String.format("%.0f%s", (car_tpms_fr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
+			car_tpms_rl_t = String.format("%.0f%s", (car_tpms_rl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
+			car_tpms_rr_t = String.format("%.0f%s", (car_tpms_rr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
+		} else {
+			car_tpms_fl_t = String.format("%.0f%s", car_tpms_fl_t_raw, "\u00B0C");
+			car_tpms_fr_t = String.format("%.0f%s", car_tpms_fr_t_raw, "\u00B0C");
+			car_tpms_rl_t = String.format("%.0f%s", car_tpms_rl_t_raw, "\u00B0C");
+			car_tpms_rr_t = String.format("%.0f%s", car_tpms_rr_t_raw, "\u00B0C");
+		}
+
+		String sval;
+		double dval;
+
+		if (car_tpms_pressure_raw != null && car_tpms_pressure != null &&
+				car_tpms_pressure_raw.length == car_tpms_pressure.length) {
+			for (int j = 0; j < car_tpms_pressure_raw.length; j++) {
+				dval = car_tpms_pressure_raw[j];
+				if (showTpmsBar)
+					sval = String.format("%.1f%s", Math.floor(dval / 10) / 10, "bar");
+				else
+					sval = String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi");
+				car_tpms_pressure[j] = sval;
+			}
+		}
+
+		if (car_tpms_temp_raw != null && car_tpms_temp != null &&
+				car_tpms_temp_raw.length == car_tpms_temp.length) {
+			for (int j = 0; j < car_tpms_temp_raw.length; j++) {
+				dval = car_tpms_temp_raw[j];
+				if (showFahrenheit)
+					sval = String.format("%.0f\u00B0F", Math.ceil((dval * (9.0 / 5.0)) + 32.0));
+				else
+					sval = String.format("%.0f\u00B0C", Math.ceil(dval));
+				car_tpms_temp[j] = sval;
+			}
+		}
+	}
+
 	
 	/**
 	 * Process capabilities message ("V")
@@ -570,15 +645,6 @@ public class CarData implements Serializable {
 				car_temp_pem_raw = Float.parseFloat(dataParts[3]);
 				car_temp_motor_raw = Float.parseFloat(dataParts[4]);
 				car_temp_battery_raw = Float.parseFloat(dataParts[5]);
-				if (appPrefes.getData("showfahrenheit").equals("on")) {
-					car_temp_pem = String.format("%.1f\u00B0F", (car_temp_pem_raw * (9.0 / 5.0)) + 32.0);
-					car_temp_motor = String.format("%.1f\u00B0F", (car_temp_motor_raw * (9.0 / 5.0)) + 32.0);
-					car_temp_battery = String.format("%.1f\u00B0F", (car_temp_battery_raw * (9.0 / 5.0)) + 32.0);
-				} else {
-					car_temp_pem = String.format("%.1f\u00B0C", car_temp_pem_raw);
-					car_temp_motor = String.format("%.1f\u00B0C", car_temp_motor_raw);
-					car_temp_battery = String.format("%.1f\u00B0C", car_temp_battery_raw);
-				}
 
 				car_tripmeter_raw = Float.parseFloat(dataParts[6]);
 				car_tripmeter = String.format("%.1f%s", (float) car_tripmeter_raw / 10, car_distance_units);
@@ -594,10 +660,6 @@ public class CarData implements Serializable {
 				car_parked_time = new Date((new Date()).getTime() - car_parking_timer_raw * 1000);
 
 				car_temp_ambient_raw = Float.parseFloat(dataParts[10]);
-				if (appPrefes.getData("showfahrenheit").equals("on"))
-					car_temp_ambient = String.format("%.1f\u00B0F", (car_temp_ambient_raw * (9.0 / 5.0)) + 32.0);
-				else
-					car_temp_ambient = String.format("%.1f\u00B0C", car_temp_ambient_raw);
 
 				dataField = Integer.parseInt(dataParts[11]);
 				car_doors3_raw = dataField;
@@ -637,22 +699,12 @@ public class CarData implements Serializable {
 			}
 			if (dataParts.length >= 19) {
 				car_temp_charger_raw = Float.parseFloat(dataParts[18]);
-				if (appPrefes.getData("showfahrenheit").equals("on")) {
-					car_temp_charger = String.format("%.1f\u00B0F", (car_temp_charger_raw * (9.0 / 5.0)) + 32.0);
-				} else {
-					car_temp_charger = String.format("%.1f\u00B0C", car_temp_charger_raw);
-				}
 			}
 			if (dataParts.length >= 20) {
 				car_12v_current = Double.parseDouble(dataParts[19]);
 			}
 			if (dataParts.length >= 21) {
 				car_temp_cabin_raw = Float.parseFloat(dataParts[20]);
-				if (appPrefes.getData("showfahrenheit").equals("on")) {
-					car_temp_cabin = String.format("%.1f\u00B0F", (car_temp_cabin_raw * (9.0 / 5.0)) + 32.0);
-				} else {
-					car_temp_cabin = String.format("%.1f\u00B0C", car_temp_cabin_raw);
-				}
 			}
 
 		} catch(Exception e) {
@@ -665,6 +717,7 @@ public class CarData implements Serializable {
 			stale_ambient_temp = DataStale.NoValue;
 		}
 
+		recalc();
 		return true;
 	}
 
@@ -762,30 +815,6 @@ public class CarData implements Serializable {
 					stale_tpms = DataStale.Stale;
 				else
 					stale_tpms = DataStale.Good;
-
-				// Create string representations based on user unit prefs:
-				if (appPrefes.getData("showtpmsbar").equals("on")) {
-					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar");
-					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar");
-					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar");
-					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar");
-				} else {
-					car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi");
-					car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi");
-					car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi");
-					car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi");
-				}
-				if (appPrefes.getData("showfahrenheit").equals("on")) {
-					car_tpms_fl_t = String.format("%.0f%s", (car_tpms_fl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-					car_tpms_fr_t = String.format("%.0f%s", (car_tpms_fr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-					car_tpms_rl_t = String.format("%.0f%s", (car_tpms_rl_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-					car_tpms_rr_t = String.format("%.0f%s", (car_tpms_rr_t_raw * (9.0 / 5.0)) + 32.0, "\u00B0F");
-				} else {
-					car_tpms_fl_t = String.format("%.0f%s", car_tpms_fl_t_raw, "\u00B0C");
-					car_tpms_fr_t = String.format("%.0f%s", car_tpms_fr_t_raw, "\u00B0C");
-					car_tpms_rl_t = String.format("%.0f%s", car_tpms_rl_t_raw, "\u00B0C");
-					car_tpms_rr_t = String.format("%.0f%s", car_tpms_rr_t_raw, "\u00B0C");
-				}
 			}
 
 		} catch(Exception e) {
@@ -798,6 +827,7 @@ public class CarData implements Serializable {
 			stale_tpms = DataStale.NoValue;
 		}
 
+		recalc();
 		return true;
 	}
 
@@ -808,9 +838,6 @@ public class CarData implements Serializable {
 	public boolean processNewTPMS(String msgdata) {
 		Init();
 		Log.d(TAG, "processNewTPMS: " + msgdata);
-
-		boolean dspBar = (appPrefes.getData("showtpmsbar").equals("on"));
-		boolean dspFahrenheit = (appPrefes.getData("showfahrenheit").equals("on"));
 
 		try {
 			String[] dataParts = msgdata.split(",\\s*");
@@ -840,12 +867,8 @@ public class CarData implements Serializable {
 				}
 				for (j = 0, end = i+cnt; i < end; i++, j++) {
 					dval = Double.parseDouble(dataParts[i]);
-					if (dspBar)
-						sval = String.format("%.1f%s", Math.floor(dval / 10) / 10, "bar");
-					else
-						sval = String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi");
 					car_tpms_pressure_raw[j] = dval;
-					car_tpms_pressure[j] = sval;
+					car_tpms_pressure[j] = "";
 				}
 				valid = Integer.parseInt(dataParts[i++]);
 				stale_tpms_pressure = (valid < 0) ? DataStale.NoValue
@@ -861,12 +884,8 @@ public class CarData implements Serializable {
 				}
 				for (j = 0, end = i+cnt; i < end; i++, j++) {
 					dval = Double.parseDouble(dataParts[i]);
-					if (dspFahrenheit)
-						sval = String.format("%.0f°F", Math.ceil((dval * (9.0 / 5.0)) + 32.0));
-					else
-						sval = String.format("%.0f°C", Math.ceil(dval));
 					car_tpms_temp_raw[j] = dval;
-					car_tpms_temp[j] = sval;
+					car_tpms_temp[j] = "";
 				}
 				valid = Integer.parseInt(dataParts[i++]);
 				stale_tpms_temp = (valid < 0) ? DataStale.NoValue
@@ -933,6 +952,7 @@ public class CarData implements Serializable {
 			stale_tpms_alert = DataStale.NoValue;
 		}
 
+		recalc();
 		return true;
 	}
 

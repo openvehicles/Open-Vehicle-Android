@@ -226,6 +226,12 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		return null;
 	}
 
+	public void triggerCarDataUpdate() {
+		ApiService apiService = getService();
+		if (apiService != null)
+			apiService.triggerUpdate();
+	}
+
 	public AppCompatActivity getCompatActivity() {
 		return (AppCompatActivity) getActivity();
 	}

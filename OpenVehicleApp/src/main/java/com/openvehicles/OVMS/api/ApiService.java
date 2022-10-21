@@ -552,6 +552,15 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 		}
 	}
 
+	/**
+	 * triggerUpdate: request unconditional update of current car state for all listeners.
+	 * 		Use to forward prefs changes regarding car data interpretation.
+ 	 */
+	public void triggerUpdate() {
+		mCarData.recalc();
+		ApiObservable.get().notifyUpdate(mCarData);
+	}
+
 	// ApiObserver interface:
 	@Override
 	public void onServiceAvailable(ApiService pService) {
