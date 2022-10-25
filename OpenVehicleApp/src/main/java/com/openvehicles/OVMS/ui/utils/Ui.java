@@ -122,19 +122,21 @@ public final class Ui {
 		return pContext.getResources().getIdentifier(pName, "drawable", pContext.getPackageName());
 	}
 	
-	public static void setOnClick(View pRootView, int pId, OnClickListener pListener) {
+	public static View setOnClick(View pRootView, int pId, OnClickListener pListener) {
+		View view = pRootView.findViewById(pId);
 		try {
-			pRootView.findViewById(pId).setOnClickListener(pListener);
+			view.setOnClickListener(pListener);
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
+		return view;
 	}
 
-	public static void setOnClick(View pRootView, int pId, Object pTag,
+	public static View setOnClick(View pRootView, int pId, Object pTag,
 								  OnClickListener pListener,
 								  View.OnLongClickListener pLongListener) {
+		View view = pRootView.findViewById(pId);
 		try {
-			View view = pRootView.findViewById(pId);
 			view.setTag(pTag);
 			view.setOnClickListener(pListener);
 			if (pLongListener != null)
@@ -142,6 +144,7 @@ public final class Ui {
 		} catch (Exception e) {
 			Log.e(TAG, e.toString());
 		}
+		return view;
 	}
 
 	public static void setValue(View pRootView, int pId, String pVal) {

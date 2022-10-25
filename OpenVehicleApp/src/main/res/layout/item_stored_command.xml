@@ -47,6 +47,19 @@
     </LinearLayout>
 
     <ImageButton
+        android:id="@+id/btn_pin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:layout_weight="0"
+        android:background="@drawable/bg_img_button"
+        android:clickable="true"
+        android:contentDescription="@string/PinShortcut"
+        android:focusable="true"
+        android:padding="16dp"
+        android:src="@drawable/ic_action_pin" />
+
+    <ImageButton
         android:id="@+id/btn_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

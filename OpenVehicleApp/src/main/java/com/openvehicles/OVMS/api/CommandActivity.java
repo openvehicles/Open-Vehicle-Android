@@ -402,12 +402,14 @@ public class CommandActivity extends ApiActivity
 	private void showStatus(CharSequence text) {
 		mTextViewMessage.setText(text);
 		mTextViewMessage.setOnClickListener(null);
+		mTextViewMessage.setOnLongClickListener(null);
 		mProgressBar.setVisibility(View.VISIBLE);
 	}
 
 	private void showResult(CharSequence text) {
 		mTextViewMessage.setText(text);
 		mTextViewMessage.setOnClickListener(v -> finishCommand());
+		mTextViewMessage.setOnLongClickListener(v -> true);
 		mProgressBar.setVisibility(View.GONE);
 		startFinishTimeout();
 	}

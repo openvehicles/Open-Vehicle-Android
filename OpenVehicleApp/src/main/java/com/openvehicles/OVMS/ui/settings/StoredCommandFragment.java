@@ -48,7 +48,7 @@ import androidx.fragment.app.FragmentActivity;
  * for management & selection of stored commands for execution or bookmark creation.
  */
 public class StoredCommandFragment extends BaseFragment
-		implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener {
+		implements AdapterView.OnItemClickListener {
 	private static final String TAG = "StoredCommandFragment";
 
 	public static final int REQUEST_SELECT_EXECUTE = 1;		// select a command for immediate execution
@@ -90,7 +90,6 @@ public class StoredCommandFragment extends BaseFragment
 
 		mListView = new ListView(container.getContext());
 		mListView.setOnItemClickListener(this);
-		mListView.setOnItemLongClickListener(this);
 		mAdapter = new StoredCommandAdapter(context, R.layout.item_stored_command, mStoredCommands, inflater);
 		mListView.setAdapter(mAdapter);
 
@@ -115,26 +114,14 @@ public class StoredCommandFragment extends BaseFragment
 	public void onItemClick(@NonNull AdapterView<?> parent, View view, int position, long id) {
 		if (id == R.id.btn_select) {
 			selectItem(position);
+		} else if (id == R.id.btn_pin) {
+			StoredCommand cmd = mAdapter.getItem(position);
+			if (cmd != null) pinCommand(cmd);
 		} else {
 			showItemEditor(mAdapter.getItem(position));
 		}
 	}
 
-	@Override
-	public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-		Context context = getContext();
-		if (context == null) return false;
-		AlertDialog dialog = new AlertDialog.Builder(context)
-				.setMessage(R.string.stored_commands_pin)
-				.setNegativeButton(R.string.Cancel, null)
-				.setPositiveButton(R.string.PinShortcut, (dialog1, which) -> {
-					StoredCommand cmd = mAdapter.getItem(position);
-					if (cmd != null) pinCommand(cmd);
-				})
-				.create();
-		dialog.show();
-		return true;
-	}
 
 	private void showItemEditor(@Nullable StoredCommand cmd) {
 		Context context = getContext();
@@ -172,10 +159,6 @@ public class StoredCommandFragment extends BaseFragment
 						cmd13.mTitle = Ui.getValue(view, R.id.etxt_input_title);
 						cmd13.mCommand = Ui.getValue(view, R.id.etxt_input_command);
 						saveCommand(cmd13);
-					})
-					.setNeutralButton(R.string.PinShortcut, (dialog14, which) -> {
-						StoredCommand cmd14 = (StoredCommand) view.getTag();
-						pinCommand(cmd14);
 					})
 					.create();
 			dialog.show();
@@ -265,7 +248,7 @@ public class StoredCommandFragment extends BaseFragment
 
 
 	private class StoredCommandAdapter extends ArrayAdapter<StoredCommand>
-			implements View.OnClickListener, View.OnLongClickListener {
+			implements View.OnClickListener {
 
 		private final LayoutInflater mInflater;
 
@@ -279,12 +262,14 @@ public class StoredCommandFragment extends BaseFragment
 		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_stored_command, null);
-				Ui.setOnClick(convertView, R.id.linearLayout1, position, this, this);
-				Ui.setOnClick(convertView, R.id.btn_select, position, this, this);
+				Ui.setOnClick(convertView, R.id.linearLayout1, position, this, null);
+				Ui.setOnClick(convertView, R.id.btn_select, position, this, null);
+				View btnPin = Ui.setOnClick(convertView, R.id.btn_pin, position, this, null);
 				if (mRequestCode == REQUEST_SELECT_SHORTCUT) {
 					Drawable icon = ResourcesCompat.getDrawable(getResources(),
 							R.drawable.ic_arrow_forward, null);
 					Ui.setButtonImage(convertView, R.id.btn_select, icon);
+					btnPin.setVisibility(View.GONE);
 				}
 			}
 			StoredCommand cmd = getItem(position);
@@ -298,11 +283,6 @@ public class StoredCommandFragment extends BaseFragment
 		@Override
 		public void onClick(View view) {
 			onItemClick(mListView, view, (Integer) view.getTag(), view.getId());
-		}
-
-		@Override
-		public boolean onLongClick(View view) {
-			return onItemLongClick(mListView, view, (Integer) view.getTag(), view.getId());
 		}
 	}
 
