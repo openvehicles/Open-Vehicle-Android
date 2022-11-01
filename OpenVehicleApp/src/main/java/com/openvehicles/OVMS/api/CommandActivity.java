@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.LeadingMarginSpan;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -101,7 +102,15 @@ public class CommandActivity extends ApiActivity
 
 		mTextViewMessage = new TextView(this);
 		mTextViewMessage.setPadding(20,10,20,20);
-		mTextViewMessage.setTypeface(Typeface.MONOSPACE);
+		if (appPrefes.getData("notifications_font_monospace").equals("on")) {
+			mTextViewMessage.setTypeface(Typeface.MONOSPACE);
+		}
+		try {
+			float fontSize = Float.parseFloat(appPrefes.getData("notifications_font_size"));
+			mTextViewMessage.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize);
+		} catch(Exception ignore) {
+			// keep default font size
+		}
 
 		LinearLayout linearLayout = new LinearLayout(this);
 		linearLayout.setOrientation(LinearLayout.VERTICAL);
