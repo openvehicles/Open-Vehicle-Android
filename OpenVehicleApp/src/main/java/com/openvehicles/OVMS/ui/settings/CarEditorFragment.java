@@ -399,6 +399,7 @@ public class CarEditorFragment extends BaseFragment {
 			"car_kangoo_grey",
 			"car_kangoo_red",
 			"car_kangoo_blue",
-			"car_kangoo_brown"
+			"car_kangoo_brown",
+			"car_fiat500e_black"
 	};
 }
