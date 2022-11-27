@@ -379,6 +379,7 @@ public class CarEditorFragment extends BaseFragment {
 			"car_ampera_silvertopas",
 			"car_ampera_sovereignsilver",
 			"car_ampera_summitwhite",
+			"car_boltev_summitwhite",
 			"car_holdenvolt_black",
 			"car_holdenvolt_crystalclaret",
 			"car_holdenvolt_silvernitrate",
