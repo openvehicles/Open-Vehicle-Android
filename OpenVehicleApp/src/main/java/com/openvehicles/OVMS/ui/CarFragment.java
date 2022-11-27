@@ -1120,7 +1120,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_yellow);
 				else
 					iv.setImageResource(R.drawable.ol_car_zoe_chargeport_green);
-			} else if ((pCarData.sel_vehicle_image.startsWith("car_boltev_")) {
+			} else if (pCarData.sel_vehicle_image.startsWith("car_boltev_")) {
 				// Chevy Bolt EV
 				if (pCarData.car_charge_mode.equals("performance"))
 					iv.setImageResource(R.drawable.ol_car_boltev_dcfc);
