@@ -223,6 +223,8 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 		if (result.length < 2)
 			return;
+		if (getContext() == null)
+			return;
 
 		int command = Integer.parseInt(result[0]);
 		int returnCode = Integer.parseInt(result[1]);

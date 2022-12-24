@@ -108,10 +108,12 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	
 	@Override
 	public void onResultCommand(String[] result) {
-		if (result.length <= 1) {
+
+		if (result.length < 2)
 			return;
-		}
-		
+		if (getContext() == null)
+			return;
+
 		int command = Integer.parseInt(result[0]);
 		int resCode = Integer.parseInt(result[1]);
 		String resText = (result.length > 2) ? result[2] : "";

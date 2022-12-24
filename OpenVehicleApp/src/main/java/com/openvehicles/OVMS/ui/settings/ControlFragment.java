@@ -136,7 +136,10 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 
 	@Override
 	public void onResultCommand(String[] result) {
-		if (result.length <= 1)
+
+		if (result.length < 2)
+			return;
+		if (getContext() == null)
 			return;
 
 		Context context = getActivity();
