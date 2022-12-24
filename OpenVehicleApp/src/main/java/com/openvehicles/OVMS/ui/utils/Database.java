@@ -92,6 +92,7 @@ public class Database extends SQLiteOpenHelper {
 				"nID INTEGER PRIMARY KEY AUTOINCREMENT," +
 				"nType TEXT, nTimestamp TEXT, nTitle TEXT, nMessage TEXT)");
 
+		// Version 7:
 		// create StoredCommand table:
 		db.execSQL("CREATE TABLE IF NOT EXISTS StoredCommand(" +
 				"scKey INTEGER PRIMARY KEY AUTOINCREMENT," +
