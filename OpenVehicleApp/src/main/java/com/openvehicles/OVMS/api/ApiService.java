@@ -291,11 +291,14 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 						.setContentIntent(pendingIntent)
 						.build();
 
-		startForeground(ONGOING_NOTIFICATION_ID, notification);
-
-		mEnabled = true;
-		mStopped = false;
-		sendApiEvent("ServiceEnabled");
+		try {
+			startForeground(ONGOING_NOTIFICATION_ID, notification);
+			mEnabled = true;
+			mStopped = false;
+			sendApiEvent("ServiceEnabled");
+		} catch (Exception e) {
+			Log.e(TAG, "enableService: startForeground failed:", e);
+		}
 	}
 
 	/**
