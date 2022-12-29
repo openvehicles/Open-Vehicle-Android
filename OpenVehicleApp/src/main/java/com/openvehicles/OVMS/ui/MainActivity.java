@@ -74,6 +74,8 @@ public class MainActivity extends ApiActivity implements
 	public static UpdateLocation updateLocation;
 	public GetMapDetails getMapDetails;
 	public List<LatLng> getMapDetailList;
+	public long getMapDetailsBlockUntil = 0;
+	public long getMapDetailsBlockSeconds = 0;
 
 
 	/**
@@ -699,12 +701,18 @@ public class MainActivity extends ApiActivity implements
 		if (!isMapCacheValid(center)) {
 			getMapDetailList.add(center);
 			StartGetMapDetails();
+		} else {
+			Log.d(TAG, "StartGetMapDetails: map cache valid for center=" + center);
 		}
 	}
 
 	public void StartGetMapDetails() {
 		// check if task is still running:
 		if (getMapDetails != null && getMapDetails.getStatus() != AsyncTask.Status.FINISHED) {
+			return;
+		}
+		// check if error block period is active:
+		if (System.currentTimeMillis() < getMapDetailsBlockUntil) {
 			return;
 		}
 
@@ -729,23 +737,41 @@ public class MainActivity extends ApiActivity implements
 		} while(true);
 	}
 
+	private final Handler mGetMapDetailsHandler = new Handler(Looper.getMainLooper());
+
 	@Override
 	public void getMapDetailsDone(boolean success, LatLng center) {
 		if (success) {
 			// mark cache tile valid:
-			Log.i(TAG, "OCM updates received for " + center);
+			Log.i(TAG, "getMapDetailsDone: OCM updates received for " + center);
 			database.addlatlngdetail((int)center.latitude, (int)center.longitude);
 			// update map:
 			FragMap frg = (FragMap) mPagerAdapter.getItemByTitle(R.string.Location);
 			if (frg != null) {
-				Log.d(TAG, "OCM updates received => calling FragMap.update()");
+				Log.d(TAG, "getMapDetailsDone: OCM updates received => calling FragMap.update()");
 				frg.update();
 			}
+			// clear blocking:
+			getMapDetailsBlockUntil = 0;
+			getMapDetailsBlockSeconds = 0;
+			// check for next fetch job:
+			StartGetMapDetails();
 		} else {
-			Log.e(TAG, "OCM updates failed for " + center);
+			Log.e(TAG, "getMapDetailsDone: OCM updates failed for " + center);
+			// increase blocking time up to 120 seconds:
+			if (getMapDetailsBlockSeconds < 120) {
+				getMapDetailsBlockSeconds += 10;
+			}
+			Log.d(TAG, "getMapDetailsDone: blocking OCM API calls for " + getMapDetailsBlockSeconds + " seconds");
+			getMapDetailsBlockUntil = System.currentTimeMillis() + (1000 * getMapDetailsBlockSeconds);
+			// schedule retry:
+			if (getMapDetailsBlockSeconds < 120) {
+				mGetMapDetailsHandler.postDelayed(() -> StartGetMapDetails(center), 1000 * getMapDetailsBlockSeconds);
+			} else {
+				Log.w(TAG, "getMapDetailsDone: maximum block time reached, no further retries");
+				// Note: retry blocking will be resolved by the next regular fetch from a vehicle movement
+			}
 		}
-		// check for next fetch job:
-		StartGetMapDetails();
 	}
 
 }
