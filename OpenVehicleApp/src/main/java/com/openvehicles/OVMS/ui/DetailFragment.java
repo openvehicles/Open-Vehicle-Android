@@ -130,7 +130,7 @@ public class DetailFragment extends Fragment {
 		Ui.setOnClick(detail, R.id.btnViewInOCM, new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				openURL("http://openchargemap.org/site/poi/details/" + cpId);
+				openURL("https://openchargemap.org/site/poi/details/" + cpId);
 			}
 		});
 

@@ -286,10 +286,20 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		// set checkboxes:
 		autoTrackMenuItem = optionsMenu.findItem(R.id.mi_map_autotrack);
 		autoTrackMenuItem.setChecked(autotrack);
-		optionsMenu.findItem(R.id.mi_map_filter_connections)
-				.setChecked(appPrefes.getData("filter").equals("on"));
-		optionsMenu.findItem(R.id.mi_map_filter_range)
-				.setChecked(appPrefes.getData("inrange").equals("on"));
+
+		if (appPrefes.getData("option_ocm_enabled", "1").equals("1")) {
+			optionsMenu.findItem(R.id.mi_map_filter_connections)
+					.setChecked(appPrefes.getData("filter").equals("on"))
+					.setVisible(true);
+			optionsMenu.findItem(R.id.mi_map_filter_range)
+					.setChecked(appPrefes.getData("inrange").equals("on"))
+					.setVisible(true);
+		} else {
+			optionsMenu.findItem(R.id.mi_map_filter_connections)
+					.setVisible(false);
+			optionsMenu.findItem(R.id.mi_map_filter_range)
+					.setVisible(false);
+		}
 	}
 
 	@Override

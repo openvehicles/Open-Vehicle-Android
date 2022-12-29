@@ -288,6 +288,7 @@
     <string name="ocm_title_charge_points">LADESTATIONEN</string>
     <string name="ocm_subtitle_charge_points">Quelle: https://openchargemap.org/</string>
 
+    <string name="ocm_lb_enable">OCM aktivieren</string>
     <string name="ocm_lb_cluster_enable">Gruppierung an</string>
     <string name="ocm_lb_cluster_size">Gruppengröße</string>
 

@@ -53,25 +53,24 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 	}
 
 	private void setUpClusteringViews() {
-		final CheckBox clusterCheckbox = (CheckBox) view
-				.findViewById(R.id.checkbox_cluster);
-		final SeekBar clusterSizeSeekbar = (SeekBar) view
-				.findViewById(R.id.seekbar_cluster_size);
-		Spinner maxResultsSpinner = (Spinner) view
-				.findViewById(R.id.ocm_maxresults);
-		Button btnConnections = (Button) view
-				.findViewById(R.id.btn_connections);
-		Button btnClearCache = (Button) view
-				.findViewById(R.id.btn_clearcache);
+		final CheckBox ocmEnableCheckbox = (CheckBox) view.findViewById(R.id.checkbox_ocm_enable);
+		final CheckBox clusterCheckbox = (CheckBox) view.findViewById(R.id.checkbox_cluster);
+		final SeekBar clusterSizeSeekbar = (SeekBar) view.findViewById(R.id.seekbar_cluster_size);
+		Spinner maxResultsSpinner = (Spinner) view.findViewById(R.id.ocm_maxresults);
+		Button btnConnections = (Button) view.findViewById(R.id.btn_connections);
+		Button btnClearCache = (Button) view.findViewById(R.id.btn_clearcache);
 
+		boolean ocmEnabled = appPrefes.getData("option_ocm_enabled", "1").equals("1");
+		ocmEnableCheckbox.setChecked(ocmEnabled);
 
 		if (appPrefes.getData("check").equals("false")) {
 			clusterCheckbox.setChecked(false);
 			clusterSizeSeekbar.setEnabled(false);
 		}
+
 		try {
-			clusterSizeSeekbar.setProgress(Integer.parseInt(appPrefes
-					.getData("progress")));
+			// Note: probably due to cargo culting, the prefs name for the cluster size is "progress"
+			clusterSizeSeekbar.setProgress(Integer.parseInt(appPrefes.getData("progress")));
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -92,76 +91,67 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 			// TODO: handle exception
 		}
 
+		ocmEnableCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				appPrefes.SaveData("option_ocm_enabled", isChecked ? "1" : "0");
+				if (!isChecked) {
+					FragMap.updateMap.clearCache();
+				}
+			}
+		});
 
-		clusterCheckbox
-				.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+		clusterCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			@Override
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				clusterSizeSeekbar.setEnabled(isChecked);
+				appPrefes.SaveData("check", "" + isChecked);
+				FragMap.updateMap.updateClustering(clusterSizeSeekbar.getProgress(), isChecked);
+			}
+		});
 
-					@Override
-					public void onCheckedChanged(CompoundButton buttonView,
-												 boolean isChecked) {
-						clusterSizeSeekbar.setEnabled(isChecked);
-						appPrefes.SaveData("check", "" + isChecked);
-						FragMap.updateMap.updateClustering(
-								clusterSizeSeekbar.getProgress(), isChecked);
-					}
-				});
+		clusterSizeSeekbar.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+			@Override
+			public void onStartTrackingTouch(SeekBar seekBar) { }
+			@Override
+			public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
+			@Override
+			public void onStopTrackingTouch(SeekBar seekBar) {
+				int progress = seekBar.getProgress();
+				boolean enabled = clusterCheckbox.isChecked();
+				appPrefes.SaveData("progress", "" + progress);
+				FragMap.updateMap.updateClustering(progress, enabled);
+			}
+		});
 
-		clusterSizeSeekbar
-				.setOnSeekBarChangeListener(new OnSeekBarChangeListener() {
+		maxResultsSpinner.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
+			@Override
+			public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+				String selected = adapterView.getItemAtPosition(i).toString();
+				if (!appPrefes.getData("maxresults").equals(selected)) {
+					appPrefes.SaveData("maxresults", "" + selected);
+					FragMap.updateMap.clearCache();
+				}
+			}
+			@Override
+			public void onNothingSelected(AdapterView<?> adapterView) { }
+		});
 
-					@Override
-					public void onStartTrackingTouch(SeekBar seekBar) {
-					}
+		btnConnections.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				connectionList.sublist();
+			}
+		});
 
-					@Override
-					public void onProgressChanged(SeekBar seekBar,
-												  int progress, boolean fromUser) {
-					}
-
-					@Override
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						int progress = seekBar.getProgress();
-						boolean enabled = clusterCheckbox.isChecked();
-						appPrefes.SaveData("progress", "" + progress);
-						FragMap.updateMap.updateClustering(progress, enabled);
-					}
-				});
-
-		maxResultsSpinner
-				.setOnItemSelectedListener(new Spinner.OnItemSelectedListener() {
-
-					@Override
-					public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-						String selected = adapterView.getItemAtPosition(i).toString();
-						if (!appPrefes.getData("maxresults").equals(selected)) {
-							appPrefes.SaveData("maxresults", "" + selected);
-							FragMap.updateMap.clearCache();
-						}
-					}
-
-					@Override
-					public void onNothingSelected(AdapterView<?> adapterView) {
-
-					}
-				});
-
-		btnConnections
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						connectionList.sublist();
-					}
-				});
-
-		btnClearCache
-				.setOnClickListener(new View.OnClickListener() {
-					@Override
-					public void onClick(View view) {
-						FragMap.updateMap.clearCache();
-						Toast.makeText(getActivity(), getString(R.string.msg_cache_cleared),
-								Toast.LENGTH_SHORT).show();
-					}
-				});
+		btnClearCache.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				FragMap.updateMap.clearCache();
+				Toast.makeText(getActivity(), getString(R.string.msg_cache_cleared),
+						Toast.LENGTH_SHORT).show();
+			}
+		});
 
 	}
 }

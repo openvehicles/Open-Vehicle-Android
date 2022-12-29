@@ -312,6 +312,7 @@
     <string name="ocm_title_charge_points">CHARGING STATIONS</string>
     <string name="ocm_subtitle_charge_points">Source: https://openchargemap.org/</string>
 
+    <string name="ocm_lb_enable">Enable OCM</string>
     <string name="ocm_lb_cluster_enable">Enable clustering</string>
     <string name="ocm_lb_cluster_size">Cluster size</string>
 

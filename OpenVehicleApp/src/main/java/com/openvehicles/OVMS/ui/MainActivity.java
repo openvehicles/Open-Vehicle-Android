@@ -117,7 +117,10 @@ public class MainActivity extends ApiActivity implements
 		getMapDetailList = new ArrayList<LatLng>();
 		updateLocation = this;
 		updatelocation();
-		ConnectionList connectionList = new ConnectionList(this,this,true);
+		// update connection list if OCM is enabled:
+		if (appPrefes.getData("option_ocm_enabled", "1").equals("1")) {
+			new ConnectionList(this,this,true);
+		}
 
 		// Start background ApiService:
 		Log.i(TAG, "onCreate: starting ApiService");
@@ -713,6 +716,10 @@ public class MainActivity extends ApiActivity implements
 		}
 		// check if error block period is active:
 		if (System.currentTimeMillis() < getMapDetailsBlockUntil) {
+			return;
+		}
+		// check if OCM has been disabled:
+		if (appPrefes.getData("option_ocm_enabled", "1").equals("0")) {
 			return;
 		}
 

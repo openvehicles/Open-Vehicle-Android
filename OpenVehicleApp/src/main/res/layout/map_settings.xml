@@ -70,6 +70,35 @@
             android:layout_gravity="center_vertical"
             android:layout_marginRight="10dip"
             android:layout_weight="1"
+            android:text="@string/ocm_lb_enable"
+            android:layout_marginEnd="10dip" />
+
+        <CheckBox
+            android:id="@+id/checkbox_ocm_enable"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_column="1"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="0dip"
+            android:layout_weight="4"
+            android:checked="true"
+            android:minHeight="48dp"
+            android:layout_marginEnd="20dip" />
+
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dip">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="10dip"
+            android:layout_weight="1"
             android:text="@string/ocm_lb_cluster_enable"
             android:layout_marginEnd="10dip" />
 
