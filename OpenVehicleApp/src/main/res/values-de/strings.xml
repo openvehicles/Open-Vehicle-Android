@@ -658,13 +658,8 @@
         <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
-        <p><b><u>Hauptänderungen in dieser App-Version</u></b>:</p>
-          <p>· SOC-Anzeige-Widget</p>
-          <p>· Gespeicherte Kommandos</p>
-          <p>· Kommando-Shortcuts/-Lesezeichen</p>
-          <p>· KustomWidget (KWGT) Unterstützung</p>
-          <p>· Bild für Bolt EV</p>
-          <p>· Bild für Fiat 500e</p>
+        <p><b><u>Hauptänderungen seit letztem Release</u></b>:</p>
+          <p>· OCM deaktivierbar</p>
           <p>· Korrekturen &amp; Optimierungen</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
