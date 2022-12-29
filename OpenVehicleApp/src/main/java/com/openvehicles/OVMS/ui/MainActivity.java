@@ -24,6 +24,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -367,7 +368,7 @@ public class MainActivity extends ApiActivity implements
 		}
 	};
 
-	private final Handler mGcmHandler = new Handler();
+	private final Handler mGcmHandler = new Handler(Looper.getMainLooper());
 
 	private class GcmDoSubscribe implements Runnable {
 		private static final String TAG = "GcmDoSubscribe";

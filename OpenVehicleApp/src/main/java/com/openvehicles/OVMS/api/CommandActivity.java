@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
@@ -77,7 +78,7 @@ public class CommandActivity extends ApiActivity
 	private ProgressBar mProgressBar;
 	private TextView mTextViewMessage;
 
-	private final Handler mTimeoutHandler = new Handler();
+	private final Handler mTimeoutHandler = new Handler(Looper.getMainLooper());
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

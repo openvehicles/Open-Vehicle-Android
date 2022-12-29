@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,7 +71,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		View rootView = inflater.inflate(R.layout.fragment_info, null);
 
 		// init car selector:
-		mHandler = new Handler();
+		mHandler = new Handler(Looper.getMainLooper());
 		mCarSelect = (Gallery) rootView.findViewById(R.id.tabInfoImageCar);
 		mCarSelectPos = 0;
 		mCarChanger = null;

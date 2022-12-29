@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -30,7 +31,7 @@ public class DialogActivity extends AppCompatActivity {
 
 	private final int DISPLAY_TIMEOUT = 5000;		// Milliseconds
 
-	private final Handler mTimeoutHandler = new Handler();
+	private final Handler mTimeoutHandler = new Handler(Looper.getMainLooper());
 	private final Runnable onTimeout = this::finish;
 
 	public static void show(Context context, CharSequence title, CharSequence text) {

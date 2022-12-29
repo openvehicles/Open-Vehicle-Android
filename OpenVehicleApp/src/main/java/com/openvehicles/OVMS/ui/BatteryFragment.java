@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -119,7 +120,7 @@ public class BatteryFragment
 
 	// system services:
 
-	private final static Handler mHandler = new Handler();
+	private final static Handler mHandler = new Handler(Looper.getMainLooper());
 
 	private CarData mCarData;
 	private CmdSeries cmdSeries;
