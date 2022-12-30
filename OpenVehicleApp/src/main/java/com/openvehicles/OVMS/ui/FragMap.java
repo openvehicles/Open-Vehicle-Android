@@ -74,7 +74,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 	MenuItem autoTrackMenuItem;
 	boolean autotrack = true;
 	float mapZoomLevel = 15;
-	boolean permRequested = false;
 	static FragMapSettings.UpdateMap updateMap;
 
 	private CarData mCarData;
@@ -151,12 +150,6 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 			Log.i(TAG, "getMap/onMapReady: MyLocation enabled, button = " + !autotrack);
 		} else {
 			Log.w(TAG, "getMap/onMapReady: MyLocation unavailable, permission FINE_LOCATION not granted");
-			if (!permRequested) {
-				permRequested = true;
-				ActivityCompat.requestPermissions(mainActivity,
-						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-						MainActivity.REQUEST_LOCATION);
-			}
 		}
 		map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
 			@Override

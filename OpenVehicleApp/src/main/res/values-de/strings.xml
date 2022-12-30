@@ -648,6 +648,14 @@
     <string name="remind">Erinnern</string>
     <string name="dontremind">Nicht erinnern</string>
 
+    <string name="needed_permissions_title">Berechtigungen benötigt</string>
+    <string name="needed_permissions_message">\
+        · Benachrichtigungen werden für Info- und Alarmmeldungen etwa wie bei Ladeabbrüchen oder
+        Diebstahlverdacht benötigt.\n\
+        · Zugriff auf den Standort wird für den Button \"Zurück zum Fahrzeug\" in der Karte benötigt.
+    </string>
+    <string name="later">Später</string>
+
     <string name="about_title">Version %1$s (%2$d)</string>
     <string name="about_message"><![CDATA[
         <p><b><u>Über OVMS</u></b>:</p>

@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
@@ -59,8 +63,6 @@ public class MainActivity extends ApiActivity implements
 		UpdateLocation {
 
 	private static final String TAG = "MainActivity";
-
-	public static final int REQUEST_LOCATION = 1;
 
 	public String versionName = "";
 	public int versionCode = 0;
@@ -141,11 +143,8 @@ public class MainActivity extends ApiActivity implements
 		mViewPager.setId(android.R.id.tabhost);
 		setContentView(mViewPager);
 
-		// check for update:
+		// check for update, Google Play Services & permissions:
 		checkVersion();
-
-		// check for Google Play Services:
-		checkPlayServices();
 
 		// configure ActionBar:
 		final ActionBar actionBar = getSupportActionBar();
@@ -259,13 +258,15 @@ public class MainActivity extends ApiActivity implements
 			versionName = pinfo.versionName;
 			versionCode = pinfo.versionCode;
 
-			if (appPrefes.getData("lastUsedVersionName", "").equals(versionName))
-				return;
-
-			showVersion();
+			if (!appPrefes.getData("lastUsedVersionName", "").equals(versionName)) {
+				showVersion();
+			} else {
+				checkPlayServices();
+			}
 
 		} catch (PackageManager.NameNotFoundException e) {
 			// ignore
+			checkPlayServices();
 		}
 	}
 
@@ -281,12 +282,9 @@ public class MainActivity extends ApiActivity implements
 		AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
 				.setTitle(getString(R.string.about_title, versionName, versionCode))
 				.setView(msg)
-				.setPositiveButton(R.string.msg_ok, new DialogInterface.OnClickListener() {
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						appPrefes.SaveData("lastUsedVersionName", versionName);
-					}
-				})
+				.setPositiveButton(R.string.msg_ok, (dialog1, which) ->
+						appPrefes.SaveData("lastUsedVersionName", versionName))
+				.setOnDismissListener(dialog12 -> checkPlayServices())
 				.show();
 	}
 
@@ -307,16 +305,47 @@ public class MainActivity extends ApiActivity implements
 					.setTitle(R.string.common_google_play_services_install_title)
 					.setMessage(R.string.play_services_recommended)
 					.setPositiveButton(R.string.remind, null)
-					.setNegativeButton(R.string.dontremind, new DialogInterface.OnClickListener() {
-						@Override
-						public void onClick(DialogInterface dialog, int which) {
-							appPrefes.SaveData("skipPlayServicesCheck", "1");
-						}
+					.setNegativeButton(R.string.dontremind, (dialog1, which) ->
+							appPrefes.SaveData("skipPlayServicesCheck", "1"))
+					.setOnDismissListener(dialog12 -> checkPermissions())
+					.show();
+		} else {
+			checkPermissions();
+		}
+	}
+
+	/**
+	 * Check / request permissions
+	 */
+	private void checkPermissions() {
+		ArrayList<String> permissions = new ArrayList<>(2);
+
+		// ACCESS_FINE_LOCATION: needed for the "My location" map button
+		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+				!= PackageManager.PERMISSION_GRANTED) {
+			permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+		}
+
+		// POST_NOTIFICATIONS: needed on Android >= 13 to create notifications
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+				ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+						!= PackageManager.PERMISSION_GRANTED) {
+			permissions.add(Manifest.permission.POST_NOTIFICATIONS);
+		}
+
+		if (!permissions.isEmpty()) {
+			AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+					.setTitle(R.string.needed_permissions_title)
+					.setMessage(R.string.needed_permissions_message)
+					.setNegativeButton(R.string.later, null)
+					.setPositiveButton(R.string.msg_ok, (dialog1, which) -> {
+						String[] permArray = new String[permissions.size()];
+						permissions.toArray(permArray);
+						ActivityCompat.requestPermissions(MainActivity.this, permArray, 0);
 					})
 					.show();
 		}
 	}
-
 
 	/**
 	 * GCM push notification registration:

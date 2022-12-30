@@ -656,6 +656,15 @@
     <string name="remind">Remind</string>
     <string name="dontremind">Don\'t remind</string>
 
+    <string name="needed_permissions_title">Permissions required</string>
+    <string name="needed_permissions_message">\
+        · Permission to post notifications is required to enable push notification alerts and infos,
+        e.g. on charge interruption or theft detection.\n\
+        · Permission to access the fine location is required by Android to allow the map\'s \"home\"
+        button (which actually takes the map back to the vehicle position).
+    </string>
+    <string name="later">Later</string>
+
     <string name="about_title">Version %1$s (%2$d)</string>
     <string name="about_message"><![CDATA[
         <p><b><u>About OVMS</u></b>:</p>
