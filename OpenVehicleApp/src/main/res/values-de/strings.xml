@@ -667,7 +667,8 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen seit letztem Release</u></b>:</p>
-          <p>· OCM deaktivierbar</p>
+          <p>· OpenChargeMap deaktivierbar</p>
+          <p>· Benachrichtigungen auf Android 13</p>
           <p>· Korrekturen &amp; Optimierungen</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
