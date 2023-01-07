@@ -319,11 +319,14 @@ public class MainActivity extends ApiActivity implements
 	 */
 	private void checkPermissions() {
 		ArrayList<String> permissions = new ArrayList<>(2);
+		boolean show_rationale = false;
 
 		// ACCESS_FINE_LOCATION: needed for the "My location" map button
 		if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 				!= PackageManager.PERMISSION_GRANTED) {
 			permissions.add(Manifest.permission.ACCESS_FINE_LOCATION);
+			show_rationale = ActivityCompat.shouldShowRequestPermissionRationale(
+					this, Manifest.permission.ACCESS_FINE_LOCATION);
 		}
 
 		// POST_NOTIFICATIONS: needed on Android >= 13 to create notifications
@@ -331,19 +334,25 @@ public class MainActivity extends ApiActivity implements
 				ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
 						!= PackageManager.PERMISSION_GRANTED) {
 			permissions.add(Manifest.permission.POST_NOTIFICATIONS);
+			show_rationale |= ActivityCompat.shouldShowRequestPermissionRationale(
+					this, Manifest.permission.POST_NOTIFICATIONS);
 		}
 
 		if (!permissions.isEmpty()) {
-			AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
-					.setTitle(R.string.needed_permissions_title)
-					.setMessage(R.string.needed_permissions_message)
-					.setNegativeButton(R.string.later, null)
-					.setPositiveButton(R.string.msg_ok, (dialog1, which) -> {
-						String[] permArray = new String[permissions.size()];
-						permissions.toArray(permArray);
-						ActivityCompat.requestPermissions(MainActivity.this, permArray, 0);
-					})
-					.show();
+			String[] permArray = new String[permissions.size()];
+			permissions.toArray(permArray);
+			if (show_rationale) {
+				AlertDialog dialog = new AlertDialog.Builder(MainActivity.this)
+						.setTitle(R.string.needed_permissions_title)
+						.setMessage(R.string.needed_permissions_message)
+						.setNegativeButton(R.string.later, null)
+						.setPositiveButton(R.string.msg_ok, (dialog1, which) -> {
+							ActivityCompat.requestPermissions(MainActivity.this, permArray, 0);
+						})
+						.show();
+			} else {
+				ActivityCompat.requestPermissions(MainActivity.this, permArray, 0);
+			}
 		}
 	}
 
@@ -514,17 +523,6 @@ public class MainActivity extends ApiActivity implements
 			}
 		}
 	};
-
-	@Override
-	public void update(CarData pCarData) {
-		// In case we missed the onLoginComplete message:
-		// …hide progress indicator:
-		setSupportProgressBarIndeterminateVisibility(false);
-		// …hide error dialog:
-		if (mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
-			mApiErrorDialog.hide();
-		}
-	}
 
 
 	/**
