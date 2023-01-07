@@ -508,18 +508,21 @@ public class MainActivity extends ApiActivity implements
 
 				// check if this message needs to be displayed:
 				String message = intent.getStringExtra("message");
-				if (mApiErrorDialog == null || (mApiErrorDialog != null &&
-						(!mApiErrorDialog.isShowing()
-								|| !message.equals(mApiErrorMessage)))) {
-
-					mApiErrorDialog = new AlertDialog.Builder(MainActivity.this)
-							.setTitle(R.string.Error)
-							.setMessage(message)
-							.setPositiveButton(android.R.string.ok, null)
-							.show();
-
-					mApiErrorMessage = message;
+				if (message == null) return;
+				if (message.equals(mApiErrorMessage) && mApiErrorDialog != null && mApiErrorDialog.isShowing()) {
+					return;
 				}
+
+				// display message:
+				if (mApiErrorDialog != null) {
+					mApiErrorDialog.dismiss();
+				}
+				mApiErrorMessage = message;
+				mApiErrorDialog = new AlertDialog.Builder(MainActivity.this)
+						.setTitle(R.string.Error)
+						.setMessage(mApiErrorMessage)
+						.setPositiveButton(android.R.string.ok, null)
+						.show();
 			}
 		}
 	};
