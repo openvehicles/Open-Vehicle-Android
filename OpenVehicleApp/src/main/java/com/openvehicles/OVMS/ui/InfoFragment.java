@@ -258,9 +258,9 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 					return;
 
 				if (progress == 0)
-					chargerConfirm("start");
+					chargerConfirmStart();
 				else
-					chargerConfirm("stop");
+					chargerConfirmStop();
 			}
 
 			@Override
@@ -276,32 +276,53 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 	}
 
-	private void chargerConfirm(String action) {
-		Integer dlg_title = R.string.lb_charger_confirm_stop;
+	private void chargerConfirmStart() {
+		ReversedSeekBar bar = (ReversedSeekBar) findViewById(R.id.tabInfoSliderChargerControl);
 		// create & open dialog:
-		if (action == "start")
-			dlg_title = R.string.lb_charger_confirm_start;
-
 		View dialogView = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dlg_charger_confirm, null);
 
 		new AlertDialog.Builder(getActivity())
-				.setTitle(dlg_title)
+				.setTitle(R.string.lb_charger_confirm_start)
 				.setView(dialogView)
-				.setNegativeButton(R.string.Cancel, null)
+				.setNegativeButton(R.string.Cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								bar.setProgress(100);
+							}
+						})
 				.setPositiveButton(android.R.string.ok,
 						new DialogInterface.OnClickListener() {
 							@Override
 							public void onClick(DialogInterface pDlg, int pWhich) {
-								AppCompatDialog dlg = (AppCompatDialog) pDlg;
-								if (action == "start") {
-									System.out.println("start charge");
-//									startCharge();
-								}
-								else {
-									System.out.println("stop charge");
-//									stopCharge();
-								}
+								startCharge();
+							}
+						})
+				.show();
+	}
+
+	private void chargerConfirmStop() {
+		ReversedSeekBar bar = (ReversedSeekBar) findViewById(R.id.tabInfoSliderChargerControl);
+		// create & open dialog:
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_confirm, null);
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.lb_charger_confirm_stop)
+				.setView(dialogView)
+				.setNegativeButton(R.string.Cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								bar.setProgress(0);
+							}
+						})
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								stopCharge();
 							}
 						})
 				.show();
