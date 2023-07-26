@@ -99,6 +99,8 @@
     <string name="lb_enter_value">Enter value</string>
     <string name="lb_wrning_charger">WARNING\nIncorrect charger settings may damage electric systems!</string>
     <string name="lb_charger_setting">Charger Setting</string>
+    <string name="lb_charger_confirm_start">Really start charging?</string>
+    <string name="lb_charger_confirm_stop">Really stop charging?</string>
     <string name="lb_communications_problem">Communications Problem</string>
     <string name="lb_vehicle_id">Vehicle ID</string>
     <string name="lb_vehicle_label">Vehicle Label (arbitrary)</string>

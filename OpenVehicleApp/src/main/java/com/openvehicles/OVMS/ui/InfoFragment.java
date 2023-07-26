@@ -258,9 +258,9 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 					return;
 
 				if (progress == 0)
-					startCharge();
+					chargerConfirm("start");
 				else
-					stopCharge();
+					chargerConfirm("stop");
 			}
 
 			@Override
@@ -274,6 +274,37 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			}
 		});
 
+	}
+
+	private void chargerConfirm(String action) {
+		Integer dlg_title = R.string.lb_charger_confirm_stop;
+		// create & open dialog:
+		if (action == "start")
+			dlg_title = R.string.lb_charger_confirm_start;
+
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_confirm, null);
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle(dlg_title)
+				.setView(dialogView)
+				.setNegativeButton(R.string.Cancel, null)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								AppCompatDialog dlg = (AppCompatDialog) pDlg;
+								if (action == "start") {
+									System.out.println("start charge");
+//									startCharge();
+								}
+								else {
+									System.out.println("stop charge");
+//									stopCharge();
+								}
+							}
+						})
+				.show();
 	}
 
 	@Override
