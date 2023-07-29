@@ -258,9 +258,9 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 					return;
 
 				if (progress == 0)
-					startCharge();
+					chargerConfirmStart();
 				else
-					stopCharge();
+					chargerConfirmStop();
 			}
 
 			@Override
@@ -274,6 +274,58 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			}
 		});
 
+	}
+
+	private void chargerConfirmStart() {
+		ReversedSeekBar bar = (ReversedSeekBar) findViewById(R.id.tabInfoSliderChargerControl);
+		// create & open dialog:
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_confirm, null);
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.lb_charger_confirm_start)
+				.setView(dialogView)
+				.setNegativeButton(R.string.Cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								bar.setProgress(100);
+							}
+						})
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								startCharge();
+							}
+						})
+				.show();
+	}
+
+	private void chargerConfirmStop() {
+		ReversedSeekBar bar = (ReversedSeekBar) findViewById(R.id.tabInfoSliderChargerControl);
+		// create & open dialog:
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_confirm, null);
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.lb_charger_confirm_stop)
+				.setView(dialogView)
+				.setNegativeButton(R.string.Cancel,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								bar.setProgress(0);
+							}
+						})
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								stopCharge();
+							}
+						})
+				.show();
 	}
 
 	@Override

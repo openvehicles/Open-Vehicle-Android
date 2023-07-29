@@ -94,6 +94,8 @@
     <string name="lb_enter_value">Wert eingeben</string>
     <string name="lb_wrning_charger">WARNUNG\nFalsche Lader-Einstellungen könnten die Elektronik beschädigen!</string>
     <string name="lb_charger_setting">Lader-Einstellungen</string>
+    <string name="lb_charger_confirm_start">Wirklich Ladung starten?</string>
+    <string name="lb_charger_confirm_stop">Wirklich Ladung stoppen?</string>
     <string name="lb_communications_problem">Kommunikationsproblem</string>
     <string name="lb_vehicle_id">Fahrzeug ID</string>
     <string name="lb_vehicle_label">Fahrzeugbeschreibung (beliebig)</string>
