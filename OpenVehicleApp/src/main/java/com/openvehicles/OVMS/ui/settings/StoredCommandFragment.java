@@ -118,7 +118,8 @@ public class StoredCommandFragment extends BaseFragment
 			StoredCommand cmd = mAdapter.getItem(position);
 			if (cmd != null) pinCommand(cmd);
 		} else {
-			showItemEditor(mAdapter.getItem(position));
+			StoredCommand cmd = mAdapter.getItem(position);
+			if (cmd != null) showItemEditor(cmd);
 		}
 	}
 
@@ -262,15 +263,15 @@ public class StoredCommandFragment extends BaseFragment
 		public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 			if (convertView == null) {
 				convertView = mInflater.inflate(R.layout.item_stored_command, null);
-				Ui.setOnClick(convertView, R.id.linearLayout1, position, this, null);
-				Ui.setOnClick(convertView, R.id.btn_select, position, this, null);
-				View btnPin = Ui.setOnClick(convertView, R.id.btn_pin, position, this, null);
-				if (mRequestCode == REQUEST_SELECT_SHORTCUT) {
-					Drawable icon = ResourcesCompat.getDrawable(getResources(),
-							R.drawable.ic_arrow_forward, null);
-					Ui.setButtonImage(convertView, R.id.btn_select, icon);
-					btnPin.setVisibility(View.GONE);
-				}
+			}
+			Ui.setOnClick(convertView, R.id.linearLayout1, position, this, null);
+			Ui.setOnClick(convertView, R.id.btn_select, position, this, null);
+			View btnPin = Ui.setOnClick(convertView, R.id.btn_pin, position, this, null);
+			if (mRequestCode == REQUEST_SELECT_SHORTCUT) {
+				Drawable icon = ResourcesCompat.getDrawable(getResources(),
+						R.drawable.ic_arrow_forward, null);
+				Ui.setButtonImage(convertView, R.id.btn_select, icon);
+				btnPin.setVisibility(View.GONE);
 			}
 			StoredCommand cmd = getItem(position);
 			if (cmd != null) {
