@@ -93,6 +93,7 @@
     <string name="lb_enter_passwd">Passwort eingeben</string>
     <string name="lb_enter_value">Wert eingeben</string>
     <string name="lb_wrning_charger">WARNUNG\nFalsche Lader-Einstellungen könnten die Elektronik beschädigen!</string>
+    <string name="lb_charge_current">Ladestromstärke (A)</string>
     <string name="lb_charger_setting">Lader-Einstellungen</string>
     <string name="lb_charger_confirm_start">Wirklich Ladung starten?</string>
     <string name="lb_charger_confirm_stop">Wirklich Ladung stoppen?</string>
@@ -119,6 +120,10 @@
     <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
     <string name="lb_ft_car_bits">#%d: Car Bits</string>
     <string name="lb_ft_can_write">#%d: CAN Write</string>
+    <string name="lb_ft_modelyear">#%d: Modelljahr</string>
+    <string name="lb_ft_remote_ac_temp">#%d: Temperatur Vorklimatisieren</string>
+    <string name="lb_ft_remote_ac_on_bat">#%d: Vorklimatisieren aus Batterie</string>
+    <string name="lb_ft_stop_suffsoc">#%d: Ladung stoppen bei ausreichendem SOC</string>
 
     <string name="lb_ft_rt_gpslogint">#%d: GPS Log-Intervall [sek]</string>
     <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdown-Schwellwert</string>

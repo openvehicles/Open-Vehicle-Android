@@ -207,6 +207,11 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		private static final int FEATURE_CAPACITY 				= 0x0D; // Battery capacity average (SOH%)
 		private static final int FEATURE_CAPACITY_NOM_AH		= 0x10; // Battery nominal capacity (Ah)
 
+		// VW e-Up:
+		private static final int FEATURE_MODELYEAR				= 0x14; // model year
+		private static final int FEATURE_REMOTE_AC_TEMP			= 0x15; // temperature for remote AC
+		private static final int FEATURE_REMOTE_AC_ON_BAT		= 0x16; // allow remote AC on battery power?
+
 		// The FEATURE_CARBITS feature is a set of ON/OFF bits to control different
 		// miscelaneous aspects of the system. The following bits are defined:
 		//private static final int FEATURE_CB_2008		= 0x01; // Set to 1 to mark the car as 2008/2009
@@ -279,6 +284,24 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 						return context.getString(R.string.lb_ft_rt_suffsoc, position);
 					case FEATURE_SUFFRANGE:
 						return context.getString(R.string.lb_ft_rt_suffrange, position);
+					default:
+						// fall through to standard
+				}
+			}
+			// VW e-Up:
+			if (mCarData.car_type.equals("VWUP")) {
+				switch (position) {
+					case FEATURE_CHARGEMODE:
+						return context.getString(R.string.lb_ft_rt_chargemode, position);
+					case FEATURE_SUFFSOC:
+						return context.getString(R.string.lb_ft_rt_suffsoc, position);
+					case FEATURE_MODELYEAR:
+						return context.getString(R.string.lb_ft_modelyear, position);
+					case FEATURE_REMOTE_AC_TEMP:
+						return context.getString(R.string.lb_ft_remote_ac_temp, position);
+					case FEATURE_REMOTE_AC_ON_BAT:
+						return context.getString(R.string.lb_ft_remote_ac_on_bat, position);
+
 					default:
 						// fall through to standard
 				}
