@@ -429,6 +429,8 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	private void chargerSetting() {
 		if (mCarData.car_type.equals("RT"))
 			chargerSettingRenaultTwizy();
+		else if (mCarData.car_type.equals("VWUP"))
+			chargerSettingVWUP();
 		else
 			chargerSettingDefault();
 	}
@@ -561,6 +563,75 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 										R.string.msg_setting_charge_alerts,
 										String.format("204,%d,%d,%d,%d",
 												suffRange, suffSOC, chgPower, chgMode),
+										InfoFragment.this);
+							}
+						})
+				.show();
+	}
+
+	// Charger settings for VW e-Up:
+	// 	(charge alert setup)
+	private void chargerSettingVWUP() {
+
+		// create & open dialog:
+		View dialogView = LayoutInflater.from(getActivity()).inflate(
+				R.layout.dlg_charger_vwup, null);
+
+		// set SOC:
+		SlideNumericView snvSOC = (SlideNumericView) dialogView.findViewById(R.id.snv_sufficient_soc);
+		if (snvSOC != null) {
+			snvSOC.setValue(mCarData.car_chargelimit_soclimit);
+		}
+
+		// set charge current:
+		SlideNumericView snv = (SlideNumericView) dialogView.findViewById(R.id.snv_amps);
+		if (snv != null) {
+			snv.setValue((int) mCarData.car_charge_currentlimit_raw);
+		}
+
+		// set charge power limit:
+/*		Spinner spnChargePower = (Spinner) dialogView.findViewById(R.id.spn_charge_power_limit);
+		if (spnChargePower != null) {
+			spnChargePower.setSelection((int) mCarData.car_charge_currentlimit_raw / 5);
+		}*/
+
+		SwitcherView svChargeMode = (SwitcherView) dialogView.findViewById(R.id.sv_twizy_charge_mode);
+		if (svChargeMode != null) {
+			if (mCarData.car_charge_mode_i_raw == 3)
+				svChargeMode.setSelected(1); // hack to map charge mode keys 3 ("range") and 0 to this element
+			else
+				svChargeMode.setSelected(0);
+		}
+
+		new AlertDialog.Builder(getActivity())
+				.setTitle(R.string.lb_charger_setting_twizy)
+				.setView(dialogView)
+				.setNegativeButton(R.string.Cancel, null)
+				.setPositiveButton(android.R.string.ok,
+						new DialogInterface.OnClickListener() {
+							@Override
+							public void onClick(DialogInterface pDlg, int pWhich) {
+								AppCompatDialog dlg = (AppCompatDialog) pDlg;
+
+								SlideNumericView snvSOC = (SlideNumericView) dlg
+										.findViewById(R.id.snv_sufficient_soc);
+/*								Spinner spnChargePower = (Spinner) dlg
+										.findViewById(R.id.spn_charge_power_limit);*/
+								SlideNumericView snv = (SlideNumericView) dlg
+										.findViewById(R.id.snv_amps);
+								SwitcherView svChargeMode = (SwitcherView) dlg
+										.findViewById(R.id.sv_twizy_charge_mode);
+
+								int suffSOC = snvSOC.getValue();
+//								int chgPower = spnChargePower.getSelectedItemPosition();
+								int chgMode = svChargeMode.getSelected();
+								int ncl = snv.getValue();
+
+								// SetChargeAlerts (204):
+								sendCommand(
+										R.string.msg_setting_charge_alerts,
+										String.format("204,%d,%d,%d",
+												suffSOC, ncl, chgMode),
 										InfoFragment.this);
 							}
 						})
