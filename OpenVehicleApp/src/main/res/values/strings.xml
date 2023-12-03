@@ -684,8 +684,7 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
         <p>&nbsp;</p>
         <p><b><u>Main changes since last release</u></b>:</p>
-          <p>· Option to disable OpenChargeMap</p>
-          <p>· Fix notifications on Android 13</p>
+          <p>· Add VW e-Up charger settings (firmware 3.3.004)</p>
           <p>· General fixes &amp; optimizations</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
