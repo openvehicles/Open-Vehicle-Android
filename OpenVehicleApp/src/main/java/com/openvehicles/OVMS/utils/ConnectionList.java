@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import androidx.appcompat.app.AppCompatDialog;
+
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -147,6 +149,8 @@ public class ConnectionList {
 		dialog.show();
 	}
 
+	// TODO: Remove "@SuppressLint("Range")" and handle this properly
+	@SuppressLint("Range")
 	private void getlist() {
 		al.clear();
 		al_Id.clear();
