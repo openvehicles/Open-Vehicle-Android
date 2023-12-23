@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -24,6 +25,8 @@ public class DetailFragment extends Fragment {
 	AppPrefes appPrefes;
 	Database database;
 
+	// TODO: Remove "@SuppressLint("Range")" and handle this properly
+	@SuppressLint("Range")
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
