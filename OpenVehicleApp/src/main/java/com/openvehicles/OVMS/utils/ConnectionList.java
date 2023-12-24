@@ -21,8 +21,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
-import com.openvehicles.OVMS.luttu.Main;
+import com.luttu.AppPrefes;
+import com.luttu.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.ui.utils.Database;
 

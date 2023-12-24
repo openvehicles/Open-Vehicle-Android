@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.luttu;
+package com.luttu;
 
 import android.content.Intent;
 

@@ -10,7 +10,7 @@ import android.os.IBinder;
 import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;

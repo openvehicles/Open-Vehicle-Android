@@ -1,4 +1,4 @@
-package com.openvehicles.OVMS.luttu.lazy;
+package com.and.lazy;
 
 import java.io.File;
 import android.content.Context;

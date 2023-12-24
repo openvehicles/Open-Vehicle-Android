@@ -13,7 +13,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.MainActivity;
