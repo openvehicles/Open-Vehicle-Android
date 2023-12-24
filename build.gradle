@@ -16,8 +16,3 @@ allprojects {
         mavenCentral()
     }
 }
-
-ext {
-    targetSdk = "33"
-    minSdk = 16
-}
