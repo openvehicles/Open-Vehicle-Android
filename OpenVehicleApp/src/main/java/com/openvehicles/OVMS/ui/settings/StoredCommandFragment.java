@@ -18,7 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.CommandActivity;
 import com.openvehicles.OVMS.entities.StoredCommand;

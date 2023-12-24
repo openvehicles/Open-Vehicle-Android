@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.luttu;
+package com.openvehicles.OVMS.luttu;
 
 
 import android.app.Activity;

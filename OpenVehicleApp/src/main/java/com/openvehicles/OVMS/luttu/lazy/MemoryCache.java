@@ -1,4 +1,4 @@
-package com.and.lazy;
+package com.openvehicles.OVMS.luttu.lazy;
 
 import java.util.Collections;
 import java.util.Iterator;

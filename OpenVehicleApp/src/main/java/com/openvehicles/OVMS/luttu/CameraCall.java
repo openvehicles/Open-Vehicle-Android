@@ -1,4 +1,4 @@
-package com.luttu;
+package com.openvehicles.OVMS.luttu;
 
 import java.io.File;
 import java.io.FileInputStream;

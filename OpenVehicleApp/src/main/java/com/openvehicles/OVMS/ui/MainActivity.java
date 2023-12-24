@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.UUID;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
@@ -42,7 +41,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;

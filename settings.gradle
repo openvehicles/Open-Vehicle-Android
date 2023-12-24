@@ -1,2 +1,1 @@
-include ':LuttuLibrary'
 include ':OpenVehicleApp'

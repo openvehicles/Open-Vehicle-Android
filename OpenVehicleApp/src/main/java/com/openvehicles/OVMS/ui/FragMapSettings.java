@@ -16,7 +16,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.utils.ConnectionList;
 

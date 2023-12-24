@@ -1,4 +1,4 @@
-package com.and.lazy;
+package com.openvehicles.OVMS.luttu.lazy;
 
 import java.io.InputStream;
 import java.io.OutputStream;

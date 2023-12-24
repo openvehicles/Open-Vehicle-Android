@@ -21,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
@@ -29,7 +28,6 @@ import com.openvehicles.OVMS.ui.settings.CarEditorFragment;
 import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
 import com.openvehicles.OVMS.ui.settings.ControlFragment;
 import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
-import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
