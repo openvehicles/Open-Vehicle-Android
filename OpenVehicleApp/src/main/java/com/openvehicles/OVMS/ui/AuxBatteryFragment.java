@@ -27,7 +27,7 @@ import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.AuxBatteryData;
 import com.openvehicles.OVMS.entities.CarData;
