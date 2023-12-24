@@ -1,6 +1,5 @@
 package com.openvehicles.OVMS.ui;
 
-import android.graphics.Canvas;
 import androidx.appcompat.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -33,7 +32,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CmdSeries;

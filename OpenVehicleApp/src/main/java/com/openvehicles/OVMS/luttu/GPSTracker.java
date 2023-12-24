@@ -1,4 +1,4 @@
-package com.luttu;
+package com.openvehicles.OVMS.luttu;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;

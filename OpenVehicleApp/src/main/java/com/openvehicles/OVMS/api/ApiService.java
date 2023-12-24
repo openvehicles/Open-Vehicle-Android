@@ -24,7 +24,7 @@ import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.luttu.AppPrefes;
+import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiTask.ApiTaskListener;
 import com.openvehicles.OVMS.entities.CarData;
