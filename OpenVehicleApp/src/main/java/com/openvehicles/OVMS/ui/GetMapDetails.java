@@ -3,6 +3,10 @@ package com.openvehicles.OVMS.ui;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 import com.google.android.gms.maps.model.LatLng;
@@ -14,8 +18,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.stream.JsonReader;
-import com.openvehicles.OVMS.luttu.AppPrefes;
-import com.openvehicles.OVMS.luttu.Main;
+import com.luttu.AppPrefes;
+import com.luttu.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
 import com.openvehicles.OVMS.ui.utils.Database;

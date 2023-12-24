@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.BaseApp;
 import com.openvehicles.OVMS.R;
 
