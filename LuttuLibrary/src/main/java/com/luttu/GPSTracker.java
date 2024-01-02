@@ -1,5 +1,6 @@
 package com.luttu;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -44,9 +45,11 @@ public final class GPSTracker implements LocationListener {
 
 	/**
 	 * Function to get the user's current location
-	 * 
+	 *
 	 * @return
 	 */
+	// TODO: Remove "@SuppressLint("MissingPermission")" and handle permission properly
+	@SuppressLint("MissingPermission")
 	public Location getLocation() {
 		try {
 			locationManager = (LocationManager) mContext
