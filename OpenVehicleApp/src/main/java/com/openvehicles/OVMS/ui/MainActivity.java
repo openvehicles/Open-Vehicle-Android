@@ -5,10 +5,10 @@ import java.util.List;
 import java.util.UUID;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,7 +23,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -42,12 +41,16 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.luttu.AppPrefes;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.receiver.RegistrationIntentService;
 import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
 import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
 import com.openvehicles.OVMS.ui.utils.Database;
@@ -63,6 +66,9 @@ public class MainActivity extends ApiActivity implements
 		UpdateLocation {
 
 	private static final String TAG = "MainActivity";
+
+	public static final String ACTION_FCM_NEW_TOKEN = "fcmNewToken";
+	private static final String FCM_BROADCAST_TOPIC = "global";
 
 	public String versionName = "";
 	public int versionCode = 0;
@@ -230,7 +236,7 @@ public class MainActivity extends ApiActivity implements
 		super.onResume();
 		Log.d(TAG, "onResume");
 		LocalBroadcastManager.getInstance(this).registerReceiver(mGcmRegistrationBroadcastReceiver,
-				new IntentFilter(RegistrationIntentService.REGISTRATION_COMPLETE));
+				new IntentFilter(ACTION_FCM_NEW_TOKEN));
 		onNewIntent(getIntent());
 	}
 
@@ -357,56 +363,121 @@ public class MainActivity extends ApiActivity implements
 	}
 
 	/**
-	 * GCM push notification registration:
+	 * FCM push notification registration:
 	 * 	- server login => gcmStartRegistration
-	 * 	- gcmStartRegistration invokes RegistrationIntentService for selected car
-	 * 	- RegistrationIntentService invokes mGcmRegistrationBroadcastReceiver on success
-	 * 	- mGcmRegistrationBroadcastReceiver starts GcmDoSubscribe runnable
-	 * 	- GcmDoSubscribe does push subscription (retries if necessary)
+	 * 	- init gcmSenderId specific FirebaseApp instance as needed
+	 * 	- subscribe App instance to FCM broadcast channel (async)
+	 * 	- get the App instance FCM token (async)
+	 * 	- start GcmDoSubscribe for server push subscription (async, retries if necessary)
 	 */
+
+	// onNewToken() callback also fires from getToken(), so we need a recursion inhibitor:
+	private boolean mTokenRequested = false;
 
 	private void gcmStartRegistration() {
 
-		ApiService service = getService();
-		if (service == null)
+		CarData carData = getLoggedInCar();
+		if (carData == null)
 			return;
-		CarData pCarData = service.getCarData();
-		if (pCarData == null)
-			return;
+		String vehicleId = carData.sel_vehicleid;
 
-		// get GCM sender ID for car:
+		// Initialize App for server/car specific GCM sender ID:
+		FirebaseApp myApp = FirebaseApp.getInstance();
+		FirebaseOptions defaults = myApp.getOptions();
+
 		String gcmSenderId;
-		if (pCarData.sel_gcm_senderid != null && pCarData.sel_gcm_senderid.length() > 0)
-			gcmSenderId = pCarData.sel_gcm_senderid;
-		else
-			gcmSenderId = getString(R.string.gcm_defaultSenderId);
-
-		Log.d(TAG, "starting RegistrationIntentService for vehicleId=" + pCarData.sel_vehicleid
+		if (carData.sel_gcm_senderid != null && carData.sel_gcm_senderid.length() > 0) {
+			gcmSenderId = carData.sel_gcm_senderid;
+		} else {
+			gcmSenderId = defaults.getGcmSenderId();
+		}
+		Log.d(TAG, "gcmStartRegistration: vehicleId=" + vehicleId
 				+ ", gcmSenderId=" + gcmSenderId);
 
-		// start GCM registration service:
-		Intent intent = new Intent(MainActivity.this, RegistrationIntentService.class);
-		intent.putExtra("ovmsVehicleId", pCarData.sel_vehicleid);
-		intent.putExtra("ovmsGcmSenderId", gcmSenderId);
-
-		try {
-			startService(intent);
-		} catch (Exception e) {
-			Log.w(TAG, "starting RegistrationIntentService failed: " + e);
+		if (gcmSenderId != null && !gcmSenderId.equals(defaults.getGcmSenderId())) {
+			try {
+				myApp = FirebaseApp.getInstance(gcmSenderId);
+				Log.i(TAG, "gcmStartRegistration: reusing FirebaseApp " + myApp.getName());
+			}
+			catch (Exception ex1) {
+				try {
+					// Note: we assume here we can simply replace the sender ID. This has been tested
+					//  successfully, but may need to be reconsidered & changed in the future.
+					// It works because FirebaseMessaging relies on Metadata.getDefaultSenderId(),
+					//  which prioritizes gcmSenderId if set. If gcmSenderId isn't set, it falls back
+					//  to extracting the project number from the applicationId.
+					// FCM token creation needs Project ID, Application ID and API key, but these
+					//  currently don't need to match additional sender ID projects, so we can
+					//  use the defaults. If/when this changes in the future, users will need to
+					//  supply these three instead of the sender ID (or build the App using their
+					//  "google-services.json" file).
+					FirebaseOptions myOptions = new FirebaseOptions.Builder(defaults)
+							//.setProjectId("…")
+							//.setApplicationId("…")
+							//.setApiKey("…")
+							.setGcmSenderId(gcmSenderId)
+							.build();
+					myApp = FirebaseApp.initializeApp(this, myOptions, gcmSenderId);
+					Log.i(TAG, "gcmStartRegistration: initialized new FirebaseApp " + myApp.getName());
+				}
+				catch (Exception ex2) {
+					Log.e(TAG, "gcmStartRegistration: failed to initialize FirebaseApp, skipping token registration", ex2);
+					return;
+				}
+			}
 		}
+
+		// Get messaging interface:
+		FirebaseMessaging myMessaging = myApp.get(FirebaseMessaging.class);
+
+		// Subscribe to broadcast channel:
+		myMessaging.subscribeToTopic(FCM_BROADCAST_TOPIC)
+				.addOnCompleteListener(new OnCompleteListener<Void>() {
+					@Override
+					public void onComplete(@NonNull Task<Void> task) {
+						if (!task.isSuccessful()) {
+							Log.e(TAG, "gcmStartRegistration: broadcast topic subscription failed");
+						} else {
+							Log.i(TAG, "gcmStartRegistration: broadcast topic subscription done");
+						}
+					}
+				});
+
+		// Start OVMS server push subscription:
+		mTokenRequested = true; // inhibit onNewToken() callback
+		myMessaging.getToken()
+				.addOnCompleteListener(new OnCompleteListener<String>() {
+					@Override
+					public void onComplete(@NonNull Task<String> task) {
+						mTokenRequested = false; // allow onNewToken() callback
+						if (!task.isSuccessful()) {
+							Log.w(TAG, "gcmStartRegistration: fetching FCM registration token failed", task.getException());
+							return;
+						}
+						// as this is an async callback, verify we're still logged in as the initial vehicle:
+						if (!isLoggedIn(vehicleId)) {
+							Log.d(TAG, "gcmStartRegistration: discard callback, logged in vehicle has changed");
+							return;
+						}
+						// Get FCM registration token
+						String token = task.getResult();
+						Log.i(TAG, "gcmStartRegistration: vehicleId=" + vehicleId
+								+ ", gcmSenderId=" + gcmSenderId
+								+ " => token=" + token);
+						// Start push subscription at OVMS server
+						mGcmHandler.post(new GcmDoSubscribe(vehicleId, token));
+					}
+				});
 	}
 
 	private BroadcastReceiver mGcmRegistrationBroadcastReceiver = new BroadcastReceiver() {
 		private static final String TAG = "mGcmRegReceiver";
 		@Override
 		public void onReceive(Context context, Intent intent) {
-
 			Log.d(TAG, "onReceive intent: " + intent.toString());
-
-			String vehicleId = intent.getStringExtra("ovmsVehicleId");
-			if (vehicleId != null) {
-				Log.d(TAG, "subscribing vehicleId=" + vehicleId);
-				mGcmHandler.post(new GcmDoSubscribe(vehicleId));
+			if (!mTokenRequested) {
+				Log.i(TAG, "FCM token renewal detected => redo server registration");
+				gcmStartRegistration();
 			}
 		}
 	};
@@ -415,51 +486,49 @@ public class MainActivity extends ApiActivity implements
 
 	private class GcmDoSubscribe implements Runnable {
 		private static final String TAG = "GcmDoSubscribe";
-		private String vehicleId;
+		private String mVehicleId, mToken;
 
-		public GcmDoSubscribe(String vehicleId) {
-			this.vehicleId = vehicleId;
+		public GcmDoSubscribe(String pVehicleId, String pToken) {
+			mVehicleId = pVehicleId;
+			mToken = pToken;
 		}
 
 		@Override
 		public void run() {
-
-			Log.d(TAG, "trying to subscribe vehicleId " + vehicleId);
-
 			ApiService service = getService();
-
 			if (service == null) {
 				Log.d(TAG, "ApiService terminated, cancelling");
 				return;
-			} else if (!service.isLoggedIn()) {
+			}
+			else if (!service.isLoggedIn()) {
 				Log.d(TAG, "ApiService not yet logged in, scheduling retry");
 				mGcmHandler.postDelayed(this, 5000);
 				return;
 			}
 
 			CarData carData = service.getCarData();
-			if (carData == null || !carData.sel_vehicleid.equals(vehicleId)) {
-				Log.d(TAG, "ApiService logged in to vehicleid " + carData.sel_vehicleid + " now, cancelling");
+			if (carData == null || carData.sel_vehicleid == null || carData.sel_vehicleid.isEmpty()) {
+				Log.d(TAG, "ApiService not logged in / has no defined car, cancelling");
 				return;
 			}
 
-			SharedPreferences settings = getSharedPreferences("GCM." + vehicleId, 0);
-			String gcmToken = settings.getString(RegistrationIntentService.GCM_TOKEN, "");
-			Log.d(TAG, "login OK, subscribing vehicleId " + vehicleId + " on gcmToken " + gcmToken);
-
-			// subscribe at OVMS server:
-			// MP-0
-			// p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
-			String cmd = String.format("MP-0 p%s,gcm,production,%s,%s,%s",
-					uuid, carData.sel_vehicleid, carData.sel_server_password,
-					gcmToken);
-			if (!service.sendCommand(cmd, null)) {
-				Log.w(TAG, "push subscription failed, scheduling retry");
-				mGcmHandler.postDelayed(this, 5000);
-			} else {
-				Log.d(TAG, "push subscription done.");
+			// Async operation, verify we're still logged in to the same vehicle:
+			if (!carData.sel_vehicleid.equals(mVehicleId)) {
+				Log.d(TAG, "ApiService logged in to different car, cancelling");
+				return;
 			}
 
+			// Subscribe at OVMS server:
+			Log.d(TAG, "subscribing vehicle ID " + mVehicleId + " to FCM token " + mToken);
+			// MP-0 p<appid>,<pushtype>,<pushkeytype>{,<vehicleid>,<netpass>,<pushkeyvalue>}
+			String cmd = String.format("MP-0 p%s,gcm,production,%s,%s,%s",
+					uuid, carData.sel_vehicleid, carData.sel_server_password, mToken);
+			if (!service.sendCommand(cmd, null)) {
+				Log.w(TAG, "FCM server push subscription failed, scheduling retry");
+				mGcmHandler.postDelayed(this, 5000);
+			} else {
+				Log.i(TAG, "FCM server push subscription done");
+			}
 		}
 	}
 
@@ -725,7 +794,7 @@ public class MainActivity extends ApiActivity implements
 			}
 		}
 
-		Log.d(TAG, "isMapCacheValid: cache valid for lat/lng=" + latitude + "/" + longitude);
+		Log.v(TAG, "isMapCacheValid: cache valid for lat/lng=" + latitude + "/" + longitude);
 		cursor.close();
 		return true;
 	}
@@ -735,7 +804,7 @@ public class MainActivity extends ApiActivity implements
 			getMapDetailList.add(center);
 			StartGetMapDetails();
 		} else {
-			Log.d(TAG, "StartGetMapDetails: map cache valid for center=" + center);
+			Log.v(TAG, "StartGetMapDetails: map cache valid for center=" + center);
 		}
 	}
 

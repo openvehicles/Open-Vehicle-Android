@@ -118,6 +118,13 @@ public class ApiActivity extends AppCompatActivity
 		return (mApiService != null && mApiService.isLoggedIn());
 	}
 
+	public CarData getLoggedInCar() { return (isLoggedIn() ? mApiService.getCarData() : null); }
+
+	public boolean isLoggedIn(String vehicleId) {
+		CarData carData = getLoggedInCar();
+		return (carData != null && carData.sel_vehicleid.equals(vehicleId));
+	}
+
 	public boolean changeCar(String pVehicleId) {
 		CarData carData = CarsStorage.get().getCarById(pVehicleId);
 		if (carData != null) {
