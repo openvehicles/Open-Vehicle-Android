@@ -1,9 +1,3 @@
-/**
- * OVMS GCM listener
- *
- * (invoked by com.google.android.gms.gcm.GcmReceiver)
- */
-
 package com.openvehicles.OVMS.receiver;
 
 import android.app.Notification;
@@ -11,12 +5,14 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import androidx.core.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.android.gms.gcm.GcmListenerService;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 import com.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
@@ -29,15 +25,15 @@ import com.openvehicles.OVMS.utils.Sys;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 import java.util.concurrent.locks.ReentrantLock;
 
+public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
-public class MyGcmListenerService extends GcmListenerService {
+	private static final String TAG = "MyFirebaseMsgService";
 
-    private static final String TAG = "MyGcmListenerService";
-
-    AppPrefes appPrefes;
+	AppPrefes appPrefes;
 
 	// lock to prevent concurrent uses of OVMSNotifications:
 	// 	(necessary for dupe check)
@@ -57,25 +53,29 @@ public class MyGcmListenerService extends GcmListenerService {
 		serverTime.setTimeZone(TimeZone.getTimeZone("UTC"));
 	}
 
+	// [START receive_message]
 	@Override
-    public void onMessageReceived(String from, Bundle data) {
+	public void onMessageReceived(RemoteMessage remoteMessage) {
+		String from = remoteMessage.getFrom();
+		Log.d(TAG, "From: " + from);
 
-        // get notification text:
-		String contentTitle = data.getString("title");		// vehicle id
-		String contentType = data.getString("type");		// A=alert / I=info / E=error
-        String contentText = data.getString("message");
-        String contentTime = data.getString("time");
+		// Extract message data payload.
+		Map<String, String> data = remoteMessage.getData();
+		String contentTitle = data.get("title");		// vehicle id
+		String contentType = data.get("type");			// A=alert / I=info / E=error
+		String contentText = data.get("message");
+		String contentTime = data.get("time");
 
-        Log.i(TAG, "Notification received from=" + from
+		Log.i(TAG, "Notification received from=" + from
 				+ ", title=" + contentTitle
 				+ ", type=" + contentType
-                + ", message=" + contentText
-                + ", time=" + contentTime);
+				+ ", message=" + contentText
+				+ ", time=" + contentTime);
 
 		if (contentTitle == null || contentText == null) {
-            Log.w(TAG, "no title/message => abort");
-            return;
-        }
+			Log.w(TAG, "no title/message => abort");
+			return;
+		}
 		if (contentType == null) {
 			contentType = OVMSNotifications.guessType(contentText);
 		}
@@ -100,9 +100,9 @@ public class MyGcmListenerService extends GcmListenerService {
 		contentTitle += " (" + car.sel_vehicle_label + ")";
 
 		// add notification to database:
-		boolean is_new;
-		dbAccess.lock();
+		boolean is_new = true;
 		try {
+			dbAccess.lock();
 			OVMSNotifications savedList = new OVMSNotifications(this);
 			is_new = savedList.addNotification(contentType, contentTitle, contentText, timeStamp);
 		} finally {
@@ -143,17 +143,17 @@ public class MyGcmListenerService extends GcmListenerService {
 		} else if (!isSelectedCar && filterAlert && !contentType.equals("I")) {
 			Log.d(TAG, "alert/error notify for other car => skip user notification");
 		} else {
-            // add notification to system & UI:
+			// add notification to system & UI:
 			Log.d(TAG, "adding notification to system & UI");
 
-            // create App launch Intent:
-            Intent notificationIntent = new Intent(this, MainActivity.class);
-            notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            notificationIntent.putExtra("onNotification", true);
-            PendingIntent launchOVMSIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+			// create App launch Intent:
+			Intent notificationIntent = new Intent(this, MainActivity.class);
+			notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			notificationIntent.putExtra("onNotification", true);
+			PendingIntent launchOVMSIntent = PendingIntent.getActivity(this, 0, notificationIntent,
 					Sys.getMutableFlags(PendingIntent.FLAG_ONE_SHOT, false));
 
-            // determine icon for this car:
+			// determine icon for this car:
 			int icon;
 			if (car.sel_vehicle_image.startsWith("car_imiev_"))
 				icon = R.drawable.map_car_imiev; // one map icon for all colors
@@ -168,26 +168,48 @@ public class MyGcmListenerService extends GcmListenerService {
 			else
 				icon = Ui.getDrawableIdentifier(this,"map_" + car.sel_vehicle_image);
 
-            // create Notification builder:
+			// create Notification builder:
 			NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(this, "default")
-                            .setAutoCancel(true)
-                            .setDefaults(Notification.DEFAULT_ALL)
-                            .setSmallIcon((icon != 0) ? icon : R.drawable.map_car_default)
-                            .setContentTitle(contentTitle)
-                            .setContentText(contentText.replace('\r', '\n'))
-                            .setContentIntent(launchOVMSIntent);
+					.setAutoCancel(true)
+					.setDefaults(Notification.DEFAULT_ALL)
+					.setSmallIcon((icon != 0) ? icon : R.drawable.map_car_default)
+					.setContentTitle(contentTitle)
+					.setContentText(contentText.replace('\r', '\n'))
+					.setContentIntent(launchOVMSIntent);
 
-            // announce Notification via Android system:
-            NotificationManager mNotificationManager =
-                    (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            mNotificationManager.notify(1, mBuilder.build());
+			// announce Notification via Android system:
+			NotificationManager mNotificationManager =
+					(NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+			mNotificationManager.notify(1, mBuilder.build());
 
-            // update UI (NotificationsFragment) if not done already:
+			// update UI (NotificationsFragment) if not done already:
 			if (!ui_notified) {
 				Intent uiNotify = new Intent(ApiService.ACTION_NOTIFICATION);
 				sendBroadcast(uiNotify);
 			}
-        }
+		}
+	}
 
-    }
+	// [END receive_message]
+
+	// [START on_new_token]
+	/**
+	 * There are two scenarios when onNewToken is called:
+	 * 1) When a new token is generated on initial app startup
+	 * 2) Whenever an existing token is changed
+	 * Under #2, there are three scenarios when the existing token is changed:
+	 * A) App is restored to a new device
+	 * B) User uninstalls/reinstalls the app
+	 * C) User clears app data
+	 */
+	@Override
+	public void onNewToken(@NonNull String token) {
+		Log.d(TAG, "onNewToken: " + token);
+
+		// Notify MainActivity to update the push subscription at the OVMS server:
+		Intent notify = new Intent(MainActivity.ACTION_FCM_NEW_TOKEN);
+		LocalBroadcastManager.getInstance(this).sendBroadcast(notify);
+	}
+	// [END on_new_token]
+
 }

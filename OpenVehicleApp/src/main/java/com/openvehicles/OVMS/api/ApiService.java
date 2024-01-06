@@ -533,7 +533,7 @@ public class ApiService extends Service implements ApiTaskListener, ApiObserver 
 	@Override
 	public void onPushNotification(char msgClass, String msgText) {
 		// This callback only receives MP push notifications for the currently selected vehicle.
-		// See MyGcmListenerService for system notification broadcasting.
+		// See MyFirebaseMessagingService for system notification broadcasting.
 	}
 
 	// ApiObserver interface:
