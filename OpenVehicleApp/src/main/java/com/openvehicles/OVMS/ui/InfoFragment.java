@@ -572,7 +572,6 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 	// Charger settings for VW e-Up:
 	// 	(charge alert setup)
 	private void chargerSettingVWUP() {
-
 		// create & open dialog:
 		View dialogView = LayoutInflater.from(getActivity()).inflate(
 				R.layout.dlg_charger_vwup, null);

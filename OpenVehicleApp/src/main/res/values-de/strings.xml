@@ -117,7 +117,7 @@
 
     <string name="lb_ft_digital_speedo">#%d: Digitaler Tacho</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
-    <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
+    <string name="lb_ft_minimum_soc">#%d: Minimaler SOC</string>
     <string name="lb_ft_car_bits">#%d: Car Bits</string>
     <string name="lb_ft_can_write">#%d: CAN Write</string>
     <string name="lb_ft_modelyear">#%d: Modelljahr</string>
@@ -168,6 +168,7 @@
 
     <string name="lb_charger_setting_twizy">Lade-Einstellungen</string>
     <string name="lb_charger_setting_twizy_hint">Hinweis: Null (0) schaltet die Schwelle aus.</string>
+    <string name="lb_charger_setting_eup_climit">Achtung: Strom begrenzt auf 16A bei zweiphasigem Laden oder Modelljahr &lt;2020.</string>
     <string name="lb_sufficient_soc">Ausreichender SOC (%)</string>
     <string name="lb_sufficient_range">Ausreichende Reichweite (%s)</string>
     <string name="msg_getting_charge_alerts">Rufe Lade-Einstellungen vom Modul ab&#8230;</string>
@@ -517,7 +518,7 @@
         <h2>Tipps</h2>
         <p>Eine gesunde Bleibatterie geht ohne Last nicht unter 11,8V.</p>
         <p>Falls eine stetige oder schnelle Abnahme der Spannungen angezeigt wird,
-         oder die Ladeströme oder -temperaturen start zunehmen, sind das i.d.R. Zeichen
+         oder die Ladeströme oder -temperaturen stark zunehmen, sind das i.d.R. Zeichen
          für einen bevorstehenden Batterietod.</p>
         <p>Die Batterie sollte regelmäßig auf Anzeichen von Ausgasung (Aufblähen) geprüft
          werden, falls diese sichtbar sind sollte sie möglichst umgehend abgeklemmt werden.
