@@ -24,7 +24,7 @@
                   android:text="@string/lb_sufficient_soc"/>
 
         <com.openvehicles.OVMS.ui.witdet.SlideNumericView
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/snv_sufficient_soc"
             android:layout_width="fill_parent"
             ovms:min="0"
@@ -47,14 +47,21 @@
                   android:text="@string/lb_charge_current"/>
 
         <com.openvehicles.OVMS.ui.witdet.SlideNumericView
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="10dp"
             android:id="@+id/snv_amps"
             android:layout_width="220dp"
-            ovms:min="6"
-            ovms:max="16"
+            ovms:min="4"
+            ovms:max="32"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="15dp"
             android:layout_height="60dp"/>
+
+        <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textAppearance="@android:style/TextAppearance.Small"
+            android:gravity="center_horizontal"
+            android:text="@string/lb_charger_setting_eup_climit"/>
 
         <TextView
             android:layout_width="wrap_content"
