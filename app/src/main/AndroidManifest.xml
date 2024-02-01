@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="2024010901"
-    android:versionName="4.3.2">
+    android:versionCode="2024020101"
+    android:versionName="4.4.1">
     <!-- Only this application can receive the messages and registration result -->
     <permission
         android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
