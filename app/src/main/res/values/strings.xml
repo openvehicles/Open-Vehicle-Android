@@ -179,6 +179,7 @@
 
     <string name="lb_charger_setting_twizy">Charge configuration</string>
     <string name="lb_charger_setting_twizy_hint">Hint: set to zero to deactivate the limit.</string>
+    <string name="lb_charger_setting_eup_climit">Note: value limited to 16A on two-phase charging or pre-2020 model.</string>
     <string name="lb_sufficient_soc">Sufficient SOC (%)</string>
     <string name="lb_sufficient_range">Sufficient range (%s)</string>
     <string name="msg_getting_charge_alerts">Getting charge alerts from module&#8230;</string>

@@ -1104,11 +1104,14 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 				else
 					iv.setImageResource(R.drawable.ol_car_leaf_nopower);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_vwup_")) {
-				// VW e-Up: use i-MiEV charge overlays
+				// VW e-Up:
 				if (pCarData.car_charge_mode.equals("performance"))
-					iv.setImageResource(R.drawable.ol_car_imiev_charge_quick);
+					iv.setImageResource(R.drawable.ol_car_vwup_chargeport_redflash);
+				else if (pCarData.car_charge_state.equals("charging") || pCarData.car_charge_state.equals("topoff"))
+//				else if (pCarData.car_charge_mode.equals("standard") || pCarData.car_charge_mode.equals("range"))
+					iv.setImageResource(R.drawable.ol_car_vwup_chargeport_green);
 				else
-					iv.setImageResource(R.drawable.ol_car_imiev_charge);
+					iv.setImageResource(R.drawable.ol_car_vwup_chargeport_orange);
 			} else if (pCarData.sel_vehicle_image.startsWith("car_zoe_") ||
 					  pCarData.sel_vehicle_image.startsWith("car_kangoo_")) {
 				// Renault ZOE/Kangoo
