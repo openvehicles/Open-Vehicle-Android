@@ -21,7 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Spinner;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.BaseFragment;
@@ -58,8 +58,8 @@ public class CarEditorFragment extends BaseFragment {
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
 			try {
-				mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
-				CarData selectedCarData = CarsStorage.get().getSelectedCarData();
+				mCarData = CarsStorage.INSTANCE.getStoredCars().get(mEditPosition);
+				CarData selectedCarData = CarsStorage.INSTANCE.getSelectedCarData();
 				isSelectedCar = selectedCarData != null && mCarData != null
 						&& selectedCarData.sel_vehicleid.equals(mCarData.sel_vehicleid);
 			} catch(Exception e) {
@@ -102,8 +102,8 @@ public class CarEditorFragment extends BaseFragment {
 	
 	@Override
 	public void onPrepareOptionsMenu(Menu menu) {
-		Log.d("CarEditorFragment", "onPrepareOptionsMenu edit car: " + (CarsStorage.get().getStoredCars().size() > 1));
-		menu.findItem(R.id.mi_delete).setVisible(mCarData != null && CarsStorage.get().getStoredCars().size() > 1);
+		Log.d("CarEditorFragment", "onPrepareOptionsMenu edit car: " + (CarsStorage.INSTANCE.getStoredCars().size() > 1));
+		menu.findItem(R.id.mi_delete).setVisible(mCarData != null && CarsStorage.INSTANCE.getStoredCars().size() > 1);
 		menu.findItem(R.id.mi_control).setVisible(isSelectedCar);
 	}
 
@@ -134,10 +134,10 @@ public class CarEditorFragment extends BaseFragment {
 			.setPositiveButton(R.string.Yes, new DialogInterface.OnClickListener() {
 				@Override
 				public void onClick(DialogInterface dialog, int which) {
-					ArrayList<CarData> carList = CarsStorage.get().getStoredCars();
+					ArrayList<CarData> carList = CarsStorage.INSTANCE.getStoredCars();
 					// remove car:
 					carList.remove(mEditPosition);
-					CarsStorage.get().saveStoredCars();
+					CarsStorage.INSTANCE.saveStoredCars();
 					CarData selCar;
 					// select closest remaining car:
 					if (mEditPosition < carList.size())
@@ -167,7 +167,7 @@ public class CarEditorFragment extends BaseFragment {
 						if (!super.valid(pEditText, pValue)) return false;
 						setErrorMessage(pEditText.getContext().getString(R.string.msg_invalid_id_already_registered, pValue));
 						
-						List<CarData> mAllCars = CarsStorage.get().getStoredCars();
+						List<CarData> mAllCars = CarsStorage.INSTANCE.getStoredCars();
 						int count = mAllCars.size();
 						for (int i=0; i<count; i++) {
 							if (mAllCars.get(i).sel_vehicleid.equals(pValue) && i != mEditPosition) {
@@ -190,10 +190,10 @@ public class CarEditorFragment extends BaseFragment {
 		}
 		
 		if (mEditPosition < 0) {
-			CarsStorage.get().getStoredCars().add(mCarData);
+			CarsStorage.INSTANCE.getStoredCars().add(mCarData);
 		}
 		
-		CarsStorage.get().saveStoredCars();
+		CarsStorage.INSTANCE.saveStoredCars();
 		
 		getActivity().finish();
 	}
@@ -236,7 +236,7 @@ public class CarEditorFragment extends BaseFragment {
 			// save selected vehicle label:
 			AppPrefes appPrefes = new AppPrefes(getActivity(), "ovms");
 			Log.d(TAG, "load: sel_vehicle_label=" + mCarData.sel_vehicle_label);
-			appPrefes.SaveData("sel_vehicle_label", mCarData.sel_vehicle_label);
+			appPrefes.saveData("sel_vehicle_label", mCarData.sel_vehicle_label);
 		}
 	}
 

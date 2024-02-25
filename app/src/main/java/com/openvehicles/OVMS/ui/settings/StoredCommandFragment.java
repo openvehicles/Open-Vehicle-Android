@@ -18,19 +18,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.CommandActivity;
-import com.openvehicles.OVMS.entities.StoredCommand;
-import com.openvehicles.OVMS.ui.BaseFragment;
-import com.openvehicles.OVMS.ui.BaseFragmentActivity;
-import com.openvehicles.OVMS.ui.utils.Database;
-import com.openvehicles.OVMS.ui.utils.Ui;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -39,6 +26,19 @@ import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.drawable.IconCompat;
 import androidx.fragment.app.FragmentActivity;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.CommandActivity;
+import com.openvehicles.OVMS.entities.StoredCommand;
+import com.openvehicles.OVMS.utils.AppPrefes;
+import com.openvehicles.OVMS.ui.BaseFragment;
+import com.openvehicles.OVMS.ui.BaseFragmentActivity;
+import com.openvehicles.OVMS.ui.utils.Database;
+import com.openvehicles.OVMS.ui.utils.Ui;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
 /**
@@ -146,8 +146,8 @@ public class StoredCommandFragment extends BaseFragment
 		} else {
 			// Edit existing command:
 			view.setTag(cmd);
-			Ui.setValue(view, R.id.etxt_input_title, cmd.mTitle);
-			Ui.setValue(view, R.id.etxt_input_command, cmd.mCommand);
+			Ui.setValue(view, R.id.etxt_input_title, cmd.title);
+			Ui.setValue(view, R.id.etxt_input_command, cmd.command);
 			AlertDialog dialog = new AlertDialog.Builder(context)
 					.setMessage(R.string.stored_commands_edit)
 					.setView(view)
@@ -157,8 +157,8 @@ public class StoredCommandFragment extends BaseFragment
 					})
 					.setPositiveButton(R.string.Save, (dialog13, which) -> {
 						StoredCommand cmd13 = (StoredCommand) view.getTag();
-						cmd13.mTitle = Ui.getValue(view, R.id.etxt_input_title);
-						cmd13.mCommand = Ui.getValue(view, R.id.etxt_input_command);
+						cmd13.title = Ui.getValue(view, R.id.etxt_input_title);
+						cmd13.command = Ui.getValue(view, R.id.etxt_input_command);
 						saveCommand(cmd13);
 					})
 					.create();
@@ -200,12 +200,12 @@ public class StoredCommandFragment extends BaseFragment
 		intent.setAction("com.openvehicles.OVMS.action.COMMAND");
 		intent.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION|Intent.FLAG_ACTIVITY_NO_HISTORY|Intent.FLAG_ACTIVITY_NO_USER_ACTION);
 		intent.putExtra("apikey", appPrefes.getData("APIKey"));
-		intent.putExtra("key", cmd.mKey);
-		intent.putExtra("title", cmd.mTitle);
-		intent.putExtra("command", cmd.mCommand);
+		intent.putExtra("key", cmd.key);
+		intent.putExtra("title", cmd.title);
+		intent.putExtra("command", cmd.command);
 
-		shortcut = new ShortcutInfoCompat.Builder(context, "StoredCommand_" + cmd.mKey)
-				.setShortLabel(cmd.mTitle)
+		shortcut = new ShortcutInfoCompat.Builder(context, "StoredCommand_" + cmd.key)
+				.setShortLabel(cmd.title)
 				.setIcon(IconCompat.createWithResource(context, R.drawable.ic_remote_control))
 				.setIntent(intent)
 				.build();
@@ -232,12 +232,12 @@ public class StoredCommandFragment extends BaseFragment
 		StoredCommand cmd = mAdapter.getItem(position);
 		if (cmd == null) return;
 
-		Log.d(TAG, "selectItem: reqCode=" + mRequestCode + " returning command: " + cmd.mCommand);
+		Log.d(TAG, "selectItem: reqCode=" + mRequestCode + " returning command: " + cmd.command);
 
 		Intent result = new Intent();
-		result.putExtra("key", cmd.mKey);
-		result.putExtra("title", cmd.mTitle);
-		result.putExtra("command", cmd.mCommand);
+		result.putExtra("key", cmd.key);
+		result.putExtra("title", cmd.title);
+		result.putExtra("command", cmd.command);
 
 		if (activity.getParent() != null)
 			activity.getParent().setResult(Activity.RESULT_OK, result);
@@ -275,8 +275,8 @@ public class StoredCommandFragment extends BaseFragment
 			}
 			StoredCommand cmd = getItem(position);
 			if (cmd != null) {
-				Ui.setValue(convertView, R.id.title, cmd.mTitle);
-				Ui.setValue(convertView, R.id.text, cmd.mCommand);
+				Ui.setValue(convertView, R.id.title, cmd.title);
+				Ui.setValue(convertView, R.id.text, cmd.command);
 			}
 			return convertView;
 		}

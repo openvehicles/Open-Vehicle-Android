@@ -14,15 +14,15 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.BaseFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.Sys;
-
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 
 
 /**
@@ -105,28 +105,28 @@ public class GlobalOptionsFragment extends BaseFragment
 		int id = v.getId();
 		if (id == R.id.cb_options_service) {
 			serviceEnabled = ((CheckBox) v).isChecked();
-			appPrefes.SaveData("option_service_enabled", serviceEnabled ? "1" : "0");
+			appPrefes.saveData("option_service_enabled", serviceEnabled ? "1" : "0");
 			Intent intent = new Intent(serviceEnabled ? ApiService.ACTION_ENABLE : ApiService.ACTION_DISABLE);
 			context.sendBroadcast(intent);
 		} else if (id == R.id.cb_options_broadcast) {
 			broadcastEnabled = ((CheckBox) v).isChecked();
 			txtCodes.setEnabled(broadcastEnabled);
 			btnRevert.setEnabled(broadcastEnabled);
-			appPrefes.SaveData("option_broadcast_enabled", broadcastEnabled ? "1" : "0");
+			appPrefes.saveData("option_broadcast_enabled", broadcastEnabled ? "1" : "0");
 		} else if (id == R.id.btn_options_broadcast_codes_revert) {
 			broadcastCodes = defaultBroadcastCodes;
 			txtCodes.setText(broadcastCodes);
-			appPrefes.SaveData("option_broadcast_codes", broadcastCodes);
+			appPrefes.saveData("option_broadcast_codes", broadcastCodes);
 		} else if (id == R.id.cb_options_commands) {
 			commandsEnabled = ((CheckBox) v).isChecked();
-			appPrefes.SaveData("option_commands_enabled", commandsEnabled ? "1" : "0");
+			appPrefes.saveData("option_commands_enabled", commandsEnabled ? "1" : "0");
 		} else if (id == R.id.cb_options_apikey_renew) {
 			new AlertDialog.Builder(context)
 					.setMessage(R.string.lb_options_apikey_renew_confirm)
 					.setNegativeButton(R.string.Cancel, null)
 					.setPositiveButton(R.string.Yes, (dialog1, which) -> {
 						String apiKey = Sys.getRandomString(25);
-						appPrefes.SaveData("APIKey", apiKey);
+						appPrefes.saveData("APIKey", apiKey);
 						Log.d(TAG, "onClick: generated new APIKey: " + apiKey);
 						Ui.setValue(getView(), R.id.tv_options_apikey, apiKey);
 					})
@@ -139,7 +139,7 @@ public class GlobalOptionsFragment extends BaseFragment
 		if (v.getId() == R.id.txt_options_broadcast_codes) {
 			if (!hasFocus) {
 				broadcastCodes = ((EditText) v).getText().toString();
-				appPrefes.SaveData("option_broadcast_codes", broadcastCodes);
+				appPrefes.saveData("option_broadcast_codes", broadcastCodes);
 			}
 		}
 	}

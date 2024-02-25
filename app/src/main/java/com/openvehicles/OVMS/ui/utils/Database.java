@@ -236,55 +236,55 @@ public class Database extends SQLiteOpenHelper {
 
 			ContentValues contentValues = new ContentValues();
 
-			contentValues.put("cpid", cp.ID); // primary key
+			contentValues.put("cpid", cp.id); // primary key
 
-			if (cp.AddressInfo != null) {
-				contentValues.put("Latitude", cp.AddressInfo.Latitude);
-				contentValues.put("Longitude", cp.AddressInfo.Longitude);
-				contentValues.put("Title", ifNull(cp.AddressInfo.Title, "untitled"));
-				contentValues.put("AddressLine1", ifNull(cp.AddressInfo.AddressLine1, ""));
-				contentValues.put("AccessComments", ifNull(cp.AddressInfo.AccessComments, ""));
-				contentValues.put("RelatedURL", ifNull(cp.AddressInfo.RelatedURL, ""));
+			if (cp.addressInfo != null) {
+				contentValues.put("Latitude", cp.addressInfo.latitude);
+				contentValues.put("Longitude", cp.addressInfo.longitude);
+				contentValues.put("Title", ifNull(cp.addressInfo.title, "untitled"));
+				contentValues.put("AddressLine1", ifNull(cp.addressInfo.addressLine1, ""));
+				contentValues.put("AccessComments", ifNull(cp.addressInfo.accessComments, ""));
+				contentValues.put("RelatedURL", ifNull(cp.addressInfo.relatedUrl, ""));
 			}
 
-			if (cp.OperatorInfo != null) {
-				contentValues.put("OperatorInfo", ifNull(cp.OperatorInfo.Title, "unknown"));
+			if (cp.operatorInfo != null) {
+				contentValues.put("OperatorInfo", ifNull(cp.operatorInfo.title, "unknown"));
 			}
 
-			if (cp.StatusType != null) {
-				contentValues.put("StatusType", ifNull(cp.StatusType.Title, "unknown"));
+			if (cp.statusType != null) {
+				contentValues.put("StatusType", ifNull(cp.statusType.title, "unknown"));
 			}
 
-			if (cp.UsageType != null) {
-				contentValues.put("UsageType", ifNull(cp.UsageType.Title, "unknown"));
+			if (cp.usageType != null) {
+				contentValues.put("UsageType", ifNull(cp.usageType.title, "unknown"));
 			}
-			contentValues.put("UsageCost", ifNull(cp.UsageCost, "unknown"));
+			contentValues.put("UsageCost", ifNull(cp.usageCost, "unknown"));
 
-			contentValues.put("GeneralComments", ifNull(cp.GeneralComments, ""));
-			contentValues.put("NumberOfPoints", ifNull(cp.NumberOfPoints, "1"));
-			contentValues.put("DateLastStatusUpdate", ifNull(cp.DateLastStatusUpdate, ""));
+			contentValues.put("GeneralComments", ifNull(cp.generalComments, ""));
+			contentValues.put("NumberOfPoints", ifNull(cp.numberOfPoints, "1"));
+			contentValues.put("DateLastStatusUpdate", ifNull(cp.dateLastStatusUpdate, ""));
 
-			if (cp.Connections != null) {
+			if (cp.connections != null) {
 
 				ContentValues addCon = new ContentValues();
 				ChargePoint.Connection con;
 
 				// rebuild associated connections:
 
-				db.delete("Connection", "conCpId=" + cp.ID, null);
+				db.delete("Connection", "conCpId=" + cp.id, null);
 
-				for (int i=0; i < cp.Connections.length; i++) {
+				for (int i = 0; i < cp.connections.length; i++) {
 
-					con = cp.Connections[i];
+					con = cp.connections[i];
 
 					addCon.clear();
-					addCon.put("conCpId", cp.ID);
-					if (con.ConnectionType != null) {
-						addCon.put("conTypeId", ifNull(con.ConnectionType.ID, "0"));
-						addCon.put("conTypeTitle", ifNull(con.ConnectionType.Title, "unknown"));
+					addCon.put("conCpId", cp.id);
+					if (con.connectionType != null) {
+						addCon.put("conTypeId", ifNull(con.connectionType.id, "0"));
+						addCon.put("conTypeTitle", ifNull(con.connectionType.title, "unknown"));
 					}
-					if (con.Level != null) {
-						addCon.put("conLevelTitle", ifNull(con.Level.Title, "unknown"));
+					if (con.level != null) {
+						addCon.put("conLevelTitle", ifNull(con.level.title, "unknown"));
 					}
 
 					db.insert("Connection", null, addCon);
@@ -602,16 +602,16 @@ public class Database extends SQLiteOpenHelper {
 		open();
 
 		ContentValues contentValues = new ContentValues();
-		contentValues.put("scTitle", cmd.mTitle);
-		contentValues.put("scCommand", cmd.mCommand);
+		contentValues.put("scTitle", cmd.title);
+		contentValues.put("scCommand", cmd.command);
 
 		long rowId;
-		if (cmd.mKey == 0) {
+		if (cmd.key == 0) {
 			rowId = db.insert("StoredCommand", null, contentValues);
 			if (rowId > 0)
-				cmd.mKey = rowId;
+				cmd.key = rowId;
 		} else {
-			contentValues.put("scKey", cmd.mKey);
+			contentValues.put("scKey", cmd.key);
 			rowId = db.replace("StoredCommand", null, contentValues);
 		}
 
@@ -622,8 +622,8 @@ public class Database extends SQLiteOpenHelper {
 		if (cmd == null) return false;
 		open();
 		int rows = 0;
-		if (cmd.mKey > 0) {
-			rows = db.delete("StoredCommand", "scKey=" + cmd.mKey, null);
+		if (cmd.key > 0) {
+			rows = db.delete("StoredCommand", "scKey=" + cmd.key, null);
 		}
 		return (rows > 0);
 	}

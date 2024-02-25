@@ -2,7 +2,6 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
@@ -43,7 +44,7 @@ public class CarGroupFragment
 	}
 	
 	@Override
-	public void onServiceAvailable(ApiService pService) {
+	public void onServiceAvailable(ApiService service) {
 		// nop
 	}
 	

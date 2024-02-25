@@ -32,7 +32,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.ChartTouchListener;
 import com.github.mikephil.charting.listener.OnChartGestureListener;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CmdSeries;
@@ -359,7 +359,7 @@ public class PowerFragment
 		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
 
 		// get data of current car:
-		mCarData = CarsStorage.get().getSelectedCarData();
+		mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 
 		getCompatActivity().invalidateOptionsMenu();
 
@@ -538,8 +538,8 @@ public class PowerFragment
 	private void dataFilterChanged() {
 
 		// save prefs:
-		appPrefes.SaveData("power_show_power", mShowPower ? "on" : "off");
-		appPrefes.SaveData("power_show_energy", mShowEnergy ? "on" : "off");
+		appPrefes.saveData("power_show_power", mShowPower ? "on" : "off");
+		appPrefes.saveData("power_show_energy", mShowEnergy ? "on" : "off");
 
 		// check data status:
 		if (!isPackValid())

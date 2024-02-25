@@ -27,7 +27,7 @@ import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.AuxBatteryData;
 import com.openvehicles.OVMS.entities.CarData;
@@ -194,7 +194,7 @@ public class AuxBatteryFragment
 		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
 
 		// get data of current car:
-		mCarData = CarsStorage.get().getSelectedCarData();
+		mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 
 		// schedule data loader:
 		showProgressOverlay(getString(R.string.battery_msg_loading_data));
@@ -202,7 +202,7 @@ public class AuxBatteryFragment
 			@Override
 			public void run() {
 				// load and display saved vehicle data:
-				AuxBatteryData saved = AuxBatteryData.loadFile(mCarData.sel_vehicleid);
+				AuxBatteryData saved = AuxBatteryData.Companion.loadFile(mCarData.sel_vehicleid);
 				if (saved != null) {
 					Log.v(TAG, "AuxBatteryData loaded for " + mCarData.sel_vehicleid);
 					batteryData = saved;
@@ -334,8 +334,8 @@ public class AuxBatteryFragment
 	 */
 	private boolean isPackValid() {
 		return (batteryData != null
-				&& batteryData.packHistory != null
-				&& batteryData.packHistory.size() > 0);
+				&& batteryData.getPackHistory() != null
+				&& batteryData.getPackHistory().size() > 0);
 	}
 
 	/**
@@ -343,7 +343,7 @@ public class AuxBatteryFragment
 	 */
 	private boolean isPackIndexValid(int index) {
 		return (isPackValid()
-				&& index < batteryData.packHistory.size());
+				&& index < batteryData.getPackHistory().size());
 	}
 
 
@@ -359,7 +359,7 @@ public class AuxBatteryFragment
 		showPackHistory();
 
 		// highlight latest entry:
-		int lastEntry = batteryData.packHistory.size() - 1;
+		int lastEntry = batteryData.getPackHistory().size() - 1;
 		highlightPackEntry(lastEntry);
 	}
 
@@ -370,8 +370,8 @@ public class AuxBatteryFragment
 	private void dataFilterChanged() {
 
 		// save prefs:
-		appPrefes.SaveData("aux_battery_show_volt", mShowVolt ? "on" : "off");
-		appPrefes.SaveData("aux_battery_show_temp", mShowTemp ? "on" : "off");
+		appPrefes.saveData("aux_battery_show_volt", mShowVolt ? "on" : "off");
+		appPrefes.saveData("aux_battery_show_temp", mShowTemp ? "on" : "off");
 
 		// check data status:
 		if (!isPackValid())
@@ -390,7 +390,7 @@ public class AuxBatteryFragment
 		if (!isPackValid())
 			return;
 
-		ArrayList<AuxBatteryData.PackStatus> packHistory = batteryData.packHistory;
+		ArrayList<AuxBatteryData.PackStatus> packHistory = batteryData.getPackHistory();
 		AuxBatteryData.PackStatus packStatus, lastStatus;
 		SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
 
@@ -407,7 +407,7 @@ public class AuxBatteryFragment
 		ArrayList<Entry> tempAmbientValues = new ArrayList<Entry>();
 		ArrayList<Entry> tempChargerValues = new ArrayList<Entry>();
 
-		timeStart = packHistory.get(0).timeStamp.getTime() / 1000;
+		timeStart = packHistory.get(0).getTimeStamp().getTime() / 1000;
 		xAxis.setValueFormatter(new TimeAxisValueFormatter(timeStart, "HH:mm"));
 
 		// create y values:
@@ -418,18 +418,18 @@ public class AuxBatteryFragment
 
 			packStatus = packHistory.get(i);
 
-			float xpos = (packStatus.timeStamp.getTime() / 1000) - timeStart;
+			float xpos = (packStatus.getTimeStamp().getTime() / 1000) - timeStart;
 
-			voltValues.add(new Entry(xpos, packStatus.volt));
-			voltRefValues.add(new Entry(xpos, packStatus.voltRef));
-			currentValues.add(new Entry(xpos, packStatus.current));
-			tempAmbientValues.add(new Entry(xpos, packStatus.tempAmbient));
-			tempChargerValues.add(new Entry(xpos, packStatus.tempCharger));
+			voltValues.add(new Entry(xpos, packStatus.getVolt()));
+			voltRefValues.add(new Entry(xpos, packStatus.getVoltRef()));
+			currentValues.add(new Entry(xpos, packStatus.getCurrent()));
+			tempAmbientValues.add(new Entry(xpos, packStatus.getTempAmbient()));
+			tempChargerValues.add(new Entry(xpos, packStatus.getTempCharger()));
 
 			// add section markers:
 			if (packStatus.isNewSection(lastStatus)) {
 				LimitLine l = new LimitLine(xpos);
-				l.setLabel(timeFmt.format(packStatus.timeStamp));
+				l.setLabel(timeFmt.format(packStatus.getTimeStamp()));
 				l.setTextColor(Color.WHITE);
 				l.setTextStyle(Paint.Style.FILL);
 				l.setTextSize(6f);
@@ -583,8 +583,8 @@ public class AuxBatteryFragment
 		}
 
 		// highlight entry:
-		AuxBatteryData.PackStatus packStatus = batteryData.packHistory.get(index);
-		float xpos = (packStatus.timeStamp.getTime() / 1000) - timeStart;
+		AuxBatteryData.PackStatus packStatus = batteryData.getPackHistory().get(index);
+		float xpos = (packStatus.getTimeStamp().getTime() / 1000) - timeStart;
 		packChart.highlightValue(xpos, highlightSetNr); // does not fire listener event
 
 		// center highlight in chart viewport:

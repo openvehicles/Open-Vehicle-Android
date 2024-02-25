@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +37,9 @@ public class CarInfoFragment extends BaseFragment {
 		
 		int editPosition = getArguments().getInt("position", -1);
 		if (editPosition >= 0) {
-			mCarData = CarsStorage.get().getStoredCars().get(editPosition);
+			mCarData = CarsStorage.INSTANCE.getStoredCars().get(editPosition);
 		} else {
-			mCarData = CarsStorage.get().getSelectedCarData();
+			mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 		}
 
 		if (mCarData != null)
@@ -109,8 +108,8 @@ public class CarInfoFragment extends BaseFragment {
 	}
 	
 	@Override
-	public void update(CarData pCarData) {
-		mCarData = pCarData;
+	public void update(CarData carData) {
+		mCarData = carData;
 		approveCarData();
 	}
 }

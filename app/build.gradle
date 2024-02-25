@@ -1,4 +1,12 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+repositories {
+    google()
+    maven { url 'https://jitpack.io' }
+}
 
 android {
     namespace 'com.openvehicles.OVMS'
@@ -25,8 +33,8 @@ android {
     productFlavors {
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     buildFeatures {
         viewBinding true
@@ -38,26 +46,24 @@ if(project.hasProperty("OVMS.signing")
     apply from: project.property("OVMS.signing") + ".gradle"
 }
 
-repositories {
-    google()
-    maven { url 'https://jitpack.io' }
-}
-
 dependencies {
-    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation 'com.google.code.gson:gson:2.10'
-    implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
+
     implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.core:core:1.9.0'
     implementation 'androidx.core:core-google-shortcuts:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.android.material:material:1.9.0'
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.google.firebase:firebase-messaging:23.0.2'
 
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.google.code.gson:gson:2.10'
+    implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

@@ -1,20 +1,19 @@
 package com.openvehicles.OVMS.ui;
 
 import android.content.Context;
-import android.os.Handler;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatDialog;
 import android.content.DialogInterface;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -23,14 +22,14 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.SeekBar;
-import android.widget.Spinner;
-import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatDialog;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -64,7 +63,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 			Bundle savedInstanceState) {
 
 		// init car data:
-		mCarsStorage = CarsStorage.get();
+		mCarsStorage = CarsStorage.INSTANCE;
 		mCarData = mCarsStorage.getSelectedCarData();
 
 		// inflate layout:
@@ -209,7 +208,7 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 
 		// while mCarChanger is defined, updates are inhibited to avoid
 		// interference from scripts or incoming updates during interaction
@@ -219,12 +218,12 @@ public class InfoFragment extends BaseFragment implements OnClickListener,
 		}
 
 		// store pointer to new car:
-		mCarData = pCarData;
+		mCarData = carData;
 
 		// update UI:
 		getCompatActivity().invalidateOptionsMenu();
-		updateLastUpdatedView(pCarData);
-		updateCarInfoView(pCarData);
+		updateLastUpdatedView(carData);
+		updateCarInfoView(carData);
 		updateChargeAlerts();
 	}
 

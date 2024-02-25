@@ -9,6 +9,9 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -16,23 +19,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
+import androidx.annotation.NonNull;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.entities.CarData.DataStale;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.settings.CarInfoFragment;
 import com.openvehicles.OVMS.ui.settings.FeaturesFragment;
 import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.ui.settings.LogsFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
-
-import androidx.annotation.NonNull;
 
 public class CarFragment extends BaseFragment implements OnClickListener, OnResultCommandListener {
 	private static final String TAG = "CarFragment";
@@ -46,7 +45,7 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
 		// init car data:
-		mCarData = CarsStorage.get().getSelectedCarData();
+		mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 		appPrefes = new AppPrefes(getActivity(), "ovms");
 		
 		// inflate layout:
@@ -197,12 +196,12 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 					Configuration.ORIENTATION_UNDEFINED);
 			return true;
 		} else if (menuId == R.id.mi_show_fahrenheit) {
-			appPrefes.SaveData("showfahrenheit", newState ? "on" : "off");
+			appPrefes.saveData("showfahrenheit", newState ? "on" : "off");
 			item.setChecked(newState);
 			triggerCarDataUpdate();
 			return true;
 		} else if (menuId == R.id.mi_show_tpms_bar) {
-			appPrefes.SaveData("showtpmsbar", newState ? "on" : "off");
+			appPrefes.saveData("showtpmsbar", newState ? "on" : "off");
 			item.setChecked(newState);
 			triggerCarDataUpdate();
 			return true;
@@ -216,11 +215,11 @@ public class CarFragment extends BaseFragment implements OnClickListener, OnResu
 
 
 	@Override
-	public void update(CarData pCarData) {
-		mCarData = pCarData;
-		setupCarType(pCarData);
-		updateLastUpdatedView(pCarData);
-		updateCarBodyView(pCarData);
+	public void update(CarData carData) {
+		mCarData = carData;
+		setupCarType(carData);
+		updateLastUpdatedView(carData);
+		updateCarBodyView(carData);
 	}
 
 	@Override

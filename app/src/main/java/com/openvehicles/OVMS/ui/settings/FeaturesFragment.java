@@ -2,8 +2,6 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.content.Context;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
@@ -38,9 +38,9 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 		// get data of car to edit:
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
-			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+			mCarData = CarsStorage.INSTANCE.getStoredCars().get(mEditPosition);
 		} else {
-			mCarData = CarsStorage.get().getSelectedCarData();
+			mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 		}
 		Log.d(TAG, "mEditPosition=" + mEditPosition + " → mCarData=" + mCarData);
 
@@ -64,13 +64,13 @@ public class FeaturesFragment extends BaseFragment implements OnResultCommandLis
 	}
 
 	@Override
-	public void onServiceAvailable(ApiService pService) {
-		mService = pService;
+	public void onServiceAvailable(ApiService service) {
+		mService = service;
 		requestData();
 	}
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 	}
 
 	private void requestData() {

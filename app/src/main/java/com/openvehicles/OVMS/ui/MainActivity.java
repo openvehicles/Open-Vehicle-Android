@@ -43,7 +43,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.FragMap.UpdateLocation;
 import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
 import com.openvehicles.OVMS.ui.utils.Database;
@@ -101,7 +101,7 @@ public class MainActivity extends ApiActivity implements
 		uuid = appPrefes.getData("UUID");
 		if (uuid.length() == 0) {
 			uuid = UUID.randomUUID().toString();
-			appPrefes.SaveData("UUID", uuid);
+			appPrefes.saveData("UUID", uuid);
 			Log.d(TAG, "onCreate: generated new UUID: " + uuid);
 		} else {
 			Log.d(TAG, "onCreate: using UUID: " + uuid);
@@ -111,7 +111,7 @@ public class MainActivity extends ApiActivity implements
 		String apiKey = appPrefes.getData("APIKey");
 		if (apiKey.length() == 0) {
 			apiKey = Sys.getRandomString(25);
-			appPrefes.SaveData("APIKey", apiKey);
+			appPrefes.saveData("APIKey", apiKey);
 			Log.d(TAG, "onCreate: generated new APIKey: " + apiKey);
 		} else {
 			Log.d(TAG, "onCreate: using APIKey: " + apiKey);
@@ -286,7 +286,7 @@ public class MainActivity extends ApiActivity implements
 				.setTitle(getString(R.string.about_title, versionName, versionCode))
 				.setView(msg)
 				.setPositiveButton(R.string.msg_ok, (dialog1, which) ->
-						appPrefes.SaveData("lastUsedVersionName", versionName))
+						appPrefes.saveData("lastUsedVersionName", versionName))
 				.setOnDismissListener(dialog12 -> checkPlayServices())
 				.show();
 	}
@@ -309,7 +309,7 @@ public class MainActivity extends ApiActivity implements
 					.setMessage(R.string.play_services_recommended)
 					.setPositiveButton(R.string.remind, null)
 					.setNegativeButton(R.string.dontremind, (dialog1, which) ->
-							appPrefes.SaveData("skipPlayServicesCheck", "1"))
+							appPrefes.saveData("skipPlayServicesCheck", "1"))
 					.setOnDismissListener(dialog12 -> checkPermissions())
 					.show();
 		} else {
@@ -372,7 +372,6 @@ public class MainActivity extends ApiActivity implements
 	private boolean mTokenRequested = false;
 
 	private void gcmStartRegistration() {
-
 		CarData carData = getLoggedInCar();
 		if (carData == null)
 			return;
@@ -744,8 +743,8 @@ public class MainActivity extends ApiActivity implements
 
 		if (appPrefes.getData("lat_main").equals("")) {
 			// init car position:
-			appPrefes.SaveData("lat_main", lat);
-			appPrefes.SaveData("lng_main", lng);
+			appPrefes.saveData("lat_main", lat);
+			appPrefes.saveData("lng_main", lng);
 			Log.i(TAG, "updatelocation: init car position");
 		} else {
 			// get current car position:
