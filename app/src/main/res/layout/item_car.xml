@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent" android:layout_height="wrap_content"
+	android:paddingLeft="10dp" android:paddingTop="10dp" android:paddingBottom="10dp" android:paddingRight="4dp"
+	android:descendantFocusability="blocksDescendants">
+    
+	<TextView android:id="@+id/txt_title"
+	    android:layout_width="match_parent" android:layout_height="wrap_content"
+	    android:textAppearance="?android:textAppearanceMedium"/>
+
+    <ImageView android:id="@+id/img_car"
+        android:layout_width="match_parent" android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:layout_below="@id/txt_title"
+        android:layout_marginRight="8dp"
+        android:layout_toLeftOf="@+id/menu"
+        android:scaleType="fitCenter"
+
+               android:layout_centerHorizontal="true"/>
+    <!-- android:src="@drawable/car_default" -->
+
+    <ImageView android:id="@+id/img_signal_rssi"
+        android:layout_width="32dp" android:layout_height="32dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="16dp"
+        android:src="@drawable/signal_strength_0"/>
+
+    <LinearLayout
+        android:id="@+id/menu"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true">
+
+        <ImageButton android:id="@+id/btn_edit"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_action_edit"
+            android:background="@drawable/bg_img_button" />
+
+        <ImageButton android:id="@+id/btn_control"
+             android:layout_width="wrap_content" android:layout_height="wrap_content"
+             android:padding="8dp"
+             android:src="@drawable/ic_action_control"
+             android:background="@drawable/bg_img_button"/>
+
+        <ImageButton android:id="@+id/btn_info"
+            android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:padding="8dp"
+            android:src="@drawable/ic_action_about"
+            android:background="@drawable/bg_img_button"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

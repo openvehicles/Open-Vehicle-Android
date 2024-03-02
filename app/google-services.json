@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "497749188588",
+    "project_id": "api-project-497749188588",
+    "storage_bucket": "api-project-497749188588.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:497749188588:android:3c1b12a86d1e3502",
+        "android_client_info": {
+          "package_name": "com.openvehicles.OVMS"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuzjTXOvR8c4GZJ830z_1I0P4Ak5ojMpA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

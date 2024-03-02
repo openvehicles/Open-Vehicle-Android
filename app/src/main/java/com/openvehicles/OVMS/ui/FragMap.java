@@ -1,0 +1,649 @@
+package com.openvehicles.OVMS.ui;
+
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.text.SpannableStringBuilder;
+import android.text.style.RelativeSizeSpan;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.androidmapsextensions.CircleOptions;
+import com.androidmapsextensions.ClusterGroup;
+import com.androidmapsextensions.ClusteringSettings;
+import com.androidmapsextensions.GoogleMap;
+import com.androidmapsextensions.GoogleMap.OnInfoWindowClickListener;
+import com.androidmapsextensions.Marker;
+import com.androidmapsextensions.MarkerOptions;
+import com.androidmapsextensions.OnMapReadyCallback;
+import com.androidmapsextensions.SupportMapFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.Dot;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.PatternItem;
+import com.openvehicles.OVMS.utils.AppPrefes;
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
+import com.openvehicles.OVMS.ui.utils.Database;
+import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider;
+import com.openvehicles.OVMS.ui.utils.MarkerGenerator;
+import com.openvehicles.OVMS.ui.utils.Ui;
+
+import java.util.Arrays;
+import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.FragmentManager;
+
+public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
+		GetMapDetailsListener, OnClickListener, FragMapSettings.UpdateMap, OnMapReadyCallback {
+	private static final String TAG = "FragMap";
+
+	private GoogleMap map;
+
+	Database database;
+	String slat, slng;
+	AppPrefes appPrefes;
+
+	static boolean mapInitState = true;
+	boolean userInteraction = false;
+	private static final double[] CLUSTER_SIZES = new double[] { 360, 180, 90, 45, 22 };
+	View rootView;
+	Menu optionsMenu;
+	MenuItem autoTrackMenuItem;
+	boolean autotrack = true;
+	float mapZoomLevel = 15;
+	static FragMapSettings.UpdateMap updateMap;
+
+	private CarData mCarData;
+	private LatLng carPosition = new LatLng(0,0);
+	static float maxrange = 160;
+	static String distance_units = "KM";
+
+	List<Marker> markerList;
+
+	public interface UpdateLocation {
+		public void updatelocation();
+	}
+
+
+	// getMap: Initialize the map fragment
+	// 	see: http://developer.android.com/about/versions/android-4.2.html#NestedFragments
+	// 	and: https://developers.google.com/android/reference/com/google/android/gms/maps/SupportMapFragment
+	private void getMap() {
+		try {
+			FragmentManager fm = getChildFragmentManager();
+			SupportMapFragment fragment = (SupportMapFragment) fm.findFragmentById(R.id.mmap);
+			if (fragment == null) {
+				Log.d(TAG, "getMap: create newInstance()");
+				fragment = SupportMapFragment.newInstance();
+				fm.beginTransaction().replace(R.id.mmap, fragment).commit();
+			}
+			Log.d(TAG, "getMap: fragment=" + fragment);
+
+			fragment.getExtendedMapAsync(this);
+		} catch (Exception e) {
+			Log.e(TAG, "getMap:" + e);
+		}
+	}
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+
+		MainActivity mainActivity = (MainActivity) getActivity();
+		if (mainActivity == null) {
+			Log.e(TAG, "getMap/onMapReady: MainActivity unavailable");
+			return;
+		}
+
+		map = googleMap;
+		Log.i(TAG, "getMap/onMapReady: map=" + map);
+
+		boolean clusterEnabled = true;
+		int clusterSizeIndex = 0;
+
+		try {
+			clusterEnabled = !appPrefes.getData("check").equals("false");
+			clusterSizeIndex = Integer.parseInt(appPrefes.getData("progress"));
+			mapZoomLevel = Float.parseFloat(appPrefes.getData("mapZoomLevel"));
+			if (mapZoomLevel == 0)
+				mapZoomLevel = 15;
+		} catch (Exception e) {
+			// ignore
+		}
+
+		mapInitState = true;
+
+		updateClustering(clusterSizeIndex, clusterEnabled);
+
+		map.setOnInfoWindowClickListener(this);
+
+		map.getUiSettings().setRotateGesturesEnabled(false); // disable two-finger rotation gesture
+		map.getUiSettings().setZoomControlsEnabled(true); // enable zoom +/- buttons
+		map.getUiSettings().setMapToolbarEnabled(true); // enable Google Maps shortcuts
+
+		if (ContextCompat.checkSelfPermission(mainActivity, Manifest.permission.ACCESS_FINE_LOCATION)
+				== PackageManager.PERMISSION_GRANTED) {
+			map.setMyLocationEnabled(true);
+			map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+			Log.i(TAG, "getMap/onMapReady: MyLocation enabled, button = " + !autotrack);
+		} else {
+			Log.w(TAG, "getMap/onMapReady: MyLocation unavailable, permission FINE_LOCATION not granted");
+		}
+		map.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+			@Override
+			public boolean onMyLocationButtonClick() {
+				// move camera to car position if available:
+				if (carPosition == null || carPosition.latitude == 0 || carPosition.longitude == 0)
+					return false;
+				map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
+				Log.i(TAG, "getMap/onMyLocationButtonClick: enabling autotrack");
+				autotrack = true;
+				appPrefes.saveData("autotrack", "on");
+				if (autoTrackMenuItem != null)
+					autoTrackMenuItem.setChecked(autotrack);
+				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+				showMapToast(getString(R.string.ocm_toast_autotrack_on));
+				return true;
+			}
+		});
+
+		Log.i(TAG, "getMap/onMapReady: mapZoomLevel=" + mapZoomLevel);
+		map.moveCamera(CameraUpdateFactory.zoomTo(mapZoomLevel)); // init zoom level
+		map.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+			@Override
+			public void onCameraChange(CameraPosition cameraPosition) {
+				if (mapInitState)
+					return;
+				// save zoom:
+				if (cameraPosition.zoom != 0 && cameraPosition.zoom != mapZoomLevel) {
+					userInteraction = true;
+					mapZoomLevel = cameraPosition.zoom;
+					appPrefes.saveData("mapZoomLevel", "" + mapZoomLevel);
+					Log.i(TAG, "getMap/onCameraChange: new mapZoomLevel=" + cameraPosition.zoom);
+				}
+				// disable autotrack?
+				if (cameraPosition.target.latitude != 0 && cameraPosition.target.longitude != 0) {
+					if (autotrack) {
+						int moved = (int) distance(carPosition, cameraPosition.target);
+						if (moved > 10)
+							userInteraction = true;
+						if (moved > 300 * Math.pow(2, 15 - mapZoomLevel)) {
+							Log.i(TAG, "getMap/onCameraChange: moved " + moved + "m, disabling autotrack");
+							autotrack = false;
+							appPrefes.saveData("autotrack", "off");
+							if (autoTrackMenuItem != null)
+								autoTrackMenuItem.setChecked(autotrack);
+							if (map.isMyLocationEnabled())
+								map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+							showMapToast(getString(R.string.ocm_toast_autotrack_off));
+						}
+					}
+				}
+			}
+		});
+
+		map.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+			@Override
+			public void onCameraIdle() {
+				userInteraction = false;
+				if (mapInitState)
+					return;
+				// fetch chargepoints for view:
+				CameraPosition cameraPosition = map.getCameraPosition();
+				Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target);
+				mainActivity.StartGetMapDetails(cameraPosition.target);
+			}
+		});
+
+		update();
+	}
+
+	private void showMapToast(String msg) {
+		SpannableStringBuilder text = new SpannableStringBuilder(msg);
+		text.setSpan(new RelativeSizeSpan(1.15f), 0, text.length(), 0);
+		Toast toast = Toast.makeText(getContext(), text, Toast.LENGTH_SHORT);
+		toast.show();
+	}
+
+	@Override
+	public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
+							 Bundle savedInstanceState) {
+
+		rootView = inflater.inflate(R.layout.mmap, null);
+		setHasOptionsMenu(true);
+
+		appPrefes = new AppPrefes(getActivity(), "ovms");
+		database = new Database(getActivity());
+
+		updateMap = this;
+		carPosition = new LatLng(37.410866, -122.001946);
+		maxrange = 285;
+		distance_units = "KM";
+
+		autotrack = !appPrefes.getData("autotrack").equals("off");
+
+		mapInitState = true;
+
+		return rootView;
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		getMap();
+	}
+
+	@Override
+	public void onDestroyView() {
+		try {
+			mapInitState = true;
+
+			database.close();
+
+		} catch (Exception e) {
+			// nop
+		}
+		super.onDestroyView();
+	}
+
+
+	@Override
+	public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+
+		inflater.inflate(R.menu.map_options, menu);
+
+		optionsMenu = menu;
+
+		// set checkboxes:
+		autoTrackMenuItem = optionsMenu.findItem(R.id.mi_map_autotrack);
+		autoTrackMenuItem.setChecked(autotrack);
+
+		if (appPrefes.getData("option_ocm_enabled", "1").equals("1")) {
+			optionsMenu.findItem(R.id.mi_map_filter_connections)
+					.setChecked(appPrefes.getData("filter").equals("on"))
+					.setVisible(true);
+			optionsMenu.findItem(R.id.mi_map_filter_range)
+					.setChecked(appPrefes.getData("inrange").equals("on"))
+					.setVisible(true);
+		} else {
+			optionsMenu.findItem(R.id.mi_map_filter_connections)
+					.setVisible(false);
+			optionsMenu.findItem(R.id.mi_map_filter_range)
+					.setVisible(false);
+		}
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+		int menuId = item.getItemId();
+		boolean newState = !item.isChecked();
+
+		if (menuId == R.id.mi_map_autotrack) {
+			appPrefes.saveData("autotrack", newState ? "on" : "off");
+			item.setChecked(newState);
+			autotrack = newState;
+			if (autotrack)
+				update();
+			if (map != null && map.isMyLocationEnabled()) {
+				Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autotrack);
+				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
+			}
+		} else if (menuId == R.id.mi_map_filter_connections) {
+			appPrefes.saveData("filter", newState ? "on" : "off");
+			item.setChecked(newState);
+			updateMapDetails(false);
+		} else if (menuId == R.id.mi_map_filter_range) {
+			appPrefes.saveData("inrange", newState ? "on" : "off");
+			item.setChecked(newState);
+			updateMapDetails(false);
+		} else if (menuId == R.id.mi_map_settings) {
+			Bundle args = new Bundle();
+			BaseFragmentActivity.show(getActivity(), FragMapSettings.class, args,
+					Configuration.ORIENTATION_UNDEFINED);
+		}
+
+		return false;
+	}
+
+
+	@Override
+	public void updateClustering(int clusterSizeIndex, boolean clusterEnabled) {
+
+		Log.d(TAG, "getMap/updateClustering(" + clusterSizeIndex
+				+ "," + clusterEnabled + "): map=" + map);
+
+		if (map == null)
+			return;
+
+		map.setClustering(
+				new ClusteringSettings()
+						.clusterOptionsProvider(new DemoClusterOptionsProvider(getResources()))
+						.addMarkersDynamically(true)
+						.clusterSize(CLUSTER_SIZES[clusterSizeIndex])
+						.enabled(clusterEnabled));
+	}
+
+
+	private void direction() {
+		// TODO Auto-generated method stub
+		String directions = "https://maps.google.com/maps?saddr=Kanyakumari,+Tamil+Nadu,+India&daddr=Trivandrum,+Kerala,+India";
+		directions = "https://maps.google.com/maps?saddr=37.410866,-122.001946&daddr="
+				+ slat + "," + slng;
+		// Create Google Maps intent from current location to target location
+		Intent intent = new Intent(android.content.Intent.ACTION_VIEW,
+				Uri.parse(directions));
+		intent.setClassName("com.google.android.apps.maps",
+				"com.google.android.maps.MapsActivity");
+		startActivity(intent);
+	}
+
+
+	// marker click event
+	@Override
+	public void onInfoWindowClick(@NonNull Marker marker) {
+		// TODO Auto-generated method stub
+		int j = marker.getClusterGroup();
+		Log.d(TAG, "click: ClusterGroup=" + j);
+		if (j == 0) {
+			dialog(marker);
+		}
+	}
+
+	// after fetch value from server
+	@Override
+	public void getMapDetailsDone(boolean success, LatLng center) {
+		updateMapDetails(success);
+	}
+
+	public void updateMapDetails(boolean clearmap) {
+
+		if (map == null)
+			return;
+
+		Log.d(TAG, "updateMapDetails: clearmap=" + clearmap);
+
+		if (clearmap) {
+			map.clear();
+		} else {
+			markerList = map.getMarkers();
+			for (int i = 0; i < markerList.size(); i++) {
+				Marker carmarker = markerList.get(i);
+				int j = carmarker.getClusterGroup();
+				if (j == -1) {
+					markerList.remove(i);
+				} else {
+					carmarker.remove();
+				}
+			}
+		}
+
+
+		// Load charge points from database:
+
+		Cursor cursor;
+		boolean check_range = false;
+		double maxrange_m = 0;
+
+		if (appPrefes.getData("filter").equals("on")) {
+			// check if filter is defined, else fallback to all stations:
+			String connectionList = appPrefes.getData("Id");
+			Log.d(TAG, "updateMapDetails: connectionList=(" + connectionList + ")");
+			if (!connectionList.equals(""))
+				cursor = database.get_mapdetails(connectionList);
+			else
+				cursor = database.get_mapdetails();
+		} else {
+			// filter off:
+			cursor = database.get_mapdetails();
+		}
+
+		if (appPrefes.getData("inrange").equals("on")) {
+			check_range = true;
+			if (distance_units.equals("Miles"))
+				maxrange_m = maxrange * 1.609344 * 1000;
+			else
+				maxrange_m = maxrange * 1000;
+		}
+
+		Log.d(TAG, "updateMapDetails: addMarkers avail=" + cursor.getCount());
+
+		if (cursor.getCount() != 0) {
+			int columnLatitude = cursor.getColumnIndex("Latitude");
+			int columnLongitude = cursor.getColumnIndex("Longitude");
+			int columnCPID = cursor.getColumnIndex("cpid");
+			int columnTitle = cursor.getColumnIndex("Title");
+			int columnInfo = cursor.getColumnIndex("OperatorInfo");
+			int cnt_added = 0;
+			if (cursor.moveToFirst()) {
+				do {
+					// check position:
+					try {
+						double Latitude = Double.parseDouble(cursor.getString(columnLatitude));
+						double Longitude = Double.parseDouble(cursor.getString(columnLongitude));
+
+						if (check_range) {
+							if (distance(carPosition.latitude, carPosition.longitude, Latitude, Longitude) > maxrange_m)
+								continue;
+						}
+
+						// add marker:
+						String cpid = cursor.getString(columnCPID);
+						String title = cursor.getString(columnTitle);
+						String snippet = cursor.getString(columnInfo);
+
+						MarkerGenerator.addMarkers(map,
+								title, snippet,
+								new LatLng(Latitude, Longitude),
+								cpid);
+
+						cnt_added++;
+					} catch (Exception e) {
+						Log.e(TAG, "skipped charge point: ERROR", e);
+					}
+
+				} while (cursor.moveToNext());
+			}
+
+			Log.d(TAG, "updateMapDetails: addMarkers added=" + cnt_added);
+		}
+
+		cursor.close();
+	}
+
+
+	// click marker event
+	private void dialog(@NonNull Marker marker) {
+		// open dialog:
+		Bundle args = new Bundle();
+		args.putString("cpId", (String) marker.getData());
+		BaseFragmentActivity.show(getActivity(), DetailFragment.class, args,
+				Configuration.ORIENTATION_UNDEFINED);
+	}
+
+
+	@Override
+	public void update(CarData carData) {
+		mCarData = carData;
+		update();
+	}
+
+
+	public void update() {
+
+		if (mCarData == null)
+			return;
+		if (map == null)
+			return;
+		if (getContext() == null)
+			return;
+
+		// get last known car position:
+
+		carPosition = new LatLng(mCarData.car_latitude, mCarData.car_longitude);
+		maxrange = Math.max(mCarData.car_range_estimated_raw, mCarData.car_range_ideal_raw);
+		distance_units = (mCarData.car_distance_units_raw.equals("M") ? "Miles" : "KM");
+
+		Log.i(TAG, "update: Car on map: " + carPosition
+				+ " maxrange=" + maxrange + distance_units);
+
+		// update charge point markers:
+
+		updateMapDetails(true);
+
+		// update car position marker:
+
+		// determine icon for this car:
+		int icon;
+		if (mCarData.sel_vehicle_image.startsWith("car_imiev_"))
+			icon = R.drawable.map_car_imiev; // one map icon for all colors
+		else if (mCarData.sel_vehicle_image.startsWith("car_i3_"))
+			icon = R.drawable.map_car_i3; // one map icon for all colors
+		else if (mCarData.sel_vehicle_image.startsWith("car_smart_"))
+			icon = R.drawable.map_car_smart; // one map icon for all colors
+		else if (mCarData.sel_vehicle_image.startsWith("car_kianiro_"))
+			icon = R.drawable.map_car_kianiro_grey; // one map icon for all colors
+		else if (mCarData.sel_vehicle_image.startsWith("car_kangoo_"))
+			icon = R.drawable.map_car_kangoo; // one map icon for all colors
+		else
+			icon = Ui.getDrawableIdentifier(getActivity(),"map_" + mCarData.sel_vehicle_image);
+
+		Drawable drawable = ResourcesCompat.getDrawable(getResources(),
+				(icon != 0) ? icon : R.drawable.map_car_default, null);
+		Bitmap myLogo = ((BitmapDrawable) drawable).getBitmap();
+
+		MarkerOptions marker = new MarkerOptions().position(carPosition)
+				.title(mCarData.sel_vehicle_label)
+				.rotation((float) mCarData.car_direction)
+				.icon(BitmapDescriptorFactory.fromBitmap(myLogo));
+		Marker carmarker = map.addMarker(marker);
+		carmarker.setClusterGroup(ClusterGroup.NOT_CLUSTERED);
+
+		// move camera if tracking enabled and user not currently interacting with the map:
+		if (mapInitState || (autotrack && !userInteraction)) {
+			map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
+			mapInitState = false;
+		}
+
+		// update range circles:
+
+		Log.i(TAG, "update: adding range circles:"
+				+ " ideal=" + mCarData.car_range_ideal_raw
+				+ " estimated=" + mCarData.car_range_estimated_raw);
+		addCircles(mCarData.car_range_ideal_raw,
+				mCarData.car_range_estimated_raw);
+
+
+		// start chargepoint data update:
+
+		appPrefes.saveData("lat_main", "" + mCarData.car_latitude);
+		appPrefes.saveData("lng_main", "" + mCarData.car_longitude);
+
+		MainActivity.updateLocation.updatelocation();
+
+	}
+
+	// draw circle in a map
+	private void addCircles(float rd1, float rd2) {
+		if (map == null)
+			return;
+
+		// fix for issue #79 by @Timopen:
+		if (rd1 < 0) rd1 = 0;
+		if (rd2 < 0) rd2 = 0;
+
+		float strokeWidth = getResources().getDimension(
+				R.dimen.circle_stroke_width);
+		List<PatternItem> pattern = Arrays.<PatternItem>asList(new Dot());
+
+		// full range circles:
+
+		map.addCircle(new CircleOptions()
+				.data("first circle")
+				.center(carPosition)
+				.radius(rd1 * 1000)
+				.strokeWidth(strokeWidth)
+				.strokeColor(Color.BLUE));
+
+		map.addCircle(new CircleOptions()
+				.data("second circle")
+				.center(carPosition)
+				.radius(rd2 * 1000)
+				.strokeWidth(strokeWidth)
+				.strokeColor(Color.RED));
+
+		// half range ("point of no return") circles:
+
+		map.addCircle(new CircleOptions()
+				.data("first ponr")
+				.center(carPosition)
+				.radius(rd1 * 1000 / 2)
+				.strokeWidth(strokeWidth / 2)
+				.strokePattern(pattern)
+				.strokeColor(Color.parseColor("#A04455FF")));
+
+		map.addCircle(new CircleOptions()
+				.data("second ponr")
+				.center(carPosition)
+				.radius(rd2 * 1000 / 2)
+				.strokeWidth(strokeWidth / 2)
+				.strokePattern(pattern)
+				.strokeColor(Color.parseColor("#A0FF5544")));
+	}
+
+	// calculate distance in meters:
+	public static double distance(@NonNull LatLng pos1, @NonNull LatLng pos2) {
+		return distance(pos1.latitude, pos1.longitude, pos2.latitude, pos2.longitude);
+	}
+	public static double distance(double lat1, double lon1, double lat2, double lon2) {
+		double dLat = Math.toRadians(lat2-lat1);
+		double dLon = Math.toRadians(lon2-lon1);
+		double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+				Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+						Math.sin(dLon/2) * Math.sin(dLon/2);
+		double c = 2 * Math.asin(Math.sqrt(a));
+		return 6371000 * c;
+	}
+
+
+	@Override
+	public void onClick(@NonNull View view) {
+		if (view.getId() == R.id.bt_route) {
+			direction();
+		}
+	}
+
+	@Override
+	public void clearCache() {
+		database.clear_mapdetails();
+		MainActivity.updateLocation.updatelocation();
+	}
+
+	@Override
+	public void updateFilter(String connectionList) {
+		// update markers:
+		updateMapDetails(false);
+	}
+
+}

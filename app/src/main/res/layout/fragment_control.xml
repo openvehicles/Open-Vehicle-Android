@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="20dp" >
+
+    <Button
+        android:id="@+id/btn_features"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/Features" />
+
+    <Button
+        android:id="@+id/btn_parameters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/Parameters" />
+
+    <Button
+        android:id="@+id/btn_mmi_ussd_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/lb_mmi_ussd_code" />
+
+    <Button
+        android:id="@+id/btn_connections"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/connections" />
+
+    <Button
+        android:id="@+id/btn_diag_logs"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/logs_title" />
+
+    <Button
+        android:id="@+id/btn_cellular_usage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="@string/lb_cellular_usage" />
+
+    <Button
+        android:id="@+id/btn_reset_ovms_module"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="@string/lb_reset_ovms_module" />
+
+</LinearLayout>

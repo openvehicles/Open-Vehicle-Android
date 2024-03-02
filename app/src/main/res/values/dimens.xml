@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <dimen name="carimage_left">50px</dimen>
+    <dimen name="carimage_right">50px</dimen>
+    <dimen name="carimage_width">400px</dimen>
+    <dimen name="text_size">15sp</dimen>
+ <dimen name="circle_stroke_width">5dp</dimen>
+</resources>

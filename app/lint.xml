@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<lint>
+    <issue id="ContentDescription" severity="ignore">
+        <ignore path="res/layout/fragment_car.xml" />
+        <ignore path="res/layout/view_car_statusbar.xml" />
+    </issue>
+    <issue id="DefaultLocale" severity="ignore" />
+    <issue id="Deprecated" severity="ignore" />
+    <issue id="HardcodedText" severity="ignore" />
+    <issue id="PxUsage" severity="ignore">
+        <ignore path="res/layout/dlg_pin.xml" />
+        <ignore path="res/layout/fragment_car.xml" />
+    </issue>
+    <issue id="SimpleDateFormat" severity="ignore" />
+</lint>

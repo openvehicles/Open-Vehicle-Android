@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	xmlns:ovms="http://schemas.android.com/apk/res-auto"
+	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:gravity="center_horizontal"
+	android:orientation="vertical" 
+	android:paddingLeft="10dp"
+	android:paddingRight="10dp">
+	
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginBottom="14dp"
+		android:textAppearance="@android:style/TextAppearance.Medium"
+		android:gravity="center_horizontal"
+		android:textColor="#F00"
+		android:text="@string/lb_wrning_charger"/>
+	
+	<com.openvehicles.OVMS.ui.witdet.SwitcherView
+		android:id="@+id/sv_state" 
+		android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginBottom="4dp"
+		android:entries="@array/en_charger"/>
+	
+    <TextView android:id="@+id/txt_info" 
+    	android:layout_width="wrap_content" android:layout_height="wrap_content"
+    	android:minLines="3"
+        android:textAppearance="@android:style/TextAppearance.Small"
+        android:gravity="center_horizontal"/>
+	
+	<TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+		android:layout_marginTop="8dp"
+        android:textAppearance="@android:style/TextAppearance.Medium"
+        android:gravity="center_horizontal|bottom"
+        android:text="@string/Amps"/>
+	
+    <com.openvehicles.OVMS.ui.witdet.SlideNumericView
+        android:layout_marginBottom="30dp"
+    	android:id="@+id/snv_amps" 
+    	android:layout_width="220dp" android:layout_height="60dp"
+    	ovms:min="8" ovms:max="70"/>
+     
+</LinearLayout>

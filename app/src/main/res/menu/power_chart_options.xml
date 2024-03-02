@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/mi_get_data"
+        android:icon="@android:drawable/ic_popup_sync"
+        android:title="@string/power_btn_get_data"
+        app:showAsAction="always|withText"/>
+    <item
+        android:id="@+id/power_menu"
+        android:icon="@android:drawable/ic_menu_more"
+        android:title="@string/power_menu"
+        app:showAsAction="always|withText">
+
+        <menu>
+
+            <item
+                android:id="@+id/mi_power_zoom5"
+                android:icon="@android:drawable/ic_menu_zoom"
+                android:title="@string/power_btn_zoom5"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/mi_power_zoom10"
+                android:icon="@android:drawable/ic_menu_zoom"
+                android:title="@string/power_btn_zoom10"
+                app:showAsAction="ifRoom"/>
+
+            <item
+                android:id="@+id/mi_reset_view"
+                android:icon="@android:drawable/ic_menu_mylocation"
+                android:title="@string/power_btn_reset_view"
+                app:showAsAction="ifRoom"/>
+
+            <group android:checkableBehavior="all">
+
+                <item
+                    android:id="@+id/mi_chk_energy"
+                    android:title="@string/power_chk_energy"
+                    app:showAsAction="ifRoom"/>
+
+                <item
+                    android:id="@+id/mi_chk_power"
+                    android:title="@string/power_chk_power"
+                    app:showAsAction="ifRoom"/>
+
+            </group>
+
+            <item
+                android:id="@+id/mi_help"
+                android:icon="@android:drawable/ic_menu_help"
+                android:title="@string/power_btn_help"
+                app:showAsAction="never"/>
+
+        </menu>
+    </item>
+
+</menu>
