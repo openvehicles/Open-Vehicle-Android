@@ -31,11 +31,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.settings.StoredCommandFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
@@ -43,10 +47,6 @@ import com.openvehicles.OVMS.utils.NotificationData;
 import com.openvehicles.OVMS.utils.OVMSNotifications;
 
 import java.text.SimpleDateFormat;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 
 
 public class NotificationsFragment extends BaseFragment
@@ -121,7 +121,7 @@ public class NotificationsFragment extends BaseFragment
 		mNotificationManager.cancelAll();
 
 		// update list:
-		mVehicleId = CarsStorage.get().getLastSelectedCarId();
+		mVehicleId = CarsStorage.INSTANCE.getLastSelectedCarId();
 		update();
 	}
 
@@ -207,23 +207,23 @@ public class NotificationsFragment extends BaseFragment
 			return true;
 		} else if (menuId == R.id.mi_chk_filter_list) {
 			mFilterList = newState;
-			appPrefes.SaveData("notifications_filter_list", newState ? "on" : "off");
+			appPrefes.saveData("notifications_filter_list", newState ? "on" : "off");
 			item.setChecked(newState);
 			initList();
 			return true;
 		} else if (menuId == R.id.mi_chk_filter_info) {
 			mFilterInfo = newState;
-			appPrefes.SaveData("notifications_filter_info", newState ? "on" : "off");
+			appPrefes.saveData("notifications_filter_info", newState ? "on" : "off");
 			item.setChecked(newState);
 			return true;
 		} else if (menuId == R.id.mi_chk_filter_alert) {
 			mFilterAlert = newState;
-			appPrefes.SaveData("notifications_filter_alert", newState ? "on" : "off");
+			appPrefes.saveData("notifications_filter_alert", newState ? "on" : "off");
 			item.setChecked(newState);
 			return true;
 		} else if (menuId == R.id.mi_chk_monospace) {
 			mFontMonospace = newState;
-			appPrefes.SaveData("notifications_font_monospace", newState ? "on" : "off");
+			appPrefes.saveData("notifications_font_monospace", newState ? "on" : "off");
 			item.setChecked(newState);
 			mItemsAdapter.notifyDataSetChanged();
 			return true;
@@ -241,7 +241,7 @@ public class NotificationsFragment extends BaseFragment
 								val = 10;
 							}
 							mFontSize = val;
-							appPrefes.SaveData("notifications_font_size",
+							appPrefes.saveData("notifications_font_size",
 									Float.toString(mFontSize));
 							mItemsAdapter.notifyDataSetChanged();
 							mCmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, mFontSize * 1.2f);
@@ -273,12 +273,12 @@ public class NotificationsFragment extends BaseFragment
 	}
 
 	@Override
-	public void update(CarData pCarData) {
-		super.update(pCarData);
+	public void update(CarData carData) {
+		super.update(carData);
 
 		// check if the car filter needs to be reapplied:
-		if (mFilterList && !pCarData.sel_vehicleid.equals(mVehicleId)) {
-			String vehicleId = CarsStorage.get().getLastSelectedCarId();
+		if (mFilterList && !carData.sel_vehicleid.equals(mVehicleId)) {
+			String vehicleId = CarsStorage.INSTANCE.getLastSelectedCarId();
 			if (vehicleId != null && !vehicleId.equals(mVehicleId)) {
 				Log.d(TAG, "update: vehicle changed to '" + vehicleId + "' => filter reload");
 				mVehicleId = vehicleId;
@@ -339,13 +339,13 @@ public class NotificationsFragment extends BaseFragment
 			initList();
 
 		// Add command to history:
-		String vehicle_id = CarsStorage.get().getLastSelectedCarId();
+		String vehicle_id = CarsStorage.INSTANCE.getLastSelectedCarId();
 		mNotifications.addNotification(
 				NotificationData.TYPE_COMMAND, vehicle_id + ": " + userCmd, userCmd);
 		updateList();
 
 		// Send command:
-		String mpCmd = ApiService.makeMsgCommand(userCmd);
+		String mpCmd = ApiService.Companion.makeMsgCommand(userCmd);
 		String[] cp = mpCmd.split(",");
 		try {
 			lastCommandSent = Integer.parseInt(cp[0]);
@@ -380,7 +380,7 @@ public class NotificationsFragment extends BaseFragment
 				cmdOutput += "," + result[i];
 		}
 
-		String vehicle_id = CarsStorage.get().getLastSelectedCarId();
+		String vehicle_id = CarsStorage.INSTANCE.getLastSelectedCarId();
 
 		switch (resCode) {
 			case 0: // ok: result[2] = command output

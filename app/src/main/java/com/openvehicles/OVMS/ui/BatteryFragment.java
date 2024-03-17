@@ -36,7 +36,7 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.BatteryData;
 import com.openvehicles.OVMS.entities.CarData;
@@ -102,7 +102,7 @@ public class BatteryFragment
 		@Override
 		public String getFormattedValue(float value) {
 			try {
-				BatteryData.PackStatus entry = batteryData.packHistory.get((int)value);
+				BatteryData.PackStatus entry = batteryData.getPackHistory().get((int)value);
 				return timeFmt.format(entry.timeStamp);
 			} catch(Exception e) {
 				return "";
@@ -305,7 +305,7 @@ public class BatteryFragment
 		getCompatActivity().getSupportActionBar().setIcon(R.drawable.ic_action_chart);
 
 		// get data of current car:
-		mCarData = CarsStorage.get().getSelectedCarData();
+		mCarData = CarsStorage.INSTANCE.getSelectedCarData();
 
 		// schedule data loader:
 		showProgressOverlay(getString(R.string.battery_msg_loading_data));
@@ -450,9 +450,9 @@ public class BatteryFragment
 	 */
 	private boolean isPackValid() {
 		return (batteryData != null
-				&& batteryData.cellCount != 0
-				&& batteryData.packHistory != null
-				&& batteryData.packHistory.size() > 0);
+				&& batteryData.getCellCount() != 0
+				&& batteryData.getPackHistory() != null
+				&& batteryData.getPackHistory().size() > 0);
 	}
 
 	/**
@@ -460,7 +460,7 @@ public class BatteryFragment
 	 */
 	private boolean isPackIndexValid(int index) {
 		return (isPackValid()
-				&& index < batteryData.packHistory.size());
+				&& index < batteryData.getPackHistory().size());
 	}
 
 
@@ -475,7 +475,7 @@ public class BatteryFragment
 		// update pack chart:
 		showPackHistory();
 
-		int lastEntry = batteryData.packHistory.size() - 1;
+		int lastEntry = batteryData.getPackHistory().size() - 1;
 
 		// update seek bar:
 		seekPack.setMax(lastEntry);
@@ -496,8 +496,8 @@ public class BatteryFragment
 	private void dataFilterChanged() {
 
 		// save prefs:
-		appPrefes.SaveData("battery_show_volt", mShowVolt ? "on" : "off");
-		appPrefes.SaveData("battery_show_temp", mShowTemp ? "on" : "off");
+		appPrefes.saveData("battery_show_volt", mShowVolt ? "on" : "off");
+		appPrefes.saveData("battery_show_temp", mShowTemp ? "on" : "off");
 
 		// check data status:
 		if (!isPackValid())
@@ -526,7 +526,7 @@ public class BatteryFragment
 		if (!isPackValid())
 			return;
 
-		ArrayList<BatteryData.PackStatus> packHistory = batteryData.packHistory;
+		ArrayList<BatteryData.PackStatus> packHistory = batteryData.getPackHistory();
 		BatteryData.PackStatus packStatus, lastStatus;
 		SimpleDateFormat timeFmt = new SimpleDateFormat("HH:mm");
 
@@ -657,8 +657,8 @@ public class BatteryFragment
 			return;
 
 		// check model status:
-		if (batteryData == null || batteryData.packHistory == null
-				|| index >= batteryData.packHistory.size()) {
+		if (batteryData == null || batteryData.getPackHistory() == null
+				|| index >= batteryData.getPackHistory().size()) {
 			Log.e(TAG, "highlighPackEntry: #" + index + " out of bounds");
 			return;
 		}
@@ -675,7 +675,7 @@ public class BatteryFragment
 		}
 
 		// highlight entry:
-		BatteryData.PackStatus packStatus = batteryData.packHistory.get(index);
+		BatteryData.PackStatus packStatus = batteryData.getPackHistory().get(index);
 		packChart.highlightValue(index, highlightSetNr); // does not fire listener event
 
 		// center highlight in chart viewport:
@@ -699,7 +699,7 @@ public class BatteryFragment
 		if (!isPackIndexValid(index))
 			return;
 
-		ArrayList<BatteryData.PackStatus> packHistory = batteryData.packHistory;
+		ArrayList<BatteryData.PackStatus> packHistory = batteryData.getPackHistory();
 		BatteryData.PackStatus pack;
 		ArrayList<BatteryData.CellStatus> cells;
 		BatteryData.CellStatus cell;
@@ -718,7 +718,7 @@ public class BatteryFragment
 		ArrayList<CandleEntry> tempValues = new ArrayList<CandleEntry>();
 		float low, high, open, close;
 
-		for (int i = 0; i < batteryData.cellCount; i++) {
+		for (int i = 0; i < batteryData.getCellCount(); i++) {
 
 			cell = cells.get(i);
 
@@ -803,8 +803,8 @@ public class BatteryFragment
 		YAxis yAxis = cellChart.getAxisLeft();
 		yAxis.setEnabled(mShowVolt);
 		if (mShowVolt && (packVoltSet != null)) {
-			float yMax = packVoltSet.getYMax() / (float)batteryData.cellCount + 0.1f;
-			float yMin = packVoltMinSet.getYMin() / (float)batteryData.cellCount - 0.1f;
+			float yMax = packVoltSet.getYMax() / (float)batteryData.getCellCount() + 0.1f;
+			float yMin = packVoltMinSet.getYMin() / (float)batteryData.getCellCount() - 0.1f;
 			yAxis.setAxisMaximum(yMax);
 			if (mShowTemp)
 				yAxis.setAxisMinimum(yMin-(yMax-yMin)); // half height

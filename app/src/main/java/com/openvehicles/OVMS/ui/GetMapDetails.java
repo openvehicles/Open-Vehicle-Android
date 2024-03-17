@@ -14,8 +14,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.stream.JsonReader;
-import com.openvehicles.OVMS.luttu.AppPrefes;
-import com.openvehicles.OVMS.luttu.Main;
+import com.openvehicles.OVMS.utils.AppPrefes;
+import com.openvehicles.OVMS.Main;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.ChargePoint;
 import com.openvehicles.OVMS.ui.utils.Database;

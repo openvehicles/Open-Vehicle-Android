@@ -7,14 +7,14 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
-import com.openvehicles.OVMS.R;
-import com.openvehicles.OVMS.api.CommandActivity;
-import com.openvehicles.OVMS.ui.settings.StoredCommandFragment;
-
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+
+import com.openvehicles.OVMS.R;
+import com.openvehicles.OVMS.api.CommandActivity;
+import com.openvehicles.OVMS.utils.AppPrefes;
+import com.openvehicles.OVMS.ui.settings.StoredCommandFragment;
 
 /**
  * This Activity receives the CREATE_SHORTCUT intent, it allows the user to create

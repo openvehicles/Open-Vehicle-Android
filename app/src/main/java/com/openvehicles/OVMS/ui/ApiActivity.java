@@ -6,21 +6,19 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-
-import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
-import com.openvehicles.OVMS.api.ApiService.ApiBinder;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
-public class ApiActivity extends AppCompatActivity
-	implements ApiObserver {
+public class ApiActivity extends AppCompatActivity implements ApiObserver {
 	private static final String TAG = "ApiActivity";
 
 	protected ApiService mApiService;
@@ -49,13 +47,13 @@ public class ApiActivity extends AppCompatActivity
 		if (mApiService != null) {
 			mApiService.onActivityStart();
 		}
-		ApiObservable.get().addObserver(this);
+		ApiObservable.INSTANCE.addObserver(this);
 	}
 
 	@Override
 	protected void onStop() {
 		Log.d(TAG, "onStop");
-		ApiObservable.get().deleteObserver(this);
+		ApiObservable.INSTANCE.deleteObserver(this);
 		if (mApiService != null) {
 			mApiService.onActivityStop();
 		}
@@ -79,9 +77,9 @@ public class ApiActivity extends AppCompatActivity
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
 			Log.d(TAG, "service connected");
-            ApiBinder binder = (ApiBinder) service;
+            ApiService.ApiBinder binder = (ApiService.ApiBinder) service;
             mApiService = binder.getService();
-            ApiObservable.get().notifyOnBind(mApiService);
+            ApiObservable.INSTANCE.notifyOnBind(mApiService);
         }
 
         @Override
@@ -92,17 +90,17 @@ public class ApiActivity extends AppCompatActivity
     };
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 		// Override as needed
 	}
 
 	@Override
-	public void onServiceAvailable(ApiService pService) {
+	public void onServiceAvailable(ApiService service) {
 		// Override as needed
 	}
 
 	@Override
-	public void onServiceLoggedIn(ApiService pService, boolean pIsLoggedIn) {
+	public void onServiceLoggedIn(ApiService service, boolean isLoggedIn) {
 		// Override as needed
 	}
 
@@ -126,7 +124,7 @@ public class ApiActivity extends AppCompatActivity
 	}
 
 	public boolean changeCar(String pVehicleId) {
-		CarData carData = CarsStorage.get().getCarById(pVehicleId);
+		CarData carData = CarsStorage.INSTANCE.getCarById(pVehicleId);
 		if (carData != null) {
 			return changeCar(carData);
 		}
@@ -139,10 +137,10 @@ public class ApiActivity extends AppCompatActivity
 		Log.i(TAG, "changeCar: switching to vehicle ID " + pCarData.sel_vehicleid);
 
 		// select car:
-		CarsStorage.get().setSelectedCarId(pCarData.sel_vehicleid);
-		prefs.SaveData("sel_vehicle_label", pCarData.sel_vehicle_label);
-		prefs.SaveData("autotrack", "on");
-		prefs.SaveData("Id", database.getConnectionFilter(pCarData.sel_vehicle_label));
+		CarsStorage.INSTANCE.setSelectedCarId(pCarData.sel_vehicleid);
+		prefs.saveData("sel_vehicle_label", pCarData.sel_vehicle_label);
+		prefs.saveData("autotrack", "on");
+		prefs.saveData("Id", database.getConnectionFilter(pCarData.sel_vehicle_label));
 
 		// inform API service:
 		if (mApiService == null) {

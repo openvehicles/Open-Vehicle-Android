@@ -1,10 +1,8 @@
 package com.openvehicles.OVMS.ui.settings;
 
-import androidx.appcompat.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +10,9 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
@@ -41,7 +42,7 @@ public class ControlFragment extends BaseFragment implements OnClickListener,
 		// get data of car to edit:
 		mEditPosition = getArguments().getInt("position", -1);
 		if (mEditPosition >= 0) {
-			mCarData = CarsStorage.get().getStoredCars().get(mEditPosition);
+			mCarData = CarsStorage.INSTANCE.getStoredCars().get(mEditPosition);
 		}
 
 		connectionList = new ConnectionList(getActivity(), this, false);

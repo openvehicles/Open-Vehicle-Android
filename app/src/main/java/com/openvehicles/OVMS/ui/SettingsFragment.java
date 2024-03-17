@@ -1,11 +1,12 @@
 package com.openvehicles.OVMS.ui;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -17,10 +18,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.entities.CarData;
@@ -31,13 +28,15 @@ import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment;
 import com.openvehicles.OVMS.ui.utils.Ui;
 import com.openvehicles.OVMS.utils.CarsStorage;
 
+import java.util.ArrayList;
+
 public class SettingsFragment extends BaseFragment implements
 		OnItemClickListener {
 	private ListView mListView;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
+							 Bundle savedInstanceState) {
 		mListView = new ListView(container.getContext());
 		return mListView;
 	}
@@ -47,8 +46,7 @@ public class SettingsFragment extends BaseFragment implements
 		super.onActivityCreated(savedInstanceState);
 		mListView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 		mListView.setOnItemClickListener(this);
-		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage
-				.get().getStoredCars()));
+		mListView.setAdapter(new SettingsAdapter(getActivity(), CarsStorage.INSTANCE.getStoredCars()));
 		setHasOptionsMenu(true);
 	}
 
@@ -71,10 +69,10 @@ public class SettingsFragment extends BaseFragment implements
 	}
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 		int count = mListView.getCount();
 		for (int i = 0; i < count; i++) {
-			if (pCarData == mListView.getItemAtPosition(i)) {
+			if (carData == mListView.getItemAtPosition(i)) {
 				mListView.setItemChecked(i, true);
 				break;
 			}
@@ -83,14 +81,15 @@ public class SettingsFragment extends BaseFragment implements
 	}
 
 	@Override
-	public void onServiceAvailable(ApiService pService) {
-		if (pService.isLoggedIn())
-			update(pService.getCarData());
+	public void onServiceAvailable(ApiService service) {
+		if (service.isLoggedIn()) {
+			update(service.getCarData());
+		}
 	}
 
 	@Override
 	public void onItemClick(AdapterView<?> parent, View view, int position,
-			long id) {
+							long id) {
 		switch (view.getId()) {
 			case R.id.btn_edit:
 				edit(position);

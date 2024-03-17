@@ -1,8 +1,6 @@
 package com.openvehicles.OVMS.ui;
 
 import android.app.Activity;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,14 +8,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
 import com.openvehicles.OVMS.api.ApiObservable;
 import com.openvehicles.OVMS.api.ApiObserver;
 import com.openvehicles.OVMS.api.ApiService;
 import com.openvehicles.OVMS.api.OnResultCommandListener;
 import com.openvehicles.OVMS.entities.CarData;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.ui.utils.Database;
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay;
 import com.openvehicles.OVMS.utils.CarsStorage;
@@ -100,7 +99,7 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		if (mProgressOverlay != null && mProgressShowOnStart)
 			mProgressOverlay.show();
 
-		ApiObservable.get().addObserver(this);
+		ApiObservable.INSTANCE.addObserver(this);
 		ApiService service = getService();
 		if (service != null) {
 			onServiceAvailable(service);
@@ -116,25 +115,25 @@ public class BaseFragment extends Fragment implements ApiObserver {
 
 		cancelCommand();
 
-		ApiObservable.get().deleteObserver(this);
+		ApiObservable.INSTANCE.deleteObserver(this);
 
 		if (mProgressOverlay != null)
 			mProgressOverlay.hide();
 	}
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 		// Override as needed
 	}
 
 	@Override
-	public void onServiceAvailable(ApiService pService) {
+	public void onServiceAvailable(ApiService service) {
 		// Override as needed, default:
-		update(pService.getCarData());
+		update(service.getCarData());
 	}
 
 	@Override
-	public void onServiceLoggedIn(ApiService pService, boolean pIsLoggedIn) {
+	public void onServiceLoggedIn(ApiService service, boolean isLoggedIn) {
 		// Override as needed
 	}
 
@@ -206,10 +205,10 @@ public class BaseFragment extends Fragment implements ApiObserver {
 		cancelCommand();
 
 		// select car:
-		CarsStorage.get().setSelectedCarId(pCarData.sel_vehicleid);
-		prefs.SaveData("sel_vehicle_label", pCarData.sel_vehicle_label);
-		prefs.SaveData("autotrack", "on");
-		prefs.SaveData("Id", database.getConnectionFilter(pCarData.sel_vehicle_label));
+		CarsStorage.INSTANCE.setSelectedCarId(pCarData.sel_vehicleid);
+		prefs.saveData("sel_vehicle_label", pCarData.sel_vehicle_label);
+		prefs.saveData("autotrack", "on");
+		prefs.saveData("Id", database.getConnectionFilter(pCarData.sel_vehicle_label));
 
 		// inform API service:
 		ApiService service = getService();

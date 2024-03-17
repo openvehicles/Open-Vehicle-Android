@@ -38,7 +38,7 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.Dot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PatternItem;
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.entities.CarData;
 import com.openvehicles.OVMS.ui.GetMapDetails.GetMapDetailsListener;
@@ -159,7 +159,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				map.moveCamera(CameraUpdateFactory.newLatLng(carPosition));
 				Log.i(TAG, "getMap/onMyLocationButtonClick: enabling autotrack");
 				autotrack = true;
-				appPrefes.SaveData("autotrack", "on");
+				appPrefes.saveData("autotrack", "on");
 				if (autoTrackMenuItem != null)
 					autoTrackMenuItem.setChecked(autotrack);
 				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
@@ -179,7 +179,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				if (cameraPosition.zoom != 0 && cameraPosition.zoom != mapZoomLevel) {
 					userInteraction = true;
 					mapZoomLevel = cameraPosition.zoom;
-					appPrefes.SaveData("mapZoomLevel", "" + mapZoomLevel);
+					appPrefes.saveData("mapZoomLevel", "" + mapZoomLevel);
 					Log.i(TAG, "getMap/onCameraChange: new mapZoomLevel=" + cameraPosition.zoom);
 				}
 				// disable autotrack?
@@ -191,7 +191,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 						if (moved > 300 * Math.pow(2, 15 - mapZoomLevel)) {
 							Log.i(TAG, "getMap/onCameraChange: moved " + moved + "m, disabling autotrack");
 							autotrack = false;
-							appPrefes.SaveData("autotrack", "off");
+							appPrefes.saveData("autotrack", "off");
 							if (autoTrackMenuItem != null)
 								autoTrackMenuItem.setChecked(autotrack);
 							if (map.isMyLocationEnabled())
@@ -301,7 +301,7 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 		boolean newState = !item.isChecked();
 
 		if (menuId == R.id.mi_map_autotrack) {
-			appPrefes.SaveData("autotrack", newState ? "on" : "off");
+			appPrefes.saveData("autotrack", newState ? "on" : "off");
 			item.setChecked(newState);
 			autotrack = newState;
 			if (autotrack)
@@ -311,11 +311,11 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 				map.getUiSettings().setMyLocationButtonEnabled(!autotrack);
 			}
 		} else if (menuId == R.id.mi_map_filter_connections) {
-			appPrefes.SaveData("filter", newState ? "on" : "off");
+			appPrefes.saveData("filter", newState ? "on" : "off");
 			item.setChecked(newState);
 			updateMapDetails(false);
 		} else if (menuId == R.id.mi_map_filter_range) {
-			appPrefes.SaveData("inrange", newState ? "on" : "off");
+			appPrefes.saveData("inrange", newState ? "on" : "off");
 			item.setChecked(newState);
 			updateMapDetails(false);
 		} else if (menuId == R.id.mi_map_settings) {
@@ -484,8 +484,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 
 	@Override
-	public void update(CarData pCarData) {
-		mCarData = pCarData;
+	public void update(CarData carData) {
+		mCarData = carData;
 		update();
 	}
 
@@ -557,8 +557,8 @@ public class FragMap extends BaseFragment implements OnInfoWindowClickListener,
 
 		// start chargepoint data update:
 
-		appPrefes.SaveData("lat_main", "" + mCarData.car_latitude);
-		appPrefes.SaveData("lng_main", "" + mCarData.car_longitude);
+		appPrefes.saveData("lat_main", "" + mCarData.car_latitude);
+		appPrefes.saveData("lng_main", "" + mCarData.car_longitude);
 
 		MainActivity.updateLocation.updatelocation();
 

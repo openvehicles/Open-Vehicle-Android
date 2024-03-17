@@ -16,7 +16,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.openvehicles.OVMS.luttu.AppPrefes;
+import com.openvehicles.OVMS.utils.AppPrefes;
 import com.openvehicles.OVMS.R;
 import com.openvehicles.OVMS.utils.ConnectionList;
 
@@ -94,7 +94,7 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 		ocmEnableCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				appPrefes.SaveData("option_ocm_enabled", isChecked ? "1" : "0");
+				appPrefes.saveData("option_ocm_enabled", isChecked ? "1" : "0");
 				if (!isChecked) {
 					FragMap.updateMap.clearCache();
 				}
@@ -105,7 +105,7 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				clusterSizeSeekbar.setEnabled(isChecked);
-				appPrefes.SaveData("check", "" + isChecked);
+				appPrefes.saveData("check", "" + isChecked);
 				FragMap.updateMap.updateClustering(clusterSizeSeekbar.getProgress(), isChecked);
 			}
 		});
@@ -119,7 +119,7 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 			public void onStopTrackingTouch(SeekBar seekBar) {
 				int progress = seekBar.getProgress();
 				boolean enabled = clusterCheckbox.isChecked();
-				appPrefes.SaveData("progress", "" + progress);
+				appPrefes.saveData("progress", "" + progress);
 				FragMap.updateMap.updateClustering(progress, enabled);
 			}
 		});
@@ -129,7 +129,7 @@ public class FragMapSettings extends Fragment implements ConnectionList.Connecti
 			public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 				String selected = adapterView.getItemAtPosition(i).toString();
 				if (!appPrefes.getData("maxresults").equals(selected)) {
-					appPrefes.SaveData("maxresults", "" + selected);
+					appPrefes.saveData("maxresults", "" + selected);
 					FragMap.updateMap.clearCache();
 				}
 			}

@@ -2,11 +2,12 @@ package com.openvehicles.OVMS.ui.settings;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import androidx.fragment.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentActivity;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.Legend;
@@ -15,7 +16,6 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
-
 import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
@@ -173,13 +173,13 @@ public class CellularStatsFragment extends BaseFragment implements OnResultComma
 
 
 	@Override
-	public void onServiceAvailable(ApiService pService) {
-		mService = pService;
+	public void onServiceAvailable(ApiService service) {
+		mService = service;
 	}
 
 
 	@Override
-	public void update(CarData pCarData) {
+	public void update(CarData carData) {
 		// called after login / if new data is available
 		requestData();
 	}
