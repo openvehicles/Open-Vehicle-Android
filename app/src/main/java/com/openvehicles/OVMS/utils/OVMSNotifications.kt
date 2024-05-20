@@ -18,7 +18,7 @@ class OVMSNotifications(
         // load:
         Log.d(TAG, "Loading saved notifications list from database")
         db = Database(context)
-        val cursor = db.notifications
+        val cursor = db.getNotifications()
         var data: NotificationData?
         while (db.getNextNotification(cursor).also { data = it } != null) {
             notifications.add(data!!)

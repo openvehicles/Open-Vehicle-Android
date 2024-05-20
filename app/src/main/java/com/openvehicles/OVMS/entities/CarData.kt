@@ -5,7 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import com.openvehicles.OVMS.BaseApp
 import com.openvehicles.OVMS.R
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 import java.io.Serializable
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -370,7 +370,7 @@ class CarData : Serializable {
     private var context: Context? = null
 
     @Transient
-    private var appPrefes: AppPrefes? = null
+    private var appPrefs: AppPrefs? = null
 
     @Transient
     private var decimalFormat1: DecimalFormat? = null
@@ -389,8 +389,8 @@ class CarData : Serializable {
         if (context == null) {
             context = BaseApp.context
         }
-        if (appPrefes == null) {
-            appPrefes = AppPrefes(context!!, "ovms")
+        if (appPrefs == null) {
+            appPrefs = AppPrefs(context!!, "ovms")
         }
         if (decimalFormat1 == null) {
             decimalFormat1 = DecimalFormat("0.#")
@@ -401,8 +401,8 @@ class CarData : Serializable {
      * Calculate derived variables including prefs dependencies
      */
     fun recalc() {
-        val showTpmsBar = appPrefes!!.getData("showtpmsbar") == "on"
-        val showFahrenheit = appPrefes!!.getData("showfahrenheit") == "on"
+        val showTpmsBar = appPrefs!!.getData("showtpmsbar") == "on"
+        val showFahrenheit = appPrefs!!.getData("showfahrenheit") == "on"
         if (showFahrenheit) {
             car_temp_pem = String.format("%.1f\u00B0F", car_temp_pem_raw * (9.0 / 5.0) + 32.0)
             car_temp_motor = String.format("%.1f\u00B0F", car_temp_motor_raw * (9.0 / 5.0) + 32.0)

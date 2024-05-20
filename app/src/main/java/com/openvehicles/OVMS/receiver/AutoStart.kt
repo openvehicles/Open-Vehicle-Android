@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 import com.openvehicles.OVMS.api.ApiService
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 
 /**
  * Created by balzer on 04.12.16.
@@ -13,8 +13,8 @@ import com.openvehicles.OVMS.utils.AppPrefes
 class AutoStart : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
-        val appPrefes = AppPrefes(context, "ovms")
-        val serviceEnabled = appPrefes.getData("option_service_enabled", "0") == "1"
+        val appPrefs = AppPrefs(context, "ovms")
+        val serviceEnabled = appPrefs.getData("option_service_enabled", "0") == "1"
         if (serviceEnabled) {
             Log.i(TAG, "Starting ApiService")
             try {

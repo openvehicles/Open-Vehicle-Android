@@ -8,7 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.openvehicles.OVMS.api.ApiService
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 
 /**
  * ApiWidget: use this as the base class for an application widget
@@ -33,10 +33,10 @@ open class ApiWidget<T>(
         Log.d(TAG, "onEnabled")
         super.onEnabled(context)
 
-        val appPrefes = AppPrefes(context, "ovms")
-        if (appPrefes.getData("option_service_enabled", "0") == "0") {
+        val appPrefs = AppPrefs(context, "ovms")
+        if (appPrefs.getData("option_service_enabled", "0") == "0") {
             Log.i(TAG, "Enabling & starting ApiService")
-            appPrefes.saveData("option_service_enabled", "1")
+            appPrefs.saveData("option_service_enabled", "1")
             try {
                 context.startService(Intent(context, ApiService::class.java))
                 context.sendBroadcast(Intent(ApiService.ACTION_ENABLE))
@@ -52,8 +52,8 @@ open class ApiWidget<T>(
         Log.d(TAG, "onDisabled")
         if (serviceEnabledByUs) {
             Log.i(TAG, "Disabling & stopping ApiService")
-            val appPrefes = AppPrefes(context, "ovms")
-            appPrefes.saveData("option_service_enabled", "0")
+            val appPrefs = AppPrefs(context, "ovms")
+            appPrefs.saveData("option_service_enabled", "0")
             try {
                 context.sendBroadcast(Intent(ApiService.ACTION_DISABLE))
                 context.stopService(Intent(context, ApiService::class.java))

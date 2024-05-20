@@ -106,17 +106,19 @@ object CarsStorage {
         }
     }
 
-    fun getCarById(pCarId: String?): CarData? {
+    fun getCarById(carId: String?): CarData? {
         if (storedCars == null) {
             getStoredCars()
         }
         for (car in storedCars!!) {
-            if (car.sel_vehicleid == pCarId) return car
+            if (car.sel_vehicleid == carId) {
+                return car
+            }
         }
         return null
     }
 
-    fun initDemoCar() {
+    private fun initDemoCar() {
         Log.v(TAG, "Initializing demo car.")
         val demoCar = CarData()
         demoCar.sel_vehicleid = "DEMO"
@@ -133,7 +135,9 @@ object CarsStorage {
     }
 
     fun getLastSelectedCarId(): String? {
-        if (!TextUtils.isEmpty(lastSelectedCarId)) return lastSelectedCarId
+        if (!TextUtils.isEmpty(lastSelectedCarId)) {
+            return lastSelectedCarId
+        }
         lastSelectedCarId = getPrefs()!!.getString("LASTSELECTEDCARID", null)
         return lastSelectedCarId
     }

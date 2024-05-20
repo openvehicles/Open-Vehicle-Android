@@ -19,7 +19,7 @@ import android.widget.ScrollView
 import android.widget.TextView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CmdSeries
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.ApiActivity
 import com.openvehicles.OVMS.ui.utils.Database
 import com.openvehicles.OVMS.utils.CarsStorage
@@ -53,7 +53,7 @@ import java.util.Queue
  */
 class CommandActivity : ApiActivity(), CmdSeries.Listener {
 
-    private var appPrefes: AppPrefes? = null
+    private var appPrefs: AppPrefs? = null
     private var database: Database? = null
 
     private val commandQueue: Queue<Intent> = LinkedList()
@@ -79,7 +79,7 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
             return
         }
         Log.d(TAG, "onCreate " + Sys.toString(intent.extras))
-        appPrefes = AppPrefes(this, "ovms")
+        appPrefs = AppPrefs(this, "ovms")
         database = Database(applicationContext)
 
         // Create UI:
@@ -88,11 +88,11 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
         progressBar!!.isIndeterminate = true
         textViewMessage = TextView(this)
         textViewMessage!!.setPadding(20, 10, 20, 20)
-        if (appPrefes!!.getData("notifications_font_monospace") == "on") {
+        if (appPrefs!!.getData("notifications_font_monospace") == "on") {
             textViewMessage!!.setTypeface(Typeface.MONOSPACE)
         }
         try {
-            val fontSize = appPrefes!!.getData("notifications_font_size").toFloat()
+            val fontSize = appPrefs!!.getData("notifications_font_size").toFloat()
             textViewMessage!!.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize)
         } catch (ignore: Exception) {
             // keep default font size
@@ -139,7 +139,7 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
         }
     }
 
-    override fun onServiceAvailable(service: ApiService?) {
+    override fun onServiceAvailable(service: ApiService) {
         Log.d(TAG, "onServiceAvailable $service")
         processCommand()
     }
@@ -181,7 +181,7 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
             val command = intent.getStringExtra("command")
 
             // Get vehicle config:
-            val carApiKey = appPrefes!!.getData("APIKey")
+            val carApiKey = appPrefs!!.getData("APIKey")
             val carData = if (vehicleId != null && !vehicleId.isEmpty()) {
                 CarsStorage.getCarById(vehicleId)
             } else {
@@ -291,7 +291,7 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
             )
 
             // Start command:
-            cmdSeries = CmdSeries(this, mApiService, this)
+            cmdSeries = CmdSeries(this, service, this)
             cmdSeries!!.add(title, msgCommand!!)
             cmdSeries!!.start()
             val command = if (msgCommandCode == 7) {
