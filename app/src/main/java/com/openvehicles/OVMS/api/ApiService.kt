@@ -29,7 +29,7 @@ import com.openvehicles.OVMS.api.ApiObservable.deleteObserver
 import com.openvehicles.OVMS.api.ApiObservable.notifyLoggedIn
 import com.openvehicles.OVMS.api.ApiObservable.notifyUpdate
 import com.openvehicles.OVMS.entities.CarData
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Database
 import com.openvehicles.OVMS.utils.CarsStorage
@@ -45,7 +45,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
     private var carData: CarData? = null
     private var apiTask: ApiTask? = null
     private var onResultCommandListener: OnResultCommandListener? = null
-    private var appPrefes: AppPrefes? = null
+    private var appPrefs: AppPrefs? = null
     private var database: Database? = null
 
     private var isEnabled = false // Service in "foreground" mode
@@ -109,7 +109,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
             Log.d(TAG, "CommandReceiver: received $intent")
 
             // Check API configuration:
-            if (appPrefes!!.getData("option_commands_enabled", "0") == "0") {
+            if (appPrefs!!.getData("option_commands_enabled", "0") == "0") {
                 Log.e(TAG, "CommandReceiver: disabled")
                 return
             } else if (!isLoggedIn()) {
@@ -123,7 +123,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
             val vehiclepass = intent.getStringExtra("sel_server_password")
 
             // Get vehicle config:
-            val carApiKey = appPrefes!!.getData("APIKey")
+            val carApiKey = appPrefs!!.getData("APIKey")
             val carData = if (!vehicleid.isNullOrEmpty()) {
                 CarsStorage.getCarById(vehicleid)
             } else {
@@ -170,12 +170,12 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         isStopped = false
         connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         alarmManager = getSystemService(ALARM_SERVICE) as AlarmManager
-        appPrefes = AppPrefes(this, "ovms")
+        appPrefs = AppPrefs(this, "ovms")
         database = Database(applicationContext)
         createNotificationChannel()
 
         // check if the service shall run in foreground:
-        val foreground = appPrefes!!.getData("option_service_enabled", "0") == "1"
+        val foreground = appPrefs!!.getData("option_service_enabled", "0") == "1"
         if (foreground) {
             enableService()
         }
@@ -493,7 +493,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         sendApiEvent("UpdateStatus")
 
         // Send system broadcast for Automagic / Tasker / ...
-        if (appPrefes!!.getData("option_broadcast_enabled", "0") == "1") {
+        if (appPrefs!!.getData("option_broadcast_enabled", "0") == "1") {
             Log.d(TAG, "update: sending system broadcast $ACTION_UPDATE")
             val intent = Intent(ACTION_UPDATE)
             intent.putExtra("sel_server", this.carData!!.sel_server)
@@ -515,7 +515,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
     }
 
     // ApiObserver interface:
-    override fun onServiceAvailable(service: ApiService?) {
+    override fun onServiceAvailable(service: ApiService) {
         // nop
     }
 
@@ -565,7 +565,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         }
 
         // Check broadcast API configuration:
-        if (appPrefes!!.getData("option_commands_enabled", "0") == "1") {
+        if (appPrefs!!.getData("option_commands_enabled", "0") == "1") {
             Log.v(
                 TAG,
                 "onResultCommand: sending broadcast $ACTION_COMMANDRESULT: $cmdResponse"

@@ -6,7 +6,7 @@ interface ApiObserver {
 
     fun update(carData: CarData?)
 
-    fun onServiceAvailable(service: ApiService?)
+    fun onServiceAvailable(service: ApiService)
 
     fun onServiceLoggedIn(service: ApiService?, isLoggedIn: Boolean)
 

@@ -13,7 +13,7 @@ import android.graphics.Typeface
 import android.widget.RemoteViews
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.utils.CarsStorage
@@ -34,7 +34,7 @@ import java.text.SimpleDateFormat
  */
 class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
 
-    private var appPrefes: AppPrefes? = null
+    private var appPrefs: AppPrefs? = null
 
     /**
      * updateWidget: Update specific widget instance
@@ -48,7 +48,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         appWidgetManager: AppWidgetManager?,
         appWidgetId: Int
     ) {
-        appPrefes = AppPrefes(context, "ovms")
+        appPrefs = AppPrefs(context, "ovms")
 
         // Construct the RemoteViews object
         val views = RemoteViews(context.packageName, R.layout.info_widget)
@@ -230,7 +230,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         paint.textSize = 12 * dps
         paint.color = textColorAux
         paint.textAlign = Paint.Align.LEFT
-        if (appPrefes!!.getData("showfahrenheit") == "on") {
+        if (appPrefs!!.getData("showfahrenheit") == "on") {
             val fahrenheit = carData.car_temp_battery_raw * (9.0 / 5.0) + 32.0
             Ui.drawUnitText(
                 canvas,

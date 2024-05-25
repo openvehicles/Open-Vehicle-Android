@@ -12,7 +12,7 @@ import com.google.firebase.messaging.RemoteMessage
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.api.ApiService.Companion.sendKustomBroadcast
-import com.openvehicles.OVMS.utils.AppPrefes
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.utils.CarsStorage
@@ -25,7 +25,7 @@ import java.util.concurrent.locks.ReentrantLock
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
-    var appPrefes: AppPrefes? = null
+    var appPrefs: AppPrefs? = null
 
     // lock to prevent concurrent uses of OVMSNotifications:
     // 	(necessary for dupe check)
@@ -36,7 +36,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     override fun onCreate() {
         super.onCreate()
-        appPrefes = AppPrefes(this, "ovms")
+        appPrefs = AppPrefs(this, "ovms")
 
         // create timestamp parser:
         serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -92,7 +92,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         var isUiNotified = false
         if (isNew) {
             // Send system broadcast for Automagic / Tasker / ...
-            if (appPrefes!!.getData("option_broadcast_enabled", "0") == "1") {
+            if (appPrefs!!.getData("option_broadcast_enabled", "0") == "1") {
                 Log.d(TAG, "onMessageReceived: sending broadcast")
                 val timeFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                 val intent = Intent(ApiService.ACTION_NOTIFICATION)
@@ -110,8 +110,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         // prepare user notification filter check:
-        val filterInfo = appPrefes!!.getData("notifications_filter_info") == "on"
-        val filterAlert = appPrefes!!.getData("notifications_filter_alert") == "on"
+        val filterInfo = appPrefs!!.getData("notifications_filter_info") == "on"
+        val filterAlert = appPrefs!!.getData("notifications_filter_alert") == "on"
         val selectedCarId = CarsStorage.getLastSelectedCarId()
         val isSelectedCar = car.sel_vehicleid == selectedCarId
         if (!isNew) {

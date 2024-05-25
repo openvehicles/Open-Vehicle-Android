@@ -29,16 +29,16 @@ class ConnectionList(
     var alCheck = ArrayList<String>()
     var alId = ArrayList<String>()
     var database: Database
-    var appPrefes: AppPrefes
+    var appPrefs: AppPrefs
     private var connectionListLoader: ConnectionListLoader? = null
 
     init {
-        appPrefes = AppPrefes(context, "ovms")
+        appPrefs = AppPrefs(context, "ovms")
         this.context = context
         this.listener = listener
         main = Main(context)
         database = Database(context)
-        if (database._ConnectionTypes_Main.count == 0 && mayFetch) {
+        if (database.getConnectionTypesMain().count == 0 && mayFetch) {
             connectionListLoader = ConnectionListLoader()
             connectionListLoader!!.execute()
         } else {
@@ -67,7 +67,7 @@ class ConnectionList(
         listView.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, arg3 ->
             var title: String? = ""
             var tid = ""
-            val selVehicleLabel = appPrefes.getData("sel_vehicle_label")
+            val selVehicleLabel = appPrefs.getData("sel_vehicle_label")
             val len = listView.count
             val checked = listView.checkedItemPositions
             database.beginWrite()
@@ -75,7 +75,8 @@ class ConnectionList(
             for (i in 0 until len) {
                 if (checked[i]) {
                     database.updateConnectionTypesDetail(
-                        hList[i]["ID"], "true",
+                        hList[i]["ID"],
+                        "true",
                         selVehicleLabel
                     )
                     if (tid == "") {
@@ -89,7 +90,7 @@ class ConnectionList(
             }
             database.endWrite(true)
             database.close()
-            appPrefes.saveData("Id", tid)
+            appPrefs.saveData("Id", tid)
             listener.onConnectionChanged(tid, title)
         }
         dialog.show()
@@ -104,10 +105,10 @@ class ConnectionList(
         hList.clear()
         Log.d(
             "ConnectionList", "getlist: sel_vehicle_label="
-                    + appPrefes.getData("sel_vehicle_label")
+                    + appPrefs.getData("sel_vehicle_label")
         )
-        var cursor = database.get_ConnectionTypesdetails(
-            appPrefes.getData("sel_vehicle_label")
+        var cursor = database.getConnectionTypesDetails(
+            appPrefs.getData("sel_vehicle_label")
         )
         if (cursor.count != 0) {
             while (cursor.moveToNext()) {
@@ -130,7 +131,7 @@ class ConnectionList(
             }
         } else {
             cursor.close()
-            cursor = database._ConnectionTypes_Main
+            cursor = database.getConnectionTypesMain()
             while (cursor.moveToNext()) {
                 al.add(cursor.getString(cursor.getColumnIndex("title")))
                 alId.add(cursor.getString(cursor.getColumnIndex("tId")))
@@ -139,7 +140,7 @@ class ConnectionList(
             for (i in al.indices) {
                 database.addConnectionTypesDetail(
                     alId[i], al[i],
-                    "false", appPrefes.getData("sel_vehicle_label")
+                    "false", appPrefs.getData("sel_vehicle_label")
                 )
             }
             database.endWrite(true)
@@ -147,8 +148,8 @@ class ConnectionList(
             alId.clear()
             alCheck.clear()
             hList.clear()
-            val cursor1 = database.get_ConnectionTypesdetails(
-                appPrefes
+            val cursor1 = database.getConnectionTypesDetails(
+                appPrefs
                     .getData("sel_vehicle_label")
             )
             while (cursor1.moveToNext()) {
@@ -212,7 +213,7 @@ class ConnectionList(
         override fun onPostExecute(result: Void?) {
             database.beginWrite()
             for (i in al.indices) {
-                database.addConnectionTypes_Main("" + i, alId[i], al[i])
+                database.addConnectionTypesMain("" + i, alId[i], al[i])
             }
             database.endWrite(true)
             database.close()
