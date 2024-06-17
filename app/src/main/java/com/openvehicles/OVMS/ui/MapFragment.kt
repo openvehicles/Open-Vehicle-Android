@@ -66,7 +66,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
     private var mapZoomLevel = 15f
     private var carData: CarData? = null
     private var carPosition = LatLng(0.0, 0.0)
-    private var markerList: MutableList<Marker>? = null
+    private var markerList: List<Marker> = listOf()
     private val clusterSizes = doubleArrayOf(360.0, 180.0, 90.0, 45.0, 22.0)
 
     override fun onCreateView(
@@ -346,14 +346,12 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
         if (clearMap) {
             map!!.clear()
         } else {
-            markerList = map!!.markers.toMutableList()
-            for (i in markerList!!.indices) {
-                val carMarker = markerList!![i]
-                val j = carMarker.clusterGroup
-                if (j == -1) {
-                    markerList!!.removeAt(i)
+            markerList = map!!.markers.mapNotNull { carMarker ->
+                if (carMarker.clusterGroup == -1) {
+                    null
                 } else {
                     carMarker.remove()
+                    carMarker
                 }
             }
         }

@@ -61,6 +61,7 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
     private var filterAlert = false
     private var fontSize = 10f
     private var vehicleId: String? = null
+    private var lastCommandSent = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -296,8 +297,7 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
         }
     }
 
-    private var lastCommandSent = 0
-    override fun onEditorAction(textView: TextView, actionId: Int, keyEvent: KeyEvent): Boolean {
+    override fun onEditorAction(textView: TextView, actionId: Int, keyEvent: KeyEvent?): Boolean {
         var handled = false
         if (actionId == EditorInfo.IME_ACTION_SEND) {
             val userCmd = textView.getText().toString()
