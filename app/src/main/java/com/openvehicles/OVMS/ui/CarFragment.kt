@@ -111,6 +111,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         if (carData.hasCommand(26)
             || carData.car_type == "NL"
             || carData.car_type == "SE"
+            || carData.car_type == "SQ"
             || carData.car_type == "VWUP"
             || carData.car_type == "VWUP.T26") {
             // enable
@@ -757,13 +758,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // "Temp PEM" box:
         val pemtvl = findViewById(R.id.tabCarTextPEMLabel) as TextView
         val pemtv = findViewById(R.id.tabCarTextPEM) as TextView
-        // Display of cabin temperature for all vehicles that support it: VWUP VWUP.T26 NL KS KN VA MI SE
+        // Display of cabin temperature for all vehicles that support it: VWUP VWUP.T26 NL KS KN VA MI SE SQ
         if (carData.car_type == "VWUP"
             || carData.car_type == "KS"
             || carData.car_type == "KN"
             || carData.car_type.startsWith("VA")
             || carData.car_type == "MI"
             || carData.car_type == "SE"
+            || carData.car_type == "SQ"
             || carData.car_type == "NL") {
             pemtvl.setText(R.string.textCAB)
             if (carData.stale_car_temps == DataStale.NoValue) {
@@ -794,9 +796,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val motortvl = findViewById(R.id.tabCarTextMotorLabel) as TextView
         val motortv = findViewById(R.id.tabCarTextMotor) as TextView
 
-        // Renault Zoe, Smart ED, Nissan LEAF, MG ZS EV display HVBatt voltage instead of motor temp
+        // Renault Zoe, Smart ED, Smart EQ, Nissan LEAF, MG ZS EV display HVBatt voltage instead of motor temp
         if (this.carData!!.car_type == "RZ"
             || this.carData!!.car_type == "SE"
+            || this.carData!!.car_type == "SQ"
             || this.carData!!.car_type == "NL"
             || this.carData!!.car_type == "MGEV") {
             motortvl.setText(R.string.textHVBATT)
