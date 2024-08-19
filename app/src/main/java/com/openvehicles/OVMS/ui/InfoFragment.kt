@@ -533,8 +533,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
 		}*/
         val svChargeMode = dialogView.findViewById<View>(R.id.sv_twizy_charge_mode) as SwitcherView?
         if (svChargeMode != null) {
-            if (carData!!.car_charge_mode_i_raw == 3) svChargeMode.selected =
-                1 // hack to map charge mode keys 3 ("range") and 0 to this element
+            if (carData!!.car_charge_mode_i_raw == 0)
+                svChargeMode.selected = 1 // hack to map charge mode keys 0 ("standard") and 3 ("range") to this element
             else svChargeMode.selected = 0
         }
         AlertDialog.Builder(requireActivity())
