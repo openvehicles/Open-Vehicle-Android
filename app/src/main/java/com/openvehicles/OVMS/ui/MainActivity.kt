@@ -236,7 +236,7 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
                     NotificationsFragment::class.java
                 ),
                 TabInfo(R.string.Battery, R.drawable.ic_action_battery, InfoFragment::class.java),
-                TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment::class.java),
+                TabInfo(R.string.Car, R.drawable.ic_action_car, CarFragment::class.java), // TODO: R.string.Bike when the "car" is a bike
                 TabInfo(R.string.Location, R.drawable.ic_action_location_map, MapFragment::class.java),
                 TabInfo(R.string.Settings, R.drawable.ic_action_settings, SettingsFragment::class.java)
             )
