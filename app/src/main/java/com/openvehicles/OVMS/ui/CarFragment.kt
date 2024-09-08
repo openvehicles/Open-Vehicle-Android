@@ -609,10 +609,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             iv.setImageResource(R.drawable.ol_car_kangoo)
         } else if (carData.sel_vehicle_image.startsWith("car_kianiro_")) {
             iv.setImageResource(R.drawable.ol_car_kianiro_grey)
-        } else if (carData.sel_vehicle_image.startsWith("car_energica_experia")) {
-            iv.setImageResource(R.drawable.ol_car_energica_experia)
-        } else if (carData.sel_vehicle_image.startsWith("car_energica_")) {
-            iv.setImageResource(R.drawable.ol_car_energica_experia) // TODO: Ribelle top view
+        } else if (carData.sel_vehicle_image.startsWith("car_nrjkexperia")) {
+            iv.setImageResource(R.drawable.ol_car_nrjkexperia)
+        } else if (carData.sel_vehicle_image.startsWith("car_nrjk")) {
+            iv.setImageResource(R.drawable.ol_car_nrjkexperia) // TODO: Ribelle top view
         } else {
             iv.setImageResource(getDrawableIdentifier(activity, "ol_" + carData.sel_vehicle_image))
         }
@@ -1222,7 +1222,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     )
                     else -> iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red)
                 }
-            } else if (carData.sel_vehicle_image.startsWith("car_energica_")) {
+            } else if (carData.sel_vehicle_image.startsWith("car_nrjk")) {
                 // TODO
             } else {
                 // Tesla Roadster:
