@@ -387,7 +387,12 @@ class CarEditorFragment : BaseFragment() {
             "car_kangoo_red",
             "car_kangoo_blue",
             "car_kangoo_brown",
-            "car_fiat500e_black"
+            "car_fiat500e_black",
+            "car_nrjkss9_orange",
+            "car_nrjkribelle_red",
+            "car_nrjkexperia_black",
+            "car_nrjkexperia_graybags",
+            "car_nrjkego_black"
         )
     }
 

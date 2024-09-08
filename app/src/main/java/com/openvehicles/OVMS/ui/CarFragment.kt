@@ -95,6 +95,19 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 // change "Homelink" image:
                 tabCarImageHomeLink.setImageResource(R.drawable.homelinklogo_zoe)
             }
+            "EN", "NRJK" -> { // Also previous "NRJK" code
+                // UI change for Energica:
+
+                // TODO: No TPMS, only two wheels, etc.
+                findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
+                findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarTPMSBoxes).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarLeftDoorOpen).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarRightDoorOpen).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarTrunkOpen).visibility = View.INVISIBLE
+            }
             else -> {
                 tabCarImageHomeLink.setImageResource(R.drawable.ic_home_link)
             }
@@ -596,6 +609,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             iv.setImageResource(R.drawable.ol_car_kangoo)
         } else if (carData.sel_vehicle_image.startsWith("car_kianiro_")) {
             iv.setImageResource(R.drawable.ol_car_kianiro_grey)
+        } else if (carData.sel_vehicle_image.startsWith("car_nrjkexperia")) {
+            iv.setImageResource(R.drawable.ol_car_nrjkexperia)
+        } else if (carData.sel_vehicle_image.startsWith("car_nrjk")) {
+            iv.setImageResource(R.drawable.ol_car_nrjkexperia) // TODO: Ribelle top view
         } else {
             iv.setImageResource(getDrawableIdentifier(activity, "ol_" + carData.sel_vehicle_image))
         }
@@ -1205,6 +1222,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     )
                     else -> iv.setImageResource(R.drawable.ol_car_voltampera_chargeport_red)
                 }
+            } else if (carData.sel_vehicle_image.startsWith("car_nrjk")) {
+                // TODO
             } else {
                 // Tesla Roadster:
                 if (carData.car_charge_substate_i_raw == 0x07) {
