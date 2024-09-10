@@ -377,6 +377,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             "VWUP" -> {
                 chargerSettingVWUP()
             }
+            "SQ" -> {
+                // nothing to do
+            }
             else -> {
                 chargerSettingDefault()
             }
