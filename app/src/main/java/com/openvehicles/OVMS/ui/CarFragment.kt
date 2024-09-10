@@ -95,6 +95,15 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 // change "Homelink" image:
                 tabCarImageHomeLink.setImageResource(R.drawable.homelinklogo_zoe)
             }
+            "SQ" -> {
+                // UI changes for Smart EQ:
+                findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
+                findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
+                findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
+                // change "Homelink" image:
+                tabCarImageHomeLink.setImageResource(R.drawable.ic_home_link)
+            }
             "EN", "NRJK" -> { // Also previous "NRJK" code
                 // UI change for Energica:
 
@@ -1193,9 +1202,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     R.drawable.ol_car_vwup_chargeport_orange
                 )
             } else if (carData.sel_vehicle_image.startsWith("car_zoe_") ||
-                carData.sel_vehicle_image.startsWith("car_kangoo_")
+                carData.sel_vehicle_image.startsWith("car_kangoo_") ||
+                carData.sel_vehicle_image.startsWith("car_smart_")
             ) {
-                // Renault ZOE/Kangoo
+                // Renault ZOE/Kangoo/Smart EQ
                 when (carData.car_charge_state) {
                     "charging" -> iv.setImageResource(R.drawable.ol_car_zoe_chargeport_orange)
                     "stopped" -> iv.setImageResource(
