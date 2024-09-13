@@ -99,8 +99,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 // UI changes for Smart EQ:
                 findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
                 findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
-                findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
-                findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
+                //findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
+                //findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
                 // change "Homelink" image:
                 tabCarImageHomeLink.setImageResource(R.drawable.ic_home_link)
             }
@@ -431,10 +431,17 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 } else {
                     menu.setHeaderTitle(R.string.textHOMELINK)
                 }
-                menu.add(0, MI_HL_01, 0, "1")
-                menu.add(0, MI_HL_02, 0, "2")
-                menu.add(0, MI_HL_03, 0, "3")
-                menu.add(R.string.Cancel)
+                if (carData!!.car_type == "SQ") {
+                    menu.add(0, MI_HL_01, 0, "Booster")
+                    menu.add(0, MI_HL_02, 0, "2")
+                    menu.add(0, MI_HL_03, 0, "3")
+                    menu.add(R.string.Cancel)
+                } else {
+                    menu.add(0, MI_HL_01, 0, "1")
+                    menu.add(0, MI_HL_02, 0, "2")
+                    menu.add(0, MI_HL_03, 0, "3")
+                    menu.add(R.string.Cancel)
+                }
             }
             R.id.tabCarImageAC -> {
                 menu.setHeaderTitle(R.string.textAC)
@@ -1137,14 +1144,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         }
 
         // Car locked
-        if (carData.car_type == "TR") {
-            // Lock status Tesla Roadster
-            iv = findViewById(R.id.tabCarImageCarLocked) as ImageView
-            iv.setImageResource(if (carData.car_locked) R.drawable.carlock_roadster else R.drawable.carunlock_roadster)
-        } else {
-            // Lock status default
-            iv = findViewById(R.id.tabCarImageCarLocked) as ImageView
-            iv.setImageResource(if (carData.car_locked) R.drawable.carlock_clean else R.drawable.carunlock_clean)
+        when (carData.car_type) {
+            "TR" -> {
+                // Lock status Tesla Roadster
+                iv = findViewById(R.id.tabCarImageCarLocked) as ImageView
+                iv.setImageResource(if (carData.car_locked) R.drawable.carlock_roadster else R.drawable.carunlock_roadster)
+            }
+            "SQ" -> {
+                // Switch on/off Smart EQ 453
+                iv = findViewById(R.id.tabCarImageCarLocked) as ImageView
+                iv.setImageResource(if (carData.car_started) R.drawable.smart_on_l else R.drawable.smart_off_l)
+            }
+            else -> {
+                // Lock status default
+                iv = findViewById(R.id.tabCarImageCarLocked) as ImageView
+                iv.setImageResource(if (carData.car_locked) R.drawable.carlock_clean else R.drawable.carunlock_clean)
+            }
         }
 
         // Valet mode
@@ -1158,6 +1173,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 // Valet mode Smart ED 451
                 iv = findViewById(R.id.tabCarImageCarValetMode) as ImageView
                 iv.setImageResource(if (carData.car_valetmode) R.drawable.smart_on else R.drawable.smart_off)
+            }
+            "SQ" -> {
+                // Handbreak on/off Smart EQ 453
+                iv = findViewById(R.id.tabCarImageCarValetMode) as ImageView
+                iv.setImageResource(if (carData.car_handbrake_on) R.drawable.handbrake_on else R.drawable.handbrake_off)
             }
             else -> {
                 // Valet mode default
