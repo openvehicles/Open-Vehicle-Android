@@ -289,7 +289,7 @@
 			android:layout_width="232px"
 			android:layout_height="44px"
 			android:layout_x="152px"
-			android:layout_y="170px"
+			android:layout_y="160px"
 			android:fontFamily="sans-serif-condensed"
 			android:gravity="center"
 			android:singleLine="false"
@@ -304,7 +304,7 @@
 			android:layout_width="232px"
 			android:layout_height="44px"
 			android:layout_x="152px"
-			android:layout_y="374px"
+			android:layout_y="380px"
 			android:fontFamily="sans-serif-condensed"
 			android:gravity="center"
 			android:singleLine="false"
@@ -353,7 +353,7 @@
 			android:layout_width="200px"
 			android:layout_height="120px"
 			android:layout_x="166px"
-			android:layout_y="400px"
+			android:layout_y="410px"
 			android:clickable="true"/>
 
 		<View

@@ -196,6 +196,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this)
+
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
         bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
 
@@ -224,6 +225,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             ) {
             }
         })
+
     }
 
     private fun chargerConfirmStart() {
@@ -376,6 +378,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             }
             "VWUP" -> {
                 chargerSettingVWUP()
+            }
+            "SQ" -> {
+                // nothing to do
             }
             else -> {
                 chargerSettingDefault()
@@ -765,16 +770,23 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     carData.car_charge_kwhconsumed
                 )
             } else {
-                String.format(
-                    "%s ≤%s ▾%.1fkWh",
-                    carData.car_charge_mode.uppercase(Locale.getDefault()),
-                    carData.car_charge_currentlimit,
-                    carData.car_charge_kwhconsumed
-                )
+                if(carData!!.car_type == "SQ") {
+                    String.format(
+                        "SoH %.1f",
+                        carData.car_soh
+                    )
+                }else{
+                    String.format(
+                        "%s ≤%s ▾%.1fkWh",
+                        carData.car_charge_mode.uppercase(Locale.getDefault()),
+                        carData.car_charge_currentlimit,
+                        carData.car_charge_kwhconsumed
+                    )
+                }
             }
             cmtv.text = cmst
             cmtv.visibility = View.VISIBLE
-            if (this.carData!!.car_type == "RT") {
+            if ((this.carData!!.car_type == "RT") || (this.carData!!.car_type == "SQ")) {
                 // Renault Twizy: no charge control
                 findViewById(R.id.tabInfoImageCharger).visibility = View.VISIBLE
                 bar.visibility = View.INVISIBLE
