@@ -280,6 +280,9 @@
     <string name="textCABIN">CABIN</string>
     <string name="text12VBATT">12V BATT</string>
     <string name="textHVBATT">HV BATT</string>
+    <string name="textSoC">SoC</string>
+    <string name="textSoH">SoH</string>
+    <string name="textEnergy">Energy</string>
 
     <string name="textAC">CLIMATE CONTROL</string>
     <string name="mi_ac_on">A/C ON</string>

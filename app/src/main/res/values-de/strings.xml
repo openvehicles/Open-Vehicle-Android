@@ -268,6 +268,9 @@
     <string name="textMOTOR">MOTOR</string>
     <string name="textPEM">PEM</string>
     <string name="textCAB">INNEN</string>
+    <string name="textSoC">SoC</string>
+    <string name="textSoH">SoH</string>
+    <string name="textEnergy">Energie</string>
 
     <string name="textAC">KLIMASTEUERUNG</string>
     <string name="mi_ac_on">A/C AN</string>

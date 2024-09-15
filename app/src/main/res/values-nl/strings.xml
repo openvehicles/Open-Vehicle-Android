@@ -194,6 +194,8 @@
   <string name="textAMBIENT">OMGEVING</string>
   <string name="text12VBATT">12V BATT</string>
   <string name="textHVBATT">HV BATT</string>
+  <string name="textSoC">SoC</string>
+  <string name="textSoH">SoH</string>
   <string-array name="en_charger">
     <item>Standaard</item>
     <item>Berging</item>

@@ -197,15 +197,44 @@
 			android:textStyle="bold"/>
 
 		<TextView
+			android:id="@+id/tabCarTextSoCLabel"
 			style="@style/TabCarTextBox"
-			android:layout_x="430px"
+			android:layout_x="107px"
+			android:layout_y="614px"
+			android:text="@string/textSoC"/>
+
+		<TextView
+			android:id="@+id/tabCarTextSoC"
+			style="@style/TabCarTextBox"
+			android:layout_x="107px"
+			android:layout_y="648px"
+			android:text="0 %"
+			android:textStyle="bold"/>
+		<TextView
+			android:id="@+id/tabCarTextSoHLabel"
+			style="@style/TabCarTextBox"
+			android:layout_x="323px"
+			android:layout_y="614px"
+			android:text="@string/textSoH"/>
+
+		<TextView
+			android:id="@+id/tabCarTextSoH"
+			style="@style/TabCarTextBox"
+			android:layout_x="323px"
+			android:layout_y="648px"
+			android:text="0 %"
+			android:textStyle="bold"/>
+
+		<TextView
+			style="@style/TabCarTextBox"
+			android:layout_x="428px"
 			android:layout_y="614px"
 			android:text="@string/textBATTERY"/>
 
 		<TextView
 			android:id="@+id/tabCarTextBattery"
 			style="@style/TabCarTextBox"
-			android:layout_x="430px"
+			android:layout_x="428px"
 			android:layout_y="648px"
 			android:text="0°C"
 			android:textStyle="bold"/>
@@ -289,13 +318,13 @@
 			android:layout_width="232px"
 			android:layout_height="44px"
 			android:layout_x="152px"
-			android:layout_y="170px"
+			android:layout_y="150px"
 			android:fontFamily="sans-serif-condensed"
 			android:gravity="center"
 			android:singleLine="false"
 			android:text="123456.7km"
 			android:textColor="@color/colorForeground"
-			android:textSize="25px"
+			android:textSize="26px"
 			android:typeface="monospace"/>
 
 		<TextView
@@ -319,7 +348,7 @@
 			android:layout_width="232px"
 			android:layout_height="44px"
 			android:layout_x="152px"
-			android:layout_y="352px"
+			android:layout_y="345px"
 			android:fontFamily="sans-serif-condensed"
 			android:gravity="center"
 			android:singleLine="false"
@@ -342,7 +371,7 @@
 			android:singleLine="false"
 			android:text="123.4kph"
 			android:textColor="@color/colorForeground"
-			android:textSize="32px"
+			android:textSize="34px"
 			android:textStyle="bold"
 			android:typeface="monospace"/>
 
@@ -353,7 +382,7 @@
 			android:layout_width="200px"
 			android:layout_height="120px"
 			android:layout_x="166px"
-			android:layout_y="400px"
+			android:layout_y="410px"
 			android:clickable="true"/>
 
 		<View

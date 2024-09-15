@@ -772,8 +772,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             } else {
                 if(carData!!.car_type == "SQ") {
                     String.format(
-                        "SoH %.1f",
-                        carData.car_soh
+                        "▾%.1fkWh      ⚡%.1fkW",
+                        carData.car_charge_kwhconsumed,
+                        carData.car_charge_power_input_kw_raw
                     )
                 }else{
                     String.format(

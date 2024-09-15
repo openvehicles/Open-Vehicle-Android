@@ -97,10 +97,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             "SQ" -> {
                 // UI changes for Smart EQ:
+                val EQ_Boxes: ImageView = findViewById(R.id.tabCarImageCarTempsBoxes) as ImageView
+                EQ_Boxes.setImageResource(R.drawable.motortemp_letterbox_2)
+
                 findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
                 findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
                 //findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
                 //findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
+
                 // change "Homelink" image:
                 tabCarImageHomeLink.setImageResource(R.drawable.ic_home_link)
             }
@@ -434,7 +438,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
                     menu.add(0, MI_HL_02, 0, "2")
-                    menu.add(0, MI_HL_03, 0, "3")
+                    menu.add(0, MI_HL_03, 0, "Modul reset")
                     menu.add(R.string.Cancel)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
@@ -444,10 +448,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
             }
             R.id.tabCarImageAC -> {
-                menu.setHeaderTitle(R.string.textAC)
-                menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
-                menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
-                menu.add(R.string.Cancel)
+                if (carData!!.car_type == "SQ") {
+                    menu.setHeaderTitle(R.string.textAC)
+                    menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    menu.add(R.string.Cancel)
+                } else {
+                    menu.setHeaderTitle(R.string.textAC)
+                    menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
+                    menu.add(R.string.Cancel)
+                }
             }
         }
     }
@@ -467,8 +477,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_03 -> {
-                sendCommand(R.string.msg_issuing_homelink, "24,2", this)
-                true
+                if (carData!!.car_type == "SQ") {
+                    sendCommand(R.string.msg_issuing_homelink, "5", this)
+                    true
+                } else {
+                    sendCommand(R.string.msg_issuing_homelink, "24,2", this)
+                    true
+                }
             }
             MI_HL_DEFAULT -> {
                 sendCommand(R.string.msg_issuing_homelink, "24", this)
@@ -770,6 +785,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             frtvv.text = val2[1]
             rltvv.text = val2[2]
             rrtvv.text = val2[3]
+
+
             val trans1 = if (stale1 == DataStale.Stale) -0x80000000 else -0x1000000
             val trans2 = if (stale2 == DataStale.Stale) -0x80000000 else -0x1000000
             val alertcol = intArrayOf(0xFFFFFF, 0xFFAA44, 0xFF4444)
@@ -777,8 +794,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             frtv.setTextColor(trans1 or alertcol[alert[1]])
             rltv.setTextColor(trans1 or alertcol[alert[2]])
             rrtv.setTextColor(trans1 or alertcol[alert[3]])
-
-            // Display alert state "OK" icons in green:
             if (val2.contentEquals(carData.car_tpms_alert)) {
                 alertcol[0] = 0x44FF44
             }
@@ -798,13 +813,25 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || carData.car_type.startsWith("VA")
             || carData.car_type == "MI"
             || carData.car_type == "SE"
-            || carData.car_type == "SQ"
             || carData.car_type == "NL") {
             pemtvl.setText(R.string.textCAB)
             if (carData.stale_car_temps == DataStale.NoValue) {
                 pemtv.text = ""
             } else {
                 pemtv.text = carData.car_temp_cabin
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    pemtv.setTextColor(-0x7f7f80)
+                } else {
+                    pemtv.setTextColor(-0x1)
+                }
+            }
+        } else if (carData.car_type == "SQ"){
+            // switches the box from PEM to Battery energy
+            pemtvl.setText(R.string.textEnergy)
+            if (carData.stale_car_temps == DataStale.NoValue) {
+                pemtv.text = ""
+            } else {
+                pemtv.text = String.format("%.1fkWh",carData.car_charge_kwhconsumed)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     pemtv.setTextColor(-0x7f7f80)
                 } else {
@@ -857,21 +884,87 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
         }
 
+        // "SoC" box:
+        findViewById(R.id.tabCarTextSoCLabel).visibility = View.INVISIBLE
+        findViewById(R.id.tabCarTextSoC).visibility = View.INVISIBLE
+
+        if (carData.car_type == "SQ"){
+            findViewById(R.id.tabCarTextSoCLabel).visibility = View.VISIBLE
+            findViewById(R.id.tabCarTextSoC).visibility = View.VISIBLE
+
+            //val soctvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
+            val soctv = findViewById(R.id.tabCarTextSoC) as TextView
+
+            if (carData.stale_status == DataStale.NoValue) {
+                soctv.text = ""
+            } else {
+                soctv.text = String.format("%.1f%%", carData.car_soc_raw)
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    soctv.setTextColor(-0x7f7f80)
+                } else {
+                    soctv.setTextColor(-0x1)
+                }
+            }
+        }
+
+        // "SoH" box:
+        findViewById(R.id.tabCarTextSoHLabel).visibility = View.INVISIBLE
+        findViewById(R.id.tabCarTextSoH).visibility = View.INVISIBLE
+        if (carData.car_type == "SQ"){
+            findViewById(R.id.tabCarTextSoHLabel).visibility = View.VISIBLE
+            findViewById(R.id.tabCarTextSoH).visibility = View.VISIBLE
+
+            //val soHtvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
+            val soHtv = findViewById(R.id.tabCarTextSoH) as TextView
+
+            if (carData.stale_status == DataStale.NoValue) {
+                soHtv.text = ""
+            } else {
+                soHtv.text = String.format("%.1f%%", carData.car_soh)
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    soHtv.setTextColor(-0x7f7f80)
+                } else {
+                    soHtv.setTextColor(-0x1)
+                }
+            }
+        }
+
         // Temperatures
+        val batterytvl = findViewById(R.id.tabCarTextChargerLabel) as TextView
         val batterytv = findViewById(R.id.tabCarTextBattery) as TextView
         val chargertv = findViewById(R.id.tabCarTextCharger) as TextView
-        if (carData.stale_car_temps == DataStale.NoValue) {
-            batterytv.text = ""
-            chargertv.text = ""
-        } else {
-            batterytv.text = carData.car_temp_battery
-            chargertv.text = carData.car_temp_charger
-            if (carData.stale_car_temps == DataStale.Stale) {
-                batterytv.setTextColor(-0x7f7f80)
-                chargertv.setTextColor(-0x7f7f80)
+        if (carData.car_type == "SQ") {
+            // switches the box from battery to cabin
+            batterytvl.setText(R.string.textCAB)
+            if (carData.stale_car_temps == DataStale.NoValue) {
+
+                batterytv.text = ""
+                chargertv.text = ""
             } else {
-                batterytv.setTextColor(-0x1)
-                chargertv.setTextColor(-0x1)
+                batterytv.text = carData.car_temp_battery
+                chargertv.text = carData.car_temp_cabin
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    batterytv.setTextColor(-0x7f7f80)
+                    chargertv.setTextColor(-0x7f7f80)
+                } else {
+                    batterytv.setTextColor(-0x1)
+                    chargertv.setTextColor(-0x1)
+                }
+            }
+        } else {
+            if (carData.stale_car_temps == DataStale.NoValue) {
+                batterytv.text = ""
+                chargertv.text = ""
+            } else {
+                batterytv.text = carData.car_temp_battery
+                chargertv.text = carData.car_temp_charger
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    batterytv.setTextColor(-0x7f7f80)
+                    chargertv.setTextColor(-0x7f7f80)
+                } else {
+                    batterytv.setTextColor(-0x1)
+                    chargertv.setTextColor(-0x1)
+                }
             }
         }
         var st: String
