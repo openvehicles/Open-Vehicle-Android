@@ -46,7 +46,8 @@
 			android:layout_x="89px"
 			android:layout_y="450px"
 			android:clickable="true"
-			android:src="@drawable/battery_000" />
+            android:focusable="true"
+            android:src="@drawable/battery_000" />
 
 		<ImageView
 			android:id="@+id/tabInfoImageBatteryChargingOverlay"
@@ -178,7 +179,7 @@
 			android:layout_y="322px"
 			android:gravity="center_vertical|left"
 			android:text="@string/DefaultCharging"
-			android:textSize="16px" />
+			android:textSize="20px" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusRight"

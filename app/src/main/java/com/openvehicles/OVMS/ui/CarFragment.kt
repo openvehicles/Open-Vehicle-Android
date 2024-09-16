@@ -32,6 +32,7 @@ import com.openvehicles.OVMS.ui.utils.Ui.showPinDialog
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import kotlin.math.floor
+import kotlin.text.toFloat
 
 class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListener {
 
@@ -897,15 +898,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         }
 
         // "SoC" box:
-        findViewById(R.id.tabCarTextSoCLabel).visibility = View.INVISIBLE
-        findViewById(R.id.tabCarTextSoC).visibility = View.INVISIBLE
-
+        val soctvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
+        val soctv =findViewById(R.id.tabCarTextSoC) as TextView
+        soctvl.visibility = View.INVISIBLE
+        soctv.visibility = View.INVISIBLE
         if (carData.car_type == "SQ"){
-            findViewById(R.id.tabCarTextSoCLabel).visibility = View.VISIBLE
-            findViewById(R.id.tabCarTextSoC).visibility = View.VISIBLE
-
-            //val soctvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
-            val soctv = findViewById(R.id.tabCarTextSoC) as TextView
+            soctvl.visibility = View.VISIBLE
+            soctv.visibility = View.VISIBLE
 
             if (carData.stale_status == DataStale.NoValue) {
                 soctv.text = ""
@@ -920,23 +919,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         }
 
         // "SoH" box:
-        findViewById(R.id.tabCarTextSoHLabel).visibility = View.INVISIBLE
-        findViewById(R.id.tabCarTextSoH).visibility = View.INVISIBLE
+        val sohtvl = findViewById(R.id.tabCarTextSoHLabel) as TextView
+        val sohtv =findViewById(R.id.tabCarTextSoH) as TextView
+        sohtvl.visibility = View.INVISIBLE
+        sohtv.visibility = View.INVISIBLE
         if (carData.car_type == "SQ"){
-            findViewById(R.id.tabCarTextSoHLabel).visibility = View.VISIBLE
-            findViewById(R.id.tabCarTextSoH).visibility = View.VISIBLE
-
-            //val soHtvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
-            val soHtv = findViewById(R.id.tabCarTextSoH) as TextView
+            sohtvl.visibility = View.VISIBLE
+            sohtv.visibility = View.VISIBLE
 
             if (carData.stale_status == DataStale.NoValue) {
-                soHtv.text = ""
+                sohtv.text = ""
             } else {
-                soHtv.text = String.format("%.1f%%", carData.car_soh)
+                sohtv.text = String.format("%.1f%%", carData.car_soh)
                 if (carData.stale_car_temps == DataStale.Stale) {
-                    soHtv.setTextColor(-0x7f7f80)
+                    sohtv.setTextColor(-0x7f7f80)
                 } else {
-                    soHtv.setTextColor(-0x1)
+                    sohtv.setTextColor(-0x1)
                 }
             }
         }
@@ -988,6 +986,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextOdometer) as TextView
         tv.text = ss
+        // move the Odometer text to the right position
+        if (carData.car_type == "SQ") {
+            tv.translationY = "-165".toFloat()
+        }
 
         // Speed
         tv = findViewById(R.id.tabCarTextSpeed) as TextView

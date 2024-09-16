@@ -45,7 +45,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCuzjTXOvR8c4GZJ830z_1I0P4Ak5ojMpA" />
+            android:value="AIzaSyBEpdVvdS7uXXPapjcISQL8JIEaL-Kt7Co" />
         <meta-data
             android:name="org.openchargemap.api.v2.API_KEY"
             android:value="59284e43-14f7-4d0a-8fec-f2a255611974" />
