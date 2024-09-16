@@ -438,7 +438,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
                     menu.add(0, MI_HL_02, 0, "2")
-                    menu.add(0, MI_HL_03, 0, "Modul reset")
+                    menu.add(0, MI_HL_03, 0, "Modul reboot")
                     menu.add(R.string.Cancel)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
@@ -506,7 +506,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             return
         }
 
-        val command = result[0].toInt()
+        //val command = result[0].toInt()
         val resCode = result[1].toInt()
         val resText = if (result.size > 2) result[2] else ""
         val cmdMessage = getSentCommandMessage(result[0])
@@ -777,15 +777,27 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             rrtvv.text = null
         } else {
             iv.setVisibility(View.VISIBLE)
-            fltv.text = val1!![0]
-            frtv.text = val1[1]
-            rltv.text = val1[2]
-            rrtv.text = val1[3]
-            fltvv.text = val2!![0]
-            frtvv.text = val2[1]
-            rltvv.text = val2[2]
-            rrtvv.text = val2[3]
 
+            if (carData.car_type == "SQ") {
+                // fix the wrong side of the tires
+                fltv.text = val1!![0]
+                frtv.text = val1[1]
+                rltv.text = val1[2]
+                rrtv.text = val1[3]
+                frtvv.text = val2!![0]
+                fltvv.text = val2[1]
+                rrtvv.text = val2[2]
+                rltvv.text = val2[3]
+            }else {
+                fltv.text = val1!![0]
+                frtv.text = val1[1]
+                rltv.text = val1[2]
+                rrtv.text = val1[3]
+                fltvv.text = val2!![0]
+                frtvv.text = val2[1]
+                rltvv.text = val2[2]
+                rrtvv.text = val2[3]
+            }
 
             val trans1 = if (stale1 == DataStale.Stale) -0x80000000 else -0x1000000
             val trans2 = if (stale2 == DataStale.Stale) -0x80000000 else -0x1000000

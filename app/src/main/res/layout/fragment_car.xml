@@ -9,86 +9,84 @@
 		android:id="@+id/scaleLayout"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"
-		android:layout_margin="8dp"
-		>
+		android:layout_margin="8dp">
 
 		<ImageView
 			android:id="@+id/tabCarImageCarOutline"
 			style="@style/TabCarImgCar"
-			android:src="@drawable/ol_car_default"/>
+			android:src="@drawable/ol_car_default" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarChargePortOpen"
 			style="@style/TabCarImgCar"
-			android:src="@drawable/roadster_outline_cp"/>
+			android:src="@drawable/roadster_outline_cp" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarTrunkOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_tr"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRightDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_rd"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRearRightDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/zoe_outline_rrd"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarHoodOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_hd"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarLeftDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_ld"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRearLeftDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/zoe_outline_rld"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarLocked"
 			style="@style/TabCarImgCar"
-			android:src="@drawable/carlock_roadster"/>
+			android:src="@drawable/carlock_roadster" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarValetMode"
 			style="@style/TabCarImgCar"
-			android:src="@drawable/carvaleton_roadster"/>
+			android:src="@drawable/carvaleton_roadster" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarHeadlightsON"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/carlights"
-			android:visibility="invisible"/>
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarTempsBoxes"
 			style="@style/TabCarImgLetterBox"
-			android:src="@drawable/motortemp_letterbox"/>
+			android:src="@drawable/motortemp_letterbox" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarAmbientBox"
 			style="@style/TabCarImgLetterBox"
-			android:src="@drawable/letterbox_ambient"
-			/>
+			android:src="@drawable/letterbox_ambient" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarTPMSBoxes"
 			style="@style/TabCarImgLetterBox"
-			android:src="@drawable/tirepress_letterbox"/>
+			android:src="@drawable/tirepress_letterbox" />
 
 		<ImageView
 			android:id="@+id/tabCarImageHomelink"
@@ -97,14 +95,14 @@
 			android:layout_x="451px"
 			android:layout_y="260px"
 			android:clickable="true"
-			android:src="@drawable/ic_home_link"
-			tools:ignore="PxUsage"/>
+            android:focusable="true"
+            android:src="@drawable/ic_home_link"
+			tools:ignore="PxUsage" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarACBoxes"
 			style="@style/TabCarImgLetterBox"
-			android:src="@drawable/letterbox_ac"
-			/>
+			android:src="@drawable/letterbox_ac" />
 
 		<ImageView
 			android:id="@+id/tabCarImageAC"
@@ -113,9 +111,9 @@
 			android:layout_x="426px"
 			android:layout_y="346px"
 			android:clickable="true"
-			android:src="@drawable/ic_ac_off"
-			tools:ignore="PxUsage"
-			/>
+            android:focusable="true"
+            android:src="@drawable/ic_ac_off"
+			tools:ignore="PxUsage" />
 
 		<TextView
 			android:id="@+id/textFLWheel"
@@ -123,7 +121,7 @@
 			android:layout_x="2px"
 			android:layout_y="76px"
 			android:text="FL"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textFLWheelVal"
@@ -131,7 +129,7 @@
 			android:layout_x="2px"
 			android:layout_y="112px"
 			android:text="40psi"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textFRWheel"
@@ -139,7 +137,7 @@
 			android:layout_x="430px"
 			android:layout_y="76px"
 			android:text="FR"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textFRWheelVal"
@@ -147,7 +145,7 @@
 			android:layout_x="430px"
 			android:layout_y="112px"
 			android:text="40psi"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textRLWheel"
@@ -155,7 +153,7 @@
 			android:layout_x="2px"
 			android:layout_y="446px"
 			android:text="RL"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textRLWheelVal"
@@ -163,7 +161,7 @@
 			android:layout_x="2px"
 			android:layout_y="483px"
 			android:text="40psi"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textRRWheel"
@@ -171,7 +169,7 @@
 			android:layout_x="430px"
 			android:layout_y="446px"
 			android:text="RR"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/textRRWheelVal"
@@ -179,14 +177,14 @@
 			android:layout_x="430px"
 			android:layout_y="483px"
 			android:text="40psi"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabCarTextPEMLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="614px"
-			android:text="@string/textPEM"/>
+			android:text="@string/textPEM" />
 
 		<TextView
 			android:id="@+id/tabCarTextPEM"
@@ -194,14 +192,14 @@
 			android:layout_x="2px"
 			android:layout_y="648px"
 			android:text="0°C"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabCarTextSoCLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="107px"
 			android:layout_y="614px"
-			android:text="@string/textSoC"/>
+			android:text="@string/textSoC" />
 
 		<TextView
 			android:id="@+id/tabCarTextSoC"
@@ -209,13 +207,14 @@
 			android:layout_x="107px"
 			android:layout_y="648px"
 			android:text="0 %"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
+
 		<TextView
 			android:id="@+id/tabCarTextSoHLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="323px"
 			android:layout_y="614px"
-			android:text="@string/textSoH"/>
+			android:text="@string/textSoH" />
 
 		<TextView
 			android:id="@+id/tabCarTextSoH"
@@ -223,13 +222,13 @@
 			android:layout_x="323px"
 			android:layout_y="648px"
 			android:text="0 %"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			style="@style/TabCarTextBox"
 			android:layout_x="428px"
 			android:layout_y="614px"
-			android:text="@string/textBATTERY"/>
+			android:text="@string/textBATTERY" />
 
 		<TextView
 			android:id="@+id/tabCarTextBattery"
@@ -237,14 +236,14 @@
 			android:layout_x="428px"
 			android:layout_y="648px"
 			android:text="0°C"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabCarTextMotorLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="215px"
 			android:layout_y="615px"
-			android:text="@string/textMOTOR"/>
+			android:text="@string/textMOTOR" />
 
 		<TextView
 			android:id="@+id/tabCarTextMotor"
@@ -252,7 +251,7 @@
 			android:layout_x="215px"
 			android:layout_y="648px"
 			android:text="0°C"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/txt_homelink"
@@ -260,8 +259,9 @@
 			android:layout_x="427px"
 			android:layout_y="308px"
 			android:clickable="true"
+			android:focusable="true"
 			android:text="@string/textHOMELINK"
-			android:textSize="18px"/>
+			android:textSize="18px" />
 
 		<TextView
 			android:id="@+id/tabCarText12VLabel"
@@ -269,7 +269,8 @@
 			android:layout_x="2px"
 			android:layout_y="186px"
 			android:clickable="true"
-			android:text="@string/text12VBATT"/>
+			android:focusable="true"
+			android:text="@string/text12VBATT" />
 
 		<TextView
 			android:id="@+id/tabCarText12V"
@@ -277,15 +278,16 @@
 			android:layout_x="2px"
 			android:layout_y="220px"
 			android:clickable="true"
+			android:focusable="true"
 			android:text="12.3V"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabCarTextAmbientLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="267px"
-			android:text="@string/textAMBIENT"/>
+			android:text="@string/textAMBIENT" />
 
 		<TextView
 			android:id="@+id/tabCarTextAmbient"
@@ -293,14 +295,14 @@
 			android:layout_x="2px"
 			android:layout_y="301px"
 			android:text="0°C"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabCarTextChargerLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="2px"
 			android:layout_y="348px"
-			android:text="@string/textCHARGER"/>
+			android:text="@string/textCHARGER" />
 
 		<TextView
 			android:id="@+id/tabCarTextCharger"
@@ -308,7 +310,7 @@
 			android:layout_x="2px"
 			android:layout_y="382px"
 			android:text="0°C"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
 		<!--              android:layout_x="162px" -->
 
@@ -325,7 +327,7 @@
 			android:text="123456.7km"
 			android:textColor="@color/colorForeground"
 			android:textSize="26px"
-			android:typeface="monospace"/>
+			android:typeface="monospace" />
 
 		<TextView
 			android:id="@+id/tabCarTextEnergy"
@@ -340,7 +342,7 @@
 			android:text="▴999.9 ▾99.9 kWh"
 			android:textColor="@color/colorForeground"
 			android:textSize="22px"
-			android:typeface="monospace"/>
+			android:typeface="monospace" />
 
 		<TextView
 			android:id="@+id/tabCarTextTrip"
@@ -355,7 +357,7 @@
 			android:text="➟1234.5km"
 			android:textColor="@color/colorForeground"
 			android:textSize="22px"
-			android:typeface="monospace"/>
+			android:typeface="monospace" />
 
 		<TextView
 			android:id="@+id/tabCarTextSpeed"
@@ -373,7 +375,7 @@
 			android:textColor="@color/colorForeground"
 			android:textSize="34px"
 			android:textStyle="bold"
-			android:typeface="monospace"/>
+			android:typeface="monospace" />
 
 		<!-- OnClick -->
 
@@ -383,7 +385,9 @@
 			android:layout_height="120px"
 			android:layout_x="166px"
 			android:layout_y="410px"
-			android:clickable="true"/>
+			android:clickable="true"
+			android:focusable="true"
+			tools:ignore="PxUsage" />
 
 		<View
 			android:id="@+id/btn_lock_car"
@@ -391,7 +395,8 @@
 			android:layout_height="120px"
 			android:layout_x="188px"
 			android:layout_y="260px"
-			android:clickable="true"/>
+			android:clickable="true"
+			android:focusable="true" />
 
 		<View
 			android:id="@+id/btn_valet_mode"
@@ -399,7 +404,8 @@
 			android:layout_height="120px"
 			android:layout_x="270px"
 			android:layout_y="260px"
-			android:clickable="true"/>
+			android:clickable="true"
+			android:focusable="true" />
 	</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 
 </FrameLayout>
