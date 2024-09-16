@@ -98,8 +98,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             "SQ" -> {
                 // UI changes for Smart EQ:
-                val EQ_Boxes: ImageView = findViewById(R.id.tabCarImageCarTempsBoxes) as ImageView
-                EQ_Boxes.setImageResource(R.drawable.motortemp_letterbox_2)
+                val eqBoxes: ImageView = findViewById(R.id.tabCarImageCarTempsBoxes) as ImageView
+                eqBoxes.setImageResource(R.drawable.motortemp_letterbox_2)
 
                 findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
                 findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
@@ -585,7 +585,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (minutes == 0L) {
                 tv.text = getText(R.string.justnow)
             } else if (minutes == 1L) {
-                tv.text = "1 min"
+                tv.text = getText(R.string.min1)
             } else if (days > 1) {
                 tv.text = String.format(getText(R.string.ndays).toString(), days)
             } else if (hours > 1) {
