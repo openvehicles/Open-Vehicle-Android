@@ -198,6 +198,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         findViewById(R.id.tabInfoTextSOC).setOnClickListener(this)
         findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryAnimation).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this)
 
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
@@ -890,20 +891,29 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         }
         tv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
         tv.text = carData.car_range_estimated
+
+        // animated charging
         val maxWeight = (findViewById(R.id.tabInfoTextSOC) as TextView).layoutParams.width
         val realWeight = Math
             .round(maxWeight * carData.car_soc_raw / 100 * 1.1f)
-        val v = findViewById(R.id.tabInfoImageBatteryOverlay)
-        v.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
-        v.requestLayout()
+        val batt = findViewById(R.id.tabInfoImageBatteryOverlay)
+        batt.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
+        batt.requestLayout()
+        val chargeing = findViewById(R.id.tabInfoImageBatteryAnimation)
 
-        // animated charging
+        chargeing.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
+        chargeing.requestLayout()
         if (carData.car_chargeport_open) {
-            val animator = ObjectAnimator.ofFloat(v, "alpha", 0.9F, 0.4F)
+            val animator = ObjectAnimator.ofFloat(batt, "alpha", 0.7F, 0F)
             animator.repeatCount = ObjectAnimator.INFINITE
-            animator.run { duration = 1000 }
-            animator.repeatMode = ObjectAnimator.REVERSE // or ObjectAnimator.RESTART
+            animator.run { duration = 1500 }
+            animator.repeatMode = ObjectAnimator.REVERSE
             animator.start()
+            val animatorcharge = ObjectAnimator.ofFloat(chargeing, "alpha", 0.4F, 1F)
+            animatorcharge.repeatCount = ObjectAnimator.INFINITE
+            animatorcharge.run { duration = 1500 }
+            animatorcharge.repeatMode = ObjectAnimator.REVERSE
+            animatorcharge.start()
             tv = findViewById(R.id.tabInfoTextSOC) as TextView
             tv.setTextColor(-0xFF)
         }
