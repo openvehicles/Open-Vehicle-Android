@@ -297,6 +297,10 @@
     
     <string name="mi_car_details_temp">Fahrenheit</string>
     <string name="mi_car_details_tpms">TPMS in bar</string>
+    <string name="fl_tpms">VL</string>
+    <string name="fr_tpms">VR</string>
+    <string name="rl_tpms">HL</string>
+    <string name="rr_tpms">HR</string>
 
     <string name="ocm_title_charge_points">LADESTATIONEN</string>
     <string name="ocm_subtitle_charge_points">Quelle: https://openchargemap.org/</string>
