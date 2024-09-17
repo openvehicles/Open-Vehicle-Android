@@ -15,19 +15,19 @@
 		android:text="@string/Loading"
 		android:textAppearance="?android:textAppearanceMedium" />
 
-	<com.openvehicles.OVMS.ui.witdet.ScaleLayout android:id="@+id/scaleLayout"
+	<com.openvehicles.OVMS.ui.witdet.ScaleLayout
+		android:id="@+id/scaleLayout"
 		android:layout_width="match_parent"
 		android:layout_height="0dp"
-		android:layout_weight="1"
-        >
+		android:layout_weight="1">
 
-        <Gallery
-            android:id="@+id/tabInfoImageCar"
-            android:layout_width="580px"
-            android:layout_height="270px"
-            android:padding="10dp"
-            android:spacing="0dp"
-            tools:ignore="ContentDescription" />
+		<Gallery
+			android:id="@+id/tabInfoImageCar"
+			android:layout_width="580px"
+			android:layout_height="270px"
+			android:padding="10dp"
+			android:spacing="0dp"
+			tools:ignore="ContentDescription" />
 
 		<ImageView
 			android:id="@+id/tabInfoImageCharger"
@@ -46,8 +46,8 @@
 			android:layout_x="89px"
 			android:layout_y="450px"
 			android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/battery_000" />
+			android:focusable="true"
+			android:src="@drawable/battery_000" />
 
 		<ImageView
 			android:id="@+id/tabInfoImageBatteryChargingOverlay"
@@ -72,8 +72,8 @@
 			android:layout_x="110px"
 			android:layout_y="450px"
 			android:gravity="center"
-			android:textSize="40px"
 			android:textColor="#ffffffff"
+			android:textSize="40px"
 			android:textStyle="bold" />
 
 		<TextView
@@ -85,50 +85,50 @@
 			android:gravity="bottom|center"
 			android:textColor="#ffffffff"
 			android:textSize="22px"
-			android:textStyle="bold"/>
+			android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/tabInfoImageChargeEtr"
-            android:layout_width="580px"
-            android:layout_height="76px"
-            android:layout_x="0px"
-            android:layout_y="665px"
-            android:scaleType="fitXY"
-            android:src="@drawable/etr_background"
-            android:visibility="invisible"/>
+		<ImageView
+			android:id="@+id/tabInfoImageChargeEtr"
+			android:layout_width="580px"
+			android:layout_height="76px"
+			android:layout_x="0px"
+			android:layout_y="665px"
+			android:scaleType="fitXY"
+			android:src="@drawable/etr_background"
+			android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/tabInfoTextChargeEtrSuff"
-            android:layout_width="233px"
-            android:layout_height="76px"
-            android:layout_x="59px"
-            android:layout_y="665px"
-            android:gravity="center_vertical|right"
-            android:textColor="#fff07d00"
-            android:textStyle="bold"
-            android:textSize="28px"
-            android:text="50km: ~01:23\n95%: ~01:23"
-            android:icon="@drawable/etr_sufficient"
-            android:visibility="invisible"
-            android:background="@drawable/etr_sufficient"
-            android:paddingRight="30dp"/>
+		<TextView
+			android:id="@+id/tabInfoTextChargeEtrSuff"
+			android:layout_width="233px"
+			android:layout_height="76px"
+			android:layout_x="59px"
+			android:layout_y="665px"
+			android:background="@drawable/etr_sufficient"
+			android:gravity="center_vertical|right"
+			android:icon="@drawable/etr_sufficient"
+			android:paddingRight="30dp"
+			android:text="50km: ~01:23\n95%: ~01:23"
+			android:textColor="#fff07d00"
+			android:textSize="28px"
+			android:textStyle="bold"
+			android:visibility="invisible" />
 
-        <TextView
-            android:id="@+id/tabInfoTextChargeEtrFull"
-            android:layout_width="233px"
-            android:layout_height="76px"
-            android:layout_x="292px"
-            android:layout_y="665px"
-            android:textColor="#fff07d00"
-            android:textStyle="bold"
-            android:textSize="28px"
-            android:text="100%: ~01:23"
-            android:visibility="invisible"
-            android:background="@drawable/etr_full"
-            android:paddingRight="30dp"
-            android:gravity="center_vertical|right"/>
+		<TextView
+			android:id="@+id/tabInfoTextChargeEtrFull"
+			android:layout_width="233px"
+			android:layout_height="76px"
+			android:layout_x="292px"
+			android:layout_y="665px"
+			android:background="@drawable/etr_full"
+			android:gravity="center_vertical|right"
+			android:paddingRight="30dp"
+			android:text="100%: ~01:23"
+			android:textColor="#fff07d00"
+			android:textSize="28px"
+			android:textStyle="bold"
+			android:visibility="invisible" />
 
-        <ImageView
+		<ImageView
 			android:id="@+id/tabInfoImageBatteryText"
 			android:layout_width="466px"
 			android:layout_height="76px"
@@ -137,6 +137,7 @@
 			android:src="@drawable/battery_textbox" />
 
 		<TextView
+			android:id="@+id/tabInfoTextIdealLabel"
 			style="@style/TabCarTextBox"
 			android:layout_width="200px"
 			android:layout_x="59px"
@@ -149,11 +150,12 @@
 			android:layout_width="200px"
 			android:layout_x="59px"
 			android:layout_y="620px"
-            android:textSize="24px"
-            android:text="999km"
+			android:text="999km"
+			android:textSize="24px"
 			android:textStyle="bold" />
 
 		<TextView
+			android:id="@+id/tabInfoTextEstimatedLabel"
 			style="@style/TabCarTextBox"
 			android:layout_width="200px"
 			android:layout_x="322px"
@@ -167,8 +169,8 @@
 			android:layout_x="322px"
 			android:layout_y="620px"
 			android:text="999km"
-            android:textSize="24px"
-            android:textStyle="bold" />
+			android:textSize="24px"
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusLeft"
@@ -187,47 +189,47 @@
 			android:layout_height="46px"
 			android:layout_x="426px"
 			android:layout_y="322px"
+			android:gravity="center_vertical|right"
 			android:text="@string/DefaultSlidetoCharge"
-			android:textSize="16px"
-			android:gravity="center_vertical|right"/>
+			android:textSize="16px" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargePowerInput"
 			style="@style/TabCarTextBox"
-			android:textColor="#fff07d00"
 			android:layout_width="104px"
 			android:layout_height="30px"
 			android:layout_x="328px"
 			android:layout_y="372px"
+			android:gravity="bottom|left"
 			android:text="@string/DefaultChargingPower"
+			android:textColor="#fff07d00"
 			android:textSize="20px"
-			android:textStyle="bold"
-			android:gravity="bottom|left"/>
+			android:textStyle="bold" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargePowerLoss"
 			style="@style/TabCarTextBox"
-			android:textColor="#ffddbb00"
 			android:layout_width="100px"
 			android:layout_height="30px"
 			android:layout_x="432px"
 			android:layout_y="372px"
+			android:gravity="bottom|right"
 			android:text="@string/DefaultChargingPowerLoss"
+			android:textColor="#ffddbb00"
 			android:textSize="16px"
-			android:textStyle="bold"
-			android:gravity="bottom|right"/>
+			android:textStyle="bold" />
 
 		<TextView
-            android:id="@+id/tabInfoTextChargeStatus"
-            style="@style/TabCarTextBox"
-            android:layout_height="46px"
-            android:layout_width="200px"
-            android:layout_x="328px"
-            android:layout_y="322px"
-            android:text=""
-            android:textSize="16px"
-            android:gravity="center"
-            android:visibility="invisible"/>
+			android:id="@+id/tabInfoTextChargeStatus"
+			style="@style/TabCarTextBox"
+			android:layout_width="200px"
+			android:layout_height="46px"
+			android:layout_x="328px"
+			android:layout_y="322px"
+			android:gravity="center"
+			android:text=""
+			android:textSize="16px"
+			android:visibility="invisible" />
 
 		<com.openvehicles.OVMS.ui.witdet.ReversedSeekBar
 			android:id="@+id/tabInfoSliderChargerControl"
@@ -239,7 +241,7 @@
 			android:indeterminateOnly="false"
 			android:max="100"
 			android:progress="0"
-			android:progressDrawable="@android:color/transparent"/>
+			android:progressDrawable="@android:color/transparent" />
 
 	</com.openvehicles.OVMS.ui.witdet.ScaleLayout>
 

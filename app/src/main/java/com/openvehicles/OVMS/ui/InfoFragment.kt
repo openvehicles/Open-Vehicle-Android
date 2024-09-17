@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.content.res.Configuration
 import android.graphics.Bitmap
@@ -26,6 +27,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialog
+import androidx.core.graphics.toColor
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -44,6 +46,7 @@ import com.openvehicles.OVMS.utils.CarsStorage
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
+import kotlin.text.toFloat
 
 class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListener {
 
@@ -748,6 +751,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val tvf = findViewById(R.id.tabInfoTextChargeStatus) as TextView
         val tvPowerInput = findViewById(R.id.tabInfoTextChargePowerInput) as TextView
         val tvPowerLoss = findViewById(R.id.tabInfoTextChargePowerLoss) as TextView
+
         if (!carData.car_chargeport_open || carData.car_charge_substate_i_raw == 0x07) {
             // Charge port is closed or car is not plugged in
             findViewById(R.id.tabInfoImageCharger).visibility = View.INVISIBLE
@@ -874,8 +878,16 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 }
             }
         }
+        val ideallabel = findViewById(R.id.tabInfoTextIdealLabel) as TextView
         tv = findViewById(R.id.tabInfoTextIdealRange) as TextView
-        tv.text = carData.car_range_ideal
+        if (this.carData!!.car_type == "SQ") {
+            // calculate ideal (minimal) range for SQ
+            ideallabel.text = getString(R.string.Idealminimal)
+            tv.text = String.format("%.1f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
+            // ideallabel.textSize = 14F
+        }else{
+            tv.text = carData.car_range_ideal
+        }
         tv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
         tv.text = carData.car_range_estimated
         val maxWeight = (findViewById(R.id.tabInfoTextSOC) as TextView).layoutParams.width
@@ -884,6 +896,18 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val v = findViewById(R.id.tabInfoImageBatteryOverlay)
         v.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
         v.requestLayout()
+
+        // animated charging
+        if (carData.car_chargeport_open) {
+            val animator = ObjectAnimator.ofFloat(v, "alpha", 0.9F, 0.4F)
+            animator.repeatCount = ObjectAnimator.INFINITE
+            animator.run { duration = 1000 }
+            animator.repeatMode = ObjectAnimator.REVERSE // or ObjectAnimator.RESTART
+            animator.start()
+            tv = findViewById(R.id.tabInfoTextSOC) as TextView
+            tv.setTextColor(-0xFF)
+        }
+
         val iv = findViewById(R.id.img_signal_rssi) as ImageView
         iv.setImageResource(
             getDrawableIdentifier(

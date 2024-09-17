@@ -42,6 +42,7 @@
     <string name="BatteryOverlay">Batterie</string>
     <string name="EstimatedShort">&#8230;GESCHÄTZT</string>
     <string name="IdealShort">REICHWEITE IDEAL</string>
+    <string name="Idealminimal">REICHWEITE MINIMAL</string>
     <string name="BatteryText">Batterie</string>
     <string name="Homelink">Homelink</string>
     <string name="Profile">Profil</string>
