@@ -10,10 +10,12 @@
 	<TextView
 		android:id="@+id/txt_title"
 		android:layout_width="match_parent"
-		android:layout_height="wrap_content"
+		android:layout_height="38dp"
 		android:gravity="center_horizontal"
 		android:text="@string/Loading"
-		android:textAppearance="?android:textAppearanceMedium" />
+		android:textAppearance="?android:textAppearanceMedium"
+		android:textSize="50px"
+		android:textStyle="bold" />
 
 	<com.openvehicles.OVMS.ui.witdet.ScaleLayout
 		android:id="@+id/scaleLayout"
@@ -80,6 +82,27 @@
 			android:layout_y="450px"
 			android:background="@drawable/battery_overlay_t" />
 
+		<ImageView
+			android:id="@+id/tabCarImageCarACBoxes"
+			style="@style/TabCarImgLetterBox"
+			android:layout_width="107px"
+			android:layout_height="71px"
+			android:layout_x="235px"
+			android:layout_y="770px"
+			android:src="@drawable/letterbox_ac" />
+
+		<ImageView
+			android:id="@+id/tabCarImageAC"
+			android:layout_width="107px"
+			android:layout_height="71px"
+			android:layout_x="235px"
+			android:layout_y="770px"
+			android:clickable="true"
+			android:focusable="true"
+			android:background="@drawable/letterbox"
+			android:src="@drawable/ic_ac_off"
+			tools:ignore="PxUsage" />
+
 		<TextView
 			android:id="@+id/tabInfoTextSOC"
 			android:layout_width="330px"
@@ -94,12 +117,12 @@
 		<TextView
 			android:id="@+id/tabInfoTextChargeMode"
 			android:layout_width="510px"
-			android:layout_height="40px"
+			android:layout_height="46px"
 			android:layout_x="20px"
 			android:layout_y="400px"
 			android:gravity="bottom|center"
 			android:textColor="#ffffffff"
-			android:textSize="22px"
+			android:textSize="28px"
 			android:textStyle="bold" />
 
 		<ImageView
@@ -151,6 +174,14 @@
 			android:layout_y="580px"
 			android:src="@drawable/battery_textbox" />
 
+		<ImageView
+			android:id="@+id/tabInfoImageTemperatureText"
+			android:layout_width="466px"
+			android:layout_height="76px"
+			android:layout_x="57px"
+			android:layout_y="675px"
+			android:src="@drawable/battery_textbox" />
+
 		<TextView
 			android:id="@+id/tabInfoTextIdealLabel"
 			style="@style/TabCarTextBox"
@@ -166,7 +197,7 @@
 			android:layout_x="59px"
 			android:layout_y="620px"
 			android:text="999km"
-			android:textSize="24px"
+			android:textSize="22px"
 			android:textStyle="bold" />
 
 		<TextView
@@ -184,7 +215,43 @@
 			android:layout_x="322px"
 			android:layout_y="620px"
 			android:text="999km"
-			android:textSize="24px"
+			android:textSize="22px"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/tabInfoTextAmbientLabel"
+			style="@style/TabCarTextBox"
+			android:layout_width="200px"
+			android:layout_x="59px"
+			android:layout_y="675px"
+			android:text="@string/textAMBIENT" />
+
+		<TextView
+			android:id="@+id/tabInfoTextAmbient"
+			style="@style/TabCarTextBox"
+			android:layout_width="200px"
+			android:layout_x="59px"
+			android:layout_y="714px"
+			android:text="0°C"
+			android:textSize="22px"
+			android:textStyle="bold" />
+
+		<TextView
+			android:id="@+id/tabInfoTextCabinLabel"
+			style="@style/TabCarTextBox"
+			android:layout_width="200px"
+			android:layout_x="322px"
+			android:layout_y="675px"
+			android:text="@string/textCAB" />
+
+		<TextView
+			android:id="@+id/tabInfoTextCabin"
+			style="@style/TabCarTextBox"
+			android:layout_width="200px"
+			android:layout_x="322px"
+			android:layout_y="714px"
+			android:text="0°C"
+			android:textSize="22px"
 			android:textStyle="bold" />
 
 		<TextView
@@ -231,7 +298,7 @@
 			android:gravity="bottom|right"
 			android:text="@string/DefaultChargingPowerLoss"
 			android:textColor="#ffddbb00"
-			android:textSize="16px"
+			android:textSize="20px"
 			android:textStyle="bold" />
 
 		<TextView
@@ -243,7 +310,7 @@
 			android:layout_y="322px"
 			android:gravity="center"
 			android:text=""
-			android:textSize="16px"
+			android:textSize="20px"
 			android:visibility="invisible" />
 
 		<com.openvehicles.OVMS.ui.witdet.ReversedSeekBar

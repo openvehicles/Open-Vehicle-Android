@@ -27,7 +27,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialog
-import androidx.core.graphics.toColor
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -46,7 +45,6 @@ import com.openvehicles.OVMS.utils.CarsStorage
 import java.util.Locale
 import kotlin.math.max
 import kotlin.math.min
-import kotlin.text.toFloat
 
 class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListener {
 
@@ -200,6 +198,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryAnimation).setOnClickListener(this)
         findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this)
+        findViewById(R.id.tabCarImageAC).setOnClickListener(this)
 
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
         bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -230,6 +229,11 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             }
         })
 
+    }
+
+    override fun registerForContextMenu(view: View) {
+        super.registerForContextMenu(view)
+        view.setOnClickListener(this)
     }
 
     private fun chargerConfirmStart() {
@@ -384,12 +388,24 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 chargerSettingVWUP()
             }
             "SQ" -> {
-                // nothing to do
+                buttonAC()
             }
             else -> {
                 chargerSettingDefault()
             }
         }
+    }
+    private fun buttonAC() {
+
+        AlertDialog.Builder(requireActivity())
+            .setTitle(R.string.textAC)
+            .setNegativeButton(R.string.Cancel, null)
+            .setPositiveButton(
+                android.R.string.ok
+            ) { dlg, which ->
+                sendCommand(R.string.msg_issuing_climatecontrol, "26,1", this@InfoFragment )
+            }
+            .show()
     }
 
     private fun chargerSettingDefault() {
@@ -704,7 +720,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             hours = minutes / 60
             days = minutes / (60 * 24)
             if (minutes == 0L) tv.text = getText(R.string.justnow) else if (minutes == 1L) tv.text =
-                "1 min" else if (days > 1) tv.text = String.format(
+                getText(R.string.min1) else if (days > 1) tv.text = String.format(
                 getText(R.string.ndays).toString(),
                 days
             ) else if (hours > 1) tv.text = String.format(
@@ -734,15 +750,16 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
     // This updates the main informational part of the view.
     // It is called when the server gets new data.
     private fun updateCarInfoView(carData: CarData) {
-        var tv = findViewById(R.id.txt_title) as TextView
-        tv.text = carData.sel_vehicle_label
+        val headline = findViewById(R.id.txt_title) as TextView
+        val odometer = String.format("⏲ %.1f%s", carData.car_odometer_raw / 10, carData.car_distance_units)
+        headline.text = carData.sel_vehicle_label + "     " + odometer
         val carPos = carsStorage.getStoredCars().indexOf(carData)
         if (carPos != carSelectPos) {
             Log.d(TAG, "updateCarInfoView: id=" + carData.sel_vehicleid + " pos=" + carPos)
             carSelectPos = carPos
             carSelect.setSelection(carSelectPos)
         }
-        tv = findViewById(R.id.tabInfoTextSOC) as TextView
+        val tv = findViewById(R.id.tabInfoTextSOC) as TextView
         tv.text = carData.car_soc
         val cmtv = findViewById(R.id.tabInfoTextChargeMode) as TextView
         val coiv = findViewById(R.id.tabInfoImageBatteryChargingOverlay) as ImageView
@@ -775,7 +792,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     carData.car_charge_kwhconsumed
                 )
             } else {
-                if(carData!!.car_type == "SQ") {
+                if(carData.car_type == "SQ") {
                     String.format(
                         "▾%.1fkWh      ⚡%.1fkW",
                         carData.car_charge_kwhconsumed,
@@ -879,18 +896,64 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 }
             }
         }
+
+        // ideal/est range
         val ideallabel = findViewById(R.id.tabInfoTextIdealLabel) as TextView
-        tv = findViewById(R.id.tabInfoTextIdealRange) as TextView
-        if (this.carData!!.car_type == "SQ") {
+        val idealtv = findViewById(R.id.tabInfoTextIdealRange) as TextView
+        if (carData.car_type == "SQ") {
             // calculate ideal (minimal) range for SQ
             ideallabel.text = getString(R.string.Idealminimal)
-            tv.text = String.format("%.1f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
+            idealtv.text = String.format("%.1f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
             // ideallabel.textSize = 14F
         }else{
-            tv.text = carData.car_range_ideal
+            idealtv.text = carData.car_range_ideal
         }
-        tv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
-        tv.text = carData.car_range_estimated
+        val esttv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
+        esttv.text = carData.car_range_estimated
+
+        // Smart EQ: cabin/ambient temperature A/C
+
+        val ambientiv = findViewById(R.id.tabInfoImageTemperatureText) as ImageView
+        val ambienttvl = findViewById(R.id.tabInfoTextAmbientLabel) as TextView
+        val ambienttv = findViewById(R.id.tabInfoTextAmbient) as TextView
+        val cabintvl = findViewById(R.id.tabInfoTextCabinLabel) as TextView
+        val cabintv = findViewById(R.id.tabInfoTextCabin) as TextView
+
+        ambientiv.setVisibility(View.INVISIBLE)
+        ambienttvl.visibility = View.INVISIBLE
+        ambienttv.visibility = View.INVISIBLE
+        cabintvl.visibility = View.INVISIBLE
+        cabintv.visibility = View.INVISIBLE
+
+        val tabCarImageCarACBoxes = findViewById(R.id.tabCarImageCarACBoxes) as ImageView
+        val tabCarImageAC: ImageView = findViewById(R.id.tabCarImageAC) as ImageView
+        val tabCarImageBatt = findViewById(R.id.tabInfoImageBattery)
+        tabCarImageBatt.isClickable = true
+        tabCarImageCarACBoxes.setVisibility(View.INVISIBLE)
+        tabCarImageAC.setVisibility(View.INVISIBLE)
+        tabCarImageAC.isClickable = false
+
+        if (carData.car_type == "SQ") {
+            tabCarImageBatt.isClickable = false
+            tabCarImageAC.isClickable = true
+            ambientiv.setVisibility(View.VISIBLE)
+            ambienttvl.text = getString(R.string.textAMBIENT)
+            ambienttv.text = carData.car_temp_ambient
+            cabintvl.text = getString(R.string.textCAB)
+            cabintv.text = carData.car_temp_cabin
+            ambientiv.setVisibility(View.VISIBLE)
+            ambienttvl.visibility = View.VISIBLE
+            ambienttv.visibility = View.VISIBLE
+            cabintvl.visibility = View.VISIBLE
+            cabintv.visibility = View.VISIBLE
+            tabCarImageCarACBoxes.setVisibility(View.VISIBLE)
+            tabCarImageAC.setVisibility(View.VISIBLE)
+            if (carData.car_hvac_on) {
+                tabCarImageAC.setImageResource(R.drawable.ic_ac_on)
+            } else {
+                tabCarImageAC.setImageResource(R.drawable.ic_ac_off)
+            }
+        }
 
         // resize Battery image
         val maxWeight = (findViewById(R.id.tabInfoTextSOC) as TextView).layoutParams.width
@@ -928,14 +991,14 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             batt.visibility = View.INVISIBLE
             battc.visibility = View.VISIBLE
             chargeing.visibility = View.VISIBLE
-            tv = findViewById(R.id.tabInfoTextSOC) as TextView
-            tv.setTextColor(-0xFF)
+            val soctv = findViewById(R.id.tabInfoTextSOC) as TextView
+            soctv.setTextColor(-0xFF)
         }else{
             batt.visibility = View.VISIBLE
             battc.visibility = View.INVISIBLE
             chargeing.visibility = View.INVISIBLE
-            tv = findViewById(R.id.tabInfoTextSOC) as TextView
-            tv.setTextColor(-0x1)
+            val soctv = findViewById(R.id.tabInfoTextSOC) as TextView
+            soctv.setTextColor(-0x1)
         }
 
         val iv = findViewById(R.id.img_signal_rssi) as ImageView
