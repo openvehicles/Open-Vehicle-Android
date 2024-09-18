@@ -396,15 +396,14 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         }
     }
     private fun buttonAC() {
-
+        val dialogView = LayoutInflater.from(activity).inflate(
+            R.layout.dlg_charger_twizy, null
+        )
         AlertDialog.Builder(requireActivity())
             .setTitle(R.string.textAC)
             .setNegativeButton(R.string.Cancel, null)
-            .setPositiveButton(
-                android.R.string.ok
-            ) { dlg, which ->
-                sendCommand(R.string.msg_issuing_climatecontrol, "26,1", this@InfoFragment )
-            }
+            // .setNegativeButton(R.string.Cancel) { dlg, which -> sendCommand(R.string.msg_issuing_climatecontrol, "26,0", this@InfoFragment ) }
+            .setPositiveButton(android.R.string.ok) { dlg, which -> sendCommand(R.string.msg_issuing_climatecontrol, "26,1", this@InfoFragment ) }
             .show()
     }
 
@@ -912,7 +911,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         esttv.text = carData.car_range_estimated
 
         // Smart EQ: cabin/ambient temperature A/C
-
         val ambientiv = findViewById(R.id.tabInfoImageTemperatureText) as ImageView
         val ambienttvl = findViewById(R.id.tabInfoTextAmbientLabel) as TextView
         val ambienttv = findViewById(R.id.tabInfoTextAmbient) as TextView
@@ -926,15 +924,31 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         cabintv.visibility = View.INVISIBLE
 
         val tabCarImageCarACBoxes = findViewById(R.id.tabCarImageCarACBoxes) as ImageView
-        val tabCarImageAC: ImageView = findViewById(R.id.tabCarImageAC) as ImageView
-        val tabCarImageBatt = findViewById(R.id.tabInfoImageBattery)
-        tabCarImageBatt.isClickable = true
+        val tabCarImageAC = findViewById(R.id.tabCarImageAC) as ImageView
+        val tabInfoImageBattery = findViewById(R.id.tabInfoImageBattery)
+        val tabInfoTextSOC = findViewById(R.id.tabInfoTextSOC) as TextView
+        val tabInfoTextChargeMode = findViewById(R.id.tabInfoTextChargeMode)
+        val tabInfoImageBatteryChargingOverlay = findViewById(R.id.tabInfoImageBatteryChargingOverlay) as ImageView
+        val tabInfoImageBatteryAnimation = findViewById(R.id.tabInfoImageBatteryAnimation) as ImageView
+        val tabInfoImageBatteryOverlay = findViewById(R.id.tabInfoImageBatteryOverlay)
+
         tabCarImageCarACBoxes.setVisibility(View.INVISIBLE)
         tabCarImageAC.setVisibility(View.INVISIBLE)
+        tabInfoImageBattery.isClickable = true
+        tabInfoTextSOC.isClickable = true
+        tabInfoTextChargeMode.isClickable = true
+        tabInfoImageBatteryChargingOverlay.isClickable = true
+        tabInfoImageBatteryAnimation.isClickable = true
+        tabInfoImageBatteryOverlay.isClickable = true
         tabCarImageAC.isClickable = false
 
         if (carData.car_type == "SQ") {
-            tabCarImageBatt.isClickable = false
+            tabInfoImageBattery.isClickable = false
+            tabInfoTextSOC.isClickable = false
+            tabInfoTextChargeMode.isClickable = false
+            tabInfoImageBatteryChargingOverlay.isClickable = false
+            tabInfoImageBatteryAnimation.isClickable = false
+            tabInfoImageBatteryOverlay.isClickable = false
             tabCarImageAC.isClickable = true
             ambientiv.setVisibility(View.VISIBLE)
             ambienttvl.text = getString(R.string.textAMBIENT)
