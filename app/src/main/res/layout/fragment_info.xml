@@ -72,6 +72,13 @@
 			android:layout_x="110px"
 			android:layout_y="450px"
 			android:background="@drawable/battery_overlay_t" />
+		<View
+			android:id="@+id/tabInfoImageBatteryOverlayC"
+			android:layout_width="330px"
+			android:layout_height="105px"
+			android:layout_x="110px"
+			android:layout_y="450px"
+			android:background="@drawable/battery_overlay_t" />
 
 		<TextView
 			android:id="@+id/tabInfoTextSOC"

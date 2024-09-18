@@ -892,30 +892,50 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         tv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
         tv.text = carData.car_range_estimated
 
-        // animated charging
+        // resize Battery image
         val maxWeight = (findViewById(R.id.tabInfoTextSOC) as TextView).layoutParams.width
         val realWeight = Math
             .round(maxWeight * carData.car_soc_raw / 100 * 1.1f)
         val batt = findViewById(R.id.tabInfoImageBatteryOverlay)
         batt.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
         batt.requestLayout()
-        val chargeing = findViewById(R.id.tabInfoImageBatteryAnimation)
+        batt.visibility = View.VISIBLE
 
+        // animated charging: Battery image
+        val battc = findViewById(R.id.tabInfoImageBatteryOverlayC)
+        battc.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
+        battc.requestLayout()
+        val animator = ObjectAnimator.ofFloat(battc, "alpha", 0.7F, 0F)
+        animator.repeatCount = ObjectAnimator.INFINITE
+        animator.duration = 1500
+        animator.repeatMode = ObjectAnimator.REVERSE
+        animator.start()
+        battc.visibility = View.INVISIBLE
+
+        // animated charging: charge Battery image
+        val chargeing = findViewById(R.id.tabInfoImageBatteryAnimation)
         chargeing.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
         chargeing.requestLayout()
-        if (carData.car_chargeport_open) {
-            val animator = ObjectAnimator.ofFloat(batt, "alpha", 0.7F, 0F)
-            animator.repeatCount = ObjectAnimator.INFINITE
-            animator.run { duration = 1500 }
-            animator.repeatMode = ObjectAnimator.REVERSE
-            animator.start()
-            val animatorcharge = ObjectAnimator.ofFloat(chargeing, "alpha", 0.4F, 1F)
-            animatorcharge.repeatCount = ObjectAnimator.INFINITE
-            animatorcharge.run { duration = 1500 }
-            animatorcharge.repeatMode = ObjectAnimator.REVERSE
-            animatorcharge.start()
+        val animatorcharge = ObjectAnimator.ofFloat(chargeing, "alpha", 0.4F, 1F)
+        animatorcharge.repeatCount = ObjectAnimator.INFINITE
+        animatorcharge.duration = 1500
+        animatorcharge.repeatMode = ObjectAnimator.REVERSE
+        animatorcharge.start()
+        chargeing.visibility = View.INVISIBLE
+
+        // switch animation on/off depending on charge power input
+        if (carData.car_charge_power_input_kw_raw > 1) {
+            batt.visibility = View.INVISIBLE
+            battc.visibility = View.VISIBLE
+            chargeing.visibility = View.VISIBLE
             tv = findViewById(R.id.tabInfoTextSOC) as TextView
             tv.setTextColor(-0xFF)
+        }else{
+            batt.visibility = View.VISIBLE
+            battc.visibility = View.INVISIBLE
+            chargeing.visibility = View.INVISIBLE
+            tv = findViewById(R.id.tabInfoTextSOC) as TextView
+            tv.setTextColor(-0x1)
         }
 
         val iv = findViewById(R.id.img_signal_rssi) as ImageView

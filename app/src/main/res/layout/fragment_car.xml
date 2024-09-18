@@ -326,7 +326,8 @@
 			android:singleLine="false"
 			android:text="123456.7km"
 			android:textColor="@color/colorForeground"
-			android:textSize="26px"
+			android:textSize="30px"
+			android:textStyle="bold"
 			android:typeface="monospace" />
 
 		<TextView
