@@ -396,7 +396,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         }
     }
     private fun buttonAC() {
-        val dialogView = LayoutInflater.from(activity).inflate(
+        LayoutInflater.from(activity).inflate(
             R.layout.dlg_charger_twizy, null
         )
         AlertDialog.Builder(requireActivity())
@@ -917,30 +917,17 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val cabintvl = findViewById(R.id.tabInfoTextCabinLabel) as TextView
         val cabintv = findViewById(R.id.tabInfoTextCabin) as TextView
 
-        ambientiv.setVisibility(View.INVISIBLE)
-        ambienttvl.visibility = View.INVISIBLE
-        ambienttv.visibility = View.INVISIBLE
-        cabintvl.visibility = View.INVISIBLE
-        cabintv.visibility = View.INVISIBLE
-
         val tabCarImageCarACBoxes = findViewById(R.id.tabCarImageCarACBoxes) as ImageView
         val tabCarImageAC = findViewById(R.id.tabCarImageAC) as ImageView
-        val tabInfoImageBattery = findViewById(R.id.tabInfoImageBattery)
+        val tabInfoImageBattery = findViewById(R.id.tabInfoImageBattery) as ImageView
         val tabInfoTextSOC = findViewById(R.id.tabInfoTextSOC) as TextView
-        val tabInfoTextChargeMode = findViewById(R.id.tabInfoTextChargeMode)
+        val tabInfoTextChargeMode = findViewById(R.id.tabInfoTextChargeMode) as TextView
         val tabInfoImageBatteryChargingOverlay = findViewById(R.id.tabInfoImageBatteryChargingOverlay) as ImageView
         val tabInfoImageBatteryAnimation = findViewById(R.id.tabInfoImageBatteryAnimation) as ImageView
         val tabInfoImageBatteryOverlay = findViewById(R.id.tabInfoImageBatteryOverlay)
-
-        tabCarImageCarACBoxes.setVisibility(View.INVISIBLE)
-        tabCarImageAC.setVisibility(View.INVISIBLE)
-        tabInfoImageBattery.isClickable = true
-        tabInfoTextSOC.isClickable = true
-        tabInfoTextChargeMode.isClickable = true
-        tabInfoImageBatteryChargingOverlay.isClickable = true
-        tabInfoImageBatteryAnimation.isClickable = true
-        tabInfoImageBatteryOverlay.isClickable = true
-        tabCarImageAC.isClickable = false
+        val tabInfoImageChargeEtr = findViewById(R.id.tabInfoImageChargeEtr) as ImageView
+        val tabInfoTextChargeEtrSuff = findViewById(R.id.tabInfoTextChargeEtrSuff) as TextView
+        val tabInfoTextChargeEtrFull = findViewById(R.id.tabInfoTextChargeEtrFull) as TextView
 
         if (carData.car_type == "SQ") {
             tabInfoImageBattery.isClickable = false
@@ -967,6 +954,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             } else {
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_off)
             }
+            // move ETR image/text down
+            tabInfoImageChargeEtr.translationY = "170".toFloat()
+            tabInfoTextChargeEtrSuff.translationY = "170".toFloat()
+            tabInfoTextChargeEtrFull.translationY = "170".toFloat()
         }
 
         // resize Battery image

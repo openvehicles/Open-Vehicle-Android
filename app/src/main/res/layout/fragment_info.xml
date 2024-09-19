@@ -57,7 +57,8 @@
 			android:layout_height="105px"
 			android:layout_x="110px"
 			android:layout_y="450px"
-			android:background="@drawable/battery_100_c" />
+			android:background="@drawable/battery_100_c"
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabInfoImageBatteryChargingOverlay"
@@ -74,33 +75,37 @@
 			android:layout_x="110px"
 			android:layout_y="450px"
 			android:background="@drawable/battery_overlay_t" />
+
 		<View
 			android:id="@+id/tabInfoImageBatteryOverlayC"
 			android:layout_width="330px"
 			android:layout_height="105px"
 			android:layout_x="110px"
 			android:layout_y="450px"
-			android:background="@drawable/battery_overlay_t" />
+			android:background="@drawable/battery_overlay_t"
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarACBoxes"
 			style="@style/TabCarImgLetterBox"
-			android:layout_width="107px"
+			android:layout_width="80px"
 			android:layout_height="71px"
-			android:layout_x="235px"
+			android:layout_x="248px"
 			android:layout_y="770px"
-			android:src="@drawable/letterbox_ac" />
+			android:src="@drawable/letterbox_ac"
+			android:visibility="invisible" />
 
 		<ImageView
 			android:id="@+id/tabCarImageAC"
-			android:layout_width="107px"
+			android:layout_width="80px"
 			android:layout_height="71px"
-			android:layout_x="235px"
+			android:layout_x="248px"
 			android:layout_y="770px"
-			android:clickable="true"
-			android:focusable="true"
 			android:background="@drawable/letterbox"
+			android:clickable="false"
+			android:focusable="true"
 			android:src="@drawable/ic_ac_off"
+			android:visibility="invisible"
 			tools:ignore="PxUsage" />
 
 		<TextView
@@ -180,7 +185,8 @@
 			android:layout_height="76px"
 			android:layout_x="57px"
 			android:layout_y="675px"
-			android:src="@drawable/battery_textbox" />
+			android:src="@drawable/battery_textbox"
+			android:visibility="invisible" />
 
 		<TextView
 			android:id="@+id/tabInfoTextIdealLabel"
@@ -224,7 +230,8 @@
 			android:layout_width="200px"
 			android:layout_x="59px"
 			android:layout_y="675px"
-			android:text="@string/textAMBIENT" />
+			android:text="@string/textAMBIENT"
+			android:visibility="invisible" />
 
 		<TextView
 			android:id="@+id/tabInfoTextAmbient"
@@ -234,7 +241,8 @@
 			android:layout_y="714px"
 			android:text="0°C"
 			android:textSize="22px"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:visibility="invisible" />
 
 		<TextView
 			android:id="@+id/tabInfoTextCabinLabel"
@@ -242,7 +250,8 @@
 			android:layout_width="200px"
 			android:layout_x="322px"
 			android:layout_y="675px"
-			android:text="@string/textCAB" />
+			android:text="@string/textCAB"
+			android:visibility="invisible" />
 
 		<TextView
 			android:id="@+id/tabInfoTextCabin"
@@ -252,7 +261,8 @@
 			android:layout_y="714px"
 			android:text="0°C"
 			android:textSize="22px"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:visibility="invisible" />
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeStatusLeft"
