@@ -142,8 +142,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || carData.car_type == "VWUP"
             || carData.car_type == "VWUP.T26") {
             // enable
-            tabCarImageCarACBoxes.setVisibility(View.VISIBLE)
-            tabCarImageAC.setVisibility(View.VISIBLE)
+            tabCarImageCarACBoxes.visibility = View.VISIBLE
+            tabCarImageAC.visibility = View.VISIBLE
             if (carData.car_hvac_on) {
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_on)
             } else {
@@ -151,8 +151,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
         } else {
             // disable
-            tabCarImageCarACBoxes.setVisibility(View.INVISIBLE)
-            tabCarImageAC.setVisibility(View.INVISIBLE)
+            tabCarImageCarACBoxes.visibility = View.INVISIBLE
+            tabCarImageAC.visibility = View.INVISIBLE
         }
         uiCarType = carData.car_type
 
@@ -673,18 +673,18 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         tv = findViewById(R.id.tabCarTextAmbient) as TextView
         when (carData.stale_ambient_temp) {
             DataStale.NoValue -> {
-                iv.setVisibility(View.INVISIBLE)
+                iv.visibility = View.INVISIBLE
                 label.visibility = View.INVISIBLE
                 tv.text = null
             }
             DataStale.Stale -> {
-                iv.setVisibility(View.VISIBLE)
+                iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
                 tv.text = carData.car_temp_ambient
                 tv.setTextColor(-0x7f7f80)
             }
             else -> {
-                iv.setVisibility(View.VISIBLE)
+                iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
                 tv.text = carData.car_temp_ambient
                 tv.setTextColor(-0x1)
@@ -767,7 +767,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // Update display:
         if (stale1 == DataStale.NoValue) {
-            iv.setVisibility(View.INVISIBLE)
+            iv.visibility = View.INVISIBLE
             fltv.text = null
             frtv.text = null
             rltv.text = null
@@ -777,7 +777,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             rltvv.text = null
             rrtvv.text = null
         } else {
-            iv.setVisibility(View.VISIBLE)
+            iv.visibility = View.VISIBLE
 
             if (carData.car_type == "SQ") {
                 // fix the wrong side of the tires
@@ -1022,7 +1022,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // Car Hood
         iv = findViewById(R.id.tabCarImageCarHoodOpen) as ImageView
-        iv.setVisibility(if (carData.car_bonnet_open) View.VISIBLE else View.INVISIBLE)
+        iv.visibility = if (carData.car_bonnet_open) View.VISIBLE else View.INVISIBLE
         if (carData.car_type.startsWith("VA")) {
             // Volt, Ampera
             iv.setImageResource(R.drawable.voltampera_outline_hd)
@@ -1032,222 +1032,222 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         if (carData.sel_vehicle_image.startsWith("car_zoe_")) {
             // Left Door Zoe
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_ld)
 
             // Right Door Zoe
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rd)
 
             // Rear Left Door Zoe
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rld)
 
             // Rear Right Door Zoe
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rrd)
 
             // Trunk Zoe
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_tr)
 
             // Headlights Zoe
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_mgzs_")) {
             // Left Door MGZS
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_ld)
 
             // Right Door MGZS
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rd)
 
             // Rear Left Door MGZS
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rld)
 
             // Rear Right Door MGZS
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rrd)
 
             // Trunk MGZS
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_tr)
 
             // Headlights MGZS
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
             // Left Door Smart
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_ld)
 
             // Right Door Smart
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_rd)
 
             // Trunk Smart
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_tr)
 
             // Headlights Smart
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_leaf")) {
             // Left Door Leaf
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_ld)
 
             // Right Door Leaf
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rd)
 
             // Rear Left Door Leaf
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rld)
 
             // Rear Right Door Leaf
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rrd)
 
             // Trunk Leaf
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_tr)
 
             // Headlights Leaf
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             if (carData.sel_vehicle_image.startsWith("car_leaf2")) {
                 iv.setImageResource(R.drawable.leaf2_carlights)
             } else iv.setImageResource(R.drawable.leaf_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_vwup_")) {
             // Left Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_ld)
 
             // Right Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rd)
 
             // Rear Left Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rld)
 
             // Rear Right Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rrd)
 
             // Trunk VW e-Up
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_tr)
 
             // Headlights VW e-Up
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_ampera_")
             || carData.sel_vehicle_image.startsWith("car_holdenvolt_")) {
             // Left Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_ld)
 
             // Right Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rd)
 
             // Rear Left Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rld)
 
             // Rear Right Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rrd)
 
             // Trunk Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_tr)
 
             // Headlights Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_kangoo_")) {
             // Left Door Kangoo
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_ld)
 
             // Right Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rd)
 
             // Rear Left Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rld)
 
             // Rear Right Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rrd)
 
             // Trunk Kangoo
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_tr)
 
             // Headlights Kangoo
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_carlights)
         } else {
             // Left Door
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
 
             // Right Door
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
 
             // Trunk
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
 
             // Headlights
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
         }
 
         // Car locked
@@ -1296,9 +1296,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // Charge Port
         iv = findViewById(R.id.tabCarImageCarChargePortOpen) as ImageView
         if (!carData.car_chargeport_open) {
-            iv.setVisibility(View.INVISIBLE)
+            iv.visibility = View.INVISIBLE
         } else {
-            iv.setVisibility(View.VISIBLE)
+            iv.visibility = View.VISIBLE
             if (carData.sel_vehicle_image.startsWith("car_twizy_")) {
                 // Renault Twizy:
                 iv.setImageResource(R.drawable.ol_car_twizy_chargeport)
@@ -1377,7 +1377,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 } else if (carData.car_charge_state_i_raw == 0x04) {
                     // Charging done
                     iv.setImageResource(R.drawable.roadster_outline_cd)
-                } else if (carData.car_charge_state_i_raw >= 0x15 && carData.car_charge_state_i_raw <= 0x19) {
+                } else if (carData.car_charge_state_i_raw in 0x15..0x19) {
                     // Stopped
                     iv.setImageResource(R.drawable.roadster_outline_cs)
                 } else {

@@ -1,3 +1,5 @@
+@file:Suppress("DEPRECATION")
+
 package com.openvehicles.OVMS.ui
 
 import android.animation.ObjectAnimator
@@ -122,7 +124,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 scaleLayout.context.resources,
                 R.drawable.charger_button
             )
-            var tw = (srcBmp.getWidth() * (lp.height / srcBmp.getHeight()))
+            var tw = (srcBmp.width * (lp.height / srcBmp.height))
             var th = lp.height
             if (tw < 40) {
                 tw = 61
@@ -139,7 +141,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 scaleLayout
                     .context.resources, dstBmp
             )
-            sb.setThumb(drw)
+            sb.thumb = drw
             // sb.setThumbOffset(dstBmp.getWidth() / 9);
         }
         setHasOptionsMenu(true)
@@ -165,7 +167,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
 
     override fun onResume() {
         super.onResume()
-        carSelect.setAdapter(CarSelectAdapter())
+        carSelect.adapter = CarSelectAdapter()
         carSelectPos = carsStorage.getSelectedCarIndex()
         carSelect.setSelection(carSelectPos)
         Log.d(TAG, "onResume: pos=" + carSelectPos + ", id=" + carData!!.sel_vehicleid)
@@ -646,8 +648,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             }
             infoEtr += infoEtrFull
         }
+
         textView = findViewById(R.id.tabInfoTextChargeEtrFull) as TextView?
-        if (textView != null) {
+        if ((textView != null) && (carData!!.car_type != "SQ")){
             textView.text = infoEtr
             if (infoEtr != "") {
                 etrVisible = true
@@ -656,10 +659,21 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 textView.visibility = View.INVISIBLE
             }
         }
+        // Smart EQ (SQ)
+        val textViewEQ = findViewById(R.id.tabInfoTextChargeEtrFullEQ) as TextView?
+        if ((textViewEQ != null) && (carData!!.car_type == "SQ")) {
+            textViewEQ.text = infoEtr
+            if (infoEtr != "") {
+                etrVisible = true
+                textViewEQ.visibility = View.VISIBLE
+            } else {
+                textViewEQ.visibility = View.INVISIBLE
+            }
+        }
 
         // display background if any ETR visible:
         val bgImg = findViewById(R.id.tabInfoImageChargeEtr) as ImageView?
-        bgImg?.setVisibility(if (etrVisible) View.VISIBLE else View.INVISIBLE)
+        bgImg?.visibility = if (etrVisible) View.VISIBLE else View.INVISIBLE
     }
 
     // This updates the part of the view with times shown.
@@ -774,7 +788,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             findViewById(R.id.tabInfoImageCharger).visibility = View.INVISIBLE
             bar.visibility = View.INVISIBLE
             cmtv.visibility = View.INVISIBLE
-            coiv.setVisibility(View.INVISIBLE)
+            coiv.visibility = View.INVISIBLE
             tvl.visibility = View.INVISIBLE
             tvr.visibility = View.INVISIBLE
             tvf.visibility = View.INVISIBLE
@@ -831,7 +845,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     )
                     tvf.visibility = View.VISIBLE
                 }
-                coiv.setVisibility(View.VISIBLE)
+                coiv.visibility = View.VISIBLE
             } else {
                 // Standard car:
                 findViewById(R.id.tabInfoImageCharger).visibility = View.VISIBLE
@@ -844,7 +858,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                         bar.progress = 100
                         tvl.text = null
                         tvr.text = getText(R.string.slidetocharge)
-                        coiv.setVisibility(View.INVISIBLE)
+                        coiv.visibility = View.INVISIBLE
                         tvPowerInput.visibility = View.INVISIBLE
                         tvPowerLoss.visibility = View.INVISIBLE
                     }
@@ -854,7 +868,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                         bar.progress = 100
                         tvl.text = null
                         tvr.text = getText(R.string.timedcharge)
-                        coiv.setVisibility(View.INVISIBLE)
+                        coiv.visibility = View.INVISIBLE
                         tvPowerInput.visibility = View.INVISIBLE
                         tvPowerLoss.visibility = View.INVISIBLE
                     }
@@ -868,7 +882,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                             carData.car_charge_current
                         )
                         tvr.text = ""
-                        coiv.setVisibility(View.VISIBLE)
+                        coiv.visibility = View.VISIBLE
                         if (carData.car_charge_power_input_kw_raw > 0) {
                             tvPowerInput.text = carData.car_charge_power_input_kw
                             tvPowerInput.visibility = View.VISIBLE
@@ -888,7 +902,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                         bar.progress = 100
                         tvl.text = null
                         tvr.text = null
-                        coiv.setVisibility(View.INVISIBLE)
+                        coiv.visibility = View.INVISIBLE
                         tvPowerInput.visibility = View.INVISIBLE
                         tvPowerLoss.visibility = View.INVISIBLE
                     }
@@ -937,18 +951,18 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tabInfoImageBatteryAnimation.isClickable = false
             tabInfoImageBatteryOverlay.isClickable = false
             tabCarImageAC.isClickable = true
-            ambientiv.setVisibility(View.VISIBLE)
+            ambientiv.visibility = View.VISIBLE
             ambienttvl.text = getString(R.string.textAMBIENT)
             ambienttv.text = carData.car_temp_ambient
             cabintvl.text = getString(R.string.textCAB)
             cabintv.text = carData.car_temp_cabin
-            ambientiv.setVisibility(View.VISIBLE)
+            ambientiv.visibility = View.VISIBLE
             ambienttvl.visibility = View.VISIBLE
             ambienttv.visibility = View.VISIBLE
             cabintvl.visibility = View.VISIBLE
             cabintv.visibility = View.VISIBLE
-            tabCarImageCarACBoxes.setVisibility(View.VISIBLE)
-            tabCarImageAC.setVisibility(View.VISIBLE)
+            tabCarImageCarACBoxes.visibility = View.VISIBLE
+            tabCarImageAC.visibility = View.VISIBLE
             if (carData.car_hvac_on) {
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_on)
             } else {
@@ -1045,13 +1059,11 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 } else {
                     ImageView(parent.context)
                 }
-                iv.setLayoutParams(
-                    Gallery.LayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
-                    )
+                iv.layoutParams = Gallery.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT
                 )
-                iv.setScaleType(ImageView.ScaleType.FIT_START)
-                iv.setAdjustViewBounds(true)
+                iv.scaleType = ImageView.ScaleType.FIT_START
+                iv.adjustViewBounds = true
                 iv.setImageResource(
                     getDrawableIdentifier(
                         parent.context,
