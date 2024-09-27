@@ -624,6 +624,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         } else if (carData.sel_vehicle_image.startsWith("car_i3_")) {
             // BMW i3: one ol image for all colors since roof is same:
             iv.setImageResource(R.drawable.ol_car_i3)
+        } else if (carData.sel_vehicle_image.startsWith("car_smart_44")) {
+            // smart ED: one ol image for all colors:
+            iv.setImageResource(R.drawable.ol_car_vwup_black)
         } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
             // smart ED: one ol image for all colors:
             iv.setImageResource(R.drawable.ol_car_smart)
@@ -1089,7 +1092,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
             iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_carlights)
-        } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
+        } else if ((carData.sel_vehicle_image.startsWith("car_smart_"))||(!carData.sel_vehicle_image.startsWith("car_smart_44_")))  {
             // Left Door Smart
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
             iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
@@ -1141,7 +1144,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.sel_vehicle_image.startsWith("car_leaf2")) {
                 iv.setImageResource(R.drawable.leaf2_carlights)
             } else iv.setImageResource(R.drawable.leaf_carlights)
-        } else if (carData.sel_vehicle_image.startsWith("car_vwup_")) {
+        } else if ((carData.sel_vehicle_image.startsWith("car_vwup_"))||(carData.sel_vehicle_image.startsWith("car_smart_44_"))) {
             // Left Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
             iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
