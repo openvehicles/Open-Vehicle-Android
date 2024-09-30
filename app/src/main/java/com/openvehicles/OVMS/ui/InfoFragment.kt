@@ -969,7 +969,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_off)
             }
             // move ETR image/text down
-            tabInfoImageChargeEtr.translationY = "170".toFloat()
+            tabInfoImageChargeEtr.translationY = "240".toFloat()
             tabInfoTextChargeEtrSuff.translationY = "170".toFloat()
             tabInfoTextChargeEtrFull.translationY = "170".toFloat()
         }

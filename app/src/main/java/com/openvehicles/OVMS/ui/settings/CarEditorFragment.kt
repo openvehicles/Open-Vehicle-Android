@@ -341,6 +341,7 @@ class CarEditorFragment : BaseFragment() {
             "car_smart_eq_fl_white",
             "car_smart_44_black",
             "car_smart_44_white_silver",
+            "car_smart_44_fl_black",
             "car_zoe_black",
             "car_vwup_black",
             "car_vwup_blue",
