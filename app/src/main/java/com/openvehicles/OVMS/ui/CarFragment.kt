@@ -446,7 +446,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
-                    menu.add(0, MI_HL_02, 0, "2")
+                    menu.add(0, MI_HL_02, 0, "Booster Timer reset")
                     menu.add(0, MI_HL_03, 0, "Modul reboot")
                     menu.add(R.string.Cancel)
                 } else {
@@ -495,8 +495,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_02 -> {
+                if (carData!!.car_type == "SQ") {
+                    appPrefs.saveData("booster_on", "off")
+                    appPrefs.saveData("booster_weekly_on", "off")
+                    sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
+                    sendCommand(R.string.msg_issuing_homelink, "7,script reload", this)
+                    true
+                } else {
                     sendCommand(R.string.msg_issuing_homelink, "24,1", this)
                     true
+                }
             }
             MI_HL_03 -> {
                 if (carData!!.car_type == "SQ") {
