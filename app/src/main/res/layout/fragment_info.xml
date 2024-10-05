@@ -108,6 +108,41 @@
 			android:visibility="invisible"
 			tools:ignore="PxUsage" />
 
+		<ImageView
+			android:id="@+id/tabCarImageBooster"
+			android:layout_width="80px"
+			android:layout_height="71px"
+			android:layout_x="98px"
+			android:layout_y="770px"
+			android:clickable="false"
+			android:focusable="true"
+			android:src="@drawable/heat_cool"
+			android:visibility="invisible"
+			tools:ignore="PxUsage" />
+
+		<TextView
+			android:id="@+id/tabInfoTextBoostertime"
+			style="@style/TabCarTextBox"
+			android:layout_width="80px"
+			android:layout_x="98px"
+			android:layout_y="785px"
+			android:text="1200"
+			android:textSize="28px"
+			android:textStyle="bold"
+			android:visibility="invisible" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCalendar"
+			android:layout_width="80px"
+			android:layout_height="71px"
+			android:layout_x="398px"
+			android:layout_y="770px"
+			android:clickable="false"
+			android:focusable="true"
+			android:src="@drawable/calendar"
+			android:visibility="invisible"
+			tools:ignore="PxUsage" />
+
 		<TextView
 			android:id="@+id/tabInfoTextSOC"
 			android:layout_width="330px"

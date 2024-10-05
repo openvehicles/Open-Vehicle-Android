@@ -32,7 +32,6 @@ import com.openvehicles.OVMS.ui.utils.Ui.showPinDialog
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import kotlin.math.floor
-import kotlin.text.toFloat
 
 class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListener {
 
@@ -71,6 +70,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
      *
      * @param carData
      */
+
     private fun setupCarType(carData: CarData?) {
         Log.d(TAG, "updateCarType: old=" + uiCarType + ", new=" + carData!!.car_type)
         if (uiCarType == carData.car_type) {
@@ -390,14 +390,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         override fun onAction(data: String?) {
                             val cmd: String
                             val resId: Int
-                            if (carData!!.car_valetmode) {
+                            if (carData!!.car_type == "SQ") {
                                 resId = dialogButton
-                                cmd = "23,$data"
-                            } else {
-                                resId = dialogButton
-                                cmd = "21,$data"
+                                cmd = "7,config set usr b.scheduled $data"
+                                sendCommand(resId, cmd, this@CarFragment)
+                                sendCommand(resId, "7,config set usr b.activated yes", this@CarFragment)
+                                sendCommand(resId, "7,script reload", this@CarFragment)
+                            }else {
+                                if (carData!!.car_valetmode) {
+                                    resId = dialogButton
+                                    cmd = "23,$data"
+                                } else {
+                                    resId = dialogButton
+                                    cmd = "21,$data"
+                                }
+                                sendCommand(resId, cmd, this@CarFragment)
                             }
-                            sendCommand(resId, cmd, this@CarFragment)
                         }
                     })
             }
@@ -452,6 +460,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     menu.setHeaderTitle(R.string.textAC)
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    menu.add(0, MI_AC_BON, 0, R.string.lb_booster_on)
+                    menu.add(0, MI_AC_BT, 0, R.string.lb_booster_timer)
+                    menu.add(0, MI_AC_BW, 0, R.string.lb_booster_weekly)
+                    menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_start)
+                    menu.add(0, MI_AC_BDE, 0, R.string.lb_booster_day_end)
                     menu.add(R.string.Cancel)
                 } else {
                     menu.setHeaderTitle(R.string.textAC)
@@ -464,6 +477,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
+        // "Booster" box:
+        val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
+        val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
+        val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time")
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on") == "on") View.VISIBLE else View.INVISIBLE
         return when (item.itemId) {
             MI_WAKEUP -> {
                 sendCommand(R.string.msg_wakeup_car, "18", this)
@@ -474,8 +495,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_02 -> {
-                sendCommand(R.string.msg_issuing_homelink, "24,1", this)
-                true
+                    sendCommand(R.string.msg_issuing_homelink, "24,1", this)
+                    true
             }
             MI_HL_03 -> {
                 if (carData!!.car_type == "SQ") {
@@ -496,6 +517,130 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_AC_OFF -> {
                 sendCommand(R.string.msg_issuing_climatecontrol, "26,0", this)
+                true
+            }
+            MI_AC_BON -> {
+                val state = appPrefs.getData("booster_on")
+                val state_weekly = appPrefs.getData("booster_weekly_on")
+                val newState = if (state == "on") "off" else "on"
+                tabCarImageBooster.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
+                tabInfoTextBoostertime.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
+                appPrefs.saveData("booster_on", newState)
+                if ((state_weekly == "on")&&(newState == "off")) {
+                    tabCarImageCalendar.visibility = View.INVISIBLE
+                    appPrefs.saveData("booster_on", "off")
+                    appPrefs.saveData("booster_weekly_on", "off")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        this
+                    )
+                } else {
+                    appPrefs.saveData("booster_on", "off")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,0,0,-1,-1",
+                        this
+                    )
+                }
+                true
+            }
+            MI_AC_BT -> {
+                // show booster timer dialog:
+                showPinDialog(
+                    requireActivity(),
+                    R.string.lb_booster_timer_set,
+                    R.string.msg_ok,
+                    false,
+                    object : Ui.OnChangeListener<String?> {
+                        override fun onAction(data: String?) {
+                            tabCarImageBooster.visibility = View.VISIBLE
+                            tabInfoTextBoostertime.visibility = View.VISIBLE
+                            val state = appPrefs.getData("booster_on")
+                            val resId: Int = R.string.lb_booster_timer
+                            val time = data!!.toString()
+                            val cmd: String = "7,config set usr b.data 1,0,0,$data,-1,-1"
+                            appPrefs.saveData("booster_on", "on")
+                            appPrefs.saveData("booster_time", time)
+                            sendCommand(resId, cmd, this@CarFragment)
+                        }
+                    })
+                true
+            }
+            MI_AC_BW -> {
+                val state = appPrefs.getData("booster_on")
+                val state_weekly = appPrefs.getData("booster_weekly_on")
+                val newState = if (state_weekly == "on") "off" else "on"
+                if ((state == "on")&&(newState == "off")) {
+                    tabCarImageBooster.visibility = View.INVISIBLE
+                    tabInfoTextBoostertime.visibility = View.INVISIBLE
+                    tabCarImageCalendar.visibility = View.INVISIBLE
+                    appPrefs.saveData("booster_on", "off")
+                    appPrefs.saveData("booster_weekly_on", "off")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        this
+                    )
+                } else {
+                    if ((state == "off")&&(newState == "on")) {
+                        appPrefs.saveData("booster_on", "on")
+                        appPrefs.saveData("booster_weekly_on", "on")
+                        tabCarImageBooster.visibility = View.VISIBLE
+                        tabInfoTextBoostertime.visibility = View.VISIBLE
+                        tabCarImageCalendar.visibility = View.VISIBLE
+                        sendCommand(
+                            R.string.msg_issuing_climatecontrol,
+                            "7,config set usr b.data 1,1,1,0,-1,-1",
+                            this
+                        )
+                    } else {
+                        appPrefs.saveData("booster_weekly_on", "on")
+                        tabCarImageCalendar.visibility = View.VISIBLE
+                        sendCommand(
+                            R.string.msg_issuing_climatecontrol,
+                            "7,config set usr b.data 1,0,1,0,-1,-1",
+                            this
+                        )
+                    }
+                }
+                true
+            }
+            MI_AC_BDS -> {
+                // show booster start Day dialog:
+                showPinDialog(
+                    requireActivity(),
+                    R.string.lb_booster_day_set,
+                    R.string.msg_ok,
+                    false,
+                    object : Ui.OnChangeListener<String?> {
+                        override fun onAction(data: String?) {
+                            tabCarImageBooster.visibility = View.VISIBLE
+                            tabInfoTextBoostertime.visibility = View.VISIBLE
+                            tabCarImageCalendar.visibility = View.VISIBLE
+                            val resId: Int = R.string.lb_booster_day_start
+                            val cmd: String = "7,config set usr b.data 1,0,0,0,$data,-1"
+                            appPrefs.saveData("booster_on", "on")
+                            appPrefs.saveData("booster_weekly_on", "on")
+                            sendCommand(resId, cmd, this@CarFragment)
+                        }
+                    })
+                true
+            }
+            MI_AC_BDE -> {
+                // show booster end Day dialog:
+                showPinDialog(
+                    requireActivity(),
+                    R.string.lb_booster_day_set,
+                    R.string.msg_ok,
+                    false,
+                    object : Ui.OnChangeListener<String?> {
+                        override fun onAction(data: String?) {
+                            val resId: Int = R.string.lb_booster_day_end
+                            val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data"
+                            sendCommand(resId, cmd, this@CarFragment)
+                        }
+                    })
                 true
             }
             else -> false
@@ -900,11 +1045,19 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
         }
 
+        // "Booster" box:
+        val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
+        val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
+        val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time")
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on") == "on") View.VISIBLE else View.INVISIBLE
+
+
         // "SoC" box:
         val soctvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
         val soctv =findViewById(R.id.tabCarTextSoC) as TextView
-        soctvl.visibility = View.INVISIBLE
-        soctv.visibility = View.INVISIBLE
         if (carData.car_type == "SQ"){
             soctvl.visibility = View.VISIBLE
             soctv.visibility = View.VISIBLE
@@ -924,8 +1077,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // "SoH" box:
         val sohtvl = findViewById(R.id.tabCarTextSoHLabel) as TextView
         val sohtv =findViewById(R.id.tabCarTextSoH) as TextView
-        sohtvl.visibility = View.INVISIBLE
-        sohtv.visibility = View.INVISIBLE
         if (carData.car_type == "SQ"){
             sohtvl.visibility = View.VISIBLE
             sohtv.visibility = View.VISIBLE
@@ -1410,5 +1561,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_HL_DEFAULT = Menu.FIRST + 4
         private const val MI_AC_ON = Menu.FIRST + 5
         private const val MI_AC_OFF = Menu.FIRST + 6
+        private const val MI_AC_BON = Menu.FIRST + 7
+        private const val MI_AC_BT = Menu.FIRST + 8
+        private const val MI_AC_BW = Menu.FIRST + 9
+        private const val MI_AC_BDS = Menu.FIRST + 10
+        private const val MI_AC_BDE = Menu.FIRST + 11
     }
 }

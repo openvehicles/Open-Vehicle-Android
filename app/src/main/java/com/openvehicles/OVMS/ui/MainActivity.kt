@@ -195,6 +195,15 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
             ConnectionList(this, this, true)
         }
 
+        // get/create Booster setting:
+        val boosterOn = appPrefs.getData("booster_on")
+        if (boosterOn.isEmpty()) {
+            appPrefs.saveData("booster_on", "no")
+            appPrefs.saveData("booster_weekly_on", "no")
+            appPrefs.saveData("booster_time", "0515")
+            Log.d(TAG, "onCreate: generated booster_on/weekly_on")
+        }
+
         // Start background ApiService:
         Log.i(TAG, "onCreate: starting ApiService")
         try {

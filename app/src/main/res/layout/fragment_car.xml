@@ -89,14 +89,37 @@
 			android:src="@drawable/tirepress_letterbox" />
 
 		<ImageView
+			android:id="@+id/tabCarImageBooster"
+			android:layout_width="60px"
+			android:layout_height="55px"
+			android:layout_x="451px"
+			android:layout_y="175px"
+			android:clickable="false"
+			android:focusable="true"
+			android:src="@drawable/heat_cool"
+			android:visibility="invisible"
+			tools:ignore="PxUsage" />
+
+		<TextView
+			android:id="@+id/tabInfoTextBoostertime"
+			style="@style/TabCarTextBox"
+			android:layout_width="60px"
+			android:layout_x="451px"
+			android:layout_y="184px"
+			android:text="1200"
+			android:textSize="22px"
+			android:textStyle="bold"
+			android:visibility="invisible" />
+
+		<ImageView
 			android:id="@+id/tabCarImageHomelink"
 			android:layout_width="60px"
 			android:layout_height="60px"
 			android:layout_x="451px"
 			android:layout_y="260px"
 			android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_home_link"
+			android:focusable="true"
+			android:src="@drawable/ic_home_link"
 			tools:ignore="PxUsage" />
 
 		<ImageView
@@ -111,8 +134,20 @@
 			android:layout_x="426px"
 			android:layout_y="346px"
 			android:clickable="true"
-            android:focusable="true"
-            android:src="@drawable/ic_ac_off"
+			android:focusable="true"
+			android:src="@drawable/ic_ac_off"
+			tools:ignore="PxUsage" />
+
+		<ImageView
+			android:id="@+id/tabCarImageCalendar"
+			android:layout_width="60px"
+			android:layout_height="55px"
+			android:layout_x="451px"
+			android:layout_y="535px"
+			android:clickable="false"
+			android:focusable="true"
+			android:src="@drawable/calendar"
+			android:visibility="invisible"
 			tools:ignore="PxUsage" />
 
 		<TextView
@@ -199,7 +234,8 @@
 			style="@style/TabCarTextBox"
 			android:layout_x="107px"
 			android:layout_y="614px"
-			android:text="@string/textSoC" />
+			android:text="@string/textSoC"
+			android:visibility="invisible"/>
 
 		<TextView
 			android:id="@+id/tabCarTextSoC"
@@ -207,14 +243,16 @@
 			android:layout_x="107px"
 			android:layout_y="648px"
 			android:text="0 %"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:visibility="invisible"/>
 
 		<TextView
 			android:id="@+id/tabCarTextSoHLabel"
 			style="@style/TabCarTextBox"
 			android:layout_x="323px"
 			android:layout_y="614px"
-			android:text="@string/textSoH" />
+			android:text="@string/textSoH"
+			android:visibility="invisible"/>
 
 		<TextView
 			android:id="@+id/tabCarTextSoH"
@@ -222,13 +260,15 @@
 			android:layout_x="323px"
 			android:layout_y="648px"
 			android:text="0 %"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:visibility="invisible"/>
 
 		<TextView
 			style="@style/TabCarTextBox"
 			android:layout_x="428px"
 			android:layout_y="614px"
-			android:text="@string/textBATTERY" />
+			android:text="@string/textBATTERY"
+			/>
 
 		<TextView
 			android:id="@+id/tabCarTextBattery"
