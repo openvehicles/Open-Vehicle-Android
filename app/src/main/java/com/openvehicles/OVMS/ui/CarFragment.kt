@@ -498,6 +498,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     appPrefs.saveData("booster_on", "off")
                     appPrefs.saveData("booster_weekly_on", "off")
+                    tabCarImageBooster.visibility = View.INVISIBLE
+                    tabInfoTextBoostertime.visibility = View.INVISIBLE
+                    tabCarImageCalendar.visibility = View.INVISIBLE
                     sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
                     sendCommand(R.string.msg_issuing_homelink, "7,script reload", this)
                     true
