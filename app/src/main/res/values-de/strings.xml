@@ -143,8 +143,8 @@
     <string name="lb_booster_timer_set">Booster Zeit (14:00 = 1400), Zeit immer 4 stellig eingeben! OK = Booster Zeit aktivieren</string>
     <string name="lb_booster_day_set">So=0, Mo=1, Di=2, Mi=3, Do=4, Fr=5, Sa=6</string>
     <string name="lb_booster_weekly">Booster wöchentlich ein/aus</string>
-    <string name="lb_booster_day_start">Booster von Tag (1=Mon)</string>
-    <string name="lb_booster_day_end">Booster bis Tag (5=Fri)</string>
+    <string name="lb_booster_day_start">Booster von Tag (1=Mo.)</string>
+    <string name="lb_booster_day_end">Booster bis Tag (5=Fr.)</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
     <string name="lb_cp_module_password">#%d: Module-Passwort</string>
