@@ -529,22 +529,21 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_AC_BON -> {
                 val state = appPrefs.getData("booster_on")
-                val state_weekly = appPrefs.getData("booster_weekly_on")
                 val newState = if (state == "on") "off" else "on"
                 tabCarImageBooster.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
                 tabInfoTextBoostertime.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
                 appPrefs.saveData("booster_on", newState)
-                if ((state_weekly == "on")&&(newState == "off")) {
+                if (newState == "off") {
                     tabCarImageCalendar.visibility = View.INVISIBLE
                     appPrefs.saveData("booster_on", "off")
                     appPrefs.saveData("booster_weekly_on", "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_on", "off")
+                    appPrefs.saveData("booster_on", "on")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,1,0,0,-1,-1",
@@ -567,7 +566,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             val state = appPrefs.getData("booster_on")
                             val resId: Int = R.string.lb_booster_timer
                             val time = data!!.toString()
-                            val cmd: String = "7,config set usr b.data 1,0,0,$data,-1,-1"
+                            val cmd: String = "7,config set usr b.data 1,1,0,$data,-1,-1"
                             appPrefs.saveData("booster_on", "on")
                             appPrefs.saveData("booster_time", time)
                             sendCommand(resId, cmd, this@CarFragment)
@@ -576,10 +575,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BW -> {
-                val state = appPrefs.getData("booster_on")
                 val state_weekly = appPrefs.getData("booster_weekly_on")
                 val newState = if (state_weekly == "on") "off" else "on"
-                if ((state == "on")&&(newState == "off")) {
+                if (newState == "off") {
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
@@ -587,30 +585,20 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     appPrefs.saveData("booster_weekly_on", "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
                         this
                     )
                 } else {
-                    if ((state == "off")&&(newState == "on")) {
-                        appPrefs.saveData("booster_on", "on")
-                        appPrefs.saveData("booster_weekly_on", "on")
-                        tabCarImageBooster.visibility = View.VISIBLE
-                        tabInfoTextBoostertime.visibility = View.VISIBLE
-                        tabCarImageCalendar.visibility = View.VISIBLE
-                        sendCommand(
-                            R.string.msg_issuing_climatecontrol,
-                            "7,config set usr b.data 1,1,1,0,-1,-1",
-                            this
-                        )
-                    } else {
-                        appPrefs.saveData("booster_weekly_on", "on")
-                        tabCarImageCalendar.visibility = View.VISIBLE
-                        sendCommand(
-                            R.string.msg_issuing_climatecontrol,
-                            "7,config set usr b.data 1,0,1,0,-1,-1",
-                            this
-                        )
-                    }
+                    appPrefs.saveData("booster_on", "on")
+                    appPrefs.saveData("booster_weekly_on", "on")
+                    tabCarImageBooster.visibility = View.VISIBLE
+                    tabInfoTextBoostertime.visibility = View.VISIBLE
+                    tabCarImageCalendar.visibility = View.VISIBLE
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        this
+                    )
                 }
                 true
             }
@@ -627,7 +615,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             tabInfoTextBoostertime.visibility = View.VISIBLE
                             tabCarImageCalendar.visibility = View.VISIBLE
                             val resId: Int = R.string.lb_booster_day_start
-                            val cmd: String = "7,config set usr b.data 1,0,0,0,$data,-1"
+                            val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
                             appPrefs.saveData("booster_on", "on")
                             appPrefs.saveData("booster_weekly_on", "on")
                             sendCommand(resId, cmd, this@CarFragment)
