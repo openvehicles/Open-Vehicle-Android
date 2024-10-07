@@ -962,7 +962,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val ideallabel = findViewById(R.id.tabInfoTextIdealLabel) as TextView
         val idealtv = findViewById(R.id.tabInfoTextIdealRange) as TextView
         if (carData.car_type == "SQ") {
-            // calculate ideal (minimal) range for SQ
+            // calculate minimal range for SQ
             ideallabel.text = getString(R.string.Idealminimal)
             idealtv.text = String.format("%.1f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
             // ideallabel.textSize = 14F
@@ -1043,7 +1043,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val batt = findViewById(R.id.tabInfoImageBatteryOverlay)
         batt.layoutParams.width = min(maxWeight.toDouble(), realWeight.toDouble()).toInt()
         batt.requestLayout()
-        batt.visibility = View.VISIBLE
 
         // animated charging: Battery image
         val battc = findViewById(R.id.tabInfoImageBatteryOverlayC)
@@ -1054,7 +1053,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         animator.duration = 1500
         animator.repeatMode = ObjectAnimator.REVERSE
         animator.start()
-        battc.visibility = View.INVISIBLE
 
         // animated charging: charge Battery image
         val chargeing = findViewById(R.id.tabInfoImageBatteryAnimation)
@@ -1065,7 +1063,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         animatorcharge.duration = 1500
         animatorcharge.repeatMode = ObjectAnimator.REVERSE
         animatorcharge.start()
-        chargeing.visibility = View.INVISIBLE
 
         // switch animation on/off depending on charge power input
         if (carData.car_charge_power_input_kw_raw > 1) {

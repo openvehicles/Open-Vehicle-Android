@@ -17,6 +17,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialog
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -29,6 +31,7 @@ import com.openvehicles.OVMS.ui.settings.LogsFragment
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.ui.utils.Ui.showPinDialog
+import com.openvehicles.OVMS.ui.witdet.SlideNumericView
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import kotlin.math.floor
@@ -461,7 +464,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     menu.setHeaderTitle(R.string.textAC)
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
                     menu.add(0, MI_AC_BON, 0, R.string.lb_booster_on)
-                    menu.add(0, MI_AC_BT, 0, R.string.lb_booster_timer)
+                    menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
                     menu.add(0, MI_AC_BW, 0, R.string.lb_booster_weekly)
                     menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_start)
                     menu.add(0, MI_AC_BDE, 0, R.string.lb_booster_day_end)
@@ -502,7 +505,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
                     sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
-                    sendCommand(R.string.msg_issuing_homelink, "7,script reload", this)
+                    sendCommand(R.string.msg_issuing_homelink, "7,module reset", this)
                     true
                 } else {
                     sendCommand(R.string.msg_issuing_homelink, "24,1", this)
@@ -556,7 +559,38 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BT -> {
-                // show booster timer dialog:
+                // create booster timer dialog:
+                val dialogView = LayoutInflater.from(activity).inflate(
+                    R.layout.dlg_booster_time, null
+                )
+
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_booster_time)
+                    .setView(dialogView)
+                    .setNegativeButton(R.string.Cancel, null)
+                    .setPositiveButton(
+                        android.R.string.ok
+                    ) { dlg, which ->
+                        tabCarImageBooster.visibility = View.VISIBLE
+                        tabInfoTextBoostertime.visibility = View.VISIBLE
+                        val appCompatDialog = dlg as AppCompatDialog
+                        val booster_hd = appCompatDialog
+                            .findViewById<View>(R.id.booster_time_hour) as SlideNumericView?
+                        val booster_md = appCompatDialog
+                            .findViewById<View>(R.id.booster_time_min) as SlideNumericView?
+                        val booster_h = if(booster_hd!!.value < 10) String.format("0%d", booster_hd.value) else booster_hd.value
+                        val booster_m = if(booster_md!!.value < 10) String.format("0%d", booster_md.value) else booster_md.value
+                        val time = "$booster_h:$booster_m"
+                        val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1"
+                        appPrefs.saveData("booster_on", "on")
+                        appPrefs.saveData("booster_time", time)
+                        tabInfoTextBoostertime.text = time
+                        sendCommand(
+                            R.string.msg_issuing_climatecontrol, cmd,
+                            this@CarFragment)
+                    }
+                    .show()
+                /*
                 showPinDialog(
                     requireActivity(),
                     R.string.lb_booster_timer_set,
@@ -566,15 +600,15 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         override fun onAction(data: String?) {
                             tabCarImageBooster.visibility = View.VISIBLE
                             tabInfoTextBoostertime.visibility = View.VISIBLE
-                            val state = appPrefs.getData("booster_on")
                             val resId: Int = R.string.lb_booster_timer
                             val time = data!!.toString()
-                            val cmd: String = "7,config set usr b.data 1,1,0,$data,-1,-1"
+                            val cmd: String = "7,config set usr b.data 1;1;0;$data;-1;-1"
                             appPrefs.saveData("booster_on", "on")
                             appPrefs.saveData("booster_time", time)
                             sendCommand(resId, cmd, this@CarFragment)
                         }
                     })
+                */
                 true
             }
             MI_AC_BW -> {
