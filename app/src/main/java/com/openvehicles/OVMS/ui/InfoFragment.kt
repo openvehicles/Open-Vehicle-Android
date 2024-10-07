@@ -135,22 +135,13 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    if (state == "on") {
-                        appPrefs.saveData("booster_on", "off")
-                        appPrefs.saveData("booster_weekly_on", "off")
-                        sendCommand(
-                            R.string.msg_issuing_climatecontrol,
-                            "7,config set usr b.data 1,1,1,0,-1,-1",
-                            this@InfoFragment
-                        )
-                    }else {
-                        appPrefs.saveData("booster_on", "off")
-                        sendCommand(
-                            R.string.msg_issuing_climatecontrol,
-                            "7,config set usr b.data 1,1,0,0,-1,-1",
-                            this@InfoFragment
-                        )
-                    }
+                    appPrefs.saveData("booster_on", "off")
+                    appPrefs.saveData("booster_weekly_on", "off")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        this@InfoFragment
+                    )
                 }
                 .show()
         }
@@ -170,7 +161,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     tabCarImageCalendar.visibility = View.INVISIBLE
                     appPrefs.saveData("booster_on", "off")
                     appPrefs.saveData("booster_weekly_on", "off")
-                    sendCommand(R.string.msg_issuing_climatecontrol, "7,config set usr b.data 1,1,1,0,-1,-1", this@InfoFragment )
+                    sendCommand(R.string.msg_issuing_climatecontrol, "7,config set usr b.data 1,2,2,0,-1,-1", this@InfoFragment )
                 }
                 .show()
         }
