@@ -481,13 +481,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // "Booster" box:
+        val app_Car_label = carData!!.sel_vehicle_label
         val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
-        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.text = appPrefs.getData("booster_time")
-        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on") == "on") View.VISIBLE else View.INVISIBLE
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         return when (item.itemId) {
             MI_WAKEUP -> {
                 sendCommand(R.string.msg_wakeup_car, "18", this)
@@ -499,8 +500,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_HL_02 -> {
                 if (carData!!.car_type == "SQ") {
-                    appPrefs.saveData("booster_on", "off")
-                    appPrefs.saveData("booster_weekly_on", "off")
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
@@ -534,22 +535,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BON -> {
-                val state = appPrefs.getData("booster_on")
+                val state = appPrefs.getData("booster_on_" + app_Car_label)
                 val newState = if (state == "on") "off" else "on"
                 tabCarImageBooster.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
                 tabInfoTextBoostertime.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
-                appPrefs.saveData("booster_on", newState)
+                appPrefs.saveData("booster_on_" + app_Car_label, newState)
                 if (newState == "off") {
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData("booster_on", "off")
-                    appPrefs.saveData("booster_weekly_on", "off")
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,2,2,0,-1,-1",
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_on", "on")
+                    appPrefs.saveData("booster_on_" + app_Car_label, "on")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,1,0,0,-1,-1",
@@ -582,8 +583,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         val booster_m = if(booster_md!!.value < 10) String.format("0%d", booster_md.value) else booster_md.value
                         val time = "$booster_h:$booster_m"
                         val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1"
-                        appPrefs.saveData("booster_on", "on")
-                        appPrefs.saveData("booster_time", time)
+                        appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                        appPrefs.saveData("booster_time_" + app_Car_label, time)
                         tabInfoTextBoostertime.text = time
                         sendCommand(
                             R.string.msg_issuing_climatecontrol, cmd,
@@ -612,22 +613,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BW -> {
-                val state_weekly = appPrefs.getData("booster_weekly_on")
+                val state_weekly = appPrefs.getData("booster_weekly_on_" + app_Car_label)
                 val newState = if (state_weekly == "on") "off" else "on"
                 if (newState == "off") {
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData("booster_on", "off")
-                    appPrefs.saveData("booster_weekly_on", "off")
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,2,2,0,-1,-1",
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_on", "on")
-                    appPrefs.saveData("booster_weekly_on", "on")
+                    appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
                     tabCarImageBooster.visibility = View.VISIBLE
                     tabInfoTextBoostertime.visibility = View.VISIBLE
                     tabCarImageCalendar.visibility = View.VISIBLE
@@ -653,8 +654,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             tabCarImageCalendar.visibility = View.VISIBLE
                             val resId: Int = R.string.lb_booster_day_start
                             val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
-                            appPrefs.saveData("booster_on", "on")
-                            appPrefs.saveData("booster_weekly_on", "on")
+                            appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                            appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
                             sendCommand(resId, cmd, this@CarFragment)
                         }
                     })
@@ -1082,10 +1083,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
-        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on") == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.text = appPrefs.getData("booster_time")
-        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on") == "on") View.VISIBLE else View.INVISIBLE
+        val app_Car_label = carData.sel_vehicle_label
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
 
 
         // "SoC" box:
