@@ -961,7 +961,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         } else {
             iv.visibility = View.VISIBLE
 
-            if (carData.car_type == "SQ") {
+            if ((carData.car_type == "SQ")&&(val1!![0]=="")) {
                 // fix the wrong side of the tires
                 fltv.text = getString(R.string.fl_tpms)
                 frtv.text = getString(R.string.fr_tpms)
@@ -971,6 +971,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 fltvv.text = val2[1]
                 rrtvv.text = val2[2]
                 rltvv.text = val2[3]
+            }else if ((carData.car_type == "SQ")&&(val1!![0]!="")) {
+                // fix the wrong side of the tires
+                fltv.text = getString(R.string.fl_tpms)
+                frtv.text = getString(R.string.fr_tpms)
+                rltv.text = getString(R.string.rl_tpms)
+                rrtv.text = getString(R.string.rr_tpms)
+                frtvv.text = val1!![0]
+                fltvv.text = val1[1]
+                rrtvv.text = val1[2]
+                rltvv.text = val1[3]
             }else {
                 fltv.text = val1!![0]
                 frtv.text = val1[1]
