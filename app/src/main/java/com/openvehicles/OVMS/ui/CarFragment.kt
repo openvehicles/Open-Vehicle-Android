@@ -623,14 +623,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     false,
                     object : Ui.OnChangeListener<String?> {
                         override fun onAction(data: String?) {
-                            appPrefs.saveData("booster_on_" + app_Car_label, "on")
-                            appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
-                            tabCarImageBooster.visibility = View.VISIBLE
-                            tabInfoTextBoostertime.visibility = View.VISIBLE
-                            tabCarImageCalendar.visibility = View.VISIBLE
-                            val resId: Int = R.string.lb_booster_day_start
-                            val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
-                            sendCommand(resId, cmd, this@CarFragment)
+                            if(data!! != "") {
+                                appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                                appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
+                                tabCarImageBooster.visibility = View.VISIBLE
+                                tabInfoTextBoostertime.visibility = View.VISIBLE
+                                tabCarImageCalendar.visibility = View.VISIBLE
+                                val resId: Int = R.string.lb_booster_day_start
+                                val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
+                                sendCommand(resId, cmd, this@CarFragment)
+                            }
                         }
                     })
                 true
@@ -644,9 +646,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     false,
                     object : Ui.OnChangeListener<String?> {
                         override fun onAction(data: String?) {
-                            val resId: Int = R.string.lb_booster_day_end
-                            val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data"
-                            sendCommand(resId, cmd, this@CarFragment)
+                            if(data!! != "") {
+                                val resId: Int = R.string.lb_booster_day_end
+                                val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data"
+                                sendCommand(resId, cmd, this@CarFragment)
+                            }
                         }
                     })
                 true

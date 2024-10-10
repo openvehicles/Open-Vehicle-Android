@@ -141,6 +141,7 @@
     <string name="lb_booster_on">Booster timer ein/aus</string>
     <string name="lb_booster_hour">Stunde</string>
     <string name="lb_booster_min">Minute</string>
+    <string name="lb_booster_activate">aktivieren</string>
     <string name="lb_booster_time">Booster Zeit</string>
     <string name="lb_booster_timer">Booster Zeit (14:00 = 1400)</string>
     <string name="lb_booster_timer_set">Booster Zeit (14:00 = 1400), Zeit immer 4 stellig eingeben! OK = Booster Zeit aktivieren</string>
