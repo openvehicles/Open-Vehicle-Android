@@ -128,6 +128,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { dlg,
                                                           which ->
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
                     val tabInfoTextBoostertime =
                         findViewById(R.id.tabInfoTextBoostertime) as TextView
@@ -135,8 +137,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData(appPrefs.getData("booster_on_" + app_Car_label), "off")
-                    appPrefs.saveData(appPrefs.getData("booster_time_" + app_Car_label), "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,2,2,0,-1,-1",
@@ -153,15 +153,19 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { dlg,
                     which ->
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
                     val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
                     val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData(appPrefs.getData("booster_on_" + app_Car_label), "off")
-                    appPrefs.saveData(appPrefs.getData("booster_weekly_on_" + app_Car_label), "off")
-                    sendCommand(R.string.msg_issuing_climatecontrol, "7,config set usr b.data 1,2,2,0,-1,-1", this@InfoFragment )
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        this@InfoFragment
+                    )
                 }
                 .show()
         }
@@ -1002,11 +1006,6 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tabInfoImageBatteryAnimation.isClickable = false
             tabInfoImageBatteryOverlay.isClickable = false
             tabCarImageAC.isClickable = true
-            /*
-            tabCarImageBooster.isClickable = if (appPrefs.getData("booster_on") == "on") true else false
-            tabInfoTextBoostertime.isClickable = if (appPrefs.getData("booster_on") == "on") true else false
-            tabCarImageCalendar.isClickable = if (appPrefs.getData("booster_weekly_on") == "on") true else false
-            */
             ambientiv.visibility = View.VISIBLE
             ambienttvl.text = getString(R.string.textAMBIENT)
             ambienttv.text = carData.car_temp_ambient

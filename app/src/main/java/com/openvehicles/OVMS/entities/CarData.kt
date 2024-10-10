@@ -983,8 +983,33 @@ class CarData : Serializable {
                 }
                 j = 0
                 end = i + cnt
+                val pressureRanges = mapOf(
+                    0 to (210..240),
+                    1 to (210..240),
+                    2 to (240..270),
+                    3 to (240..270)
+                )
+
+                val redAlertRanges = mapOf(
+                    0 to (190..260),
+                    1 to (190..260),
+                    2 to (220..290),
+                    3 to (220..290)
+                )
                 while (i < end) {
                     ival = dataParts[i].toInt()
+                    if (car_type == "SQ") {
+                        // orange alert
+                        if ((j == 0) && ((car_tpms_pressure_raw!![j] < 210) || (car_tpms_pressure_raw!![j] > 240))) ival =1
+                        if ((j == 1) && ((car_tpms_pressure_raw!![j] < 210) || (car_tpms_pressure_raw!![j] > 240))) ival =1
+                        if ((j == 2) && ((car_tpms_pressure_raw!![j] < 240) || (car_tpms_pressure_raw!![j] > 270))) ival =1
+                        if ((j == 3) && ((car_tpms_pressure_raw!![j] < 240) || (car_tpms_pressure_raw!![j] > 270))) ival =1
+                        // red alert
+                        if ((j == 0) && ((car_tpms_pressure_raw!![j] < 190) || (car_tpms_pressure_raw!![j] > 260))) ival =2
+                        if ((j == 1) && ((car_tpms_pressure_raw!![j] < 190) || (car_tpms_pressure_raw!![j] > 260))) ival =2
+                        if ((j == 2) && ((car_tpms_pressure_raw!![j] < 220) || (car_tpms_pressure_raw!![j] > 290))) ival =2
+                        if ((j == 3) && ((car_tpms_pressure_raw!![j] < 220) || (car_tpms_pressure_raw!![j] > 290))) ival =2
+                    }
                     if (ival > 2) ival = 2 else if (ival < 0) ival = 0
                     sval = if (ival == 0) "✔" else if (ival == 1) "⛛" else "⚠"
                     car_tpms_alert_raw!![j] = ival

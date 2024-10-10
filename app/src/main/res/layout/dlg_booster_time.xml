@@ -20,6 +20,8 @@
             android:layout_marginBottom="10dp"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:gravity="center_horizontal"
+            android:textSize="60px"
+            android:textStyle="bold"
             android:text="@string/lb_booster_hour"/>
 
         <com.openvehicles.OVMS.ui.witdet.SlideNumericView
@@ -37,6 +39,8 @@
             android:layout_marginBottom="10dp"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:gravity="center_horizontal"
+            android:textSize="60px"
+            android:textStyle="bold"
             android:text="@string/lb_booster_min"/>
 
         <com.openvehicles.OVMS.ui.witdet.SlideNumericView

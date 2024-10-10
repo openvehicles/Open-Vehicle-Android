@@ -501,6 +501,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             MI_HL_02 -> {
                 if (carData!!.car_type == "SQ") {
                     appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_time_" + app_Car_label, "0515")
                     appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
@@ -572,6 +573,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setPositiveButton(
                         android.R.string.ok
                     ) { dlg, which ->
+                        appPrefs.saveData("booster_on_" + app_Car_label, "on")
                         tabCarImageBooster.visibility = View.VISIBLE
                         tabInfoTextBoostertime.visibility = View.VISIBLE
                         val appCompatDialog = dlg as AppCompatDialog
@@ -583,7 +585,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         val booster_m = if(booster_md!!.value < 10) String.format("0%d", booster_md.value) else booster_md.value
                         val time = "$booster_h:$booster_m"
                         val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1"
-                        appPrefs.saveData("booster_on_" + app_Car_label, "on")
                         appPrefs.saveData("booster_time_" + app_Car_label, time)
                         tabInfoTextBoostertime.text = time
                         sendCommand(
@@ -591,36 +592,17 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             this@CarFragment)
                     }
                     .show()
-                /*
-                showPinDialog(
-                    requireActivity(),
-                    R.string.lb_booster_timer_set,
-                    R.string.msg_ok,
-                    false,
-                    object : Ui.OnChangeListener<String?> {
-                        override fun onAction(data: String?) {
-                            tabCarImageBooster.visibility = View.VISIBLE
-                            tabInfoTextBoostertime.visibility = View.VISIBLE
-                            val resId: Int = R.string.lb_booster_timer
-                            val time = data!!.toString()
-                            val cmd: String = "7,config set usr b.data 1;1;0;$data;-1;-1"
-                            appPrefs.saveData("booster_on", "on")
-                            appPrefs.saveData("booster_time", time)
-                            sendCommand(resId, cmd, this@CarFragment)
-                        }
-                    })
-                */
                 true
             }
             MI_AC_BW -> {
                 val state_weekly = appPrefs.getData("booster_weekly_on_" + app_Car_label)
                 val newState = if (state_weekly == "on") "off" else "on"
                 if (newState == "off") {
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,2,2,0,-1,-1",
@@ -649,13 +631,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     false,
                     object : Ui.OnChangeListener<String?> {
                         override fun onAction(data: String?) {
+                            appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                            appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
                             tabCarImageBooster.visibility = View.VISIBLE
                             tabInfoTextBoostertime.visibility = View.VISIBLE
                             tabCarImageCalendar.visibility = View.VISIBLE
                             val resId: Int = R.string.lb_booster_day_start
                             val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
-                            appPrefs.saveData("booster_on_" + app_Car_label, "on")
-                            appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
                             sendCommand(resId, cmd, this@CarFragment)
                         }
                     })
@@ -961,7 +943,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         } else {
             iv.visibility = View.VISIBLE
 
-            if ((carData.car_type == "SQ")&&(val1!![0]=="")) {
+            if ((carData.car_type == "SQ")&&(val1!![0]=="FL")) {
                 // fix the wrong side of the tires
                 fltv.text = getString(R.string.fl_tpms)
                 frtv.text = getString(R.string.fr_tpms)
@@ -971,7 +953,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 fltvv.text = val2[1]
                 rrtvv.text = val2[2]
                 rltvv.text = val2[3]
-            }else if ((carData.car_type == "SQ")&&(val1!![0]!="")) {
+            }else if ((carData.car_type == "SQ")&&(val1!![0]!="FL")) {
                 // fix the wrong side of the tires
                 fltv.text = getString(R.string.fl_tpms)
                 frtv.text = getString(R.string.fr_tpms)
@@ -992,20 +974,36 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 rrtvv.text = val2[3]
             }
 
-            val trans1 = if (stale1 == DataStale.Stale) -0x80000000 else -0x1000000
-            val trans2 = if (stale2 == DataStale.Stale) -0x80000000 else -0x1000000
+            val trans1 = if ((carData.car_type != "SQ")&&(stale1 == DataStale.Stale)) -0x80000000 else -0x1000000
+            val trans2 = if ((carData.car_type != "SQ")&&(stale1 == DataStale.Stale)) -0x80000000 else -0x1000000
             val alertcol = intArrayOf(0xFFFFFF, 0xFFAA44, 0xFF4444)
-            fltv.setTextColor(trans1 or alertcol[alert!![0]])
-            frtv.setTextColor(trans1 or alertcol[alert[1]])
-            rltv.setTextColor(trans1 or alertcol[alert[2]])
-            rrtv.setTextColor(trans1 or alertcol[alert[3]])
-            if (val2.contentEquals(carData.car_tpms_alert)) {
-                alertcol[0] = 0x44FF44
+
+            if (carData.car_type == "SQ") {
+                // fix the wrong side of the tires
+                frtv.setTextColor(trans1 or alertcol[alert!![0]])
+                fltv.setTextColor(trans1 or alertcol[alert[1]])
+                rrtv.setTextColor(trans1 or alertcol[alert[2]])
+                rltv.setTextColor(trans1 or alertcol[alert[3]])
+                if (val2.contentEquals(carData.car_tpms_alert)) {
+                    alertcol[0] = 0x44FF44
+                }
+                frtvv.setTextColor(trans2 or alertcol[alert[0]])
+                fltvv.setTextColor(trans2 or alertcol[alert[1]])
+                rrtvv.setTextColor(trans2 or alertcol[alert[2]])
+                rltvv.setTextColor(trans2 or alertcol[alert[3]])
+            }else {
+                fltv.setTextColor(trans1 or alertcol[alert!![0]])
+                frtv.setTextColor(trans1 or alertcol[alert[1]])
+                rltv.setTextColor(trans1 or alertcol[alert[2]])
+                rrtv.setTextColor(trans1 or alertcol[alert[3]])
+                if (val2.contentEquals(carData.car_tpms_alert)) {
+                    alertcol[0] = 0x44FF44
+                }
+                fltvv.setTextColor(trans2 or alertcol[alert[0]])
+                frtvv.setTextColor(trans2 or alertcol[alert[1]])
+                rltvv.setTextColor(trans2 or alertcol[alert[2]])
+                rrtvv.setTextColor(trans2 or alertcol[alert[3]])
             }
-            fltvv.setTextColor(trans2 or alertcol[alert[0]])
-            frtvv.setTextColor(trans2 or alertcol[alert[1]])
-            rltvv.setTextColor(trans2 or alertcol[alert[2]])
-            rrtvv.setTextColor(trans2 or alertcol[alert[3]])
         }
 
         // "Temp PEM" box:
