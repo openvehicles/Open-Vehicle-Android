@@ -983,19 +983,6 @@ class CarData : Serializable {
                 }
                 j = 0
                 end = i + cnt
-                val pressureRanges = mapOf(
-                    0 to (210..240),
-                    1 to (210..240),
-                    2 to (240..270),
-                    3 to (240..270)
-                )
-
-                val redAlertRanges = mapOf(
-                    0 to (190..260),
-                    1 to (190..260),
-                    2 to (220..290),
-                    3 to (220..290)
-                )
                 while (i < end) {
                     ival = dataParts[i].toInt()
                     if (car_type == "SQ") {
