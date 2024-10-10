@@ -194,6 +194,8 @@
   <string name="textAMBIENT">AMBIANT</string>
   <string name="text12VBATT">BATT 12V</string>
   <string name="textHVBATT">BATT HV</string>
+  <string name="textSoC">SoC</string>
+  <string name="textSoH">SoH</string>
   <string-array name="en_charger">
     <item>Standard</item>
     <item>Capacité</item>

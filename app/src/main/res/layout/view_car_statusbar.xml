@@ -20,7 +20,8 @@
         android:id="@+id/img_car_connection"
         android:layout_width="28dp"
         android:layout_height="28dp"
-        android:src="@drawable/connection_unknown"/>
+        android:src="@drawable/connection_unknown"
+		android:visibility="invisible"/>
     
     <TextView
         android:id="@+id/txt_last_updated"

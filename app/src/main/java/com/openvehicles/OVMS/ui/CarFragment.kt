@@ -17,6 +17,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatDialog
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -29,6 +31,7 @@ import com.openvehicles.OVMS.ui.settings.LogsFragment
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.ui.utils.Ui.showPinDialog
+import com.openvehicles.OVMS.ui.witdet.SlideNumericView
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import kotlin.math.floor
@@ -70,6 +73,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
      *
      * @param carData
      */
+
     private fun setupCarType(carData: CarData?) {
         Log.d(TAG, "updateCarType: old=" + uiCarType + ", new=" + carData!!.car_type)
         if (uiCarType == carData.car_type) {
@@ -97,10 +101,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             "SQ" -> {
                 // UI changes for Smart EQ:
+                val eqBoxes: ImageView = findViewById(R.id.tabCarImageCarTempsBoxes) as ImageView
+                eqBoxes.setImageResource(R.drawable.motortemp_letterbox_2)
+
                 findViewById(R.id.btn_valet_mode).visibility = View.INVISIBLE
                 findViewById(R.id.btn_lock_car).visibility = View.INVISIBLE
                 //findViewById(R.id.tabCarImageCarLocked).visibility = View.INVISIBLE
                 //findViewById(R.id.tabCarImageCarValetMode).visibility = View.INVISIBLE
+
                 // change "Homelink" image:
                 tabCarImageHomeLink.setImageResource(R.drawable.ic_home_link)
             }
@@ -137,8 +145,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || carData.car_type == "VWUP"
             || carData.car_type == "VWUP.T26") {
             // enable
-            tabCarImageCarACBoxes.setVisibility(View.VISIBLE)
-            tabCarImageAC.setVisibility(View.VISIBLE)
+            tabCarImageCarACBoxes.visibility = View.VISIBLE
+            tabCarImageAC.visibility = View.VISIBLE
             if (carData.car_hvac_on) {
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_on)
             } else {
@@ -146,8 +154,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
         } else {
             // disable
-            tabCarImageCarACBoxes.setVisibility(View.INVISIBLE)
-            tabCarImageAC.setVisibility(View.INVISIBLE)
+            tabCarImageCarACBoxes.visibility = View.INVISIBLE
+            tabCarImageAC.visibility = View.INVISIBLE
         }
         uiCarType = carData.car_type
 
@@ -433,8 +441,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
-                    menu.add(0, MI_HL_02, 0, "2")
-                    menu.add(0, MI_HL_03, 0, "3")
+                    menu.add(0, MI_HL_02, 0, "Booster Timer reset")
+                    menu.add(0, MI_HL_03, 0, "Modul reboot")
                     menu.add(R.string.Cancel)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
@@ -444,15 +452,35 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
             }
             R.id.tabCarImageAC -> {
-                menu.setHeaderTitle(R.string.textAC)
-                menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
-                menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
-                menu.add(R.string.Cancel)
+                if (carData!!.car_type == "SQ") {
+                    menu.setHeaderTitle(R.string.textAC)
+                    menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    menu.add(0, MI_AC_BON, 0, R.string.lb_booster_on)
+                    menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
+                    menu.add(0, MI_AC_BW, 0, R.string.lb_booster_weekly)
+                    menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_start)
+                    menu.add(0, MI_AC_BDE, 0, R.string.lb_booster_day_end)
+                    menu.add(R.string.Cancel)
+                } else {
+                    menu.setHeaderTitle(R.string.textAC)
+                    menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
+                    menu.add(R.string.Cancel)
+                }
             }
         }
     }
 
     override fun onContextItemSelected(item: MenuItem): Boolean {
+        // "Booster" box:
+        val app_Car_label = carData!!.sel_vehicle_label
+        val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
+        val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
+        val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         return when (item.itemId) {
             MI_WAKEUP -> {
                 sendCommand(R.string.msg_wakeup_car, "18", this)
@@ -463,12 +491,29 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_02 -> {
-                sendCommand(R.string.msg_issuing_homelink, "24,1", this)
-                true
+                if (carData!!.car_type == "SQ") {
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_time_" + app_Car_label, "0515")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    tabCarImageBooster.visibility = View.INVISIBLE
+                    tabInfoTextBoostertime.visibility = View.INVISIBLE
+                    tabCarImageCalendar.visibility = View.INVISIBLE
+                    sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
+                    sendCommand(R.string.msg_issuing_homelink, "7,module reset", this)
+                    true
+                } else {
+                    sendCommand(R.string.msg_issuing_homelink, "24,1", this)
+                    true
+                }
             }
             MI_HL_03 -> {
-                sendCommand(R.string.msg_issuing_homelink, "24,2", this)
-                true
+                if (carData!!.car_type == "SQ") {
+                    sendCommand(R.string.msg_issuing_homelink, "5", this)
+                    true
+                } else {
+                    sendCommand(R.string.msg_issuing_homelink, "24,2", this)
+                    true
+                }
             }
             MI_HL_DEFAULT -> {
                 sendCommand(R.string.msg_issuing_homelink, "24", this)
@@ -482,6 +527,134 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 sendCommand(R.string.msg_issuing_climatecontrol, "26,0", this)
                 true
             }
+            MI_AC_BON -> {
+                val state = appPrefs.getData("booster_on_" + app_Car_label)
+                val newState = if (state == "on") "off" else "on"
+                tabCarImageBooster.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
+                tabInfoTextBoostertime.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
+                appPrefs.saveData("booster_on_" + app_Car_label, newState)
+                if (newState == "off") {
+                    tabCarImageCalendar.visibility = View.INVISIBLE
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        this
+                    )
+                } else {
+                    appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,0,0,-1,-1",
+                        this
+                    )
+                }
+                true
+            }
+            MI_AC_BT -> {
+                // create booster timer dialog:
+                val dialogView = LayoutInflater.from(activity).inflate(
+                    R.layout.dlg_booster_time, null
+                )
+
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_booster_time)
+                    .setView(dialogView)
+                    .setNegativeButton(R.string.Cancel, null)
+                    .setPositiveButton(
+                        android.R.string.ok
+                    ) { dlg, which ->
+                        appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                        tabCarImageBooster.visibility = View.VISIBLE
+                        tabInfoTextBoostertime.visibility = View.VISIBLE
+                        val appCompatDialog = dlg as AppCompatDialog
+                        val booster_hd = appCompatDialog
+                            .findViewById<View>(R.id.booster_time_hour) as SlideNumericView?
+                        val booster_md = appCompatDialog
+                            .findViewById<View>(R.id.booster_time_min) as SlideNumericView?
+                        val booster_h = if(booster_hd!!.value < 10) String.format("0%d", booster_hd.value) else booster_hd.value
+                        val booster_m = if(booster_md!!.value < 10) String.format("0%d", booster_md.value) else booster_md.value
+                        val time = "$booster_h:$booster_m"
+                        val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1"
+                        appPrefs.saveData("booster_time_" + app_Car_label, time)
+                        tabInfoTextBoostertime.text = time
+                        sendCommand(
+                            R.string.msg_issuing_climatecontrol, cmd,
+                            this@CarFragment)
+                    }
+                    .show()
+                true
+            }
+            MI_AC_BW -> {
+                val state_weekly = appPrefs.getData("booster_weekly_on_" + app_Car_label)
+                val newState = if (state_weekly == "on") "off" else "on"
+                if (newState == "off") {
+                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    tabCarImageBooster.visibility = View.INVISIBLE
+                    tabInfoTextBoostertime.visibility = View.INVISIBLE
+                    tabCarImageCalendar.visibility = View.INVISIBLE
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        this
+                    )
+                } else {
+                    appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
+                    tabCarImageBooster.visibility = View.VISIBLE
+                    tabInfoTextBoostertime.visibility = View.VISIBLE
+                    tabCarImageCalendar.visibility = View.VISIBLE
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        this
+                    )
+                }
+                true
+            }
+            MI_AC_BDS -> {
+                // show booster start Day dialog:
+                showPinDialog(
+                    requireActivity(),
+                    R.string.lb_booster_day_set,
+                    R.string.msg_ok,
+                    false,
+                    object : Ui.OnChangeListener<String?> {
+                        override fun onAction(data: String?) {
+                            if(data!! != "") {
+                                appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                                appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
+                                tabCarImageBooster.visibility = View.VISIBLE
+                                tabInfoTextBoostertime.visibility = View.VISIBLE
+                                tabCarImageCalendar.visibility = View.VISIBLE
+                                val resId: Int = R.string.lb_booster_day_start
+                                val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
+                                sendCommand(resId, cmd, this@CarFragment)
+                            }
+                        }
+                    })
+                true
+            }
+            MI_AC_BDE -> {
+                // show booster end Day dialog:
+                showPinDialog(
+                    requireActivity(),
+                    R.string.lb_booster_day_set,
+                    R.string.msg_ok,
+                    false,
+                    object : Ui.OnChangeListener<String?> {
+                        override fun onAction(data: String?) {
+                            if(data!! != "") {
+                                val resId: Int = R.string.lb_booster_day_end
+                                val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data"
+                                sendCommand(resId, cmd, this@CarFragment)
+                            }
+                        }
+                    })
+                true
+            }
             else -> false
         }
     }
@@ -491,7 +664,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             return
         }
 
-        val command = result[0].toInt()
+        //val command = result[0].toInt()
         val resCode = result[1].toInt()
         val resText = if (result.size > 2) result[2] else ""
         val cmdMessage = getSentCommandMessage(result[0])
@@ -569,7 +742,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (minutes == 0L) {
                 tv.text = getText(R.string.justnow)
             } else if (minutes == 1L) {
-                tv.text = "1 min"
+                tv.text = getText(R.string.min1)
             } else if (days > 1) {
                 tv.text = String.format(getText(R.string.ndays).toString(), days)
             } else if (hours > 1) {
@@ -608,6 +781,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         } else if (carData.sel_vehicle_image.startsWith("car_i3_")) {
             // BMW i3: one ol image for all colors since roof is same:
             iv.setImageResource(R.drawable.ol_car_i3)
+        } else if (carData.sel_vehicle_image.startsWith("car_smart_44")) {
+            // smart ED: one ol image for all colors:
+            iv.setImageResource(R.drawable.ol_car_vwup_black)
         } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
             // smart ED: one ol image for all colors:
             iv.setImageResource(R.drawable.ol_car_smart)
@@ -657,18 +833,18 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         tv = findViewById(R.id.tabCarTextAmbient) as TextView
         when (carData.stale_ambient_temp) {
             DataStale.NoValue -> {
-                iv.setVisibility(View.INVISIBLE)
+                iv.visibility = View.INVISIBLE
                 label.visibility = View.INVISIBLE
                 tv.text = null
             }
             DataStale.Stale -> {
-                iv.setVisibility(View.VISIBLE)
+                iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
                 tv.text = carData.car_temp_ambient
                 tv.setTextColor(-0x7f7f80)
             }
             else -> {
-                iv.setVisibility(View.VISIBLE)
+                iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
                 tv.text = carData.car_temp_ambient
                 tv.setTextColor(-0x1)
@@ -751,7 +927,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // Update display:
         if (stale1 == DataStale.NoValue) {
-            iv.setVisibility(View.INVISIBLE)
+            iv.visibility = View.INVISIBLE
             fltv.text = null
             frtv.text = null
             rltv.text = null
@@ -761,31 +937,69 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             rltvv.text = null
             rrtvv.text = null
         } else {
-            iv.setVisibility(View.VISIBLE)
-            fltv.text = val1!![0]
-            frtv.text = val1[1]
-            rltv.text = val1[2]
-            rrtv.text = val1[3]
-            fltvv.text = val2!![0]
-            frtvv.text = val2[1]
-            rltvv.text = val2[2]
-            rrtvv.text = val2[3]
-            val trans1 = if (stale1 == DataStale.Stale) -0x80000000 else -0x1000000
-            val trans2 = if (stale2 == DataStale.Stale) -0x80000000 else -0x1000000
-            val alertcol = intArrayOf(0xFFFFFF, 0xFFAA44, 0xFF4444)
-            fltv.setTextColor(trans1 or alertcol[alert!![0]])
-            frtv.setTextColor(trans1 or alertcol[alert[1]])
-            rltv.setTextColor(trans1 or alertcol[alert[2]])
-            rrtv.setTextColor(trans1 or alertcol[alert[3]])
+            iv.visibility = View.VISIBLE
 
-            // Display alert state "OK" icons in green:
-            if (val2.contentEquals(carData.car_tpms_alert)) {
-                alertcol[0] = 0x44FF44
+            if ((carData.car_type == "SQ")&&(val1!![0]=="FL")) {
+                // fix the wrong side of the tires
+                fltv.text = getString(R.string.fl_tpms)
+                frtv.text = getString(R.string.fr_tpms)
+                rltv.text = getString(R.string.rl_tpms)
+                rrtv.text = getString(R.string.rr_tpms)
+                frtvv.text = val2!![0]
+                fltvv.text = val2[1]
+                rrtvv.text = val2[2]
+                rltvv.text = val2[3]
+            }else if ((carData.car_type == "SQ")&&(val1!![0]!="FL")) {
+                // fix the wrong side of the tires
+                fltv.text = getString(R.string.fl_tpms)
+                frtv.text = getString(R.string.fr_tpms)
+                rltv.text = getString(R.string.rl_tpms)
+                rrtv.text = getString(R.string.rr_tpms)
+                frtvv.text = val1!![0]
+                fltvv.text = val1[1]
+                rrtvv.text = val1[2]
+                rltvv.text = val1[3]
+            }else {
+                fltv.text = val1!![0]
+                frtv.text = val1[1]
+                rltv.text = val1[2]
+                rrtv.text = val1[3]
+                fltvv.text = val2!![0]
+                frtvv.text = val2[1]
+                rltvv.text = val2[2]
+                rrtvv.text = val2[3]
             }
-            fltvv.setTextColor(trans2 or alertcol[alert[0]])
-            frtvv.setTextColor(trans2 or alertcol[alert[1]])
-            rltvv.setTextColor(trans2 or alertcol[alert[2]])
-            rrtvv.setTextColor(trans2 or alertcol[alert[3]])
+
+            val trans1 = if ((carData.car_type != "SQ")&&(stale1 == DataStale.Stale)) -0x80000000 else -0x1000000
+            val trans2 = if ((carData.car_type != "SQ")&&(stale1 == DataStale.Stale)) -0x80000000 else -0x1000000
+            val alertcol = intArrayOf(0xFFFFFF, 0xFFAA44, 0xFF4444)
+
+            if (carData.car_type == "SQ") {
+                // fix the wrong side of the tires
+                frtv.setTextColor(trans1 or alertcol[alert!![0]])
+                fltv.setTextColor(trans1 or alertcol[alert[1]])
+                rrtv.setTextColor(trans1 or alertcol[alert[2]])
+                rltv.setTextColor(trans1 or alertcol[alert[3]])
+                if (val2.contentEquals(carData.car_tpms_alert)) {
+                    alertcol[0] = 0x44FF44
+                }
+                frtvv.setTextColor(trans2 or alertcol[alert[0]])
+                fltvv.setTextColor(trans2 or alertcol[alert[1]])
+                rrtvv.setTextColor(trans2 or alertcol[alert[2]])
+                rltvv.setTextColor(trans2 or alertcol[alert[3]])
+            }else {
+                fltv.setTextColor(trans1 or alertcol[alert!![0]])
+                frtv.setTextColor(trans1 or alertcol[alert[1]])
+                rltv.setTextColor(trans1 or alertcol[alert[2]])
+                rrtv.setTextColor(trans1 or alertcol[alert[3]])
+                if (val2.contentEquals(carData.car_tpms_alert)) {
+                    alertcol[0] = 0x44FF44
+                }
+                fltvv.setTextColor(trans2 or alertcol[alert[0]])
+                frtvv.setTextColor(trans2 or alertcol[alert[1]])
+                rltvv.setTextColor(trans2 or alertcol[alert[2]])
+                rrtvv.setTextColor(trans2 or alertcol[alert[3]])
+            }
         }
 
         // "Temp PEM" box:
@@ -798,13 +1012,25 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || carData.car_type.startsWith("VA")
             || carData.car_type == "MI"
             || carData.car_type == "SE"
-            || carData.car_type == "SQ"
             || carData.car_type == "NL") {
             pemtvl.setText(R.string.textCAB)
             if (carData.stale_car_temps == DataStale.NoValue) {
                 pemtv.text = ""
             } else {
                 pemtv.text = carData.car_temp_cabin
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    pemtv.setTextColor(-0x7f7f80)
+                } else {
+                    pemtv.setTextColor(-0x1)
+                }
+            }
+        } else if (carData.car_type == "SQ"){
+            // switches the box from PEM to Battery energy
+            pemtvl.setText(R.string.textEnergy)
+            if (carData.stale_car_temps == DataStale.NoValue) {
+                pemtv.text = ""
+            } else {
+                pemtv.text = String.format("%.1fkWh",carData.car_charge_kwhconsumed)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     pemtv.setTextColor(-0x7f7f80)
                 } else {
@@ -857,21 +1083,91 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
         }
 
+        // "Booster" box:
+        val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
+        val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
+        val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
+        val app_Car_label = carData.sel_vehicle_label
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
+
+
+        // "SoC" box:
+        val soctvl = findViewById(R.id.tabCarTextSoCLabel) as TextView
+        val soctv =findViewById(R.id.tabCarTextSoC) as TextView
+        if (carData.car_type == "SQ"){
+            soctvl.visibility = View.VISIBLE
+            soctv.visibility = View.VISIBLE
+
+            if (carData.stale_status == DataStale.NoValue) {
+                soctv.text = ""
+            } else {
+                soctv.text = String.format("%.1f%%", carData.car_soc_raw)
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    soctv.setTextColor(-0x7f7f80)
+                } else {
+                    soctv.setTextColor(-0x1)
+                }
+            }
+        }
+
+        // "SoH" box:
+        val sohtvl = findViewById(R.id.tabCarTextSoHLabel) as TextView
+        val sohtv =findViewById(R.id.tabCarTextSoH) as TextView
+        if (carData.car_type == "SQ"){
+            sohtvl.visibility = View.VISIBLE
+            sohtv.visibility = View.VISIBLE
+
+            if (carData.stale_status == DataStale.NoValue) {
+                sohtv.text = ""
+            } else {
+                sohtv.text = String.format("%.1f%%", carData.car_soh)
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    sohtv.setTextColor(-0x7f7f80)
+                } else {
+                    sohtv.setTextColor(-0x1)
+                }
+            }
+        }
+
         // Temperatures
+        val batterytvl = findViewById(R.id.tabCarTextChargerLabel) as TextView
         val batterytv = findViewById(R.id.tabCarTextBattery) as TextView
         val chargertv = findViewById(R.id.tabCarTextCharger) as TextView
-        if (carData.stale_car_temps == DataStale.NoValue) {
-            batterytv.text = ""
-            chargertv.text = ""
-        } else {
-            batterytv.text = carData.car_temp_battery
-            chargertv.text = carData.car_temp_charger
-            if (carData.stale_car_temps == DataStale.Stale) {
-                batterytv.setTextColor(-0x7f7f80)
-                chargertv.setTextColor(-0x7f7f80)
+        if (carData.car_type == "SQ") {
+            // switches the box from battery to cabin
+            batterytvl.setText(R.string.textCAB)
+            if (carData.stale_car_temps == DataStale.NoValue) {
+
+                batterytv.text = ""
+                chargertv.text = ""
             } else {
-                batterytv.setTextColor(-0x1)
-                chargertv.setTextColor(-0x1)
+                batterytv.text = carData.car_temp_battery
+                chargertv.text = carData.car_temp_cabin
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    batterytv.setTextColor(-0x7f7f80)
+                    chargertv.setTextColor(-0x7f7f80)
+                } else {
+                    batterytv.setTextColor(-0x1)
+                    chargertv.setTextColor(-0x1)
+                }
+            }
+        } else {
+            if (carData.stale_car_temps == DataStale.NoValue) {
+                batterytv.text = ""
+                chargertv.text = ""
+            } else {
+                batterytv.text = carData.car_temp_battery
+                chargertv.text = carData.car_temp_charger
+                if (carData.stale_car_temps == DataStale.Stale) {
+                    batterytv.setTextColor(-0x7f7f80)
+                    chargertv.setTextColor(-0x7f7f80)
+                } else {
+                    batterytv.setTextColor(-0x1)
+                    chargertv.setTextColor(-0x1)
+                }
             }
         }
         var st: String
@@ -883,6 +1179,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextOdometer) as TextView
         tv.text = ss
+        // move the Odometer text to the right position
+        if (carData.car_type == "SQ") {
+            tv.translationY = "-165".toFloat()
+        }
 
         // Speed
         tv = findViewById(R.id.tabCarTextSpeed) as TextView
@@ -915,7 +1215,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // Car Hood
         iv = findViewById(R.id.tabCarImageCarHoodOpen) as ImageView
-        iv.setVisibility(if (carData.car_bonnet_open) View.VISIBLE else View.INVISIBLE)
+        iv.visibility = if (carData.car_bonnet_open) View.VISIBLE else View.INVISIBLE
         if (carData.car_type.startsWith("VA")) {
             // Volt, Ampera
             iv.setImageResource(R.drawable.voltampera_outline_hd)
@@ -925,222 +1225,222 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         if (carData.sel_vehicle_image.startsWith("car_zoe_")) {
             // Left Door Zoe
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_ld)
 
             // Right Door Zoe
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rd)
 
             // Rear Left Door Zoe
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rld)
 
             // Rear Right Door Zoe
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_rrd)
 
             // Trunk Zoe
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_outline_tr)
 
             // Headlights Zoe
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.zoe_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_mgzs_")) {
             // Left Door MGZS
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_ld)
 
             // Right Door MGZS
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rd)
 
             // Rear Left Door MGZS
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rld)
 
             // Rear Right Door MGZS
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_rrd)
 
             // Trunk MGZS
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_outline_tr)
 
             // Headlights MGZS
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.mgzs_carlights)
-        } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
+        } else if ((carData.sel_vehicle_image.startsWith("car_smart_"))||(!carData.sel_vehicle_image.startsWith("car_smart_44_")))  {
             // Left Door Smart
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_ld)
 
             // Right Door Smart
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_rd)
 
             // Trunk Smart
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_outline_tr)
 
             // Headlights Smart
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.smart_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_leaf")) {
             // Left Door Leaf
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_ld)
 
             // Right Door Leaf
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rd)
 
             // Rear Left Door Leaf
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rld)
 
             // Rear Right Door Leaf
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_rrd)
 
             // Trunk Leaf
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.leaf_outline_tr)
 
             // Headlights Leaf
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             if (carData.sel_vehicle_image.startsWith("car_leaf2")) {
                 iv.setImageResource(R.drawable.leaf2_carlights)
             } else iv.setImageResource(R.drawable.leaf_carlights)
-        } else if (carData.sel_vehicle_image.startsWith("car_vwup_")) {
+        } else if ((carData.sel_vehicle_image.startsWith("car_vwup_"))||(carData.sel_vehicle_image.startsWith("car_smart_44_"))) {
             // Left Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_ld)
 
             // Right Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rd)
 
             // Rear Left Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rld)
 
             // Rear Right Door VW e-Up
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_rrd)
 
             // Trunk VW e-Up
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_outline_tr)
 
             // Headlights VW e-Up
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.vwup_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_ampera_")
             || carData.sel_vehicle_image.startsWith("car_holdenvolt_")) {
             // Left Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_ld)
 
             // Right Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rd)
 
             // Rear Left Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rld)
 
             // Rear Right Door Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_rrd)
 
             // Trunk Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_outline_tr)
 
             // Headlights Volt, Ampera
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.voltampera_carlights)
         } else if (carData.sel_vehicle_image.startsWith("car_kangoo_")) {
             // Left Door Kangoo
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_ld)
 
             // Right Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rd)
 
             // Rear Left Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRearLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearleftdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rld)
 
             // Rear Right Door Kangoo
             iv = findViewById(R.id.tabCarImageCarRearRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_rearrightdoor_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_rrd)
 
             // Trunk Kangoo
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_outline_tr)
 
             // Headlights Kangoo
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
             iv.setImageResource(R.drawable.kangoo_carlights)
         } else {
             // Left Door
             iv = findViewById(R.id.tabCarImageCarLeftDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontleftdoor_open) View.VISIBLE else View.INVISIBLE
 
             // Right Door
             iv = findViewById(R.id.tabCarImageCarRightDoorOpen) as ImageView
-            iv.setVisibility(if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_frontrightdoor_open) View.VISIBLE else View.INVISIBLE
 
             // Trunk
             iv = findViewById(R.id.tabCarImageCarTrunkOpen) as ImageView
-            iv.setVisibility(if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_trunk_open) View.VISIBLE else View.INVISIBLE
 
             // Headlights
             iv = findViewById(R.id.tabCarImageCarHeadlightsON) as ImageView
-            iv.setVisibility(if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE)
+            iv.visibility = if (carData.car_headlights_on) View.VISIBLE else View.INVISIBLE
         }
 
         // Car locked
@@ -1189,9 +1489,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // Charge Port
         iv = findViewById(R.id.tabCarImageCarChargePortOpen) as ImageView
         if (!carData.car_chargeport_open) {
-            iv.setVisibility(View.INVISIBLE)
+            iv.visibility = View.INVISIBLE
         } else {
-            iv.setVisibility(View.VISIBLE)
+            iv.visibility = View.VISIBLE
             if (carData.sel_vehicle_image.startsWith("car_twizy_")) {
                 // Renault Twizy:
                 iv.setImageResource(R.drawable.ol_car_twizy_chargeport)
@@ -1270,7 +1570,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 } else if (carData.car_charge_state_i_raw == 0x04) {
                     // Charging done
                     iv.setImageResource(R.drawable.roadster_outline_cd)
-                } else if (carData.car_charge_state_i_raw >= 0x15 && carData.car_charge_state_i_raw <= 0x19) {
+                } else if (carData.car_charge_state_i_raw in 0x15..0x19) {
                     // Stopped
                     iv.setImageResource(R.drawable.roadster_outline_cs)
                 } else {
@@ -1300,5 +1600,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_HL_DEFAULT = Menu.FIRST + 4
         private const val MI_AC_ON = Menu.FIRST + 5
         private const val MI_AC_OFF = Menu.FIRST + 6
+        private const val MI_AC_BON = Menu.FIRST + 7
+        private const val MI_AC_BT = Menu.FIRST + 8
+        private const val MI_AC_BW = Menu.FIRST + 9
+        private const val MI_AC_BDS = Menu.FIRST + 10
+        private const val MI_AC_BDE = Menu.FIRST + 11
     }
 }

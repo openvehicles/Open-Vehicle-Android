@@ -985,6 +985,18 @@ class CarData : Serializable {
                 end = i + cnt
                 while (i < end) {
                     ival = dataParts[i].toInt()
+                    if (car_type == "SQ") {
+                        // orange alert
+                        if ((j == 0) && ((car_tpms_pressure_raw!![j] < 210) || (car_tpms_pressure_raw!![j] > 240))) ival =1
+                        if ((j == 1) && ((car_tpms_pressure_raw!![j] < 210) || (car_tpms_pressure_raw!![j] > 240))) ival =1
+                        if ((j == 2) && ((car_tpms_pressure_raw!![j] < 240) || (car_tpms_pressure_raw!![j] > 270))) ival =1
+                        if ((j == 3) && ((car_tpms_pressure_raw!![j] < 240) || (car_tpms_pressure_raw!![j] > 270))) ival =1
+                        // red alert
+                        if ((j == 0) && ((car_tpms_pressure_raw!![j] < 190) || (car_tpms_pressure_raw!![j] > 260))) ival =2
+                        if ((j == 1) && ((car_tpms_pressure_raw!![j] < 190) || (car_tpms_pressure_raw!![j] > 260))) ival =2
+                        if ((j == 2) && ((car_tpms_pressure_raw!![j] < 220) || (car_tpms_pressure_raw!![j] > 290))) ival =2
+                        if ((j == 3) && ((car_tpms_pressure_raw!![j] < 220) || (car_tpms_pressure_raw!![j] > 290))) ival =2
+                    }
                     if (ival > 2) ival = 2 else if (ival < 0) ival = 0
                     sval = if (ival == 0) "✔" else if (ival == 1) "⛛" else "⚠"
                     car_tpms_alert_raw!![j] = ival

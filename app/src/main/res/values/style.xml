@@ -53,8 +53,10 @@
     <style name="TabCarTextBox">
         <item name="android:layout_width">104px</item>
         <item name="android:layout_height">34px</item>
-        <item name="android:textSize">20px</item>
+        <item name="android:textSize">22px</item>
         <item name="android:gravity">center</item>
+        <item name="android:textColor">#ffffffff</item>
+        <item name="android:textStyle">bold</item>
     </style>
 
     <style name="TabCarTextOverlay">
