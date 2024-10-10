@@ -393,22 +393,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         override fun onAction(data: String?) {
                             val cmd: String
                             val resId: Int
-                            if (carData!!.car_type == "SQ") {
+                            if (carData!!.car_valetmode) {
                                 resId = dialogButton
-                                cmd = "7,config set usr b.scheduled $data"
-                                sendCommand(resId, cmd, this@CarFragment)
-                                sendCommand(resId, "7,config set usr b.activated yes", this@CarFragment)
-                                sendCommand(resId, "7,script reload", this@CarFragment)
-                            }else {
-                                if (carData!!.car_valetmode) {
-                                    resId = dialogButton
-                                    cmd = "23,$data"
-                                } else {
-                                    resId = dialogButton
-                                    cmd = "21,$data"
-                                }
-                                sendCommand(resId, cmd, this@CarFragment)
+                                cmd = "23,$data"
+                            } else {
+                                resId = dialogButton
+                                cmd = "21,$data"
                             }
+                            sendCommand(resId, cmd, this@CarFragment)
                         }
                     })
             }
