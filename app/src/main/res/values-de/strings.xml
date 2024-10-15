@@ -154,17 +154,17 @@
     <string name="lb_booster_day_start">erster Tag</string>
     <string name="lb_booster_day_end">letzter Tag</string>
     <string-array name="lb_booster_mode">
-        <item>nein</item>
-        <item>ja</item>
+        <item>&#160; nein &#160;</item>
+        <item>&#160;&#160;&#160; ja &#160;&#160;&#160;</item>
     </string-array>
     <string-array name="lb_booster_days">
-        <item>Son</item>
-        <item>Mon</item>
-        <item>Die</item>
-        <item>Mit</item>
-        <item>Don</item>
-        <item>Fre</item>
-        <item>Sam</item>
+        <item>&#160;Son&#160;</item>
+        <item>&#160;Mon&#160;</item>
+        <item>&#160;Die&#160;</item>
+        <item>&#160;Mit&#160;</item>
+        <item>&#160;Don&#160;</item>
+        <item>&#160;Fre&#160;</item>
+        <item>&#160;Sam&#160;</item>
     </string-array>
 
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>

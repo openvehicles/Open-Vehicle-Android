@@ -100,17 +100,17 @@
     <string name="lb_booster_day_start">first Day</string>
     <string name="lb_booster_day_end">last Day</string>
     <string-array name="lb_booster_mode">
-        <item>no</item>
-        <item>yes</item>
+        <item>&#160;&#160;&#160; no &#160;&#160;&#160;</item>
+        <item>&#160;&#160; yes &#160;&#160;</item>
     </string-array>
     <string-array name="lb_booster_days">
-        <item>Son</item>
-        <item>Mon</item>
-        <item>Tue</item>
-        <item>Wed</item>
-        <item>Thu</item>
-        <item>Fri</item>
-        <item>Sat</item>
+        <item>&#160;Son&#160;</item>
+        <item>&#160;Mon&#160;</item>
+        <item>&#160;Tue&#160;</item>
+        <item>&#160;Wed&#160;</item>
+        <item>&#160;Thu&#160;</item>
+        <item>&#160;Fri&#160;</item>
+        <item>&#160;Sat&#160;</item>
     </string-array>
 
     <string name="lb_valet_mode_smart">Ignition Mode</string>

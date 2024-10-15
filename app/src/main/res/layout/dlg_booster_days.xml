@@ -16,11 +16,11 @@
         android:weightSum="1">
 
         <TextView android:layout_width="wrap_content"
-            android:layout_height="60dp"
+            android:layout_height="30dp"
             android:layout_marginBottom="10dp"
             android:textAppearance="@android:style/TextAppearance.Small"
             android:gravity="center"
-            android:textSize="20px"
+            android:textSize="10px"
             android:textStyle="bold"
             android:text=""/>
 
@@ -35,9 +35,9 @@
 
         <com.openvehicles.OVMS.ui.witdet.SwitcherView
             android:id="@+id/booster_DayViewStart"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_marginHorizontal="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
             android:layout_marginBottom="10dp"
             android:entries="@array/lb_booster_days" />
 
@@ -52,9 +52,9 @@
 
         <com.openvehicles.OVMS.ui.witdet.SwitcherView
             android:id="@+id/booster_DayViewEnd"
-            android:layout_width="wrap_content"
-            android:layout_height="60dp"
-            android:layout_marginHorizontal="50dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:gravity="center"
             android:layout_marginBottom="10dp"
             android:entries="@array/lb_booster_days" />
 
