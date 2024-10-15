@@ -460,8 +460,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     menu.add(0, MI_AC_BON, 0, if(appPrefs.getData("booster_on_" + app_Car_label) == "on") R.string.lb_booster_off else R.string.lb_booster_on)
                     menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
                     menu.add(0, MI_AC_BW, 0, if(appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") R.string.lb_booster_weekly_off else R.string.lb_booster_weekly_on)
-                    menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_start)
-                    menu.add(0, MI_AC_BDE, 0, R.string.lb_booster_day_end)
+                    menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_sel)
                     menu.add(0, MI_AC_BTD, 0, if(appPrefs.getData("booster_btd_" + app_Car_label) == "1") R.string.lb_booster_doubler_off else R.string.lb_booster_doubler_on)
                     menu.add(R.string.Cancel)
                 } else {
@@ -497,9 +496,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             MI_HL_02 -> {
                 if (carData!!.car_type == "SQ") {
                     appPrefs.saveData("booster_on_" + app_Car_label, "off")
-                    appPrefs.saveData("booster_time_" + app_Car_label, "0515")
+                    appPrefs.saveData("booster_time_" + app_Car_label, "05:15")
                     appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     appPrefs.saveData("booster_btd_" + app_Car_label, "0")
+                    appPrefs.saveData("booster_time_h_" + app_Car_label, "5")
+                    appPrefs.saveData("booster_time_m_" + app_Car_label, "15")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
@@ -563,6 +564,15 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     R.layout.dlg_booster_time, null
                 )
 
+                val booster_h = dialogView.findViewById<View>(R.id.booster_time_hour) as SlideNumericView?
+                val booster_m = dialogView.findViewById<View>(R.id.booster_time_min) as SlideNumericView?
+                val booster_sel = dialogView.findViewById<View>(R.id.booster_SwitcherView) as SwitcherView?
+                if(appPrefs.getData("booster_time_h_" + app_Car_label) != "") {
+                    booster_h!!.value = appPrefs.getData("booster_time_h_" + app_Car_label).toInt()
+                    booster_m!!.value = appPrefs.getData("booster_time_m_" + app_Car_label).toInt()
+                }
+                if(appPrefs.getData("booster_btd_" + app_Car_label) != "") booster_sel!!.selected = appPrefs.getData("booster_btd_" + app_Car_label).toInt()
+
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_booster_time)
                     .setView(dialogView)
@@ -586,6 +596,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         val time = "$booster_h:$booster_m"
                         val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1,$booster_btd"
                         appPrefs.saveData("booster_time_" + app_Car_label, time)
+                        appPrefs.saveData("booster_time_h_" + app_Car_label, "$booster_h")
+                        appPrefs.saveData("booster_time_m_" + app_Car_label, "$booster_m")
                         appPrefs.saveData("booster_btd_" + app_Car_label, "$booster_btd")
                         tabInfoTextBoostertime.text = time
                         if("$booster_btd" == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
@@ -626,43 +638,42 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_AC_BDS -> {
                 // show booster start Day dialog:
-                showPinDialog(
-                    requireActivity(),
-                    R.string.lb_booster_day_set,
-                    R.string.msg_ok,
-                    false,
-                    object : Ui.OnChangeListener<String?> {
-                        override fun onAction(data: String?) {
-                            if(data!! != "") {
-                                appPrefs.saveData("booster_on_" + app_Car_label, "on")
-                                appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
-                                tabCarImageBooster.visibility = View.VISIBLE
-                                tabInfoTextBoostertime.visibility = View.VISIBLE
-                                tabCarImageCalendar.visibility = View.VISIBLE
-                                val resId: Int = R.string.lb_booster_day_start
-                                val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1,-1"
-                                sendCommand(resId, cmd, this@CarFragment)
-                            }
-                        }
-                    })
-                true
-            }
-            MI_AC_BDE -> {
-                // show booster end Day dialog:
-                showPinDialog(
-                    requireActivity(),
-                    R.string.lb_booster_day_set,
-                    R.string.msg_ok,
-                    false,
-                    object : Ui.OnChangeListener<String?> {
-                        override fun onAction(data: String?) {
-                            if(data!! != "") {
-                                val resId: Int = R.string.lb_booster_day_end
-                                val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data,-1"
-                                sendCommand(resId, cmd, this@CarFragment)
-                            }
-                        }
-                    })
+                val dialogView = LayoutInflater.from(activity).inflate(
+                    R.layout.dlg_booster_days, null
+                )
+
+                val booster_sel_s = dialogView.findViewById<View>(R.id.booster_DayViewStart) as SwitcherView?
+                val booster_sel_e = dialogView.findViewById<View>(R.id.booster_DayViewEnd) as SwitcherView?
+                if(appPrefs.getData("booster_day_start_" + app_Car_label) != "") booster_sel_s!!.selected = appPrefs.getData("booster_day_start_" + app_Car_label).toInt()
+                if(appPrefs.getData("booster_day_end_" + app_Car_label) != "") booster_sel_e!!.selected = appPrefs.getData("booster_day_end_" + app_Car_label).toInt()
+
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_booster_day_sel)
+                    .setView(dialogView)
+                    .setNegativeButton(R.string.Cancel, null)
+                    .setPositiveButton(
+                        android.R.string.ok
+                    ) { dlg, which ->
+                        appPrefs.saveData("booster_on_" + app_Car_label, "on")
+                        appPrefs.saveData("booster_weekly_on_" + app_Car_label, "on")
+                        tabCarImageBooster.visibility = View.VISIBLE
+                        tabInfoTextBoostertime.visibility = View.VISIBLE
+                        tabCarImageCalendar.visibility = View.VISIBLE
+                        val appCompatDialog = dlg as AppCompatDialog
+                        val booster_sel_s = appCompatDialog
+                            .findViewById<View>(R.id.booster_DayViewStart) as SwitcherView?
+                        val booster_sel_e = appCompatDialog
+                            .findViewById<View>(R.id.booster_DayViewEnd) as SwitcherView?
+                        val booster_start = booster_sel_s!!.selected
+                        val booster_end = booster_sel_e!!.selected
+                        val cmd = "7,config set usr b.data 1,1,1,0,$booster_start,$booster_end,-1"
+                        appPrefs.saveData("booster_day_start_" + app_Car_label, "$booster_start")
+                        appPrefs.saveData("booster_day_end_" + app_Car_label, "$booster_end")
+                        sendCommand(
+                            R.string.msg_issuing_climatecontrol, cmd,
+                            this@CarFragment)
+                    }
+                    .show()
                 true
             }
             MI_AC_BTD -> {
@@ -1637,7 +1648,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_AC_BT = Menu.FIRST + 8
         private const val MI_AC_BW = Menu.FIRST + 9
         private const val MI_AC_BDS = Menu.FIRST + 10
-        private const val MI_AC_BDE = Menu.FIRST + 11
-        private const val MI_AC_BTD = Menu.FIRST + 12
+        private const val MI_AC_BTD = Menu.FIRST + 11
     }
 }
