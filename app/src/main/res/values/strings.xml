@@ -83,17 +83,27 @@
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
 
-    <string name="lb_booster_on">Booster timer on/off</string>
+    <string name="lb_booster_on">Booster timer on</string>
+    <string name="lb_booster_off">Booster timer off</string>
     <string name="lb_booster_hour">hour</string>
     <string name="lb_booster_min">minute</string>
+    <string name="lb_booster_doubler">two times booster?</string>">
+    <string name="lb_booster_doubler_on">two times booster on</string>">
+    <string name="lb_booster_doubler_off">two times booster off</string>">
     <string name="lb_booster_activate">activate</string>
     <string name="lb_booster_time">Booster time</string>
     <string name="lb_booster_timer">Booster timer (14:00 = 1400)</string>
     <string name="lb_booster_timer_set">Booster timer (14:00 = 1400), every time 4 digits! OK = activate Booster time</string>
     <string name="lb_booster_day_set">SUN=0, MON=1, TUE=2, WED=3, THU=4, FRI=5, SAT=6</string>
     <string name="lb_booster_weekly">Booster weekly on/off</string>
+    <string name="lb_booster_weekly_on">Booster weekly on</string>
+    <string name="lb_booster_weekly_off">Booster weekly off</string>
     <string name="lb_booster_day_start">Booster start Day (1=Mon)</string>
     <string name="lb_booster_day_end">Booster end Day (5=Fri)</string>
+    <string-array name="lb_booster_mode">
+        <item>off</item>
+        <item>on</item>
+    </string-array>
 
     <string name="lb_valet_mode_smart">Ignition Mode</string>
     <string name="lb_valet_mode_smart_on">Ignition On</string>

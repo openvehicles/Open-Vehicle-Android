@@ -138,17 +138,27 @@
     <string name="lb_ft_rt_capacity">#%d: Akku-Kapazitätsmessung (CAP%%)</string>
     <string name="lb_ft_rt_capacity_nom_ah">#%d: Akku-Standardkapazität (Ah)</string>
 
-    <string name="lb_booster_on">Booster timer ein/aus</string>
+    <string name="lb_booster_on">Booster timer ein</string>
+    <string name="lb_booster_off">Booster timer aus</string>
     <string name="lb_booster_hour">Stunde</string>
     <string name="lb_booster_min">Minute</string>
+    <string name="lb_booster_doubler">doppelt Boostern?</string>">
+    <string name="lb_booster_doubler_on">doppelt Boostern an</string>">
+    <string name="lb_booster_doubler_off">doppelt Boostern aus</string>">
     <string name="lb_booster_activate">aktivieren</string>
     <string name="lb_booster_time">Booster Zeit</string>
     <string name="lb_booster_timer">Booster Zeit (14:00 = 1400)</string>
     <string name="lb_booster_timer_set">Booster Zeit (14:00 = 1400), Zeit immer 4 stellig eingeben! OK = Booster Zeit aktivieren</string>
     <string name="lb_booster_day_set">So=0, Mo=1, Di=2, Mi=3, Do=4, Fr=5, Sa=6</string>
     <string name="lb_booster_weekly">Booster wöchentlich ein/aus</string>
+    <string name="lb_booster_weekly_on">Booster wöchentlich ein</string>
+    <string name="lb_booster_weekly_off">Booster wöchentlich aus</string>
     <string name="lb_booster_day_start">Booster von Tag (1=Mo.)</string>
     <string name="lb_booster_day_end">Booster bis Tag (5=Fr.)</string>
+    <string-array name="lb_booster_mode">
+        <item>aus</item>
+        <item>ein</item>
+    </string-array>
 
     <string name="lb_cp_registered_telephone">#%d: Registrierte Telefonnummer</string>
     <string name="lb_cp_module_password">#%d: Module-Passwort</string>

@@ -32,6 +32,7 @@ import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.ui.utils.Ui.showPinDialog
 import com.openvehicles.OVMS.ui.witdet.SlideNumericView
+import com.openvehicles.OVMS.ui.witdet.SwitcherView
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import kotlin.math.floor
@@ -452,14 +453,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
             }
             R.id.tabCarImageAC -> {
+                val app_Car_label = carData!!.sel_vehicle_label
                 if (carData!!.car_type == "SQ") {
                     menu.setHeaderTitle(R.string.textAC)
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
-                    menu.add(0, MI_AC_BON, 0, R.string.lb_booster_on)
+                    menu.add(0, MI_AC_BON, 0, if(appPrefs.getData("booster_on_" + app_Car_label) == "on") R.string.lb_booster_off else R.string.lb_booster_on)
                     menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
-                    menu.add(0, MI_AC_BW, 0, R.string.lb_booster_weekly)
+                    menu.add(0, MI_AC_BW, 0, if(appPrefs.getData("booster_weekly_on_" + app_Car_label) == "on") R.string.lb_booster_weekly_off else R.string.lb_booster_weekly_on)
                     menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_start)
                     menu.add(0, MI_AC_BDE, 0, R.string.lb_booster_day_end)
+                    menu.add(0, MI_AC_BTD, 0, if(appPrefs.getData("booster_btd_" + app_Car_label) == "1") R.string.lb_booster_doubler_off else R.string.lb_booster_doubler_on)
                     menu.add(R.string.Cancel)
                 } else {
                     menu.setHeaderTitle(R.string.textAC)
@@ -477,6 +480,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
+        if(appPrefs.getData("booster_btd_" + app_Car_label) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
         tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
@@ -495,6 +499,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     appPrefs.saveData("booster_on_" + app_Car_label, "off")
                     appPrefs.saveData("booster_time_" + app_Car_label, "0515")
                     appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_btd_" + app_Car_label, "0")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
@@ -539,14 +544,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        "7,config set usr b.data 1,2,2,0,-1,-1,-1",
                         this
                     )
                 } else {
                     appPrefs.saveData("booster_on_" + app_Car_label, "on")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,1,0,0,-1,-1",
+                        "7,config set usr b.data 1,1,0,0,-1,-1,-1",
                         this
                     )
                 }
@@ -575,10 +580,15 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             .findViewById<View>(R.id.booster_time_min) as SlideNumericView?
                         val booster_h = if(booster_hd!!.value < 10) String.format("0%d", booster_hd.value) else booster_hd.value
                         val booster_m = if(booster_md!!.value < 10) String.format("0%d", booster_md.value) else booster_md.value
+                        val booster_sel = appCompatDialog
+                            .findViewById<View>(R.id.booster_SwitcherView) as SwitcherView?
+                        val booster_btd = booster_sel!!.selected
                         val time = "$booster_h:$booster_m"
-                        val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1"
+                        val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1,$booster_btd"
                         appPrefs.saveData("booster_time_" + app_Car_label, time)
+                        appPrefs.saveData("booster_btd_" + app_Car_label, "$booster_btd")
                         tabInfoTextBoostertime.text = time
+                        if("$booster_btd" == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                         sendCommand(
                             R.string.msg_issuing_climatecontrol, cmd,
                             this@CarFragment)
@@ -597,7 +607,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     tabCarImageCalendar.visibility = View.INVISIBLE
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,2,2,0,-1,-1",
+                        "7,config set usr b.data 1,2,2,0,-1,-1,-1",
                         this
                     )
                 } else {
@@ -608,7 +618,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     tabCarImageCalendar.visibility = View.VISIBLE
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
-                        "7,config set usr b.data 1,1,1,0,-1,-1",
+                        "7,config set usr b.data 1,1,1,0,-1,-1,-1",
                         this
                     )
                 }
@@ -630,7 +640,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                 tabInfoTextBoostertime.visibility = View.VISIBLE
                                 tabCarImageCalendar.visibility = View.VISIBLE
                                 val resId: Int = R.string.lb_booster_day_start
-                                val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1"
+                                val cmd: String = "7,config set usr b.data 1,1,1,0,$data,-1,-1"
                                 sendCommand(resId, cmd, this@CarFragment)
                             }
                         }
@@ -648,11 +658,33 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         override fun onAction(data: String?) {
                             if(data!! != "") {
                                 val resId: Int = R.string.lb_booster_day_end
-                                val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data"
+                                val cmd: String = "7,config set usr b.data 1,0,0,0,-1,$data,-1"
                                 sendCommand(resId, cmd, this@CarFragment)
                             }
                         }
                     })
+                true
+            }
+            MI_AC_BTD -> {
+                val state = appPrefs.getData("booster_btd_" + app_Car_label)
+                val newState = if (state == "1") "0" else "1"
+                if (newState == "0") {
+                    appPrefs.saveData("booster_btd_" + app_Car_label, "0")
+                    tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,0,0,0,-1,-1,-1",
+                        this
+                    )
+                } else {
+                    appPrefs.saveData("booster_btd_" + app_Car_label, "1")
+                    tabCarImageBooster.setImageResource(R.drawable.heat_cool_2)
+                    sendCommand(
+                        R.string.msg_issuing_climatecontrol,
+                        "7,config set usr b.data 1,0,0,0,-1,-1,1",
+                        this
+                    )
+                }
                 true
             }
             else -> false
@@ -1088,6 +1120,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
         val app_Car_label = carData.sel_vehicle_label
+        if(appPrefs.getData("booster_btd_" + carData.sel_vehicle_label) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
         tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_label) == "on") View.VISIBLE else View.INVISIBLE
         tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_label)
@@ -1605,5 +1638,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_AC_BW = Menu.FIRST + 9
         private const val MI_AC_BDS = Menu.FIRST + 10
         private const val MI_AC_BDE = Menu.FIRST + 11
+        private const val MI_AC_BTD = Menu.FIRST + 12
     }
 }
