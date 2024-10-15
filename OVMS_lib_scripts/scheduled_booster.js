@@ -14,32 +14,21 @@ if(init_usrcfg == "no"){
     OvmsConfig.Set("usr", "b.scheduled", "0515");     // schedule time format 1400 for 14:00 / 2 p.m. o'clock 
     OvmsConfig.Set("usr", "b.week", "no");            // schedule time weekly at Day de/activated
     OvmsConfig.Set("usr", "b.day_start", "1");        // Day1 -> Monday
-    OvmsConfig.Set("usr", "b.day_end", "5");          // Day5 -> Friday
-    OvmsConfig.Set("usr", "b.ticker", "30");     	  // ticker format 1/10/30/60/300/600/3600 seconds
+    OvmsConfig.Set("usr", "b.day_end", "6");          // Day5 -> Friday + 1 switched at midnight
+    OvmsConfig.Set("usr", "b.ticker", "10");     	  // ticker format 1/10/60/300/600/3600 seconds
     OvmsConfig.Set("usr", "b.data", "0,0,0,0,-1,-1"); // Data Array
 }
 
-// delete old events
-PubSub.unsubscribe(start_day);
-PubSub.unsubscribe(end_day);
-PubSub.unsubscribe(scheduled_boost);
-PubSub.unsubscribe(booster_data);
-
-// get value
-var scheduled_act = OvmsConfig.Get("usr","b.activated");
-var scheduled_week = OvmsConfig.Get("usr","b.week");
-var scheduled_ticker = 'ticker.' + OvmsConfig.Get("usr","b.ticker");
-
-// add one Day for execute on last Day, Day 7 not possible -> set Day 0 for Sunday
-if ((OvmsConfig.Get("usr","b.day_end"))<=5) {
-    var scheduled_end = OvmsConfig.Get("usr","b.day_end")+1
-} else {
-    var scheduled_end = 0
+var state = {
+    start_day: false,       // start_day subscription
+    end_day: false,         // end_day subscription
+    scheduled_boost: false, // scheduled_boost subscription
+    booster_data: false,    // booster_data subscription
 };
 
-var ClockEvent = 'clock.' + OvmsConfig.Get("usr","b.scheduled");
-var DayStart = 'clock.day' + OvmsConfig.Get("usr","b.day_start");
-var DayEnd = 'clock.day' + scheduled_end;
+// get/set value
+OvmsConfig.Delete("usr", "b.data");
+var scheduled_ticker = 'ticker.' + OvmsConfig.Get("usr","b.ticker","30");
 
 function veh_on() {
     return OvmsMetrics.Value("v.e.on");
@@ -48,40 +37,40 @@ function charging() {
     return OvmsMetrics.Value("v.c.charging");
 }
 
-function start_day() { 
-    if (scheduled_week == "yes"){
+function start_day() {
+    if (OvmsConfig.Get("usr","b.week") == "yes"){
         OvmsConfig.Set("usr", "b.activated", "yes");
     }
 }
 
-function end_day() { 
-    OvmsConfig.Set("usr", "b.activated", "no");
+function end_day() {
+    if (OvmsConfig.Get("usr","b.week") == "yes") {
+        OvmsConfig.Set("usr", "b.activated", "no");
+    }
 }
 
 function scheduled_boost() {
-
-    var scheduled_week = OvmsConfig.Get("usr","b.week");
-    
     if((!veh_on() && !charging()) && (OvmsConfig.Get("usr","b.activated") == "yes")) {
         OvmsVehicle.ClimateControl("on");
-        /*if (scheduled_week == "no") {
-            OvmsConfig.Set("usr", "b.activated", "no");
-        }*/
     }
 }
 
 function booster_data() {
 
-    var newdata = OvmsConfig.Get("usr", "b.data").split(",");
-
+    var newdata = OvmsConfig.Get("usr", "b.data", "0,0,0,0,-1,-1").split(",");
     if (newdata[0] == 1) {
         // booster scheduled on
         if (newdata[1] == 1) {
             OvmsConfig.Set("usr", "b.activated", "yes");
+            if(newdata[3] == 0){
+                PubSub.unsubscribe(state.scheduled_boost);
+                var ClockEvent = 'clock.' + OvmsConfig.Get("usr","b.scheduled");
+                state.scheduled_boost = PubSub.subscribe(ClockEvent,scheduled_boost);
+            }
         }
         // booster scheduled off
         if (newdata[1] == 2) {
-            OvmsConfig.Set("usr", "b.activated", "no");
+            OvmsConfig.Set("usr", "b.activated", "no");            
         }
         // boost every day between start/end day on
         if (newdata[2] == 1) {
@@ -93,29 +82,56 @@ function booster_data() {
         }
         // booster scheduled time + boost scheduled on
         if (newdata[3]> 0) {
+            PubSub.unsubscribe(state.scheduled_boost);
             OvmsConfig.Set("usr", "b.scheduled", newdata[3]);
+            var ClockEvent = 'clock.' + newdata[3];
+            state.scheduled_boost = PubSub.subscribe(ClockEvent,scheduled_boost);
         }
         // booster start day + boost scheduled on + boost weekly on
         if (newdata[4] > -1) {
-            OvmsConfig.Set("usr", "b.day_start", newdata[4]);
+            PubSub.unsubscribe(state.start_day);
+            // add one Day for execute on last Day, Day 7 not possible -> set Day 0 for Sunday
+            if (newdata[4] > 6) {
+                var scheduled_start = 0
+            } else {
+                var scheduled_start = newdata[4]
+            };
+            OvmsConfig.Set("usr", "b.day_start", scheduled_start);
+            var DayStart = 'clock.day' + scheduled_start;
+            state.start_day = PubSub.subscribe(DayStart,start_day);
         }
         // booster stop day
         if (newdata[5] > -1) {
-            OvmsConfig.Set("usr", "b.day_end", newdata[5]);
+            PubSub.unsubscribe(state.end_day);
+            // add one Day for execute on last Day, Day 7 not possible -> set Day 0 for Sunday
+            if (newdata[5] <= 5) {
+                var scheduled_end = (Number(newdata[5]) +1)
+            } else {
+                var scheduled_end = 0
+            };
+            OvmsConfig.Set("usr", "b.day_end", scheduled_end);
+            var DayEnd = 'clock.day' + scheduled_end;
+            state.end_day = PubSub.subscribe(DayEnd,end_day);
         }
         OvmsConfig.Set("usr", "b.data", "0,0,0,0,-1,-1");
-        OvmsCommand.Exec('script reload');
+    }
+
+    if((!state.scheduled_boost)&&(OvmsConfig.Get("usr","b.activated") == "yes")){
+        state.scheduled_boost = PubSub.subscribe('clock.0001',veh_on);
+        PubSub.unsubscribe(state.scheduled_boost);
+        var ClockEvent = 'clock.' + OvmsConfig.Get("usr","b.scheduled");
+        state.scheduled_boost = PubSub.subscribe(ClockEvent,scheduled_boost);
+    }
+    if((!state.start_day)&&(OvmsConfig.Get("usr","b.week") == "yes")){
+        state.start_day = PubSub.subscribe('clock.0001',veh_on);
+        PubSub.unsubscribe(state.start_day);
+        state.end_day = PubSub.subscribe('clock.0001',veh_on);
+        PubSub.unsubscribe(state.end_day);
+        var DayStart = 'clock.day' + OvmsConfig.Get("usr","b.day_start");
+        var DayEnd = 'clock.day' + OvmsConfig.Get("usr","b.day_end");
+        state.start_day = PubSub.subscribe(DayStart,start_day);
+        state.end_day = PubSub.subscribe(DayEnd,end_day);
     }
 }
 
-// event creating
 PubSub.subscribe(scheduled_ticker,booster_data);
-
-if(scheduled_week == "yes"){
-    PubSub.subscribe(DayStart,start_day);
-    PubSub.subscribe(DayEnd,end_day);
-}
-
-if(scheduled_act == "yes"){
-    PubSub.subscribe(ClockEvent,scheduled_boost);
-}
