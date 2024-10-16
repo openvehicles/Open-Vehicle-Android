@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent" android:layout_height="match_parent"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
 	android:fillViewport="true"
-	android:padding="16dp" >
+	android:padding="16dp"
+	android:textAlignment="center">
 
 	<LinearLayout
 		android:layout_width="match_parent"
@@ -13,7 +15,7 @@
 		<EditText
 			android:id="@+id/txt_vehicle_id"
 			android:layout_width="150dp"
-			android:layout_height="wrap_content"
+			android:layout_height="48dp"
 			android:hint="@string/lb_vehicle_id"
 			android:inputType="textNoSuggestions|textCapCharacters">
 
@@ -22,24 +24,24 @@
 
 		<EditText
 			android:id="@+id/txt_vehicle_label"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_width="488dp"
+			android:layout_height="48dp"
 			android:layout_marginTop="8dp"
 			android:hint="@string/lb_vehicle_label"
 			android:inputType="textCapWords" />
 
 		<EditText
 			android:id="@+id/txt_server_passwd"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_width="488dp"
+			android:layout_height="48dp"
 			android:layout_marginTop="8dp"
 			android:hint="@string/lb_server_passwd"
 			android:inputType="textPassword" />
 
 		<EditText
 			android:id="@+id/txt_module_passwd"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_width="488dp"
+			android:layout_height="48dp"
 			android:layout_marginTop="8dp"
 			android:hint="@string/lb_module_passwd"
 			android:inputType="textPassword" />
@@ -54,15 +56,14 @@
 			android:id="@+id/select_server"
 			style="@style/Widget.AppCompat.Spinner.Underlined"
 			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_column="1"
-			android:background="@drawable/spinner_ab_focused_ovms"
+			android:layout_height="48dp"
+            android:background="@drawable/spinner_ab_focused_ovms"
 			android:entries="@array/select_server_options" />
 
 		<EditText
 			android:id="@+id/txt_server_address"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
+			android:layout_width="488dp"
+			android:layout_height="48dp"
 			android:layout_marginTop="8dp"
 			android:ems="10"
 			android:hint="@string/ServerNameOrIP"
@@ -71,9 +72,8 @@
 
 		<EditText
 			android:id="@+id/txt_gcm_senderid"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_gravity="center_horizontal"
+			android:layout_width="488dp"
+			android:layout_height="48dp"
 			android:layout_marginTop="8dp"
 			android:ems="10"
 			android:hint="@string/GcmSenderID"

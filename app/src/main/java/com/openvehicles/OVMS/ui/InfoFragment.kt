@@ -120,7 +120,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 // nop
             }
         }
-        val app_Car_label = carData!!.sel_vehicle_label
+        val app_Car_ID = carData!!.sel_vehicleid
         val booster_on_btn = rootView.findViewById<View>(R.id.tabCarImageBooster)
         booster_on_btn.setOnClickListener {
             AlertDialog.Builder(requireActivity())
@@ -128,10 +128,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { dlg,
                                                           which ->
-                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
-                    if(appPrefs.getData("booster_btd_" + app_Car_label) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+                    if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                     val tabInfoTextBoostertime =
                         findViewById(R.id.tabInfoTextBoostertime) as TextView
                     val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
@@ -154,10 +154,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { dlg,
                     which ->
-                    appPrefs.saveData("booster_on_" + app_Car_label, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_label, "off")
+                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
-                    if(appPrefs.getData("booster_btd_" + app_Car_label) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+                    if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                     val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
                     val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
                     tabCarImageBooster.visibility = View.INVISIBLE
@@ -997,7 +997,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val tabInfoTextChargeEtrSuff = findViewById(R.id.tabInfoTextChargeEtrSuff) as TextView
         val tabInfoTextChargeEtrFull = findViewById(R.id.tabInfoTextChargeEtrFull) as TextView
         val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
-        if(appPrefs.getData("booster_btd_" + carData.sel_vehicle_label) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+        if(appPrefs.getData("booster_btd_" + carData.sel_vehicleid) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
 
@@ -1021,10 +1021,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             cabintv.visibility = View.VISIBLE
             tabCarImageCarACBoxes.visibility = View.VISIBLE
             tabCarImageAC.visibility = View.VISIBLE
-            tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + carData.sel_vehicle_label) == "on") View.VISIBLE else View.INVISIBLE
-            tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + carData.sel_vehicle_label) == "on") View.VISIBLE else View.INVISIBLE
-            tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + carData.sel_vehicle_label)
-            tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + carData.sel_vehicle_label) == "on") View.VISIBLE else View.INVISIBLE
+            tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + carData.sel_vehicleid) == "on") View.VISIBLE else View.INVISIBLE
+            tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + carData.sel_vehicleid) == "on") View.VISIBLE else View.INVISIBLE
+            tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + carData.sel_vehicleid)
+            tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + carData.sel_vehicleid) == "on") View.VISIBLE else View.INVISIBLE
 
             // AC on/off
             if (carData.car_hvac_on) {
