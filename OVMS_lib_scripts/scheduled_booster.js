@@ -64,8 +64,11 @@ function scheduled_boost() {
 function scheduled_boost_2() {
     if(!veh_on() && !veh_hvac()) {
         OvmsVehicle.ClimateControl("on");
+        PubSub.unsubscribe(state.scheduled_boost_2);
     }
-    PubSub.unsubscribe(state.scheduled_boost_2);
+    if(veh_on()) {
+        PubSub.unsubscribe(state.scheduled_boost_2);
+    }
 }
 
 function booster_data() {
