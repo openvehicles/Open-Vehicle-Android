@@ -423,6 +423,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         val id = v.id
+        val app_Car_ID = carData!!.sel_vehicleid
         when (id) {
             R.id.btn_wakeup -> {
                 if (carData!!.car_type == "RT") {
@@ -444,17 +445,17 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
                     menu.add(0, MI_HL_02, 0, "Booster Timer reset")
-                    menu.add(0, MI_HL_03, 0, "OVMSmain delete")
-                    menu.add(R.string.Cancel)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
                     menu.add(0, MI_HL_02, 0, "2")
                     menu.add(0, MI_HL_03, 0, "3")
-                    menu.add(R.string.Cancel)
                 }
+                if(appPrefs.getData("option_firmware_enabled_" + app_Car_ID) == "1") {
+                    menu.add(0, MI_HL_FW, 0, R.string.lb_options_firmware_update)
+                }
+                menu.add(R.string.Cancel)
             }
             R.id.tabCarImageAC -> {
-                val app_Car_ID = carData!!.sel_vehicleid
                 if (carData!!.car_type == "SQ") {
                     menu.setHeaderTitle(R.string.textAC)
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
@@ -533,19 +534,32 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
             }
             MI_HL_03 -> {
-                if (carData!!.car_type == "SQ") {
-                    appPrefs.saveData("plugin_ovmsmain_" + app_Car_ID, "on")
-                    sendCommand(R.string.lb_plugin_ovmsmain,"7,vfs rm /store/scripts/ovmsmain.js",this)
-                    sendCommand(R.string.lb_plugin_ovmsmain, "7,config rm usr *", this)
-                    sendCommand(R.string.lb_plugin_ovmsmain, "7,script reload", this)
-                    true
-                } else {
-                    sendCommand(R.string.msg_issuing_homelink, "24,2", this)
-                    true
-                }
+                sendCommand(R.string.msg_issuing_homelink, "24,2", this)
+                true
             }
             MI_HL_DEFAULT -> {
                 sendCommand(R.string.msg_issuing_homelink, "24", this)
+                true
+            }
+            MI_HL_FW -> {
+                val options = arrayOf("Dimitrie78", "Edge", "Eap", "Main")
+                var checkedItem = -1 // To store the index of the selected item
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_plugin_firmware)
+                    .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Cancel, null)
+                    .setPositiveButton(android.R.string.ok) { dialog, which ->
+                        when (checkedItem) {
+                            0 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dimitrie.eu/firmware/ota/v3.3/smarteq/ovms3.bin", this)
+                            1 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/edge/ovms3.bin", this)
+                            2 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/eap/ovms3.bin", this)
+                            3 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/main/ovms3.bin", this)
+                            else -> false
+                        }
+                    }
+                    .show()
                 true
             }
             MI_AC_ON -> {
@@ -962,7 +976,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // plugin menu
         val btn_plugin_menu = findViewById(R.id.tabCarImagePlugin) as ImageView
-        btn_plugin_menu.visibility = if(appPrefs.getData("plugin_enabled_" + carData.sel_vehicleid) == "1") View.VISIBLE else View.INVISIBLE
+        btn_plugin_menu.visibility = if(appPrefs.getData("option_plugin_enabled_" + carData.sel_vehicleid) == "1") View.VISIBLE else View.INVISIBLE
 
         // "Ambient" box:
         iv = findViewById(R.id.tabCarImageCarAmbientBox) as ImageView
@@ -1736,18 +1750,19 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_HL_02 = Menu.FIRST + 2
         private const val MI_HL_03 = Menu.FIRST + 3
         private const val MI_HL_DEFAULT = Menu.FIRST + 4
-        private const val MI_AC_ON = Menu.FIRST + 5
-        private const val MI_AC_OFF = Menu.FIRST + 6
-        private const val MI_AC_BON = Menu.FIRST + 7
-        private const val MI_AC_BT = Menu.FIRST + 8
-        private const val MI_AC_BW = Menu.FIRST + 9
-        private const val MI_AC_BDS = Menu.FIRST + 10
-        private const val MI_AC_BTD = Menu.FIRST + 11
-        private const val plugin_repo_smarteq = Menu.FIRST + 12
-        private const val plugin_ovmsmain = Menu.FIRST +13
-        private const val plugin_1 = Menu.FIRST + 14
-        private const val plugin_2 = Menu.FIRST + 15
-        private const val plugin_3 = Menu.FIRST + 16
-        private const val plugin_4 = Menu.FIRST + 17
+        private const val MI_HL_FW = Menu.FIRST + 5
+        private const val MI_AC_ON = Menu.FIRST + 6
+        private const val MI_AC_OFF = Menu.FIRST + 7
+        private const val MI_AC_BON = Menu.FIRST + 8
+        private const val MI_AC_BT = Menu.FIRST + 9
+        private const val MI_AC_BW = Menu.FIRST + 10
+        private const val MI_AC_BDS = Menu.FIRST + 11
+        private const val MI_AC_BTD = Menu.FIRST + 12
+        private const val plugin_repo_smarteq = Menu.FIRST + 13
+        private const val plugin_ovmsmain = Menu.FIRST +14
+        private const val plugin_1 = Menu.FIRST + 15
+        private const val plugin_2 = Menu.FIRST + 16
+        private const val plugin_3 = Menu.FIRST + 17
+        private const val plugin_4 = Menu.FIRST + 18
     }
 }

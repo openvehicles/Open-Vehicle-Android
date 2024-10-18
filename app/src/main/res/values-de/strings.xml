@@ -669,6 +669,8 @@
     <string name="lb_options_plugin_deinst">deinstalliere Smart EQ Repo</string>
     <string name="lb_plugin_ovmsmain">lösche OVMSmain.js, neu starten!</string>
     <string name="lb_plugin_update">Plungins updaten</string>
+    <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
+    <string name="lb_plugin_firmware_update">Firmware updaten!!!</string>
     <string name="lb_plugin_1_on">Aktiviere xsq -> Standard metrics</string>
     <string name="lb_plugin_1_off">Deaktiviere xsq -> Standard metrics</string>
     <string name="lb_plugin_2_on">Aktiviere Zeitgesteuert boostern</string>

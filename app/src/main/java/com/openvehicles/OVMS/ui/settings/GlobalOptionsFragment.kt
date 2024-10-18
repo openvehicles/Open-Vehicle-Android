@@ -44,17 +44,20 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     private var broadcastCodes: String? = null
     private var commandsEnabled = false
     private var pluginEnabled = false
+    private var firmwareEnabled = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_settings)
         compatActivity?.setTitle(R.string.Options)
         appPrefs = AppPrefs(compatActivity!!, "ovms")
+        val app_Car_ID = carData!!.sel_vehicleid
         serviceEnabled = appPrefs!!.getData("option_service_enabled", "0") == "1"
         broadcastEnabled = appPrefs!!.getData("option_broadcast_enabled", "0") == "1"
         broadcastCodes = appPrefs!!.getData("option_broadcast_codes", DEFAULT_BROADCAST_CODES)
         commandsEnabled = appPrefs!!.getData("option_commands_enabled", "0") == "1"
-        pluginEnabled = appPrefs!!.getData("plugin_enabled_"  + carData!!.sel_vehicleid, "0") == "1"
+        pluginEnabled = appPrefs!!.getData("option_plugin_enabled_"  + app_Car_ID, "0") == "1"
+        firmwareEnabled = appPrefs!!.getData("option_firmware_enabled_"  + app_Car_ID, "0") == "1"
         var checkBox: CheckBox = findViewById(R.id.cb_options_service) as CheckBox
         checkBox.setChecked(serviceEnabled)
         checkBox.setOnClickListener(this)
@@ -73,6 +76,9 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         checkBox.setOnClickListener(this)
         checkBox = findViewById(R.id.cb_options_plugin) as CheckBox
         checkBox.setChecked(pluginEnabled)
+        checkBox.setOnClickListener(this)
+        checkBox = findViewById(R.id.cb_options_firmware) as CheckBox
+        checkBox.setChecked(firmwareEnabled)
         checkBox.setOnClickListener(this)
         setOnClick(requireView(), R.id.cb_options_reboot, this)
         setOnClick(requireView(), R.id.cb_options_reload, this)
@@ -93,6 +99,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     override fun onClick(v: View) {
         val context = context ?: return
         val id = v.id
+        val app_Car_ID = carData!!.sel_vehicleid
         when (id) {
             R.id.cb_options_service -> {
                 serviceEnabled = (v as CheckBox).isChecked
@@ -118,25 +125,11 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
             }
             R.id.cb_options_plugin -> {
                 pluginEnabled = (v as CheckBox).isChecked
-                val app_Car_ID = carData!!.sel_vehicleid
-                val plugin_txt = if(appPrefs!!.getData("plugin_enabled_" + app_Car_ID) == "1") getString(R.string.lb_options_plugin_off) else getString(R.string.lb_options_plugin_on)
-                AlertDialog.Builder(requireActivity())
-                    .setMessage(plugin_txt)
-                    .setNegativeButton(R.string.Cancel) { dialog1: DialogInterface?, which: Int ->
-                        val checkBox = findViewById(R.id.cb_options_plugin) as CheckBox
-                        checkBox.setChecked(false)
-                    }
-                    .setPositiveButton(R.string.Yes) { dialog1: DialogInterface?, which: Int ->
-                        val checkBox = findViewById(R.id.cb_options_plugin) as CheckBox
-                        if(appPrefs!!.getData("plugin_enabled_" + app_Car_ID) == "1") {
-                            appPrefs!!.saveData("plugin_enabled_" + app_Car_ID, "0")
-                            checkBox.setChecked(false)
-                        } else {
-                            appPrefs!!.saveData("plugin_enabled_" + app_Car_ID, "1")
-                            checkBox.setChecked(true)
-                        }
-                    }
-                    .show()
+                appPrefs!!.saveData("option_plugin_enabled_" + app_Car_ID, if (pluginEnabled) "1" else "0")
+            }
+            R.id.cb_options_firmware -> {
+                firmwareEnabled = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_firmware_enabled_" + app_Car_ID, if (firmwareEnabled) "1" else "0")
             }
             R.id.cb_options_reboot -> {
                 AlertDialog.Builder(context)

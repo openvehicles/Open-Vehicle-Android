@@ -24,7 +24,7 @@
             <CheckBox
                 android:text="@string/lb_options_service_cb"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/cb_options_service"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
@@ -66,7 +66,7 @@
             <CheckBox
                 android:text="@string/lb_options_broadcast_cb"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/cb_options_broadcast"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
@@ -128,7 +128,7 @@
             <CheckBox
                 android:text="@string/lb_options_commands_cb"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/cb_options_commands"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
@@ -149,8 +149,28 @@
             <CheckBox
                 android:text="@string/lb_options_plugin_on"
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:id="@+id/cb_options_plugin"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_firmware"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_firmware_menu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_firmware"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
         </TableRow>

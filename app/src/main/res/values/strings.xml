@@ -677,6 +677,11 @@
     <string name="lb_options_apikey_renew">Revoke &amp; Renew</string>
     <string name="lb_options_apikey_renew_confirm">Really revoke &amp; renew the API key, invalidating all pinned commands?</string>
     <string name="lb_options_plugin">Plugin</string>
+    <string name="lb_options_firmware">Firmware</string>
+    <string name="lb_options_firmware_menu">Firmware Update -> Homelink</string>
+    <string name="lb_options_firmware_update">Firmware Update</string>
+    <string name="lb_options_firmware_on">Enable Firmware Update</string>
+    <string name="lb_options_firmware_off">Disable Firmware Update</string>
     <string name="lb_script_reload">script reload</string>
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
@@ -685,6 +690,8 @@
     <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
     <string name="lb_plugin_ovmsmain">delete OVMSmain.js, need reboot!</string>
     <string name="lb_plugin_update">update Plungins</string>
+    <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
+    <string name="lb_plugin_firmware_update">update Firmware!!!</string>
     <string name="lb_plugin_1_on">Enable xsq -> standard metrics</string>
     <string name="lb_plugin_1_off">Disable xsq -> standard metrics</string>
     <string name="lb_plugin_2_on">Enable scheduled booster</string>
