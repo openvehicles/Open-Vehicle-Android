@@ -81,7 +81,6 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         checkBox.setChecked(firmwareEnabled)
         checkBox.setOnClickListener(this)
         setOnClick(requireView(), R.id.cb_options_reboot, this)
-        setOnClick(requireView(), R.id.cb_options_reload, this)
         setOnClick(requireView(), R.id.cb_options_apikey_renew, this)
         setValue(requireView(), R.id.tv_options_apikey, appPrefs!!.getData("APIKey"))
         val info = findViewById(R.id.txt_options_broadcast_info) as TextView
@@ -139,19 +138,6 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
                         sendCommand(
                             "reboot module activated",
                             "5",
-                            this@GlobalOptionsFragment
-                        )
-                    }
-                    .create().show()
-            }
-            R.id.cb_options_reload -> {
-                AlertDialog.Builder(context)
-                    .setMessage(R.string.lb_script_reload)
-                    .setNegativeButton(R.string.Cancel, null)
-                    .setPositiveButton(R.string.Yes) { dialog1: DialogInterface?, which: Int ->
-                        sendCommand(
-                            (R.string.lb_script_reload),
-                            "7,script reload",
                             this@GlobalOptionsFragment
                         )
                     }
