@@ -676,6 +676,23 @@
     <string name="lb_options_apikey">API key:</string>
     <string name="lb_options_apikey_renew">Revoke &amp; Renew</string>
     <string name="lb_options_apikey_renew_confirm">Really revoke &amp; renew the API key, invalidating all pinned commands?</string>
+    <string name="lb_options_plugin">Plugin</string>
+    <string name="lb_script_reload">script reload</string>
+    <string name="lb_options_plugin_on">Enable Plugin Menu</string>
+    <string name="lb_options_plugin_off">Disable Plugin Menu</string>
+    <string name="lb_options_plugin_btn">Plugin Menu</string>
+    <string name="lb_options_plugin_inst">install SmartEQ Repo</string>
+    <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
+    <string name="lb_plugin_ovmsmain">delete OVMSmain.js, need reboot!</string>
+    <string name="lb_plugin_update">update Plungins</string>
+    <string name="lb_plugin_1_on">Enable xsq -> standard metrics</string>
+    <string name="lb_plugin_1_off">Disable xsq -> standard metrics</string>
+    <string name="lb_plugin_2_on">Enable scheduled booster</string>
+    <string name="lb_plugin_2_off">Disable scheduled booster</string>
+    <string name="lb_plugin_3_on">Enable GPS on/off at Parking</string>
+    <string name="lb_plugin_3_off">Disable GPS on/off at Parking</string>
+    <string name="lb_plugin_4_on">Enable check and Charge 12V</string>
+    <string name="lb_plugin_4_off">Disable check and Charge 12V</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Update broadcasting allows to send car data updates to other Apps like Automagic or Tasker
          for the message codes given.</p>

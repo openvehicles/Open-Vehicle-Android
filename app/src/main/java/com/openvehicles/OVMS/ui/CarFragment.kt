@@ -283,6 +283,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         registerForContextMenu(findViewById(R.id.txt_homelink))
         registerForContextMenu(findViewById(R.id.tabCarImageHomelink))
         registerForContextMenu(findViewById(R.id.tabCarImageAC))
+        registerForContextMenu(findViewById(R.id.tabCarImagePlugin))
         findViewById(R.id.btn_lock_car).setOnClickListener(this)
         findViewById(R.id.btn_valet_mode).setOnClickListener(this)
         findViewById(R.id.tabCarText12V).setOnClickListener(this)
@@ -443,7 +444,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_HL_01, 0, "Booster")
                     menu.add(0, MI_HL_02, 0, "Booster Timer reset")
-                    menu.add(0, MI_HL_03, 0, "Modul reboot")
+                    menu.add(0, MI_HL_03, 0, "OVMSmain delete")
                     menu.add(R.string.Cancel)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
@@ -469,6 +470,25 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
                     menu.add(R.string.Cancel)
                 }
+            }
+            R.id.tabCarImagePlugin -> {
+                menu.setHeaderTitle(R.string.lb_options_plugin_btn)
+                val app_Car_ID = carData!!.sel_vehicleid
+                menu.add(0,plugin_repo_smarteq,0,if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") R.string.lb_options_plugin_deinst else R.string.lb_options_plugin_inst)
+                if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") {
+                    if (carData!!.car_type == "SQ") {
+                        if (appPrefs.getData("plugin_ovmsmain_" + app_Car_ID) != "on") {
+                            menu.add(0,plugin_ovmsmain,0,R.string.lb_plugin_ovmsmain)
+                        }else{
+                            menu.add(0,plugin_ovmsmain,0,R.string.lb_plugin_update)
+                        }
+                        menu.add(0,plugin_1,0,if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") R.string.lb_plugin_1_off else R.string.lb_plugin_1_on)
+                    }
+                    menu.add(0,plugin_2,0,if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") R.string.lb_plugin_2_off else R.string.lb_plugin_2_on)
+                    menu.add(0,plugin_3,0,if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") R.string.lb_plugin_3_off else R.string.lb_plugin_3_on)
+                    menu.add(0,plugin_4,0,if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") R.string.lb_plugin_4_off else R.string.lb_plugin_4_on)
+                }
+                menu.add(R.string.Cancel)
             }
         }
     }
@@ -514,7 +534,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_HL_03 -> {
                 if (carData!!.car_type == "SQ") {
-                    sendCommand(R.string.msg_issuing_homelink, "5", this)
+                    appPrefs.saveData("plugin_ovmsmain_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_ovmsmain,"7,vfs rm /store/scripts/ovmsmain.js",this)
+                    sendCommand(R.string.lb_plugin_ovmsmain, "7,config rm usr *", this)
+                    sendCommand(R.string.lb_plugin_ovmsmain, "7,script reload", this)
                     true
                 } else {
                     sendCommand(R.string.msg_issuing_homelink, "24,2", this)
@@ -698,6 +721,73 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 true
             }
+            plugin_repo_smarteq -> {
+                if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") {
+                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "off")
+                    sendCommand(R.string.lb_options_plugin_deinst, "7,plugin repo remove SmartEQ", this)
+                    true
+                } else {
+                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this)
+                    true
+                }
+            }
+            plugin_ovmsmain -> {
+                if (appPrefs.getData("plugin_ovmsmain_" + app_Car_ID) != "on") {
+                    appPrefs.saveData("plugin_ovmsmain_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_ovmsmain,"7,vfs rm /store/scripts/ovmsmain.js",this)
+                    sendCommand(R.string.lb_plugin_ovmsmain, "7,config rm usr *", this)
+                    sendCommand(R.string.lb_plugin_ovmsmain, "7,script reload", this)
+                    true
+                } else {
+                    sendCommand(R.string.lb_plugin_update, "7,plugin update", this)
+                    true
+                }
+            }
+            plugin_1 -> {
+                if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") {
+                    appPrefs.saveData("plugin_1_" + app_Car_ID, "off")
+                    sendCommand(R.string.lb_plugin_1_off, "7,plugin disable xsq_v2data", this)
+                    true
+                } else {
+                    appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_1_on, "7,plugin install xsq_v2data", this)
+                    true
+                }
+            }
+            plugin_2 -> {
+                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                    appPrefs.saveData("plugin_2_" + app_Car_ID, "off")
+                    sendCommand(R.string.lb_plugin_2_off, "7,plugin disable scheduled_booster", this)
+                    true
+                } else {
+                    appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
+                    true
+                }
+            }
+            plugin_3 -> {
+                if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") {
+                    appPrefs.saveData("plugin_3_" + app_Car_ID, "off")
+                    sendCommand(R.string.lb_plugin_3_off, "7,plugin disable gps_onoff", this)
+                    true
+                } else {
+                    appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
+                    true
+                }
+            }
+            plugin_4 -> {
+                if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") {
+                    appPrefs.saveData("plugin_4_" + app_Car_ID, "off")
+                    sendCommand(R.string.lb_plugin_4_off, "7,plugin disable booster_12V", this)
+                    true
+                } else {
+                    appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                    sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
+                    true
+                }
+            }
             else -> false
         }
     }
@@ -869,6 +959,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 tv.setTextColor(-0x1)
             }
         }
+
+        // plugin menu
+        val btn_plugin_menu = findViewById(R.id.tabCarImagePlugin) as ImageView
+        btn_plugin_menu.visibility = if(appPrefs.getData("plugin_enabled_" + carData.sel_vehicleid) == "1") View.VISIBLE else View.INVISIBLE
 
         // "Ambient" box:
         iv = findViewById(R.id.tabCarImageCarAmbientBox) as ImageView
@@ -1649,5 +1743,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_AC_BW = Menu.FIRST + 9
         private const val MI_AC_BDS = Menu.FIRST + 10
         private const val MI_AC_BTD = Menu.FIRST + 11
+        private const val plugin_repo_smarteq = Menu.FIRST + 12
+        private const val plugin_ovmsmain = Menu.FIRST +13
+        private const val plugin_1 = Menu.FIRST + 14
+        private const val plugin_2 = Menu.FIRST + 15
+        private const val plugin_3 = Menu.FIRST + 16
+        private const val plugin_4 = Menu.FIRST + 17
     }
 }
