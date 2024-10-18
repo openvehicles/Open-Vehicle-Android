@@ -742,7 +742,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     true
                 } else {
                     appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "on")
-                    sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this)
+                    sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ https://ovms.dimitrie.eu/plugins/", this)
+                    //sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this)
                     true
                 }
             }
