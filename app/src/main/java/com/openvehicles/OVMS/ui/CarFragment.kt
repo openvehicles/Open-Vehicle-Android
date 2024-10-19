@@ -422,6 +422,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenuInfo?) {
         super.onCreateContextMenu(menu, v, menuInfo)
         val id = v.id
+        val app_Car_ID = carData!!.sel_vehicleid
         when (id) {
             R.id.btn_wakeup -> {
                 if (carData!!.car_type == "RT") {
@@ -440,39 +441,57 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 } else {
                     menu.setHeaderTitle(R.string.textHOMELINK)
                 }
-                if (carData!!.car_type == "SQ") {
-                    menu.add(0, MI_HL_01, 0, "Booster")
-                    menu.add(0, MI_HL_02, 0, "Booster Timer reset")
-                    menu.add(0, MI_HL_03, 0, "Modul reboot")
-                    menu.add(R.string.Cancel)
+                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                    menu.add(0, MI_HL_01, 0, R.string.lb_booster)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
+                }
+                // not needed/working btn for SmartEQ
+                if (carData!!.car_type != "SQ") {
                     menu.add(0, MI_HL_02, 0, "2")
                     menu.add(0, MI_HL_03, 0, "3")
-                    menu.add(R.string.Cancel)
                 }
+                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                    menu.add(0, MI_HL_BTR, 0, R.string.lb_booster_ctrl_reset)
+                }
+                if(appPrefs.getData("option_firmware_enabled_" + app_Car_ID) == "1") {
+                    menu.add(0, MI_HL_FW, 0, R.string.lb_options_firmware_update)
+                }
+                if(appPrefs.getData("option_plugin_enabled_" + app_Car_ID) == "1") {
+                    menu.add(0, MI_HL_PLUGIN, 0, R.string.lb_options_plugin_btn)
+                }
+                if ((carData!!.car_type == "SQ")&&(appPrefs.getData("plugin_2_" + app_Car_ID) != "on")) {
+                    if (appPrefs.getData("plugin_ovmsmain_" + app_Car_ID) != "on") {
+                        menu.add(0,MI_HL_OVMSMAIN,0,R.string.lb_plugin_ovmsmain)
+                    }
+                }
+                menu.add(R.string.Close)
             }
             R.id.tabCarImageAC -> {
-                val app_Car_ID = carData!!.sel_vehicleid
-                if (carData!!.car_type == "SQ") {
-                    menu.setHeaderTitle(R.string.textAC)
+                menu.setHeaderTitle(R.string.textAC)
+                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
+                    // not needed/working btn for SmartEQ
+                    if (carData!!.car_type != "SQ") {
+                        menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
+                    }
                     menu.add(0, MI_AC_BON, 0, if(appPrefs.getData("booster_on_" + app_Car_ID) == "on") R.string.lb_booster_off else R.string.lb_booster_on)
                     menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
                     menu.add(0, MI_AC_BW, 0, if(appPrefs.getData("booster_weekly_on_" + app_Car_ID) == "on") R.string.lb_booster_weekly_off else R.string.lb_booster_weekly_on)
                     menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_sel)
                     menu.add(0, MI_AC_BTD, 0, if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") R.string.lb_booster_doubler_off else R.string.lb_booster_doubler_on)
-                    menu.add(R.string.Cancel)
                 } else {
-                    menu.setHeaderTitle(R.string.textAC)
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
-                    menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
-                    menu.add(R.string.Cancel)
+                    // not needed/working btn for SmartEQ
+                    if (carData!!.car_type != "SQ") {
+                        menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
+                    }
                 }
+                menu.add(R.string.Close)
             }
         }
     }
-
+    
     override fun onContextItemSelected(item: MenuItem): Boolean {
         // "Booster" box:
         val app_Car_ID = carData!!.sel_vehicleid
@@ -494,35 +513,143 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_02 -> {
-                if (carData!!.car_type == "SQ") {
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_time_" + app_Car_ID, "05:15")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_btd_" + app_Car_ID, "0")
-                    appPrefs.saveData("booster_time_h_" + app_Car_ID, "5")
-                    appPrefs.saveData("booster_time_m_" + app_Car_ID, "15")
-                    tabCarImageBooster.visibility = View.INVISIBLE
-                    tabInfoTextBoostertime.visibility = View.INVISIBLE
-                    tabCarImageCalendar.visibility = View.INVISIBLE
-                    sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
-                    sendCommand(R.string.msg_issuing_homelink, "7,module reset", this)
-                    true
-                } else {
-                    sendCommand(R.string.msg_issuing_homelink, "24,1", this)
-                    true
-                }
+                sendCommand(R.string.msg_issuing_homelink, "24,1", this)
+                true
             }
             MI_HL_03 -> {
-                if (carData!!.car_type == "SQ") {
-                    sendCommand(R.string.msg_issuing_homelink, "5", this)
-                    true
-                } else {
-                    sendCommand(R.string.msg_issuing_homelink, "24,2", this)
-                    true
-                }
+                sendCommand(R.string.msg_issuing_homelink, "24,2", this)
+                true
             }
             MI_HL_DEFAULT -> {
                 sendCommand(R.string.msg_issuing_homelink, "24", this)
+                true
+            }
+            MI_HL_BTR -> {
+                appPrefs.saveData("booster_on_" + app_Car_ID, "off")
+                appPrefs.saveData("booster_time_" + app_Car_ID, "05:15")
+                appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
+                appPrefs.saveData("booster_btd_" + app_Car_ID, "0")
+                appPrefs.saveData("booster_time_h_" + app_Car_ID, "5")
+                appPrefs.saveData("booster_time_m_" + app_Car_ID, "15")
+                tabCarImageBooster.visibility = View.INVISIBLE
+                tabInfoTextBoostertime.visibility = View.INVISIBLE
+                tabCarImageCalendar.visibility = View.INVISIBLE
+                sendCommand(R.string.msg_issuing_homelink, "7,config set usr b.init no", this)
+                sendCommand(R.string.msg_issuing_homelink, "7,module reset", this)
+                true
+            }
+            MI_HL_FW -> {
+                val options = arrayOf("Dimitrie78", "Edge", "Eap", "Main")
+                var checkedItem = -1 // To store the index of the selected item
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_plugin_firmware)
+                    .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.lb_plugin_firmware_update) { dialog, which ->
+                        when (checkedItem) {
+                            0 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dimitrie.eu/firmware/ota/v3.3/smarteq/ovms3.bin", this)
+                            1 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/edge/ovms3.bin", this)
+                            2 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/eap/ovms3.bin", this)
+                            3 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/main/ovms3.bin", this)
+                            else -> false
+                        }
+                    }
+                    .show()
+                true
+            }
+            MI_HL_PLUGIN -> {
+                val plugin_inst = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_options_plugin_deinst) else getString(R.string.lb_options_plugin_inst)
+                val plugin_1 = if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") getString(R.string.lb_plugin_1_off) else getString(R.string.lb_plugin_1_on)
+                val plugin_2 = if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") getString(R.string.lb_plugin_2_off) else getString(R.string.lb_plugin_2_on)
+                val plugin_3 = if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") getString(R.string.lb_plugin_3_off) else getString(R.string.lb_plugin_3_on)
+                val plugin_4 = if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") getString(R.string.lb_plugin_4_off) else getString(R.string.lb_plugin_4_on)
+                val plugin_plugin_update = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_plugin_update) else getString(R.string.lb_plugin_update)
+
+                var options = arrayOf(
+                    "$plugin_inst",
+                    "$plugin_plugin_update",
+                    "$plugin_1",
+                    "$plugin_2",
+                    "$plugin_3",
+                    "$plugin_4"
+                )
+                var checkedItem = -1 // To store the index of the selected item
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.lb_options_plugin_btn)
+                    .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.execute) { dialog, which ->
+                        when (checkedItem) {
+                            // plugin installation option
+                            0 -> {
+                                if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") {
+                                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "off")
+                                    sendCommand(R.string.lb_options_plugin_deinst, "7,plugin repo remove SmartEQ", this)
+                                } else {
+                                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "on")
+                                    sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ https://ovms.dimitrie.eu/plugins/", this)
+                                    //sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this) // for testing
+                                }
+                            }
+                            // plugin update option
+                            1 -> {
+                                sendCommand(R.string.lb_plugin_update, "7,plugin update", this)
+                            }
+                            // plugin 1 option
+                            2 -> {
+                                if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") {
+                                    appPrefs.saveData("plugin_1_" + app_Car_ID, "off")
+                                    sendCommand(R.string.lb_plugin_1_off, "7,plugin disable xsq_v2data", this)
+                                } else {
+                                    appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                                    sendCommand(R.string.lb_plugin_1_on, "7,plugin install xsq_v2data", this)
+                                }
+                            }
+                            // plugin 2 option
+                            3 -> {
+                                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                                    appPrefs.saveData("plugin_2_" + app_Car_ID, "off")
+                                    sendCommand(R.string.lb_plugin_2_off, "7,plugin disable scheduled_booster", this)
+                                } else {
+                                    appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                                    sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
+                                }
+                            }
+                            // plugin 3 option
+                            4 -> {
+                                if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") {
+                                    appPrefs.saveData("plugin_3_" + app_Car_ID, "off")
+                                    sendCommand(R.string.lb_plugin_3_off, "7,plugin disable gps_onoff", this)
+                                } else {
+                                    appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                                    sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
+                                }
+                            }
+                            // plugin 4 option
+                            5 -> {
+                                if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") {
+                                    appPrefs.saveData("plugin_4_" + app_Car_ID, "off")
+                                    sendCommand(R.string.lb_plugin_4_off, "7,plugin disable booster_12V", this)
+                                } else {
+                                    appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                                    sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
+                                }
+                            }
+                            else -> false
+                        }
+                    }
+                    .show()
+                true
+            }
+            MI_HL_OVMSMAIN -> {
+                appPrefs.saveData("plugin_ovmsmain_" + app_Car_ID, "on")
+                sendCommand(R.string.lb_plugin_ovmsmain,"7,vfs rm /store/scripts/ovmsmain.js",this)
+                sendCommand(R.string.lb_plugin_ovmsmain, "7,config rm usr *", this)
+                sendCommand(R.string.lb_plugin_ovmsmain, "7,script reload", this)
                 true
             }
             MI_AC_ON -> {
@@ -578,7 +705,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setView(dialogView)
                     .setNegativeButton(R.string.Cancel, null)
                     .setPositiveButton(
-                        android.R.string.ok
+                        R.string.Set
                     ) { dlg, which ->
                         appPrefs.saveData("booster_on_" + app_Car_ID, "on")
                         tabCarImageBooster.visibility = View.VISIBLE
@@ -652,7 +779,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setView(dialogView)
                     .setNegativeButton(R.string.Cancel, null)
                     .setPositiveButton(
-                        android.R.string.ok
+                        R.string.Set
                     ) { dlg, which ->
                         appPrefs.saveData("booster_on_" + app_Car_ID, "on")
                         appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "on")
@@ -1642,12 +1769,16 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_HL_02 = Menu.FIRST + 2
         private const val MI_HL_03 = Menu.FIRST + 3
         private const val MI_HL_DEFAULT = Menu.FIRST + 4
-        private const val MI_AC_ON = Menu.FIRST + 5
-        private const val MI_AC_OFF = Menu.FIRST + 6
-        private const val MI_AC_BON = Menu.FIRST + 7
-        private const val MI_AC_BT = Menu.FIRST + 8
-        private const val MI_AC_BW = Menu.FIRST + 9
-        private const val MI_AC_BDS = Menu.FIRST + 10
-        private const val MI_AC_BTD = Menu.FIRST + 11
+        private const val MI_HL_BTR = Menu.FIRST + 5
+        private const val MI_HL_FW = Menu.FIRST + 6
+        private const val MI_HL_PLUGIN = Menu.FIRST + 7
+        private const val MI_HL_OVMSMAIN = Menu.FIRST + 8
+        private const val MI_AC_ON = Menu.FIRST + 9
+        private const val MI_AC_OFF = Menu.FIRST + 10
+        private const val MI_AC_BON = Menu.FIRST + 11
+        private const val MI_AC_BT = Menu.FIRST + 12
+        private const val MI_AC_BW = Menu.FIRST + 13
+        private const val MI_AC_BDS = Menu.FIRST + 14
+        private const val MI_AC_BTD = Menu.FIRST + 15
     }
 }

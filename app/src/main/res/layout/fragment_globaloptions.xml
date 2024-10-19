@@ -122,8 +122,8 @@
                 android:text="@string/lb_options_commands"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/textView14"
-                android:layout_gravity="center_vertical"/>
+                android:layout_gravity="center_vertical"
+                tools:ignore="DuplicateIds" />
 
             <CheckBox
                 android:text="@string/lb_options_commands_cb"
@@ -132,6 +132,69 @@
                 android:id="@+id/cb_options_commands"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_plugin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textView14"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_plugin_on"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_plugin"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp">
+
+            <TextView
+                android:text="@string/lb_options_firmware"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"/>
+
+            <CheckBox
+                android:text="@string/lb_options_firmware_menu"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_firmware"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            android:padding="4dp">
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <FrameLayout>
+
+                <Button
+                    android:id="@+id/cb_options_reboot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/lb_reset_ovms_module" />
+
+            </FrameLayout>
+
         </TableRow>
 
         <TableRow
@@ -159,20 +222,22 @@
 
         <TableRow
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="85dp"
             android:padding="4dp">
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content" />
 
             <FrameLayout>
+
                 <Button
-                    android:text="@string/lb_options_apikey_renew"
+                    android:id="@+id/cb_options_apikey_renew"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/cb_options_apikey_renew"
-                    android:layout_gravity="center_vertical" />
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/lb_options_apikey_renew" />
+
             </FrameLayout>
 
         </TableRow>
@@ -184,17 +249,16 @@
 
             <Space
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="match_parent"/>
 
             <TextView
-                android:text="@string/lb_options_broadcast_info"
+                android:id="@+id/txt_options_broadcast_info"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/txt_options_broadcast_info"
-                android:textSize="10sp"
                 android:layout_weight="1"
                 android:paddingLeft="8dp"
-                />
+                android:text="@string/lb_options_broadcast_info"
+                android:textSize="10sp" />
 
         </TableRow>
 

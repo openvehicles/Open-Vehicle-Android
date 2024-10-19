@@ -261,11 +261,11 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        findViewById(R.id.tabInfoTextSOC).setOnClickListener(this)
-        findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryAnimation).setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this)
+        findViewById(R.id.tabInfoTextSOC)!!.setOnClickListener(this)
+        findViewById(R.id.tabInfoTextChargeMode)!!.setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryChargingOverlay)!!.setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryAnimation)!!.setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryOverlay)!!.setOnClickListener(this)
 
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
         bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -819,7 +819,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
     private fun updateCarInfoView(carData: CarData) {
         val headline = findViewById(R.id.txt_title) as TextView
         val odometer = String.format("⏲ %.1f%s", carData.car_odometer_raw / 10, carData.car_distance_units)
-        headline.text = carData.sel_vehicle_label + "     " + odometer
+        val energyused = String.format("%.1f kWh/100km", carData.car_energyused)
+        headline.text = carData.sel_vehicle_label + "\n" + energyused + "\n" + odometer
         val carPos = carsStorage.getStoredCars().indexOf(carData)
         if (carPos != carSelectPos) {
             Log.d(TAG, "updateCarInfoView: id=" + carData.sel_vehicleid + " pos=" + carPos)
@@ -839,7 +840,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
 
         if (!carData.car_chargeport_open || carData.car_charge_substate_i_raw == 0x07) {
             // Charge port is closed or car is not plugged in
-            findViewById(R.id.tabInfoImageCharger).visibility = View.INVISIBLE
+            findViewById(R.id.tabInfoImageCharger)!!.visibility = View.INVISIBLE
             bar.visibility = View.INVISIBLE
             cmtv.visibility = View.INVISIBLE
             coiv.visibility = View.INVISIBLE
@@ -878,7 +879,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             cmtv.visibility = View.VISIBLE
             if ((this.carData!!.car_type == "RT") || (this.carData!!.car_type == "SQ")) {
                 // Renault Twizy: no charge control
-                findViewById(R.id.tabInfoImageCharger).visibility = View.VISIBLE
+                findViewById(R.id.tabInfoImageCharger)!!.visibility = View.VISIBLE
                 bar.visibility = View.INVISIBLE
                 tvl.visibility = View.INVISIBLE
                 tvr.visibility = View.INVISIBLE
