@@ -51,6 +51,8 @@
     <string name="Default">Default</string>
     <string name="Wakeup">Wakeup</string>
     <string name="Add">Add</string>
+    <string name="execute">execute</string>
+    <string name="update">update</string>
     <string name="Battery">Battery</string>
     <string name="Car">Car</string>
     <string name="Bike">Bike</string>
@@ -83,6 +85,8 @@
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
 
+    <string name="lb_booster">Booster/Climate on</string>
+    <string name="lb_booster_ctrl_reset">Booster setting reset</string>
     <string name="lb_booster_on">Booster timer on</string>
     <string name="lb_booster_off">Booster timer off</string>
     <string name="lb_booster_hour">hour</string>
@@ -682,14 +686,13 @@
     <string name="lb_options_firmware_update">Firmware Update</string>
     <string name="lb_options_firmware_on">Enable Firmware Update</string>
     <string name="lb_options_firmware_off">Disable Firmware Update</string>
-    <string name="lb_script_reload">script reload</string>
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
     <string name="lb_options_plugin_btn">Plugin Menu</string>
     <string name="lb_options_plugin_inst">install SmartEQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
     <string name="lb_plugin_ovmsmain">delete OVMSmain.js, need reboot!</string>
-    <string name="lb_plugin_update">update Plungins</string>
+    <string name="lb_plugin_update">update Plugins</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
     <string name="lb_plugin_firmware_update">update Firmware!!!</string>
     <string name="lb_plugin_1_on">Enable xsq -> standard metrics</string>

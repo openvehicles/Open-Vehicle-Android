@@ -49,6 +49,8 @@
     <string name="Default">Standard</string>
     <string name="Wakeup">Aufwachen</string>
     <string name="Add">Hinzufügen</string>
+    <string name="execute">ausführen</string>
+    <string name="update">updaten</string>
     <string name="Battery">Batterie</string>
     <string name="Car">Auto</string>
     <string name="Bike">Moto</string>
@@ -138,6 +140,8 @@
     <string name="lb_ft_rt_capacity">#%d: Akku-Kapazitätsmessung (CAP%%)</string>
     <string name="lb_ft_rt_capacity_nom_ah">#%d: Akku-Standardkapazität (Ah)</string>
 
+    <string name="lb_booster">Booster/Klima an</string>
+    <string name="lb_booster_ctrl_reset">Booster Einstellungen zurücksetzen</string>
     <string name="lb_booster_on">Booster timer ein</string>
     <string name="lb_booster_off">Booster timer aus</string>
     <string name="lb_booster_hour">Stunde</string>
@@ -663,12 +667,11 @@
     <string name="lb_options_plugin">Plugin</string>
     <string name="lb_options_plugin_on">Plugin Menü aktivieren</string>
     <string name="lb_options_plugin_off">Plugin Menü deaktivieren</string>
-    <string name="lb_script_reload">scripts neu laden</string>
     <string name="lb_options_plugin_btn">Plugin Menü</string>
     <string name="lb_options_plugin_inst">installiere Smart EQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstalliere Smart EQ Repo</string>
     <string name="lb_plugin_ovmsmain">lösche OVMSmain.js, neu starten!</string>
-    <string name="lb_plugin_update">Plungins updaten</string>
+    <string name="lb_plugin_update">Plugins updaten</string>
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_plugin_firmware_update">Firmware updaten!!!</string>
     <string name="lb_plugin_1_on">Aktiviere xsq -> Standard metrics</string>

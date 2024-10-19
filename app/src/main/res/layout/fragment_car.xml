@@ -150,18 +150,6 @@
 			android:visibility="invisible"
 			tools:ignore="PxUsage" />
 
-		<ImageView
-			android:id="@+id/tabCarImagePlugin"
-			android:layout_width="60px"
-			android:layout_height="55px"
-			android:layout_x="451px"
-			android:layout_y="0px"
-			android:clickable="false"
-			android:focusable="true"
-			android:src="@drawable/ic_bookmarks"
-			android:visibility="invisible"
-			tools:ignore="PxUsage" />
-
 		<TextView
 			android:id="@+id/textFLWheel"
 			style="@style/TabCarTextBox"
