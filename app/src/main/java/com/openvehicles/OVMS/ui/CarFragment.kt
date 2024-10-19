@@ -1275,7 +1275,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.stale_status == DataStale.NoValue) {
                 soctv.text = ""
             } else {
-                soctv.text = String.format("%.1f%%", carData.car_soc_raw)
+                soctv.text = String.format("%.0f%%", carData.car_soc_raw)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     soctv.setTextColor(-0x7f7f80)
                 } else {
@@ -1294,7 +1294,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.stale_status == DataStale.NoValue) {
                 sohtv.text = ""
             } else {
-                sohtv.text = String.format("%.1f%%", carData.car_soh)
+                sohtv.text = String.format("%.0f%%", carData.car_soh)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     sohtv.setTextColor(-0x7f7f80)
                 } else {
@@ -1360,25 +1360,33 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         if (!carData.car_started) {
             tv.text = ""
         } else {
-            st = String.format("%.1f%s", carData.car_speed_raw, carData.car_speed_units)
+            st = String.format("%.0f%s", carData.car_speed_raw, carData.car_speed_units)
             ss = SpannableString(st)
             ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_speed_units), st.length, 0)
             tv.text = ss
         }
 
         // Trip
-        st = String.format("➟%.1f%s", carData.car_tripmeter_raw / 10, carData.car_distance_units)
+        st = String.format("➟ %.1f%s", carData.car_tripmeter_raw / 10, carData.car_distance_units)
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextTrip) as TextView
         tv.text = ss
 
         // Energy
-        st = String.format(
-            "▴%.1f ▾%.1f kWh",
-            floor((carData.car_energyused * 10).toDouble()) / 10,
-            floor((carData.car_energyrecd * 10).toDouble()) / 10
-        )
+        if (carData.car_type == "SQ") {
+            tv.visibility = View.INVISIBLE
+            st = String.format(
+                "▴ %.1f kWh",
+                floor((carData.car_energyused * 10).toDouble()) / 10
+            )
+        } else {
+            st = String.format(
+                "▴%.1f ▾%.1f kWh",
+                floor((carData.car_energyused * 10).toDouble()) / 10,
+                floor((carData.car_energyrecd * 10).toDouble()) / 10
+            )
+        }
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf("kWh"), st.length, 0)
         tv = findViewById(R.id.tabCarTextEnergy) as TextView

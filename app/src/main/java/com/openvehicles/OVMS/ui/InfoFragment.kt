@@ -828,7 +828,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             carSelect.setSelection(carSelectPos)
         }
         val tv = findViewById(R.id.tabInfoTextSOC) as TextView
-        tv.text = carData.car_soc
+        val soc_str = carData.car_soc.split(",")[0].toFloat()
+        tv.text = String.format("%.0f%%", soc_str)
+        val tv_or = findViewById(R.id.tabInfoTextSOC_or) as TextView
+        tv_or.text = String.format("%.0f%%", soc_str)
         val cmtv = findViewById(R.id.tabInfoTextChargeMode) as TextView
         val coiv = findViewById(R.id.tabInfoImageBatteryChargingOverlay) as ImageView
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
@@ -844,6 +847,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             bar.visibility = View.INVISIBLE
             cmtv.visibility = View.INVISIBLE
             coiv.visibility = View.INVISIBLE
+            tv_or.visibility = View.INVISIBLE
             tvl.visibility = View.INVISIBLE
             tvr.visibility = View.INVISIBLE
             tvf.visibility = View.INVISIBLE
@@ -851,6 +855,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tvPowerLoss.visibility = View.INVISIBLE
         } else {
             // Car is plugged in
+            tv.visibility = View.INVISIBLE
+            tv_or.visibility = View.VISIBLE
             val cmst = if(carData.car_type == "SQ") {
                 String.format(
                     "▾ %.1fkWh      ⚡ %.1fkW",
@@ -1072,14 +1078,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             batt.visibility = View.INVISIBLE
             battc.visibility = View.VISIBLE
             chargeing.visibility = View.VISIBLE
-            val soctv = findViewById(R.id.tabInfoTextSOC) as TextView
-            soctv.setTextColor(-0xFF)
         }else{
             batt.visibility = View.VISIBLE
             battc.visibility = View.INVISIBLE
             chargeing.visibility = View.INVISIBLE
-            val soctv = findViewById(R.id.tabInfoTextSOC) as TextView
-            soctv.setTextColor(-0x1)
         }
 
         val iv = findViewById(R.id.img_signal_rssi) as ImageView

@@ -150,9 +150,29 @@
 			android:layout_x="110px"
 			android:layout_y="450px"
 			android:gravity="center"
-			android:textColor="#ffffffff"
-			android:textSize="40px"
-			android:textStyle="bold" />
+			android:textColor="#a75d00"
+			android:textSize="70px"
+			android:textStyle="bold"
+			android:shadowColor="#000000"
+			android:shadowDx="4"
+			android:shadowDy="4"
+			android:shadowRadius="6" />
+
+		<TextView
+			android:id="@+id/tabInfoTextSOC_or"
+			android:layout_width="330px"
+			android:layout_height="105px"
+			android:layout_x="110px"
+			android:layout_y="450px"
+			android:gravity="center"
+			android:text="95%"
+			android:textColor="#c27700"
+			android:textSize="70px"
+			android:textStyle="bold"
+			android:shadowColor="#000000"
+			android:shadowDx="2"
+			android:shadowDy="2"
+			android:shadowRadius="3"/>
 
 		<TextView
 			android:id="@+id/tabInfoTextChargeMode"
@@ -195,7 +215,7 @@
 		<TextView
 			android:id="@+id/tabInfoTextChargeEtrFull"
 			android:layout_width="233px"
-			android:layout_height="76px"
+			android:layout_height="90px"
 			android:layout_x="292px"
 			android:layout_y="665px"
 			android:background="@drawable/etr_full"
@@ -211,10 +231,9 @@
 		<TextView
 			android:id="@+id/tabInfoTextChargeEtrFullEQ"
 			android:layout_width="300px"
-			android:layout_height="80px"
+			android:layout_height="50px"
 			android:layout_x="274px"
-			android:layout_y="270px"
-			android:background="@drawable/etr_full"
+			android:layout_y="275px"
 			android:gravity="center_horizontal"
 			android:text="100%: ~01:23"
 			android:textColor="#fff07d00"
