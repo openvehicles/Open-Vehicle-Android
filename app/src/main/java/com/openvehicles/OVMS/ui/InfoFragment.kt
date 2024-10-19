@@ -718,7 +718,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         if ((textViewEQ != null) && (carData!!.car_type == "SQ")) {
             textViewEQ.text = infoEtr
             if (infoEtr != "") {
-                etrVisible = true
+                etrVisible = false
                 textViewEQ.visibility = View.VISIBLE
             } else {
                 textViewEQ.visibility = View.INVISIBLE
@@ -851,20 +851,20 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tvPowerLoss.visibility = View.INVISIBLE
         } else {
             // Car is plugged in
-            val cmst = if (carData.car_battery_rangespeed != "") {
+            val cmst = if(carData.car_type == "SQ") {
                 String.format(
-                    "%s ≤%s ⏲%s ▾%.1fkWh",
-                    carData.car_charge_mode.uppercase(Locale.getDefault()),
-                    carData.car_charge_currentlimit,
-                    carData.car_battery_rangespeed,
-                    carData.car_charge_kwhconsumed
+                    "▾ %.1fkWh      ⚡ %.1fkW",
+                    carData.car_charge_kwhconsumed,
+                    carData.car_charge_power_input_kw_raw
                 )
             } else {
-                if(carData.car_type == "SQ") {
+                if (carData.car_battery_rangespeed != "") {
                     String.format(
-                        "▾%.1fkWh      ⚡%.1fkW",
-                        carData.car_charge_kwhconsumed,
-                        carData.car_charge_power_input_kw_raw
+                        "%s ≤%s ⏲%s ▾%.1fkWh",
+                        carData.car_charge_mode.uppercase(Locale.getDefault()),
+                        carData.car_charge_currentlimit,
+                        carData.car_battery_rangespeed,
+                        carData.car_charge_kwhconsumed
                     )
                 }else{
                     String.format(
@@ -1034,7 +1034,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 tabCarImageAC.setImageResource(R.drawable.ic_ac_off)
             }
             // move ETR image/text down
-            tabInfoImageChargeEtr.translationY = "240".toFloat()
+            tabInfoImageChargeEtr.translationY = "250".toFloat()
             tabInfoTextChargeEtrSuff.translationY = "170".toFloat()
             tabInfoTextChargeEtrFull.translationY = "170".toFloat()
         }
