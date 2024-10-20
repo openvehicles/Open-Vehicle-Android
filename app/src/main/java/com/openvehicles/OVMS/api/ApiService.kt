@@ -484,7 +484,15 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
 
     override fun onPushNotification(msgClass: Char, msgText: String?) {
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        createNotificationChannel()
+        // Define the notification channel (required for Android O and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelName = getString(R.string.app_name)
+            val channelDescription = "OVMS"
+            val channel = NotificationChannel("your_channel_id", channelName, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = channelDescription
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
         // Create the notification
         val notificationBuilder = NotificationCompat.Builder(this, "your_channel_id")
             .setSmallIcon(R.drawable.ic_service)
