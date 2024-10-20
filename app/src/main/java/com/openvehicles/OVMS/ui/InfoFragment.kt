@@ -819,8 +819,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
     private fun updateCarInfoView(carData: CarData) {
         val headline = findViewById(R.id.txt_title) as TextView
         val odometer = String.format("⏲ %.1f%s", carData.car_odometer_raw / 10, carData.car_distance_units)
-        val energyused = String.format("%.1f kWh/100km", carData.car_energyused)
-        headline.text = carData.sel_vehicle_label + "\n" + energyused + "\n" + odometer
+        val power = String.format("%.1f kWh/100km", carData.car_inv_power_motor_kw)
+        // val energyused = String.format("%.1f kWh/100km", carData.car_energyused)
+        headline.text = carData.sel_vehicle_label + "\n" + power + "\n" + odometer
         val carPos = carsStorage.getStoredCars().indexOf(carData)
         if (carPos != carSelectPos) {
             Log.d(TAG, "updateCarInfoView: id=" + carData.sel_vehicleid + " pos=" + carPos)
@@ -977,13 +978,13 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         if (carData.car_type == "SQ") {
             // calculate minimal range for SQ
             ideallabel.text = getString(R.string.Idealminimal)
-            idealtv.text = String.format("%.1f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
+            idealtv.text = String.format("%.0f%s", (carData.car_range_estimated_raw) * 0.835, carData.car_distance_units)
             // ideallabel.textSize = 14F
         }else{
             idealtv.text = carData.car_range_ideal
         }
         val esttv = findViewById(R.id.tabInfoTextEstimatedRange) as TextView
-        esttv.text = carData.car_range_estimated
+        esttv.text = String.format("%.0f%s", carData.car_range_estimated_raw, carData.car_distance_units)
 
         // Smart EQ: cabin/ambient temperature A/C
         val ambientiv = findViewById(R.id.tabInfoImageTemperatureText) as ImageView
@@ -1018,9 +1019,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tabCarImageAC.isClickable = true
             ambientiv.visibility = View.VISIBLE
             ambienttvl.text = getString(R.string.textAMBIENT)
-            ambienttv.text = carData.car_temp_ambient
+            ambienttv.text = String.format("%.0f°C", carData.car_temp_ambient_raw)
             cabintvl.text = getString(R.string.textCAB)
-            cabintv.text = carData.car_temp_cabin
+            cabintv.text = String.format("%.0f°C", carData.car_temp_cabin_raw)
             ambientiv.visibility = View.VISIBLE
             ambienttvl.visibility = View.VISIBLE
             ambienttv.visibility = View.VISIBLE

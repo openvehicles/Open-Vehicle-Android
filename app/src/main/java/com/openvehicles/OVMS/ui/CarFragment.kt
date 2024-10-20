@@ -1010,13 +1010,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             DataStale.Stale -> {
                 iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
-                tv.text = carData.car_temp_ambient
+                tv.text = String.format("%.0f°C", carData.car_temp_ambient_raw)
                 tv.setTextColor(-0x7f7f80)
             }
             else -> {
                 iv.visibility = View.VISIBLE
                 label.visibility = View.VISIBLE
-                tv.text = carData.car_temp_ambient
+                tv.text = String.format("%.0f°C", carData.car_temp_ambient_raw)
                 tv.setTextColor(-0x1)
             }
         }
@@ -1200,7 +1200,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.stale_car_temps == DataStale.NoValue) {
                 pemtv.text = ""
             } else {
-                pemtv.text = String.format("%.1fkWh",carData.car_charge_kwhconsumed)
+                pemtv.text = String.format("%.1fkWh",carData.car_power)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     pemtv.setTextColor(-0x7f7f80)
                 } else {
@@ -1232,7 +1232,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || this.carData!!.car_type == "NL"
             || this.carData!!.car_type == "MGEV") {
             motortvl.setText(R.string.textHVBATT)
-            motortv.text = String.format("%.1fV", this.carData!!.car_battery_voltage)
+            motortv.text = String.format("%.0fV", this.carData!!.car_battery_voltage)
             if (carData.stale_car_temps == DataStale.Stale) {
                 motortv.setTextColor(-0x7f7f80)
             } else {
@@ -1315,8 +1315,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 batterytv.text = ""
                 chargertv.text = ""
             } else {
-                batterytv.text = carData.car_temp_battery
-                chargertv.text = carData.car_temp_cabin
+                batterytv.text = String.format("%.0f°C", carData.car_temp_battery_raw)
+                chargertv.text = String.format("%.0f°C", carData.car_temp_cabin_raw)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     batterytv.setTextColor(-0x7f7f80)
                     chargertv.setTextColor(-0x7f7f80)
@@ -1374,19 +1374,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         tv.text = ss
 
         // Energy
-        if (carData.car_type == "SQ") {
-            tv.visibility = View.INVISIBLE
-            st = String.format(
-                "▴ %.1f kWh",
-                floor((carData.car_energyused * 10).toDouble()) / 10
-            )
-        } else {
-            st = String.format(
-                "▴%.1f ▾%.1f kWh",
-                floor((carData.car_energyused * 10).toDouble()) / 10,
-                floor((carData.car_energyrecd * 10).toDouble()) / 10
-            )
-        }
+        st = String.format(
+            "▴%.1f ▾%.1f kWh",
+            floor((carData.car_energyused * 10).toDouble()) / 10,
+            floor((carData.car_energyrecd * 10).toDouble()) / 10
+        )
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf("kWh"), st.length, 0)
         tv = findViewById(R.id.tabCarTextEnergy) as TextView
