@@ -561,11 +561,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_HL_PLUGIN -> {
                 val plugin_inst = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_options_plugin_deinst) else getString(R.string.lb_options_plugin_inst)
+                val plugin_plugin_update = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_plugin_update) else getString(R.string.lb_plugin_update)
                 val plugin_1 = if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") getString(R.string.lb_plugin_1_off) else getString(R.string.lb_plugin_1_on)
                 val plugin_2 = if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") getString(R.string.lb_plugin_2_off) else getString(R.string.lb_plugin_2_on)
                 val plugin_3 = if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") getString(R.string.lb_plugin_3_off) else getString(R.string.lb_plugin_3_on)
                 val plugin_4 = if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") getString(R.string.lb_plugin_4_off) else getString(R.string.lb_plugin_4_on)
-                val plugin_plugin_update = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_plugin_update) else getString(R.string.lb_plugin_update)
 
                 var options = arrayOf(
                     "$plugin_inst",
@@ -584,7 +584,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setNegativeButton(R.string.Close, null)
                     .setPositiveButton(R.string.execute) { dialog, which ->
                         when (checkedItem) {
-                            // plugin installation option
+                            // plugin installation SmartEQ
                             0 -> {
                                 if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "off")
@@ -595,11 +595,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     //sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this) // for testing
                                 }
                             }
-                            // plugin update option
+                            // plugin update
                             1 -> {
                                 sendCommand(R.string.lb_plugin_update, "7,plugin update", this)
                             }
-                            // plugin 1 option
+                            // plugin 1 xsq_v2data
                             2 -> {
                                 if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_1_" + app_Car_ID, "off")
@@ -609,7 +609,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     sendCommand(R.string.lb_plugin_1_on, "7,plugin install xsq_v2data", this)
                                 }
                             }
-                            // plugin 2 option
+                            // plugin 2 scheduled_booster
                             3 -> {
                                 if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_2_" + app_Car_ID, "off")
@@ -619,7 +619,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
                                 }
                             }
-                            // plugin 3 option
+                            // plugin 3 gps_onoff
                             4 -> {
                                 if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_3_" + app_Car_ID, "off")
@@ -629,7 +629,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
                                 }
                             }
-                            // plugin 4 option
+                            // plugin 4 booster_12V
                             5 -> {
                                 if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_4_" + app_Car_ID, "off")
