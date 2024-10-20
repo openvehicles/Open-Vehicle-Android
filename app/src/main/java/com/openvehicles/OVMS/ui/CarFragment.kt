@@ -1345,7 +1345,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         var ss: SpannableString
 
         // Odometer
-        st = String.format("%.1f%s", carData.car_odometer_raw / 10, carData.car_distance_units)
+        st = String.format("%.1f %s", carData.car_odometer_raw / 10, carData.car_distance_units)
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextOdometer) as TextView
@@ -1360,14 +1360,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         if (!carData.car_started) {
             tv.text = ""
         } else {
-            st = String.format("%.0f%s", carData.car_speed_raw, carData.car_speed_units)
+            st = String.format("%.0f %s", carData.car_speed_raw, carData.car_speed_units)
             ss = SpannableString(st)
             ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_speed_units), st.length, 0)
             tv.text = ss
         }
 
         // Trip
-        st = String.format("➟ %.1f%s", carData.car_tripmeter_raw / 10, carData.car_distance_units)
+        st = String.format("➟ %.1f %s", carData.car_tripmeter_raw / 10, carData.car_distance_units)
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextTrip) as TextView
