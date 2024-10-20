@@ -314,7 +314,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         try {
             if (apiTask != null) {
                 Log.v(TAG, "closeConnection: shutting down TCP connection")
-                apiTask!!.cancel(true)
+                //apiTask!!.cancel(true)
                 apiTask = null
                 notifyLoggedIn(this, false)
                 sendApiEvent("UpdateStatus")
@@ -483,8 +483,18 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
     }
 
     override fun onPushNotification(msgClass: Char, msgText: String?) {
-        // This callback only receives MP push notifications for the currently selected vehicle.
-        // See MyFirebaseMessagingService for system notification broadcasting.
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        createNotificationChannel()
+        // Create the notification
+        val notificationBuilder = NotificationCompat.Builder(this, "your_channel_id")
+            .setSmallIcon(R.drawable.ic_service)
+            .setContentTitle("OVMS")
+            .setContentText(msgText ?: msgText)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+        // Show the notification
+        notificationManager.notify(1, notificationBuilder.build())
     }
 
     // ApiObserver interface:
