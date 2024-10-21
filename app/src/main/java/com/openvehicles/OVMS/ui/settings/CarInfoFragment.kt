@@ -52,7 +52,11 @@ class CarInfoFragment : BaseFragment() {
         setValue(rootView, R.id.txt_server, carData!!.server_firmware)
         setValue(rootView, R.id.txt_car, carData!!.car_firmware)
         setValue(rootView, R.id.txt_hardware, carData!!.car_hardware)
-        setValue(rootView, R.id.txt_gsm, carData!!.car_gsm_signal)
+        setValue(rootView,
+            R.id.txt_gsm,
+            String.format(
+            "%s  %s",carData!!.car_gsm_signal,carData!!.car_gsmlock)
+        )
         setValue(
             rootView,
             R.id.txt_cac,
@@ -65,7 +69,7 @@ class CarInfoFragment : BaseFragment() {
         setValue(rootView, R.id.txt_soh, String.format("%.1f%%", carData!!.car_soh))
         setValue(
             rootView, R.id.txt_12v_info, String.format(
-                "%.1fV (%s) %.1fA",
+                "%.2fV (%s) %.1fA",
                 carData!!.car_12vline_voltage,
                 if (carData!!.car_charging_12v) "charging" else if (carData!!.car_12vline_ref <= 1.5) String.format(
                     "calmdown, %d min left",

@@ -982,7 +982,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // "12V" box:
         //label = (TextView) findViewById(R.id.tabCarText12VLabel);
         var tv: TextView = findViewById(R.id.tabCarText12V) as TextView
-        tv.text = String.format("%.1fV", this.carData!!.car_12vline_voltage)
+        tv.text = String.format("%.2fV", this.carData!!.car_12vline_voltage)
         if (this.carData!!.car_12vline_ref <= 1.5 || this.carData!!.car_charging_12v) {
             // charging / calmdown
             tv.setTextColor(-0x565601)
@@ -1375,7 +1375,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // Energy
         st = String.format(
-            "▴%.1f ▾%.1f kWh",
+            "▴ %.1f ▾ %.1f kWh",
             floor((carData.car_energyused * 10).toDouble()) / 10,
             floor((carData.car_energyrecd * 10).toDouble()) / 10
         )

@@ -261,11 +261,11 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        findViewById(R.id.tabInfoTextSOC)!!.setOnClickListener(this)
-        findViewById(R.id.tabInfoTextChargeMode)!!.setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryChargingOverlay)!!.setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryAnimation)!!.setOnClickListener(this)
-        findViewById(R.id.tabInfoImageBatteryOverlay)!!.setOnClickListener(this)
+        findViewById(R.id.tabInfoTextSOC).setOnClickListener(this)
+        findViewById(R.id.tabInfoTextChargeMode).setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryChargingOverlay).setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryAnimation).setOnClickListener(this)
+        findViewById(R.id.tabInfoImageBatteryOverlay).setOnClickListener(this)
 
         val bar = findViewById(R.id.tabInfoSliderChargerControl) as ReversedSeekBar
         bar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
@@ -828,9 +828,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             carSelect.setSelection(carSelectPos)
         }
         val tv = findViewById(R.id.tabInfoTextSOC) as TextView
-        val soc_str = carData.car_soc.split(",")[0].toFloat()
-        tv.text = String.format("%.0f%%", soc_str)
         val tv_or = findViewById(R.id.tabInfoTextSOC_or) as TextView
+        val soc_str = carData.car_soc_raw
+        tv.text = String.format("%.0f%%", soc_str)
         tv_or.text = String.format("%.0f%%", soc_str)
         val cmtv = findViewById(R.id.tabInfoTextChargeMode) as TextView
         val coiv = findViewById(R.id.tabInfoImageBatteryChargingOverlay) as ImageView
@@ -1074,7 +1074,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         animatorcharge.start()
 
         // switch animation on/off depending on charge power input
-        if (carData.car_charge_power_input_kw_raw > 1) {
+        if ((carData.car_chargeport_open) && (carData.car_charge_power_input_kw_raw > 1.3)) {
             batt.visibility = View.INVISIBLE
             battc.visibility = View.VISIBLE
             chargeing.visibility = View.VISIBLE
