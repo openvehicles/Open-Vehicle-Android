@@ -29,9 +29,9 @@ import com.openvehicles.OVMS.api.ApiObservable.deleteObserver
 import com.openvehicles.OVMS.api.ApiObservable.notifyLoggedIn
 import com.openvehicles.OVMS.api.ApiObservable.notifyUpdate
 import com.openvehicles.OVMS.entities.CarData
-import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Database
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.Sys
 import java.io.Serializable
@@ -314,7 +314,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         try {
             if (apiTask != null) {
                 Log.v(TAG, "closeConnection: shutting down TCP connection")
-                apiTask!!.cancel(true)
+                //apiTask!!.cancel(true)
                 apiTask = null
                 notifyLoggedIn(this, false)
                 sendApiEvent("UpdateStatus")
@@ -485,6 +485,29 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
     override fun onPushNotification(msgClass: Char, msgText: String?) {
         // This callback only receives MP push notifications for the currently selected vehicle.
         // See MyFirebaseMessagingService for system notification broadcasting.
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        createNotificationChannel()
+        // Define the notification channel (required for Android O and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channelName = getString(R.string.app_name)
+            val channelDescription = "OVMS"
+            val channel = NotificationChannel("your_channel_id", channelName, NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = channelDescription
+            }
+            notificationManager.createNotificationChannel(channel)
+        }
+        // Create the notification
+        val notificationBuilder = NotificationCompat.Builder(this, "your_channel_id")
+            .setSmallIcon(R.drawable.ic_service)
+            .setContentTitle("OVMS")
+            .setContentText(msgText ?: msgText)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setAutoCancel(true)
+
+        // Show the notification
+        if(appPrefs!!.getData("option_notification_enabled_" + carData!!.sel_vehicleid,"1") == "1"){
+            notificationManager.notify(1, notificationBuilder.build())
+        }
     }
 
     // ApiObserver interface:

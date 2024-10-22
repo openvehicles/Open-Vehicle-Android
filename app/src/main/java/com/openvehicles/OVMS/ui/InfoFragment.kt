@@ -847,6 +847,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             bar.visibility = View.INVISIBLE
             cmtv.visibility = View.INVISIBLE
             coiv.visibility = View.INVISIBLE
+            tv.visibility = View.VISIBLE
             tv_or.visibility = View.INVISIBLE
             tvl.visibility = View.INVISIBLE
             tvr.visibility = View.INVISIBLE
@@ -885,7 +886,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             cmtv.visibility = View.VISIBLE
             if ((this.carData!!.car_type == "RT") || (this.carData!!.car_type == "SQ")) {
                 // Renault Twizy: no charge control
-                findViewById(R.id.tabInfoImageCharger)!!.visibility = View.VISIBLE
+                findViewById(R.id.tabInfoImageCharger).visibility = View.VISIBLE
                 bar.visibility = View.INVISIBLE
                 tvl.visibility = View.INVISIBLE
                 tvr.visibility = View.INVISIBLE
@@ -897,6 +898,17 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     2 -> chargeStateInfo = R.string.state_topping_off
                     4 -> chargeStateInfo = R.string.state_done
                     21 -> chargeStateInfo = R.string.state_stopped
+                }
+                if (this.carData!!.car_type == "SQ") {
+                    tvPowerInput.text = String.format("▾ %s min.",(carData.car_charge_duration_raw/60).toString())
+                    tvPowerInput.visibility = View.VISIBLE
+                    tvPowerLoss.text = String.format("⚡ %s %%",carData.car_charger_efficiency)
+                    tvPowerLoss.visibility = View.VISIBLE
+                    tvPowerInput.translationY = "160".toFloat()
+                    tvPowerInput.translationX = "60".toFloat()
+                    tvPowerLoss.translationY = "280".toFloat()
+                    tvPowerLoss.translationX = "-190".toFloat()
+                    tvPowerLoss.setTextColor(-0xFFAA44)
                 }
                 if (chargeStateInfo != 0) {
                     tvf.text = String.format(

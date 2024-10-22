@@ -43,6 +43,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     // Currently unused, may be reused if single messages shall be sent
     private var broadcastCodes: String? = null
     private var commandsEnabled = false
+    private var notificationEnabled = false
     private var pluginEnabled = false
     private var firmwareEnabled = false
 
@@ -56,6 +57,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         broadcastEnabled = appPrefs!!.getData("option_broadcast_enabled", "0") == "1"
         broadcastCodes = appPrefs!!.getData("option_broadcast_codes", DEFAULT_BROADCAST_CODES)
         commandsEnabled = appPrefs!!.getData("option_commands_enabled", "0") == "1"
+        notificationEnabled = appPrefs!!.getData("option_notification_enabled_" + app_Car_ID, "1") == "1"
         pluginEnabled = appPrefs!!.getData("option_plugin_enabled_"  + app_Car_ID, "0") == "1"
         firmwareEnabled = appPrefs!!.getData("option_firmware_enabled_"  + app_Car_ID, "0") == "1"
         var checkBox: CheckBox = findViewById(R.id.cb_options_service) as CheckBox
@@ -73,6 +75,9 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         btnRevert!!.setEnabled(broadcastEnabled)
         checkBox = findViewById(R.id.cb_options_commands) as CheckBox
         checkBox.setChecked(commandsEnabled)
+        checkBox.setOnClickListener(this)
+        checkBox = findViewById(R.id.cb_options_notification) as CheckBox
+        checkBox.setChecked(notificationEnabled)
         checkBox.setOnClickListener(this)
         checkBox = findViewById(R.id.cb_options_plugin) as CheckBox
         checkBox.setChecked(pluginEnabled)
@@ -121,6 +126,10 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
             R.id.cb_options_commands -> {
                 commandsEnabled = (v as CheckBox).isChecked
                 appPrefs!!.saveData("option_commands_enabled", if (commandsEnabled) "1" else "0")
+            }
+            R.id.cb_options_notification -> {
+                notificationEnabled = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_notification_enabled_" + app_Car_ID, if (notificationEnabled) "1" else "0")
             }
             R.id.cb_options_plugin -> {
                 pluginEnabled = (v as CheckBox).isChecked

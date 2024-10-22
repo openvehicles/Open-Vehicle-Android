@@ -675,6 +675,8 @@
     <string name="lb_options_broadcast">Broadcast:</string>
     <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps</string>
     <string name="lb_options_broadcast_codes">Enter code letters</string>
+    <string name="lb_options_notification">Notification:</string>
+    <string name="lb_options_notification_cb">Enable show notification</string>
     <string name="lb_options_commands">Commands:</string>
     <string name="lb_options_commands_cb">Enable vehicle command service</string>
     <string name="lb_options_apikey">API key:</string>

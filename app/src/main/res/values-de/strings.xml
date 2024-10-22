@@ -659,6 +659,8 @@
     <string name="lb_options_broadcast">Weitergabe:</string>
     <string name="lb_options_broadcast_cb">Daten an andere Apps weiterleiten</string>
     <string name="lb_options_broadcast_codes">Codes eingeben</string>
+    <string name="lb_options_notification">Meldungen:</string>
+    <string name="lb_options_notification_cb">Aktiviere Meldungen anzeigen</string>
     <string name="lb_options_commands">Befehle:</string>
     <string name="lb_options_commands_cb">Fahrzeug-Kommandos freigeben</string>
     <string name="lb_options_apikey">API-Schlüssel:</string>
