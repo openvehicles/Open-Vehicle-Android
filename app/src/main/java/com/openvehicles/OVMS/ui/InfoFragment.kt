@@ -659,7 +659,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val etrSuffSOC = carData!!.car_chargelimit_minsremaining_soc
         val suffRange = carData!!.car_chargelimit_rangelimit_raw
         val etrSuffRange = carData!!.car_chargelimit_minsremaining_range
-        if (etrSuffRange > 0) {
+        if ((etrSuffRange > 0) && (carData!!.car_type != "SQ")) {
             val infoEtrRange = getString(
                 R.string.info_etr_suffrange,
                 suffRange,
@@ -671,7 +671,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             }
             infoEtr += infoEtrRange
         }
-        if (etrSuffSOC > 0) {
+        if ((etrSuffSOC > 0) && (carData!!.car_type != "SQ")) {
             val infoEtrSOC = getString(
                 R.string.info_etr_suffsoc,
                 suffSOC, String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60)
@@ -899,8 +899,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     4 -> chargeStateInfo = R.string.state_done
                     21 -> chargeStateInfo = R.string.state_stopped
                 }
-                if ((this.carData!!.car_type == "SQ")&&(carData.car_12v_current > 0)) {
-                    tvPowerInput.text = String.format("▾ %s min.",(carData.car_12v_current/60).toString()) //(carData.car_charge_duration_raw/60).toString())
+                if ((this.carData!!.car_type == "SQ")) {
+                    val etrSuffSOC = carData.car_chargelimit_minsremaining_soc
+                    tvPowerInput.text = String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60)
                     tvPowerInput.visibility = View.VISIBLE
                     tvPowerLoss.text = String.format("⚡ %s %%",carData.car_inv_efficiency) //car_charger_efficiency)
                     tvPowerLoss.visibility = View.VISIBLE
