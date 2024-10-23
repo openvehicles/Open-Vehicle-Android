@@ -670,6 +670,9 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 36) {
                 car_charge_power_input_kw_raw = dataParts[34].toFloat()
+                if (car_charge_power_input_kw_raw > 2000) {
+                    car_charge_power_input_kw_raw = 0.0F
+                }
                 car_charge_power_input_kw = String.format("%.1fkW", car_charge_power_input_kw_raw)
                 if (car_charge_power_kw_raw != 0.0) {
                     car_charge_power_loss_kw_raw =
