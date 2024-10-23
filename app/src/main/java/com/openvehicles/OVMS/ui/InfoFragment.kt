@@ -899,16 +899,11 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     4 -> chargeStateInfo = R.string.state_done
                     21 -> chargeStateInfo = R.string.state_stopped
                 }
-                if (this.carData!!.car_type == "SQ") {
-                    tvPowerInput.text = String.format("▾ %s min.",(carData.car_charge_duration_raw/60).toString())
+                if ((this.carData!!.car_type == "SQ")&&(carData.car_12v_current > 0)) {
+                    tvPowerInput.text = String.format("▾ %s min.",(carData.car_12v_current/60).toString()) //(carData.car_charge_duration_raw/60).toString())
                     tvPowerInput.visibility = View.VISIBLE
-                    tvPowerLoss.text = String.format("⚡ %s %%",carData.car_charger_efficiency)
+                    tvPowerLoss.text = String.format("⚡ %s %%",carData.car_inv_efficiency) //car_charger_efficiency)
                     tvPowerLoss.visibility = View.VISIBLE
-                    tvPowerInput.translationY = "160".toFloat()
-                    tvPowerInput.translationX = "60".toFloat()
-                    tvPowerLoss.translationY = "280".toFloat()
-                    tvPowerLoss.translationX = "-190".toFloat()
-                    tvPowerLoss.setTextColor(-0xFFAA44)
                 }
                 if (chargeStateInfo != 0) {
                     tvf.text = String.format(
@@ -1086,7 +1081,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         animatorcharge.start()
 
         // switch animation on/off depending on charge power input
-        if ((carData.car_chargeport_open) && (carData.car_charge_power_input_kw_raw > 1.3)) {
+        if ((carData.car_chargeport_open) && (carData.car_charge_power_input_kw_raw > 1.3)  && (carData.car_charge_power_input_kw_raw < 1000)) {
             batt.visibility = View.INVISIBLE
             battc.visibility = View.VISIBLE
             chargeing.visibility = View.VISIBLE
