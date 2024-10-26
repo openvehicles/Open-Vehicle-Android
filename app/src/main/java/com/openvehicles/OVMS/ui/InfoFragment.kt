@@ -126,8 +126,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.lb_booster_off)
                 .setNegativeButton(R.string.Cancel, null)
-                .setPositiveButton(android.R.string.ok) { dlg,
-                                                          which ->
+                .setPositiveButton(android.R.string.ok) { _,
+                                                          _ ->
                     appPrefs.saveData("booster_on_" + app_Car_ID, "off")
                     appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
@@ -152,8 +152,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             AlertDialog.Builder(requireActivity())
                 .setTitle(R.string.lb_booster_weekly_off)
                 .setNegativeButton(R.string.Cancel, null)
-                .setPositiveButton(android.R.string.ok) { dlg,
-                    which ->
+                .setPositiveButton(android.R.string.ok) { _,
+                                                          _ ->
                     appPrefs.saveData("booster_on_" + app_Car_ID, "off")
                     appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
@@ -175,9 +175,9 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val booster_ac_btn = rootView.findViewById<View>(R.id.tabCarImageAC)
         booster_ac_btn.setOnClickListener {
             AlertDialog.Builder(requireActivity())
-                .setTitle(R.string.textAC)
+                .setTitle(R.string.lb_booster)
                 .setNegativeButton(R.string.Cancel, null)
-                .setPositiveButton(android.R.string.ok) { dlg, which -> sendCommand(R.string.msg_issuing_climatecontrol, "26,1", this@InfoFragment ) }
+                .setPositiveButton(R.string.lb_booster_activate) { _, _ -> sendCommand(R.string.lb_booster, "26,1", this@InfoFragment ) }
                 .show()
         }
 

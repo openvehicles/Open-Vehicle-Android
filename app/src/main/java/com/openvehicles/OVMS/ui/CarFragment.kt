@@ -277,6 +277,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         updateCarBodyView(carData)
     }
 
+    @Deprecated("Deprecated in Java")
+    @Suppress("DEPRECATION")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         registerForContextMenu(findViewById(R.id.btn_wakeup))
@@ -442,7 +444,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     menu.setHeaderTitle(R.string.textHOMELINK)
                 }
                 if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
-                    menu.add(0, MI_HL_01, 0, R.string.lb_booster)
+                    menu.add(0, MI_HL_01, 0, R.string.mi_ac_on)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
                 }
@@ -460,11 +462,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 if(appPrefs.getData("option_plugin_enabled_" + app_Car_ID) == "1") {
                     menu.add(0, MI_HL_PLUGIN, 0, R.string.lb_options_plugin_btn)
                 }
+                /*
                 if ((carData!!.car_type == "SQ")&&(appPrefs.getData("plugin_2_" + app_Car_ID) != "on")) {
                     if (appPrefs.getData("plugin_ovmsmain_" + app_Car_ID) != "on") {
                         menu.add(0,MI_HL_OVMSMAIN,0,R.string.lb_plugin_ovmsmain)
                     }
                 }
+                */
                 menu.add(R.string.Close)
             }
             R.id.tabCarImageAC -> {
@@ -539,21 +543,21 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_FW -> {
-                val options = arrayOf("Dimitrie78", "Edge", "Eap", "Main")
+                val options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_plugin_firmware)
-                    .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
                         checkedItem = which // Update the selected item index
                     }
                     .setNegativeButton(R.string.Close, null)
-                    .setPositiveButton(R.string.lb_plugin_firmware_update) { dialog, which ->
+                    .setPositiveButton(R.string.lb_plugin_firmware_update) { _, _ ->
                         when (checkedItem) {
                             0 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dimitrie.eu/firmware/ota/v3.3/smarteq/ovms3.bin", this)
-                            1 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/edge/ovms3.bin", this)
-                            2 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/eap/ovms3.bin", this)
-                            3 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.1/main/ovms3.bin", this)
-                            else -> false
+                            1 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
+                            2 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
+                            3 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
+                            //else -> false
                         }
                     }
                     .show()
@@ -578,11 +582,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_options_plugin_btn)
-                    .setSingleChoiceItems(options, checkedItem) { dialog, which ->
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
                         checkedItem = which // Update the selected item index
                     }
                     .setNegativeButton(R.string.Close, null)
-                    .setPositiveButton(R.string.execute) { dialog, which ->
+                    .setPositiveButton(R.string.execute) { _, _ ->
                         when (checkedItem) {
                             // plugin installation SmartEQ
                             0 -> {
@@ -639,7 +643,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
                                 }
                             }
-                            else -> false
+                            //else -> false
                         }
                     }
                     .show()
@@ -706,7 +710,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setNegativeButton(R.string.Cancel, null)
                     .setPositiveButton(
                         R.string.Set
-                    ) { dlg, which ->
+                    ) { dlg, _ ->
                         appPrefs.saveData("booster_on_" + app_Car_ID, "on")
                         tabCarImageBooster.visibility = View.VISIBLE
                         tabInfoTextBoostertime.visibility = View.VISIBLE
@@ -780,7 +784,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setNegativeButton(R.string.Cancel, null)
                     .setPositiveButton(
                         R.string.Set
-                    ) { dlg, which ->
+                    ) { dlg, _ ->
                         appPrefs.saveData("booster_on_" + app_Car_ID, "on")
                         appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "on")
                         tabCarImageBooster.visibility = View.VISIBLE
@@ -1125,7 +1129,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 frtv.text = getString(R.string.fr_tpms)
                 rltv.text = getString(R.string.rl_tpms)
                 rrtv.text = getString(R.string.rr_tpms)
-                frtvv.text = val1!![0]
+                frtvv.text = val1[0]
                 fltvv.text = val1[1]
                 rrtvv.text = val1[2]
                 rltvv.text = val1[3]

@@ -140,7 +140,7 @@
     <string name="lb_ft_rt_capacity">#%d: Akku-Kapazitätsmessung (CAP%%)</string>
     <string name="lb_ft_rt_capacity_nom_ah">#%d: Akku-Standardkapazität (Ah)</string>
 
-    <string name="lb_booster">Booster/Klima an</string>
+    <string name="lb_booster">Booster/Klima</string>
     <string name="lb_booster_ctrl_reset">Booster Einstellungen zurücksetzen</string>
     <string name="lb_booster_on">Booster timer ein</string>
     <string name="lb_booster_off">Booster timer aus</string>

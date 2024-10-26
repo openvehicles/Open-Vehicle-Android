@@ -85,7 +85,7 @@
     <string name="lb_valet_mode_on">Valet On</string>
     <string name="lb_valet_mode_off">Valet Off</string>
 
-    <string name="lb_booster">Booster/Climate on</string>
+    <string name="lb_booster">Booster/Climate</string>
     <string name="lb_booster_ctrl_reset">Booster setting reset</string>
     <string name="lb_booster_on">Booster timer on</string>
     <string name="lb_booster_off">Booster timer off</string>
