@@ -182,11 +182,8 @@
     <string name="lb_ft_rt_capacity">#%d: Battery measured capacity (CAP%%)</string>
     <string name="lb_ft_rt_capacity_nom_ah">#%d: Battery nominal capacity (Ah)</string>
 
-    <string name="lb_ft_sq_booster_on">#%d: Booster activated (yes/no)</string>
-    <string name="lb_lb_ft_sq_booster_weekly">#%d: Booster weekly (yes/no)</string>
-    <string name="lb_ft_sq_booster_time">#%d: Booster start time (1400=14:00)</string>
-    <string name="lb_ft_sq_booster_day_start">#%d: Booster start day (0=SUN)</string>
-    <string name="lb_ft_sq_booster_day_end">#%d: Booster end day (0=SUN)</string>
+    <string name="lb_ft_sq_led_state">#%d: LED Online State</string>
+    <string name="lb_ft_sq_ios_tpms_fix">#%d: iOS TPMS fix</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>

@@ -194,8 +194,7 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
         // Renault Twizy:
         private const val FEATURE_GPSLOGINT = 0x00 // GPS log interval [seconds]
         private const val FEATURE_KICKDOWN_THRESHOLD = 0x01 // Kickdown threshold (pedal change)
-        private const val FEATURE_KICKDOWN_COMPZERO =
-            0x02 // Kickdown pedal compensation zero point
+        private const val FEATURE_KICKDOWN_COMPZERO = 0x02 // Kickdown pedal compensation zero point
         private const val FEATURE_CHARGEMODE = 0x06 // Charge mode (0-1)
         private const val FEATURE_CHARGEPOWER = 0x07 // Charge power level (0-7)
         private const val FEATURE_SUFFSOC = 0x0A // Charge alert: sufficient SOC
@@ -208,6 +207,10 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
         private const val FEATURE_MODELYEAR = 0x14 // model year
         private const val FEATURE_REMOTE_AC_TEMP = 0x15 // temperature for remote AC
         private const val FEATURE_REMOTE_AC_ON_BAT = 0x16 // allow remote AC on battery power?
+
+        // Smart EQ:
+        private const val FEATURE_LED_STATE = 0x01 // LED Online State
+        private const val FEATURE_IOS_TPMS_FIX = 0x02 // iOS TPMS fix
 
         // The FEATURE_CARBITS feature is a set of ON/OFF bits to control different
         // miscelaneous aspects of the system. The following bits are defined:
@@ -329,6 +332,21 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
                     )
                     FEATURE_REMOTE_AC_ON_BAT -> return context.getString(
                         R.string.lb_ft_remote_ac_on_bat,
+                        position
+                    )
+                    else -> {}
+                }
+            }
+
+            // Smart EQ:
+            if (carData!!.car_type == "SQ") {
+                when (position) {
+                    FEATURE_LED_STATE -> return context.getString(
+                        R.string.lb_ft_sq_led_state,
+                        position
+                    )
+                    FEATURE_IOS_TPMS_FIX -> return context.getString(
+                        R.string.lb_ft_sq_ios_tpms_fix,
                         position
                     )
                     else -> {}
