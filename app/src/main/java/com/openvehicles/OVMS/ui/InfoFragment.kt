@@ -843,7 +843,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
 
         if (!carData.car_chargeport_open || carData.car_charge_substate_i_raw == 0x07) {
             // Charge port is closed or car is not plugged in
-            findViewById(R.id.tabInfoImageCharger)!!.visibility = View.INVISIBLE
+            findViewById(R.id.tabInfoImageCharger).visibility = View.INVISIBLE
             bar.visibility = View.INVISIBLE
             cmtv.visibility = View.INVISIBLE
             coiv.visibility = View.INVISIBLE
@@ -899,20 +899,30 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     4 -> chargeStateInfo = R.string.state_done
                     21 -> chargeStateInfo = R.string.state_stopped
                 }
-                if ((this.carData!!.car_type == "SQ")) {
-                    val etrSuffSOC = carData.car_chargelimit_minsremaining_soc
-                    tvPowerInput.text = String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60)
-                    tvPowerInput.visibility = View.VISIBLE
-                    tvPowerLoss.text = String.format("⚡ %s %%",carData.car_inv_efficiency) //car_charger_efficiency)
-                    tvPowerLoss.visibility = View.VISIBLE
-                }
-                if (chargeStateInfo != 0) {
+                if ((this.carData!!.car_type != "SQ")&&(chargeStateInfo != 0)) {
                     tvf.text = String.format(
                         getText(chargeStateInfo).toString(),
                         carData.car_charge_linevoltage,
                         carData.car_charge_current
                     )
                     tvf.visibility = View.VISIBLE
+                }
+                if ((this.carData!!.car_type == "SQ")) {
+                    val etrSuffSOC = carData.car_temp_pem_raw.toInt() //car_chargelimit_minsremaining_soc
+                    tvPowerInput.text = String.format("   %02d:%02d %s", etrSuffSOC / 60, etrSuffSOC % 60,"h")
+                    tvPowerInput.visibility = View.VISIBLE
+                    tvPowerLoss.text = String.format("⚡ %s %%",carData.car_charger_efficiency)
+                    tvPowerLoss.visibility = View.VISIBLE
+                    if (chargeStateInfo != 0) {
+                        val linevoltage = String.format("%.0f%s     ", carData.car_charge_linevoltage_raw, "V")
+                        val current = String.format("     %s%s",carData.car_battery_current_raw, "A") // car_charge_current
+                        tvf.text = String.format(
+                            getText(chargeStateInfo).toString(),
+                            linevoltage,
+                            current
+                        )
+                        tvf.visibility = View.VISIBLE
+                    }
                 }
                 coiv.visibility = View.VISIBLE
             } else {
