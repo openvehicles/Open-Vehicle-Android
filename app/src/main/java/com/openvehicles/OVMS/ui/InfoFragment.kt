@@ -819,7 +819,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
     private fun updateCarInfoView(carData: CarData) {
         val headline = findViewById(R.id.txt_title) as TextView
         val odometer = String.format("⏲ %.1f %s", carData.car_odometer_raw / 10, carData.car_distance_units)
-        val power = String.format("%.1f kWh/100 km", carData.car_inv_power_motor_kw)
+        val power = String.format("%.1f kWh/100 km", carData.car_temp_motor_raw)
         headline.text = carData.sel_vehicle_label + "\n" + power + "\n" + odometer
         val carPos = carsStorage.getStoredCars().indexOf(carData)
         if (carPos != carSelectPos) {

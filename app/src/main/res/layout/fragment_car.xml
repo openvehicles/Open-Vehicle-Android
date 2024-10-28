@@ -382,7 +382,22 @@
 			android:singleLine="false"
 			android:text="▴999.9 ▾99.9 kWh"
 			android:textColor="@color/colorForeground"
-			android:textSize="22px"
+			android:textSize="24px"
+			android:typeface="monospace" />
+
+		<TextView
+			android:id="@+id/tabCarTextConsumeEnergy"
+			style="@style/TabCarTextOverlay"
+			android:layout_width="232px"
+			android:layout_height="44px"
+			android:layout_x="152px"
+			android:layout_y="410px"
+			android:fontFamily="sans-serif-condensed"
+			android:gravity="center"
+			android:singleLine="false"
+			android:text="▴ 999.9kW"
+			android:textColor="@color/colorForeground"
+			android:textSize="24px"
 			android:typeface="monospace" />
 
 		<TextView
@@ -397,7 +412,7 @@
 			android:singleLine="false"
 			android:text="➟1234.5km"
 			android:textColor="@color/colorForeground"
-			android:textSize="22px"
+			android:textSize="24px"
 			android:typeface="monospace" />
 
 		<TextView

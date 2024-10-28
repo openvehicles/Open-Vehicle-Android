@@ -433,6 +433,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 menu.setHeaderTitle(R.string.lb_wakeup_car)
                 menu.add(0, MI_WAKEUP, 0, R.string.Wakeup)
+                if (carData!!.car_type == "SQ") {
+                    menu.add(0, MI_WAKEUP_2, 0, "reset Trip")
+                }
                 menu.add(R.string.Cancel)
             }
             R.id.tabCarImageHomelink, R.id.txt_homelink -> {
@@ -512,6 +515,12 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 sendCommand(R.string.msg_wakeup_car, "18", this)
                 true
             }
+            MI_WAKEUP_2 -> {
+                sendCommand(R.string.msg_wakeup_reset, "7,me set v.b.energy.recd 0", this)
+                sendCommand(R.string.msg_wakeup_reset, "7,me set v.b.energy.used 0", this)
+                sendCommand(R.string.msg_wakeup_reset, "7,me set v.p.trip 0", this)
+                true
+            }
             MI_HL_01 -> {
                 sendCommand(R.string.msg_issuing_homelink, "24,0", this)
                 true
@@ -543,7 +552,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_FW -> {
-                val options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
+                var options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
+                if(app_Car_ID.startsWith("ZORG-")) {
+                    options += "Test - Dimitrie78"
+                }
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_plugin_firmware)
@@ -557,7 +569,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             1 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
                             2 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
                             3 -> sendCommand(R.string.lb_plugin_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
-                            //else -> false
+                            4 -> sendCommand(R.string.lb_plugin_firmware_update,"7,ota flash http ovms.dimitrie.eu/firmware/ota/v3.3/test/ovms3.bin",this)
                         }
                     }
                     .show()
@@ -565,7 +577,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_HL_PLUGIN -> {
                 val plugin_inst = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_options_plugin_deinst) else getString(R.string.lb_options_plugin_inst)
-                val plugin_plugin_update = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_plugin_update) else getString(R.string.lb_plugin_update)
+                val plugin_update = getString(R.string.lb_plugin_update)
+                val plugin_script_reload = getString(R.string.lb_plugin_script_reload)
                 val plugin_1 = if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") getString(R.string.lb_plugin_1_off) else getString(R.string.lb_plugin_1_on)
                 val plugin_2 = if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") getString(R.string.lb_plugin_2_off) else getString(R.string.lb_plugin_2_on)
                 val plugin_3 = if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") getString(R.string.lb_plugin_3_off) else getString(R.string.lb_plugin_3_on)
@@ -573,7 +586,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
                 var options = arrayOf(
                     "$plugin_inst",
-                    "$plugin_plugin_update",
+                    "$plugin_update",
+                    "$plugin_script_reload",
                     "$plugin_1",
                     "$plugin_2",
                     "$plugin_3",
@@ -596,54 +610,76 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                 } else {
                                     appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "on")
                                     sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ https://ovms.dimitrie.eu/plugins/", this)
-                                    //sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ http://s418145198.online.de/plugins/", this) // for testing
                                 }
                             }
                             // plugin update
                             1 -> {
                                 sendCommand(R.string.lb_plugin_update, "7,plugin update", this)
                             }
-                            // plugin 1 xsq_v2data
+                            // script reload
                             2 -> {
+                                sendCommand(R.string.lb_plugin_update, "7,script reload", this)
+                            }
+                            // plugin 1 xsq_v2data
+                            3 -> {
                                 if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_1_" + app_Car_ID, "off")
                                     sendCommand(R.string.lb_plugin_1_off, "7,plugin disable xsq_v2data", this)
                                 } else {
-                                    appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
-                                    sendCommand(R.string.lb_plugin_1_on, "7,plugin install xsq_v2data", this)
+                                    if (appPrefs.getData("plugin_1_" + app_Car_ID) == "off") {
+                                        appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_1_on, "7,plugin enable xsq_v2data", this)
+                                    } else {
+                                        appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_1_on,"7,plugin install xsq_v2data",this)
+                                    }
                                 }
                             }
                             // plugin 2 scheduled_booster
-                            3 -> {
+                            4 -> {
                                 if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_2_" + app_Car_ID, "off")
                                     sendCommand(R.string.lb_plugin_2_off, "7,plugin disable scheduled_booster", this)
                                 } else {
-                                    appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
-                                    sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
+                                    if (appPrefs.getData("plugin_2_" + app_Car_ID) == "off") {
+                                        appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_2_on, "7,plugin enable scheduled_booster", this)
+                                    } else {
+                                        appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
+                                    }
                                 }
                             }
                             // plugin 3 gps_onoff
-                            4 -> {
+                            5 -> {
                                 if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_3_" + app_Car_ID, "off")
                                     sendCommand(R.string.lb_plugin_3_off, "7,plugin disable gps_onoff", this)
                                 } else {
-                                    appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
-                                    sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
+                                    if (appPrefs.getData("plugin_3_" + app_Car_ID) == "off") {
+                                        appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_3_on, "7,plugin enable gps_onoff", this)
+                                    } else {
+                                        appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
+                                    }
                                 }
                             }
                             // plugin 4 booster_12V
-                            5 -> {
+                            6 -> {
                                 if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") {
                                     appPrefs.saveData("plugin_4_" + app_Car_ID, "off")
                                     sendCommand(R.string.lb_plugin_4_off, "7,plugin disable booster_12V", this)
                                 } else {
-                                    appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
-                                    sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
+                                    if (appPrefs.getData("plugin_4_" + app_Car_ID) == "off") {
+                                        appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_4_on, "7,plugin enable booster_12V", this)
+                                    } else {
+                                        appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                                        sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
+                                    }
                                 }
                             }
-                            //else -> false
                         }
                     }
                     .show()
@@ -1204,7 +1240,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.stale_car_temps == DataStale.NoValue) {
                 pemtv.text = ""
             } else {
-                pemtv.text = String.format("%.1fkWh",carData.car_power)
+                pemtv.text = String.format("%.1fkWh",carData.car_inv_power_motor_kw)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     pemtv.setTextColor(-0x7f7f80)
                 } else {
@@ -1349,7 +1385,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         var ss: SpannableString
 
         // Odometer
-        st = String.format("%.1f %s", carData.car_odometer_raw / 10, carData.car_distance_units)
+        st = String.format("⏲ %.1f %s", carData.car_odometer_raw / 10, carData.car_distance_units)
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf(carData.car_distance_units), st.length, 0)
         tv = findViewById(R.id.tabCarTextOdometer) as TextView
@@ -1386,6 +1422,13 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         ss = SpannableString(st)
         ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf("kWh"), st.length, 0)
         tv = findViewById(R.id.tabCarTextEnergy) as TextView
+        tv.text = ss
+
+        // Energy consume
+        st = String.format("▴▾ %.1f kW",carData.car_power)
+        ss = SpannableString(st)
+        ss.setSpan(RelativeSizeSpan(0.67f), st.indexOf("kW"), st.length, 0)
+        tv = findViewById(R.id.tabCarTextConsumeEnergy) as TextView
         tv.text = ss
 
         // Car Hood
@@ -1784,5 +1827,6 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         private const val MI_AC_BW = Menu.FIRST + 13
         private const val MI_AC_BDS = Menu.FIRST + 14
         private const val MI_AC_BTD = Menu.FIRST + 15
+        private const val MI_WAKEUP_2 = Menu.FIRST + 16
     }
 }

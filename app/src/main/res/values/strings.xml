@@ -184,6 +184,7 @@
 
     <string name="lb_ft_sq_led_state">#%d: LED Online State</string>
     <string name="lb_ft_sq_ios_tpms_fix">#%d: iOS TPMS fix</string>
+    <string name="lb_ft_sq_reset_trip_charge">#%d: reset trip at charge</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>
@@ -247,6 +248,7 @@
     <string name="msg_connecting_service">Connecting to service&#8230;</string>
     <string name="msg_connecting_vehicle">Connecting to vehicle&#8230;</string>
     <string name="msg_wakeup_car">Waking up Car&#8230;</string>
+    <string name="msg_wakeup_reset">reset Trip&#8230;</string>
     <string name="msg_issuing_homelink">Issuing Homelink Command&#8230;</string>
     <string name="msg_setting_charge_mc">Setting Charge Mode and Current&#8230;</string>
     <string name="msg_setting_charge_m">Setting Charge Mode&#8230;</string>
@@ -692,6 +694,7 @@
     <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
     <string name="lb_plugin_ovmsmain">delete OVMSmain.js, need reboot!</string>
     <string name="lb_plugin_update">update Plugins</string>
+    <string name="lb_plugin_script_reload">script reload</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
     <string name="lb_plugin_firmware_update">update Firmware!!!</string>
     <string name="lb_plugin_1_on">Enable xsq -> standard metrics</string>

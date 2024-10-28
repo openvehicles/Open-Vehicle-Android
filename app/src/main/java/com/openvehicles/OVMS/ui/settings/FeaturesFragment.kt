@@ -211,6 +211,7 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
         // Smart EQ:
         private const val FEATURE_LED_STATE = 0x01 // LED Online State
         private const val FEATURE_IOS_TPMS_FIX = 0x02 // iOS TPMS fix
+        private const val FEATURE_RESET_TRIP_CHARGE = 0x03 // reset trip at charge
 
         // The FEATURE_CARBITS feature is a set of ON/OFF bits to control different
         // miscelaneous aspects of the system. The following bits are defined:
@@ -347,6 +348,10 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
                     )
                     FEATURE_IOS_TPMS_FIX -> return context.getString(
                         R.string.lb_ft_sq_ios_tpms_fix,
+                        position
+                    )
+                    FEATURE_RESET_TRIP_CHARGE -> return context.getString(
+                        R.string.lb_ft_sq_reset_trip_charge,
                         position
                     )
                     else -> {}
