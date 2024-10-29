@@ -43,7 +43,6 @@ import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator.addMarkers
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.utils.AppPrefs
-import java.util.Arrays
 import kotlin.math.asin
 import kotlin.math.cos
 import kotlin.math.max
@@ -234,7 +233,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.map_options, menu)
+       inflater.inflate(R.menu.map_options, menu)
         optionsMenu = menu
 
         // set checkboxes:
@@ -253,39 +252,55 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             optionsMenu.findItem(R.id.mi_map_filter_range)
                 .setVisible(false)
         }
+        val packageInfo = this.requireContext().packageManager.getPackageInfo(this.requireContext().packageName, 0)
+        val versionName = packageInfo.versionName
+        if (versionName.contains("DEV", ignoreCase = true)){
+            optionsMenu.findItem(R.id.mi_map_settings).setVisible(false)
+            appPrefs.saveData("maxresults", "250")
+            updateMap.clearCache()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         val menuId = item.itemId
         val newState = !item.isChecked
-        if (menuId == R.id.mi_map_autotrack) {
-            appPrefs.saveData("autotrack", if (newState) "on" else "off")
-            item.setChecked(newState)
-            autoTrack = newState
-            if (autoTrack) {
-                update()
+        when (menuId) {
+            R.id.mi_map_autotrack -> {
+                appPrefs.saveData("autotrack", if (newState) "on" else "off")
+                item.setChecked(newState)
+                autoTrack = newState
+                if (autoTrack) {
+                    update()
+                }
+                if (map != null && map!!.isMyLocationEnabled) {
+                    Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autoTrack)
+                    map!!.uiSettings.isMyLocationButtonEnabled = !autoTrack
+                }
+                return true
             }
-            if (map != null && map!!.isMyLocationEnabled) {
-                Log.d(TAG, "onOptionsItemSelected: MyLocation button = " + !autoTrack)
-                map!!.uiSettings.isMyLocationButtonEnabled = !autoTrack
+            R.id.mi_map_filter_range -> {
+                appPrefs.saveData("inrange", if (newState) "on" else "off")
+                item.setChecked(newState)
+                updateMapDetails(false)
+                return true
             }
-        } else if (menuId == R.id.mi_map_filter_connections) {
-            appPrefs.saveData("filter", if (newState) "on" else "off")
-            item.setChecked(newState)
-            updateMapDetails(false)
-        } else if (menuId == R.id.mi_map_filter_range) {
-            appPrefs.saveData("inrange", if (newState) "on" else "off")
-            item.setChecked(newState)
-            updateMapDetails(false)
-        } else if (menuId == R.id.mi_map_settings) {
-            show(
-                requireActivity(),
-                MapSettingsFragment::class.java,
-                Bundle(),
-                Configuration.ORIENTATION_UNDEFINED
-            )
+            R.id.mi_map_filter_connections -> {
+                appPrefs.saveData("filter", if (newState) "on" else "off")
+                item.setChecked(newState)
+                updateMapDetails(false)
+                return true
+            }
+            R.id.mi_map_settings -> {
+                show(
+                    requireActivity(),
+                    MapSettingsFragment::class.java,
+                    Bundle(),
+                    Configuration.ORIENTATION_UNDEFINED
+                )
+                return true
+            }
+            else -> return false
         }
-        return false
     }
 
     override fun updateClustering(clusterSizeIndex: Int, isEnabled: Boolean) {

@@ -62,7 +62,7 @@ class MapSettingsFragment : Fragment(), ConnectionsListener {
 
         // set maxresults spinner to current value:
         try {
-            val ocmMaxResultsValue = appPrefs.getData("maxresults")
+            val ocmMaxResultsValue = appPrefs.getData("maxresults", "100")
             val ocmMaxResultsOptions = resources.getStringArray(R.array.ocm_options_maxresults)
             var ocmMaxResultsIndex = 0
             for (i in ocmMaxResultsOptions.indices) {
@@ -101,7 +101,7 @@ class MapSettingsFragment : Fragment(), ConnectionsListener {
         maxResultsSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(adapterView: AdapterView<*>, view: View, i: Int, l: Long) {
                 val selected = adapterView.getItemAtPosition(i).toString()
-                if (appPrefs.getData("maxresults") != selected) {
+                if (appPrefs.getData("maxresults", "100") != selected) {
                     appPrefs.saveData("maxresults", "" + selected)
                     MapFragment.updateMap.clearCache()
                 }
