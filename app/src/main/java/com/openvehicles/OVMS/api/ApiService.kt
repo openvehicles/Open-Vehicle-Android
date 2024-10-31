@@ -485,11 +485,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
     override fun onPushNotification(msgClass: Char, msgText: String?) {
         // This callback only receives MP push notifications for the currently selected vehicle.
         // See MyFirebaseMessagingService for system notification broadcasting.
-        // add "DEV" like this android:versionName="4.7.1 EQ-DEV"
-        // at AndroidManifest.xml to activate the Firebase Message Service on Developer Version
-        val packageInfo = packageManager.getPackageInfo(packageName, 0)
-        val versionName = packageInfo.versionName
-        if (versionName.contains("DEV", ignoreCase = true)){
+        if(appPrefs!!.getData("option_notification_enabled_" + carData!!.sel_vehicleid,"0") == "1"){
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             createNotificationChannel()
             // Define the notification channel (required for Android O and above)

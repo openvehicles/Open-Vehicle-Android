@@ -656,11 +656,11 @@
     <string name="lb_options_service">Service:</string>
     <string name="lb_options_service_cb">Verbindung offen halten</string>
     <string name="lb_options_service_info">Die Serververbindung bleibt auch bestehen wenn die App nicht geöffnet ist.</string>
-    <string name="lb_options_broadcast">Weitergabe:</string>
-    <string name="lb_options_broadcast_cb">Daten an andere Apps weiterleiten</string>
+    <string name="lb_options_broadcast">Meldungen:</string>
+    <string name="lb_options_broadcast_cb">Verbindungen zu anderen Apps erlauben (Benachrichtigung)</string>
     <string name="lb_options_broadcast_codes">Codes eingeben</string>
     <string name="lb_options_notification">Meldungen:</string>
-    <string name="lb_options_notification_cb">Aktiviere Meldungen anzeigen</string>
+    <string name="lb_options_dev_notification_cb">Benachrichtigung bei Entwickler App aktivieren</string>
     <string name="lb_options_commands">Befehle:</string>
     <string name="lb_options_commands_cb">Fahrzeug-Kommandos freigeben</string>
     <string name="lb_options_apikey">API-Schlüssel:</string>

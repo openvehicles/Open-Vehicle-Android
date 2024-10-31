@@ -672,10 +672,10 @@
     <string name="lb_options_service_cb">Enable background connection</string>
     <string name="lb_options_service_info">Allows the server connection to stay alive when the App is not running.</string>
     <string name="lb_options_broadcast">Broadcast:</string>
-    <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps</string>
+    <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps (Notification)</string>
     <string name="lb_options_broadcast_codes">Enter code letters</string>
     <string name="lb_options_notification">Notification:</string>
-    <string name="lb_options_notification_cb">Enable show notification</string>
+    <string name="lb_options_dev_notification_cb">Enable notifications for Developer App</string>
     <string name="lb_options_commands">Commands:</string>
     <string name="lb_options_commands_cb">Enable vehicle command service</string>
     <string name="lb_options_apikey">API key:</string>

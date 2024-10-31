@@ -126,7 +126,7 @@
                 tools:ignore="DuplicateIds" />
 
             <CheckBox
-                android:text="@string/lb_options_notification_cb"
+                android:text="@string/lb_options_dev_notification_cb"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/cb_options_notification"
