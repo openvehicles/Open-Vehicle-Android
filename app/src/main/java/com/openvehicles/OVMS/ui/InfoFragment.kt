@@ -128,10 +128,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { _,
                                                           _ ->
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "off")
+                    appPrefs.saveData("booster_weekly_on_$app_Car_ID", "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
-                    if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+                    if(appPrefs.getData("booster_btd_$app_Car_ID") == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                     val tabInfoTextBoostertime =
                         findViewById(R.id.tabInfoTextBoostertime) as TextView
                     val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
@@ -154,10 +154,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 .setNegativeButton(R.string.Cancel, null)
                 .setPositiveButton(android.R.string.ok) { _,
                                                           _ ->
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "off")
+                    appPrefs.saveData("booster_weekly_on_$app_Car_ID", "off")
                     val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
-                    if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+                    if(appPrefs.getData("booster_btd_$app_Car_ID") == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                     val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
                     val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
                     tabCarImageBooster.visibility = View.INVISIBLE

@@ -446,7 +446,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 } else {
                     menu.setHeaderTitle(R.string.textHOMELINK)
                 }
-                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                if (appPrefs.getData("plugin_2_$app_Car_ID") == "on") {
                     menu.add(0, MI_HL_01, 0, R.string.mi_ac_on)
                 } else {
                     menu.add(0, MI_HL_01, 0, "1")
@@ -456,18 +456,18 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     menu.add(0, MI_HL_02, 0, "2")
                     menu.add(0, MI_HL_03, 0, "3")
                 }
-                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                if (appPrefs.getData("plugin_2_$app_Car_ID") == "on") {
                     menu.add(0, MI_HL_BTR, 0, R.string.lb_booster_ctrl_reset)
                 }
-                if(appPrefs.getData("option_firmware_enabled_" + app_Car_ID) == "1") {
+                if(appPrefs.getData("option_firmware_enabled_$app_Car_ID") == "1") {
                     menu.add(0, MI_HL_FW, 0, R.string.lb_options_firmware_update)
                 }
-                if(appPrefs.getData("option_plugin_enabled_" + app_Car_ID) == "1") {
+                if(appPrefs.getData("option_plugin_enabled_$app_Car_ID") == "1") {
                     menu.add(0, MI_HL_PLUGIN, 0, R.string.lb_options_plugin_btn)
                 }
                 /*
-                if ((carData!!.car_type == "SQ")&&(appPrefs.getData("plugin_2_" + app_Car_ID) != "on")) {
-                    if (appPrefs.getData("plugin_ovmsmain_" + app_Car_ID) != "on") {
+                if ((carData!!.car_type == "SQ")&&(appPrefs.getData("plugin_2_$app_Car_ID") != "on")) {
+                    if (appPrefs.getData("plugin_ovmsmain_$app_Car_ID") != "on") {
                         menu.add(0,MI_HL_OVMSMAIN,0,R.string.lb_plugin_ovmsmain)
                     }
                 }
@@ -476,17 +476,17 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             R.id.tabCarImageAC -> {
                 menu.setHeaderTitle(R.string.textAC)
-                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
+                if (appPrefs.getData("plugin_2_$app_Car_ID") == "on") {
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
                     // not needed/working btn for SmartEQ
                     if (carData!!.car_type != "SQ") {
                         menu.add(0, MI_AC_OFF, 0, R.string.mi_ac_off)
                     }
-                    menu.add(0, MI_AC_BON, 0, if(appPrefs.getData("booster_on_" + app_Car_ID) == "on") R.string.lb_booster_off else R.string.lb_booster_on)
+                    menu.add(0, MI_AC_BON, 0, if(appPrefs.getData("booster_on_$app_Car_ID") == "on") R.string.lb_booster_off else R.string.lb_booster_on)
                     menu.add(0, MI_AC_BT, 0, R.string.lb_booster_time)
-                    menu.add(0, MI_AC_BW, 0, if(appPrefs.getData("booster_weekly_on_" + app_Car_ID) == "on") R.string.lb_booster_weekly_off else R.string.lb_booster_weekly_on)
+                    menu.add(0, MI_AC_BW, 0, if(appPrefs.getData("booster_weekly_on_$app_Car_ID") == "on") R.string.lb_booster_weekly_off else R.string.lb_booster_weekly_on)
                     menu.add(0, MI_AC_BDS, 0, R.string.lb_booster_day_sel)
-                    menu.add(0, MI_AC_BTD, 0, if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") R.string.lb_booster_doubler_off else R.string.lb_booster_doubler_on)
+                    menu.add(0, MI_AC_BTD, 0, if(appPrefs.getData("booster_btd_$app_Car_ID") == "1") R.string.lb_booster_doubler_off else R.string.lb_booster_doubler_on)
                 } else {
                     menu.add(0, MI_AC_ON, 0, R.string.mi_ac_on)
                     // not needed/working btn for SmartEQ
@@ -505,11 +505,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabCarImageBooster = findViewById(R.id.tabCarImageBooster) as ImageView
         val tabCarImageCalendar = findViewById(R.id.tabCarImageCalendar) as ImageView
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
-        if(appPrefs.getData("booster_btd_" + app_Car_ID) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
-        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_ID)
-        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
+        if(appPrefs.getData("booster_btd_$app_Car_ID") == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_$app_Car_ID")
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
         return when (item.itemId) {
             MI_WAKEUP -> {
                 sendCommand(R.string.msg_wakeup_car, "18", this)
@@ -538,12 +538,12 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_BTR -> {
-                appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                appPrefs.saveData("booster_time_" + app_Car_ID, "05:15")
-                appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
-                appPrefs.saveData("booster_btd_" + app_Car_ID, "0")
-                appPrefs.saveData("booster_time_h_" + app_Car_ID, "5")
-                appPrefs.saveData("booster_time_m_" + app_Car_ID, "15")
+                appPrefs.saveData("booster_on_$app_Car_ID", "off")
+                appPrefs.saveData("booster_time_$app_Car_ID", "05:15")
+                appPrefs.saveData("booster_weekly_on_$app_Car_ID", "off")
+                appPrefs.saveData("booster_btd_$app_Car_ID", "0")
+                appPrefs.saveData("booster_time_h_$app_Car_ID", "5")
+                appPrefs.saveData("booster_time_m_$app_Car_ID", "15")
                 tabCarImageBooster.visibility = View.INVISIBLE
                 tabInfoTextBoostertime.visibility = View.INVISIBLE
                 tabCarImageCalendar.visibility = View.INVISIBLE
@@ -576,13 +576,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_PLUGIN -> {
-                val plugin_inst = if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") getString(R.string.lb_options_plugin_deinst) else getString(R.string.lb_options_plugin_inst)
+                val plugin_inst = if (appPrefs.getData("plugin_repo_smarteq_$app_Car_ID") == "on") getString(R.string.lb_options_plugin_deinst) else getString(R.string.lb_options_plugin_inst)
                 val plugin_update = getString(R.string.lb_plugin_update)
                 val plugin_script_reload = getString(R.string.lb_plugin_script_reload)
-                val plugin_1 = if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") getString(R.string.lb_plugin_1_off) else getString(R.string.lb_plugin_1_on)
-                val plugin_2 = if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") getString(R.string.lb_plugin_2_off) else getString(R.string.lb_plugin_2_on)
-                val plugin_3 = if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") getString(R.string.lb_plugin_3_off) else getString(R.string.lb_plugin_3_on)
-                val plugin_4 = if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") getString(R.string.lb_plugin_4_off) else getString(R.string.lb_plugin_4_on)
+                val plugin_1 = if (appPrefs.getData("plugin_1_$app_Car_ID") == "on") getString(R.string.lb_plugin_1_off) else getString(R.string.lb_plugin_1_on)
+                val plugin_2 = if (appPrefs.getData("plugin_2_$app_Car_ID") == "on") getString(R.string.lb_plugin_2_off) else getString(R.string.lb_plugin_2_on)
+                val plugin_3 = if (appPrefs.getData("plugin_3_$app_Car_ID") == "on") getString(R.string.lb_plugin_3_off) else getString(R.string.lb_plugin_3_on)
+                val plugin_4 = if (appPrefs.getData("plugin_4_$app_Car_ID") == "on") getString(R.string.lb_plugin_4_off) else getString(R.string.lb_plugin_4_on)
+                val plugin_5 = if (appPrefs.getData("plugin_5_$app_Car_ID") == "on") getString(R.string.lb_plugin_5_off) else getString(R.string.lb_plugin_5_on)
 
                 var options = arrayOf(
                     "$plugin_inst",
@@ -591,7 +592,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     "$plugin_1",
                     "$plugin_2",
                     "$plugin_3",
-                    "$plugin_4"
+                    "$plugin_4",
+                    "$plugin_5"
                 )
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
@@ -604,11 +606,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         when (checkedItem) {
                             // plugin installation SmartEQ
                             0 -> {
-                                if (appPrefs.getData("plugin_repo_smarteq_" + app_Car_ID) == "on") {
-                                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "off")
+                                if (appPrefs.getData("plugin_repo_smarteq_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_repo_smarteq_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_options_plugin_deinst, "7,plugin repo remove SmartEQ", this)
                                 } else {
-                                    appPrefs.saveData("plugin_repo_smarteq_" + app_Car_ID, "on")
+                                    appPrefs.saveData("plugin_repo_smarteq_$app_Car_ID", "on")
                                     sendCommand(R.string.lb_options_plugin_inst, "7,plugin repo install SmartEQ https://ovms.dimitrie.eu/plugins/", this)
                                 }
                             }
@@ -622,61 +624,76 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             }
                             // plugin 1 xsq_v2data
                             3 -> {
-                                if (appPrefs.getData("plugin_1_" + app_Car_ID) == "on") {
-                                    appPrefs.saveData("plugin_1_" + app_Car_ID, "off")
+                                if (appPrefs.getData("plugin_1_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_1_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_1_off, "7,plugin disable xsq_v2data", this)
                                 } else {
-                                    if (appPrefs.getData("plugin_1_" + app_Car_ID) == "off") {
-                                        appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                                    if (appPrefs.getData("plugin_1_$app_Car_ID") == "off") {
+                                        appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_1_on, "7,plugin enable xsq_v2data", this)
                                     } else {
-                                        appPrefs.saveData("plugin_1_" + app_Car_ID, "on")
+                                        appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_1_on,"7,plugin install xsq_v2data",this)
                                     }
                                 }
                             }
                             // plugin 2 scheduled_booster
                             4 -> {
-                                if (appPrefs.getData("plugin_2_" + app_Car_ID) == "on") {
-                                    appPrefs.saveData("plugin_2_" + app_Car_ID, "off")
+                                if (appPrefs.getData("plugin_2_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_2_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_2_off, "7,plugin disable scheduled_booster", this)
                                 } else {
-                                    if (appPrefs.getData("plugin_2_" + app_Car_ID) == "off") {
-                                        appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                                    if (appPrefs.getData("plugin_2_$app_Car_ID") == "off") {
+                                        appPrefs.saveData("plugin_2_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_2_on, "7,plugin enable scheduled_booster", this)
                                     } else {
-                                        appPrefs.saveData("plugin_2_" + app_Car_ID, "on")
+                                        appPrefs.saveData("plugin_2_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_2_on, "7,plugin install scheduled_booster", this)
                                     }
                                 }
                             }
                             // plugin 3 gps_onoff
                             5 -> {
-                                if (appPrefs.getData("plugin_3_" + app_Car_ID) == "on") {
-                                    appPrefs.saveData("plugin_3_" + app_Car_ID, "off")
+                                if (appPrefs.getData("plugin_3_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_3_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_3_off, "7,plugin disable gps_onoff", this)
                                 } else {
-                                    if (appPrefs.getData("plugin_3_" + app_Car_ID) == "off") {
-                                        appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                                    if (appPrefs.getData("plugin_3_$app_Car_ID") == "off") {
+                                        appPrefs.saveData("plugin_3_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_3_on, "7,plugin enable gps_onoff", this)
                                     } else {
-                                        appPrefs.saveData("plugin_3_" + app_Car_ID, "on")
+                                        appPrefs.saveData("plugin_3_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_3_on, "7,plugin install gps_onoff", this)
                                     }
                                 }
                             }
                             // plugin 4 booster_12V
                             6 -> {
-                                if (appPrefs.getData("plugin_4_" + app_Car_ID) == "on") {
-                                    appPrefs.saveData("plugin_4_" + app_Car_ID, "off")
+                                if (appPrefs.getData("plugin_4_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_4_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_4_off, "7,plugin disable booster_12V", this)
                                 } else {
-                                    if (appPrefs.getData("plugin_4_" + app_Car_ID) == "off") {
-                                        appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                                    if (appPrefs.getData("plugin_4_$app_Car_ID") == "off") {
+                                        appPrefs.saveData("plugin_4_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_4_on, "7,plugin enable booster_12V", this)
                                     } else {
-                                        appPrefs.saveData("plugin_4_" + app_Car_ID, "on")
+                                        appPrefs.saveData("plugin_4_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_4_on, "7,plugin install booster_12V", this)
+                                    }
+                                }
+                            }
+                            // plugin 5 modem_lte
+                            7 -> {
+                                if (appPrefs.getData("plugin_5_$app_Car_ID") == "on") {
+                                    appPrefs.saveData("plugin_5_$app_Car_ID", "off")
+                                    sendCommand(R.string.lb_plugin_5_off, "7,plugin disable modem_lte", this)
+                                } else {
+                                    if (appPrefs.getData("plugin_5_$app_Car_ID") == "off") {
+                                        appPrefs.saveData("plugin_5_$app_Car_ID", "on")
+                                        sendCommand(R.string.lb_plugin_5_on, "7,plugin enable modem_lte", this)
+                                    } else {
+                                        appPrefs.saveData("plugin_5_$app_Car_ID", "on")
+                                        sendCommand(R.string.lb_plugin_5_on, "7,plugin install modem_lte", this)
                                     }
                                 }
                             }
@@ -686,7 +703,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_OVMSMAIN -> {
-                appPrefs.saveData("plugin_ovmsmain_" + app_Car_ID, "on")
+                appPrefs.saveData("plugin_ovmsmain_$app_Car_ID", "on")
                 sendCommand(R.string.lb_plugin_ovmsmain,"7,vfs rm /store/scripts/ovmsmain.js",this)
                 sendCommand(R.string.lb_plugin_ovmsmain, "7,config rm usr *", this)
                 sendCommand(R.string.lb_plugin_ovmsmain, "7,script reload", this)
@@ -701,22 +718,22 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BON -> {
-                val state = appPrefs.getData("booster_on_" + app_Car_ID)
+                val state = appPrefs.getData("booster_on_$app_Car_ID")
                 val newState = if (state == "on") "off" else "on"
                 tabCarImageBooster.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
                 tabInfoTextBoostertime.visibility = if (newState == "on") View.VISIBLE else View.INVISIBLE
-                appPrefs.saveData("booster_on_" + app_Car_ID, newState)
+                appPrefs.saveData("booster_on_$app_Car_ID", newState)
                 if (newState == "off") {
                     tabCarImageCalendar.visibility = View.INVISIBLE
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "off")
+                    appPrefs.saveData("booster_weekly_on_$app_Car_ID", "off")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,2,2,0,-1,-1,-1",
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "on")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "on")
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
                         "7,config set usr b.data 1,1,0,0,-1,-1,-1",
@@ -734,11 +751,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 val booster_h = dialogView.findViewById<View>(R.id.booster_time_hour) as SlideNumericView?
                 val booster_m = dialogView.findViewById<View>(R.id.booster_time_min) as SlideNumericView?
                 val booster_sel = dialogView.findViewById<View>(R.id.booster_SwitcherView) as SwitcherView?
-                if(appPrefs.getData("booster_time_h_" + app_Car_ID) != "") {
-                    booster_h!!.value = appPrefs.getData("booster_time_h_" + app_Car_ID).toInt()
-                    booster_m!!.value = appPrefs.getData("booster_time_m_" + app_Car_ID).toInt()
+                if(appPrefs.getData("booster_time_h_$app_Car_ID") != "") {
+                    booster_h!!.value = appPrefs.getData("booster_time_h_$app_Car_ID").toInt()
+                    booster_m!!.value = appPrefs.getData("booster_time_m_$app_Car_ID").toInt()
                 }
-                if(appPrefs.getData("booster_btd_" + app_Car_ID) != "") booster_sel!!.selected = appPrefs.getData("booster_btd_" + app_Car_ID).toInt()
+                if(appPrefs.getData("booster_btd_$app_Car_ID") != "") booster_sel!!.selected = appPrefs.getData("booster_btd_$app_Car_ID").toInt()
 
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_booster_time)
@@ -747,7 +764,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setPositiveButton(
                         R.string.Set
                     ) { dlg, _ ->
-                        appPrefs.saveData("booster_on_" + app_Car_ID, "on")
+                        appPrefs.saveData("booster_on_$app_Car_ID", "on")
                         tabCarImageBooster.visibility = View.VISIBLE
                         tabInfoTextBoostertime.visibility = View.VISIBLE
                         val appCompatDialog = dlg as AppCompatDialog
@@ -762,10 +779,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         val booster_btd = booster_sel!!.selected
                         val time = "$booster_h:$booster_m"
                         val cmd = "7,config set usr b.data 1,1,0,$booster_h$booster_m,-1,-1,$booster_btd"
-                        appPrefs.saveData("booster_time_" + app_Car_ID, time)
-                        appPrefs.saveData("booster_time_h_" + app_Car_ID, "$booster_h")
-                        appPrefs.saveData("booster_time_m_" + app_Car_ID, "$booster_m")
-                        appPrefs.saveData("booster_btd_" + app_Car_ID, "$booster_btd")
+                        appPrefs.saveData("booster_time_$app_Car_ID", time)
+                        appPrefs.saveData("booster_time_h_$app_Car_ID", "$booster_h")
+                        appPrefs.saveData("booster_time_m_$app_Car_ID", "$booster_m")
+                        appPrefs.saveData("booster_btd_$app_Car_ID", "$booster_btd")
                         tabInfoTextBoostertime.text = time
                         if("$booster_btd" == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                         sendCommand(
@@ -776,11 +793,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BW -> {
-                val state_weekly = appPrefs.getData("booster_weekly_on_" + app_Car_ID)
+                val state_weekly = appPrefs.getData("booster_weekly_on_$app_Car_ID")
                 val newState = if (state_weekly == "on") "off" else "on"
                 if (newState == "off") {
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "off")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "off")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "off")
+                    appPrefs.saveData("booster_weekly_on_$app_Car_ID", "off")
                     tabCarImageBooster.visibility = View.INVISIBLE
                     tabInfoTextBoostertime.visibility = View.INVISIBLE
                     tabCarImageCalendar.visibility = View.INVISIBLE
@@ -790,8 +807,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_on_" + app_Car_ID, "on")
-                    appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "on")
+                    appPrefs.saveData("booster_on_$app_Car_ID", "on")
+                    appPrefs.saveData("booster_weekly_on_$app_Car_ID", "on")
                     tabCarImageBooster.visibility = View.VISIBLE
                     tabInfoTextBoostertime.visibility = View.VISIBLE
                     tabCarImageCalendar.visibility = View.VISIBLE
@@ -811,8 +828,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
                 val booster_sel_s = dialogView.findViewById<View>(R.id.booster_DayViewStart) as SwitcherView?
                 val booster_sel_e = dialogView.findViewById<View>(R.id.booster_DayViewEnd) as SwitcherView?
-                if(appPrefs.getData("booster_day_start_" + app_Car_ID) != "") booster_sel_s!!.selected = appPrefs.getData("booster_day_start_" + app_Car_ID).toInt()
-                if(appPrefs.getData("booster_day_end_" + app_Car_ID) != "") booster_sel_e!!.selected = appPrefs.getData("booster_day_end_" + app_Car_ID).toInt()
+                if(appPrefs.getData("booster_day_start_$app_Car_ID") != "") booster_sel_s!!.selected = appPrefs.getData("booster_day_start_$app_Car_ID").toInt()
+                if(appPrefs.getData("booster_day_end_$app_Car_ID") != "") booster_sel_e!!.selected = appPrefs.getData("booster_day_end_$app_Car_ID").toInt()
 
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_booster_day_sel)
@@ -821,8 +838,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setPositiveButton(
                         R.string.Set
                     ) { dlg, _ ->
-                        appPrefs.saveData("booster_on_" + app_Car_ID, "on")
-                        appPrefs.saveData("booster_weekly_on_" + app_Car_ID, "on")
+                        appPrefs.saveData("booster_on_$app_Car_ID", "on")
+                        appPrefs.saveData("booster_weekly_on_$app_Car_ID", "on")
                         tabCarImageBooster.visibility = View.VISIBLE
                         tabInfoTextBoostertime.visibility = View.VISIBLE
                         tabCarImageCalendar.visibility = View.VISIBLE
@@ -834,8 +851,8 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         val booster_start = booster_sel_s!!.selected
                         val booster_end = booster_sel_e!!.selected
                         val cmd = "7,config set usr b.data 1,1,1,0,$booster_start,$booster_end,-1"
-                        appPrefs.saveData("booster_day_start_" + app_Car_ID, "$booster_start")
-                        appPrefs.saveData("booster_day_end_" + app_Car_ID, "$booster_end")
+                        appPrefs.saveData("booster_day_start_$app_Car_ID", "$booster_start")
+                        appPrefs.saveData("booster_day_end_$app_Car_ID", "$booster_end")
                         sendCommand(
                             R.string.msg_issuing_climatecontrol, cmd,
                             this@CarFragment)
@@ -844,10 +861,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_AC_BTD -> {
-                val state = appPrefs.getData("booster_btd_" + app_Car_ID)
+                val state = appPrefs.getData("booster_btd_$app_Car_ID")
                 val newState = if (state == "1") "0" else "1"
                 if (newState == "0") {
-                    appPrefs.saveData("booster_btd_" + app_Car_ID, "0")
+                    appPrefs.saveData("booster_btd_$app_Car_ID", "0")
                     tabCarImageBooster.setImageResource(R.drawable.heat_cool)
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
@@ -855,7 +872,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                         this
                     )
                 } else {
-                    appPrefs.saveData("booster_btd_" + app_Car_ID, "1")
+                    appPrefs.saveData("booster_btd_$app_Car_ID", "1")
                     tabCarImageBooster.setImageResource(R.drawable.heat_cool_2)
                     sendCommand(
                         R.string.msg_issuing_climatecontrol,
@@ -1299,10 +1316,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabInfoTextBoostertime = findViewById(R.id.tabInfoTextBoostertime) as TextView
         val app_Car_ID = carData.sel_vehicleid
         if(appPrefs.getData("booster_btd_" + carData.sel_vehicleid) == "1") tabCarImageBooster.setImageResource(R.drawable.heat_cool_2) else tabCarImageBooster.setImageResource(R.drawable.heat_cool)
-        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
-        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_" + app_Car_ID)
-        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_" + app_Car_ID) == "on") View.VISIBLE else View.INVISIBLE
+        tabCarImageBooster.visibility = if (appPrefs.getData("booster_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.visibility = if (appPrefs.getData("booster_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
+        tabInfoTextBoostertime.text = appPrefs.getData("booster_time_$app_Car_ID")
+        tabCarImageCalendar.visibility = if (appPrefs.getData("booster_weekly_on_$app_Car_ID") == "on") View.VISIBLE else View.INVISIBLE
 
 
         // "SoC" box:

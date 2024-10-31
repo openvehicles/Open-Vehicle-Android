@@ -672,10 +672,10 @@
     <string name="lb_options_service_cb">Enable background connection</string>
     <string name="lb_options_service_info">Allows the server connection to stay alive when the App is not running.</string>
     <string name="lb_options_broadcast">Broadcast:</string>
-    <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps (Notification)</string>
+    <string name="lb_options_broadcast_cb">Enable data broadcasts to other Apps (e.g. Notification)</string>
     <string name="lb_options_broadcast_codes">Enter code letters</string>
     <string name="lb_options_notification">Notification:</string>
-    <string name="lb_options_dev_notification_cb">Enable notifications for Developer App</string>
+    <string name="lb_options_dev_notification_cb">Enable notifications for Developer App Version</string>
     <string name="lb_options_commands">Commands:</string>
     <string name="lb_options_commands_cb">Enable vehicle command service</string>
     <string name="lb_options_apikey">API key:</string>
@@ -705,6 +705,8 @@
     <string name="lb_plugin_3_off">Disable GPS on/off at Parking</string>
     <string name="lb_plugin_4_on">Enable check and Charge 12V</string>
     <string name="lb_plugin_4_off">Disable check and Charge 12V</string>
+    <string name="lb_plugin_5_on">Enable modem LTE check</string>
+    <string name="lb_plugin_5_off">Disable modem LTE check</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Update broadcasting allows to send car data updates to other Apps like Automagic or Tasker
          for the message codes given.</p>

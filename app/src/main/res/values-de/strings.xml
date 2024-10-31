@@ -47,8 +47,8 @@
     <string name="Homelink">Homelink</string>
     <string name="Profile">Profil</string>
     <string name="Default">Standard</string>
-    <string name="Wakeup">Aufwachen</string>
-    <string name="Add">Hinzufügen</string>
+    <string name="Wakeup">aufwecken</string>
+    <string name="Add">hinzufügen</string>
     <string name="execute">ausführen</string>
     <string name="update">updaten</string>
     <string name="Battery">Batterie</string>
@@ -656,11 +656,11 @@
     <string name="lb_options_service">Service:</string>
     <string name="lb_options_service_cb">Verbindung offen halten</string>
     <string name="lb_options_service_info">Die Serververbindung bleibt auch bestehen wenn die App nicht geöffnet ist.</string>
-    <string name="lb_options_broadcast">Meldungen:</string>
-    <string name="lb_options_broadcast_cb">Verbindungen zu anderen Apps erlauben (Benachrichtigung)</string>
+    <string name="lb_options_broadcast">Broadcast:</string>
+    <string name="lb_options_broadcast_cb">Verbindungen zu anderen Apps erlauben (z.B. Benachrichtigung)</string>
     <string name="lb_options_broadcast_codes">Codes eingeben</string>
     <string name="lb_options_notification">Meldungen:</string>
-    <string name="lb_options_dev_notification_cb">Benachrichtigung bei Entwickler App aktivieren</string>
+    <string name="lb_options_dev_notification_cb">aktiviere Benachrichtigungen für\nEntwickler Version</string>
     <string name="lb_options_commands">Befehle:</string>
     <string name="lb_options_commands_cb">Fahrzeug-Kommandos freigeben</string>
     <string name="lb_options_apikey">API-Schlüssel:</string>
@@ -676,14 +676,16 @@
     <string name="lb_plugin_update">Plugins updaten</string>
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_plugin_firmware_update">Firmware updaten!!!</string>
-    <string name="lb_plugin_1_on">Aktiviere xsq -> Standard metrics</string>
-    <string name="lb_plugin_1_off">Deaktiviere xsq -> Standard metrics</string>
-    <string name="lb_plugin_2_on">Aktiviere Zeitgesteuert boostern</string>
-    <string name="lb_plugin_2_off">Deaktiviere Zeitgesteuert boostern</string>
-    <string name="lb_plugin_3_on">Aktiviere GPS beim Parken aus</string>
-    <string name="lb_plugin_3_off">Deaktiviere GPS beim Parken aus</string>
-    <string name="lb_plugin_4_on">Aktiviere 12V bei bedarf laden</string>
-    <string name="lb_plugin_4_off">Deaktiviere 12V laden</string>
+    <string name="lb_plugin_1_on">aktiviere xsq -> Standard metrics</string>
+    <string name="lb_plugin_1_off">deaktiviere xsq -> Standard metrics</string>
+    <string name="lb_plugin_2_on">aktiviere Zeitgesteuert boostern</string>
+    <string name="lb_plugin_2_off">deaktiviere Zeitgesteuert boostern</string>
+    <string name="lb_plugin_3_on">aktiviere GPS beim Parken aus</string>
+    <string name="lb_plugin_3_off">deaktiviere GPS beim Parken aus</string>
+    <string name="lb_plugin_4_on">aktiviere 12V bei bedarf laden</string>
+    <string name="lb_plugin_4_off">deaktiviere 12V laden</string>
+    <string name="lb_plugin_5_on">aktiviere modem LTE check</string>
+    <string name="lb_plugin_5_off">deaktiviere modem LTE check</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Die Fahrzeug-Statusdaten sowie Nachrichteninhalte werden für die angegebenen Nachrichten-Codes
          an andere Apps wie Automagic oder Tasker weitergeleitet.</p>
