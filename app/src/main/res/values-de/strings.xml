@@ -669,29 +669,31 @@
     <string name="lb_options_plugin">Plugin</string>
     <string name="lb_options_plugin_on">Plugin Menü aktivieren</string>
     <string name="lb_options_plugin_off">Plugin Menü deaktivieren</string>
-    <string name="lb_options_plugin_btn">Plugin Menü</string>
     <string name="lb_options_plugin_inst">installiere Smart EQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstalliere Smart EQ Repo</string>
-    <string name="lb_plugin_ovmsmain">lösche OVMSmain.js, neu starten!</string>
     <string name="lb_plugin_update">Plugins updaten</string>
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_plugin_firmware_update">Firmware updaten!!!</string>
-    <string name="lb_plugin_1_on">aktiviere xsq -> Standard metrics</string>
-    <string name="lb_plugin_1_off">deaktiviere xsq -> Standard metrics</string>
-    <string name="lb_plugin_2_on">aktiviere Zeitgesteuert boostern</string>
-    <string name="lb_plugin_2_off">deaktiviere Zeitgesteuert boostern</string>
-    <string name="lb_plugin_3_on">aktiviere GPS beim Parken aus</string>
-    <string name="lb_plugin_3_off">deaktiviere GPS beim Parken aus</string>
-    <string name="lb_plugin_4_on">aktiviere 12V bei bedarf laden</string>
-    <string name="lb_plugin_4_off">deaktiviere 12V laden</string>
-    <string name="lb_plugin_5_on">aktiviere modem LTE check</string>
-    <string name="lb_plugin_5_off">deaktiviere modem LTE check</string>
+    <string name="lb_options_fwpl_info">aktiviert Plugin und Firmware option im Homelink menu</string>
+    <string name="lb_plugin_eq_1_on">aktiviere xsq -> Standard metrics</string>
+    <string name="lb_plugin_eq_1_off">deaktiviere xsq -> Standard metrics</string>
+    <string name="lb_plugin_eq_2_on">aktiviere Zeitgesteuert boostern</string>
+    <string name="lb_plugin_eq_2_off">deaktiviere Zeitgesteuert boostern</string>
+    <string name="lb_plugin_eq_3_on">aktiviere GPS beim Parken aus</string>
+    <string name="lb_plugin_eq_3_off">deaktiviere GPS beim Parken aus</string>
+    <string name="lb_plugin_eq_4_on">aktiviere 12V bei bedarf laden</string>
+    <string name="lb_plugin_eq_4_off">deaktiviere 12V laden</string>
+    <string name="lb_plugin_eq_5_on">aktiviere modem LTE check</string>
+    <string name="lb_plugin_eq_5_off">deaktiviere modem LTE check</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Die Fahrzeug-Statusdaten sowie Nachrichteninhalte werden für die angegebenen Nachrichten-Codes
          an andere Apps wie Automagic oder Tasker weitergeleitet.</p>
+        <p>Entwickler Versionen die nicht mit dem passender Signatur oder Firebase Schüssel versehen sind, bekommen keine Statusmeldungen. Dafür ist dieser Workaround notwendig.</p>
         <p>Die Befehlsfreigabe erlaubt Apps zusätzlich, Befehle an registrierte Fahrzeuge zu senden,
          dazu benötigt die jeweilige App die Fahrzeugkennung und das Passwort oder den API-Schlüssel.
          Hinweis: alle Kommando-Rückgaben werden an alle Apps weitergeleitet.</p>
+        <p>OVMS/SmartEQ Plugin per App installieren via Homelink Menü, viele dieser Plugins funktionieren auch mit anderen Fahrzeugen.</p>
+        <p>Firmware per App installieren via Homelink Menü</p>
         <p>Der API-Schlüssel ist die lokale Autorisation für Kommandoausführung unabhängig vom aktuell
          gewählten Fahrzeug. Das Verwerfen des Schlüssels entzieht allen installierten oder angepinnten
          Kommandos die Ausführungserlaubnis.</p>

@@ -44,7 +44,8 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     private var broadcastCodes: String? = null
     private var commandsEnabled = false
     private var notificationEnabled = false
-    private var pluginEnabled = false
+    private var pluginOVMS= false
+    private var pluginEQ = false
     private var firmwareEnabled = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -58,8 +59,9 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         broadcastCodes = appPrefs!!.getData("option_broadcast_codes", DEFAULT_BROADCAST_CODES)
         commandsEnabled = appPrefs!!.getData("option_commands_enabled", "0") == "1"
         notificationEnabled = appPrefs!!.getData("option_notification_enabled_$app_Car_ID", "0") == "1"
-        pluginEnabled = appPrefs!!.getData("option_plugin_enabled_"  + app_Car_ID, "0") == "1"
-        firmwareEnabled = appPrefs!!.getData("option_firmware_enabled_"  + app_Car_ID, "0") == "1"
+        pluginOVMS = appPrefs!!.getData("option_plugin_ovms_$app_Car_ID", "0") == "1"
+        pluginEQ = appPrefs!!.getData("option_plugin_eq_$app_Car_ID", "0") == "1"
+        firmwareEnabled = appPrefs!!.getData("option_firmware_enabled_$app_Car_ID", "0") == "1"
         var checkBox: CheckBox = findViewById(R.id.cb_options_service) as CheckBox
         checkBox.setChecked(serviceEnabled)
         checkBox.setOnClickListener(this)
@@ -79,8 +81,11 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         checkBox = findViewById(R.id.cb_options_notification) as CheckBox
         checkBox.setChecked(notificationEnabled)
         checkBox.setOnClickListener(this)
-        checkBox = findViewById(R.id.cb_options_plugin) as CheckBox
-        checkBox.setChecked(pluginEnabled)
+        checkBox = findViewById(R.id.cb_options_plugin_ovms) as CheckBox
+        checkBox.setChecked(pluginOVMS)
+        checkBox.setOnClickListener(this)
+        checkBox = findViewById(R.id.cb_options_plugin_eq) as CheckBox
+        checkBox.setChecked(pluginEQ)
         checkBox.setOnClickListener(this)
         checkBox = findViewById(R.id.cb_options_firmware) as CheckBox
         checkBox.setChecked(firmwareEnabled)
@@ -131,9 +136,13 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
                 commandsEnabled = (v as CheckBox).isChecked
                 appPrefs!!.saveData("option_commands_enabled", if (commandsEnabled) "1" else "0")
             }
-            R.id.cb_options_plugin -> {
-                pluginEnabled = (v as CheckBox).isChecked
-                appPrefs!!.saveData("option_plugin_enabled_$app_Car_ID", if (pluginEnabled) "1" else "0")
+            R.id.cb_options_plugin_ovms -> {
+                pluginOVMS = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_plugin_ovms_$app_Car_ID", if (pluginOVMS) "1" else "0")
+            }
+            R.id.cb_options_plugin_eq -> {
+                pluginEQ = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_plugin_eq_$app_Car_ID", if (pluginEQ) "1" else "0")
             }
             R.id.cb_options_firmware -> {
                 firmwareEnabled = (v as CheckBox).isChecked

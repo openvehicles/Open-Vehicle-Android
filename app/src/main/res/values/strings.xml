@@ -683,36 +683,49 @@
     <string name="lb_options_apikey_renew_confirm">Really revoke &amp; renew the API key, invalidating all pinned commands?</string>
     <string name="lb_options_plugin">Plugin</string>
     <string name="lb_options_firmware">Firmware</string>
-    <string name="lb_options_firmware_menu">Firmware Update -> Homelink</string>
     <string name="lb_options_firmware_update">Firmware Update</string>
+    <string name="lb_options_fwpl_info">activate plugin and firmware option at Homelink menu</string>
     <string name="lb_options_firmware_on">Enable Firmware Update</string>
     <string name="lb_options_firmware_off">Disable Firmware Update</string>
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
-    <string name="lb_options_plugin_btn">Plugin Menu</string>
+    <string name="lb_options_plugin_eq">SmartEQ plugin</string>
+    <string name="lb_options_plugin_ovms">OVMS plugin</string>
     <string name="lb_options_plugin_inst">install SmartEQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
-    <string name="lb_plugin_ovmsmain">delete OVMSmain.js, need reboot!</string>
     <string name="lb_plugin_update">update Plugins</string>
     <string name="lb_plugin_script_reload">script reload</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
     <string name="lb_plugin_firmware_update">update Firmware!!!</string>
-    <string name="lb_plugin_1_on">Enable xsq -> standard metrics</string>
-    <string name="lb_plugin_1_off">Disable xsq -> standard metrics</string>
-    <string name="lb_plugin_2_on">Enable scheduled booster</string>
-    <string name="lb_plugin_2_off">Disable scheduled booster</string>
-    <string name="lb_plugin_3_on">Enable GPS on/off at Parking</string>
-    <string name="lb_plugin_3_off">Disable GPS on/off at Parking</string>
-    <string name="lb_plugin_4_on">Enable check and Charge 12V</string>
-    <string name="lb_plugin_4_off">Disable check and Charge 12V</string>
-    <string name="lb_plugin_5_on">Enable modem LTE check</string>
-    <string name="lb_plugin_5_off">Disable modem LTE check</string>
+    <string name="lb_plugin_eq_1_on">Enable xsq -> standard metrics</string>
+    <string name="lb_plugin_eq_1_off">Disable xsq -> standard metrics</string>
+    <string name="lb_plugin_eq_2_on">Enable scheduled booster</string>
+    <string name="lb_plugin_eq_2_off">Disable scheduled booster</string>
+    <string name="lb_plugin_eq_3_on">Enable GPS on/off at Parking</string>
+    <string name="lb_plugin_eq_3_off">Disable GPS on/off at Parking</string>
+    <string name="lb_plugin_eq_4_on">Enable check and Charge 12V</string>
+    <string name="lb_plugin_eq_4_off">Disable check and Charge 12V</string>
+    <string name="lb_plugin_eq_5_on">Enable modem LTE check</string>
+    <string name="lb_plugin_eq_5_off">Disable modem LTE check</string>
+    <string name="lb_plugin_ovms_1_on">Enable auxbatmon</string>
+    <string name="lb_plugin_ovms_1_off">Disable auxbatmon</string>
+    <string name="lb_plugin_ovms_2_on">Enable pwrmon</string>
+    <string name="lb_plugin_ovms_2_off">Disable pwrmon</string>
+    <string name="lb_plugin_ovms_3_on">Enable regenmon</string>
+    <string name="lb_plugin_ovms_3_off">Disable regenmon</string>
+    <string name="lb_plugin_ovms_4_on">Enable repidscan</string>
+    <string name="lb_plugin_ovms_4_off">Disable repidscan</string>
+    <string name="lb_plugin_ovms_5_on">Enable retools</string>
+    <string name="lb_plugin_ovms_5_off">Disable retools</string>
     <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
         <p>Update broadcasting allows to send car data updates to other Apps like Automagic or Tasker
          for the message codes given.</p>
+        <p>Developer versions that do not have the appropriate signature or Firebase key do not receive status messages. This workaround is necessary for this.</p>
         <p>The command service allows Apps to issue vehicle commands and receive command results. To
          issue commands, the sending App needs to know the vehicle ID and password or the API key.
          Note: all Apps will receive all command results.</p>
+        <p>Install OVMS/SmartEQ plugin via app via Homelink menu, many of these plugins also work with other vehicles.</p>
+        <p>Install firmware via app via Homelink menu</p>
         <p>The API key is your local command authorization allowing commands independent of the currently
          selected vehicle. Renewing the API key will invalidate all installed or pinned command shortcuts.
          Use this to revoke all stored command authorizations in other Apps at once.</p>

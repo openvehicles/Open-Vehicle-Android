@@ -168,10 +168,18 @@
                 android:layout_gravity="center_vertical"/>
 
             <CheckBox
-                android:text="@string/lb_options_plugin_on"
+                android:text="@string/lb_options_plugin_ovms"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/cb_options_plugin"
+                android:id="@+id/cb_options_plugin_ovms"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+            <CheckBox
+                android:text="@string/lb_options_plugin_eq"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_plugin_eq"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
         </TableRow>
@@ -188,12 +196,31 @@
                 android:layout_gravity="center_vertical"/>
 
             <CheckBox
-                android:text="@string/lb_options_firmware_menu"
+                android:text="@string/lb_options_firmware_update"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/cb_options_firmware"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="4dp"
+            >
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:text="@string/lb_options_fwpl_info"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewPlugin"
+                android:textSize="10sp"
+                android:layout_weight="1"
+                android:paddingLeft="8dp"/>
         </TableRow>
 
         <TableRow
