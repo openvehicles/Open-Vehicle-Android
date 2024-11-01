@@ -692,7 +692,7 @@
         <p>Die Befehlsfreigabe erlaubt Apps zusätzlich, Befehle an registrierte Fahrzeuge zu senden,
          dazu benötigt die jeweilige App die Fahrzeugkennung und das Passwort oder den API-Schlüssel.
          Hinweis: alle Kommando-Rückgaben werden an alle Apps weitergeleitet.</p>
-        <p>OVMS/SmartEQ Plugin per App installieren via Homelink Menü, viele dieser Plugins funktionieren auch mit anderen Fahrzeugen.</p>
+        <p>OVMS/SmartEQ Plugin per App installieren via Homelink Menü, viele dieser Plugins funktionieren auch mit anderen Fahrzeugen. Hier gibt es nähere Informationen zu <a href="https://docs.openvehicles.com/en/latest/plugin/README.html">OVMS plugins</a> und <a href="https://www.smart-emotion.de/forum/board/79-ovms">SmartEQ plugins</a></p>
         <p>Firmware per App installieren via Homelink Menü</p>
         <p>Der API-Schlüssel ist die lokale Autorisation für Kommandoausführung unabhängig vom aktuell
          gewählten Fahrzeug. Das Verwerfen des Schlüssels entzieht allen installierten oder angepinnten
