@@ -689,14 +689,14 @@
     <string name="lb_options_firmware_off">Disable Firmware Update</string>
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
-    <string name="lb_options_plugin_eq">SmartEQ plugins</string>
+    <string name="lb_options_plugin_eq">smartEQ plugins</string>
     <string name="lb_options_plugin_ovms">OVMS plugins</string>
-    <string name="lb_options_plugin_inst">install SmartEQ Repo</string>
-    <string name="lb_options_plugin_deinst">deinstall SmartEQ Repo, need reboot!</string>
+    <string name="lb_options_plugin_inst">install smartEQ Repo</string>
+    <string name="lb_options_plugin_deinst">deinstall smartEQ Repo, need reboot!</string>
     <string name="lb_plugin_update">update Plugins</string>
     <string name="lb_plugin_script_reload">script reload</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
-    <string name="lb_plugin_firmware_update">update Firmware!!!</string>
+    <string name="lb_firmware_update">update Firmware!!!</string>
     <string name="lb_plugin_eq_1_on">Enable xsq -> standard metrics</string>
     <string name="lb_plugin_eq_1_off">Disable xsq -> standard metrics</string>
     <string name="lb_plugin_eq_2_on">Enable scheduled booster</string>
@@ -724,7 +724,7 @@
         <p>The command service allows Apps to issue vehicle commands and receive command results. To
          issue commands, the sending App needs to know the vehicle ID and password or the API key.
          Note: all Apps will receive all command results.</p>
-        <p>Install OVMS/SmartEQ plugin via app via Homelink menu, many of these plugins also work with other vehicles. Please read the <a href="https://docs.openvehicles.com/en/latest/plugin/README.html">OVMS plugins</a> and <a href="https://www.smart-emotion.de/forum/board/79-ovms">SmartEQ plugins</a>
+        <p>Install OVMS/smartEQ plugin via app via Homelink menu, many of these plugins also work with other vehicles. Please read the <a href="https://docs.openvehicles.com/en/latest/plugin/README.html">OVMS plugins</a> and <a href="https://www.smart-emotion.de/forum/board/79-ovms">smartEQ plugins</a>
          for details.</p>
         <p>Install firmware via app via Homelink menu</p>
         <p>The API key is your local command authorization allowing commands independent of the currently
