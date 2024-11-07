@@ -61,10 +61,16 @@ class CarInfoFragment : BaseFragment() {
             rootView,
             R.id.txt_cac,
             if (carData!!.car_CAC_percent > 0) String.format(
-                "%.2f Ah = %.1f%%",
+                "%.0f Ah = %.1f%%",
                 carData!!.car_CAC,
                 carData!!.car_CAC_percent
-            ) else String.format("%.2f Ah", carData!!.car_CAC)
+            ) else if (carData!!.car_type == "SQ") String.format(
+                "%.0f Ah  %.0f%%  (%.0f%%  %.1fkWh)",
+                carData!!.car_CAC,
+                carData!!.car_soh,
+                carData!!.car_soc_raw,
+                carData!!.car_inv_power_motor_kw
+            ) else String.format("%.0f Ah", carData!!.car_CAC)
         )
         setValue(rootView, R.id.txt_soh, String.format("%.1f%%", carData!!.car_soh))
         setValue(

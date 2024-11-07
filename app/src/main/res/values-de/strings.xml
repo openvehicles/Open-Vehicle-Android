@@ -687,7 +687,7 @@
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_firmware_update">Firmware updaten!!!</string>
     <string name="lb_options_fwpl_info">aktiviert Plugin und Firmware option im Homelink menu</string>
-    <string name="lb_plugin_eq_1_on">aktiviere xsq -> Standard metrics</string>
+    <string name="lb_plugin_eq_1_on">aktiviere xsq Deaktivierungsoption</string>
     <string name="lb_plugin_eq_1_off">deaktiviere xsq -> Standard metrics</string>
     <string name="lb_plugin_eq_2_on">aktiviere Zeitgesteuert boostern</string>
     <string name="lb_plugin_eq_2_off">deaktiviere Zeitgesteuert boostern</string>

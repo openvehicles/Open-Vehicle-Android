@@ -709,7 +709,7 @@
     <string name="lb_plugin_script_reload">script reload</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
     <string name="lb_firmware_update">update Firmware!!!</string>
-    <string name="lb_plugin_eq_1_on">Enable xsq -> standard metrics</string>
+    <string name="lb_plugin_eq_1_on">Enable xsq disable option</string>
     <string name="lb_plugin_eq_1_off">Disable xsq -> standard metrics</string>
     <string name="lb_plugin_eq_2_on">Enable scheduled booster</string>
     <string name="lb_plugin_eq_2_off">Disable scheduled booster</string>

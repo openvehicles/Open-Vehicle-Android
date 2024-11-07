@@ -650,7 +650,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             MI_HL_FW -> {
                 var options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
                 if(app_Car_ID.startsWith("ZORG-")) {
-                    options += "Test Version"
+                    options += "Test Version - ZorG"
                 }
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
@@ -839,13 +839,15 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     appPrefs.saveData("plugin_1_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_eq_1_off, "7,plugin disable xsq_v2data", this)
                                 } else {
+                                    appPrefs.saveData("plugin_1_$app_Car_ID", "on")
+                                    /* disable plugin 1 activation it will replaced // to do
                                     if (appPrefs.getData("plugin_1_$app_Car_ID") == "off") {
                                         appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_eq_1_on, "7,plugin enable xsq_v2data", this)
                                     } else {
                                         appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                         sendCommand(R.string.lb_plugin_eq_1_on,"7,plugin install xsq_v2data",this)
-                                    }
+                                    }*/
                                 }
                             }
                             // plugin 2 scheduled_booster
