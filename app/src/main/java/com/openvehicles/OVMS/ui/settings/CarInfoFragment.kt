@@ -65,9 +65,8 @@ class CarInfoFragment : BaseFragment() {
                 carData!!.car_CAC,
                 carData!!.car_CAC_percent
             ) else if (carData!!.car_type == "SQ") String.format(
-                "%.0f Ah  %.0f%%  (%.0f%%  %.1fkWh)",
+                "%.0f Ah   SoC: %.0f%%  %.1fkWh",
                 carData!!.car_CAC,
-                carData!!.car_soh,
                 carData!!.car_soc_raw,
                 carData!!.car_inv_power_motor_kw
             ) else String.format("%.0f Ah", carData!!.car_CAC)
