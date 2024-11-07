@@ -334,6 +334,18 @@
     <string name="fr_tpms">VR</string>
     <string name="rl_tpms">HL</string>
     <string name="rr_tpms">HR</string>
+    <string name="fl_get_tpms">setze VL Wert von:</string>
+    <string name="fr_get_tpms">setze VR Wert von:</string>
+    <string name="rl_get_tpms">setze HL Wert von:</string>
+    <string name="rr_get_tpms">setze HR Wert von:</string>
+    <string name="fl_set_tpms">setze VL Wert</string>
+    <string name="fr_set_tpms">setze VR Wert</string>
+    <string name="rl_set_tpms">setze HL Wert</string>
+    <string name="rr_set_tpms">setze HR Wert</string>
+    <string name="tpms_fl">vorne links</string>
+    <string name="tpms_fr">vorne rechts</string>
+    <string name="tpms_rl">hinten links</string>
+    <string name="tpms_rr">hinten rechts</string>
 
     <string name="ocm_title_charge_points">LADESTATIONEN</string>
     <string name="ocm_subtitle_charge_points">Quelle: https://openchargemap.org/</string>

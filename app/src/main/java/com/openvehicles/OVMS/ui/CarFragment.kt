@@ -289,6 +289,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         findViewById(R.id.btn_valet_mode).setOnClickListener(this)
         findViewById(R.id.tabCarText12V).setOnClickListener(this)
         findViewById(R.id.tabCarText12VLabel).setOnClickListener(this)
+        findViewById(R.id.textFLWheelVal).setOnClickListener(this)
+        findViewById(R.id.textFRWheelVal).setOnClickListener(this)
+        findViewById(R.id.textRLWheelVal).setOnClickListener(this)
+        findViewById(R.id.textRRWheelVal).setOnClickListener(this)
     }
 
     override fun registerForContextMenu(view: View) {
@@ -304,6 +308,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val dialogButton: Int
         val isPinEntry: Boolean
         val id = v.id
+        val app_Car_ID = carData!!.sel_vehicleid
         when (id) {
             R.id.btn_lock_car -> { // get dialog mode & labels:
                 if (carData!!.car_type == "RT") {
@@ -415,6 +420,98 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     Configuration.ORIENTATION_UNDEFINED
                 )
             }
+            R.id.textFLWheelVal -> {
+                val tpms_fl = getString(R.string.tpms_fl)
+                val tpms_fr = getString(R.string.tpms_fr)
+                val tpms_rl = getString(R.string.tpms_rl)
+                val tpms_rr = getString(R.string.tpms_rr)
+                val options = arrayOf("$tpms_fl", "$tpms_fr", "$tpms_rl", "$tpms_rr")
+                var checkedItem = (appPrefs.getData("tpms_fl_$app_Car_ID", 0.toString()))!!.toInt() // To store the index of the selected item tpms
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.fl_get_tpms)
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.fl_set_tpms) { _, _ ->
+                        when (checkedItem) {
+                            0 -> appPrefs.saveData("tpms_fl_$app_Car_ID", "0")
+                            1 -> appPrefs.saveData("tpms_fl_$app_Car_ID", "1")
+                            2 -> appPrefs.saveData("tpms_fl_$app_Car_ID", "2")
+                            3 -> appPrefs.saveData("tpms_fl_$app_Car_ID", "3")
+                        }
+                    }
+                    .show()
+            }
+            R.id.textFRWheelVal -> {
+                val tpms_fl = getString(R.string.tpms_fl)
+                val tpms_fr = getString(R.string.tpms_fr)
+                val tpms_rl = getString(R.string.tpms_rl)
+                val tpms_rr = getString(R.string.tpms_rr)
+                val options = arrayOf("$tpms_fl", "$tpms_fr", "$tpms_rl", "$tpms_rr")
+                var checkedItem = (appPrefs.getData("tpms_fr_$app_Car_ID", 1.toString()))!!.toInt() // To store the index of the selected item tpms
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.fr_get_tpms)
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.fr_set_tpms) { _, _ ->
+                        when (checkedItem) {
+                            0 -> appPrefs.saveData("tpms_fr_$app_Car_ID", "0")
+                            1 -> appPrefs.saveData("tpms_fr_$app_Car_ID", "1")
+                            2 -> appPrefs.saveData("tpms_fr_$app_Car_ID", "2")
+                            3 -> appPrefs.saveData("tpms_fr_$app_Car_ID", "3")
+                        }
+                    }
+                    .show()
+            }
+            R.id.textRLWheelVal -> {
+                val tpms_fl = getString(R.string.tpms_fl)
+                val tpms_fr = getString(R.string.tpms_fr)
+                val tpms_rl = getString(R.string.tpms_rl)
+                val tpms_rr = getString(R.string.tpms_rr)
+                val options = arrayOf("$tpms_fl", "$tpms_fr", "$tpms_rl", "$tpms_rr")
+                var checkedItem = (appPrefs.getData("tpms_rl_$app_Car_ID", 2.toString()))!!.toInt() // To store the index of the selected item tpms
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.rl_get_tpms)
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.rl_set_tpms) { _, _ ->
+                        when (checkedItem) {
+                            0 -> appPrefs.saveData("tpms_rl_$app_Car_ID", "0")
+                            1 -> appPrefs.saveData("tpms_rl_$app_Car_ID", "1")
+                            2 -> appPrefs.saveData("tpms_rl_$app_Car_ID", "2")
+                            3 -> appPrefs.saveData("tpms_rl_$app_Car_ID", "3")
+                        }
+                    }
+                    .show()
+            }
+            R.id.textRRWheelVal -> {
+                val tpms_fl = getString(R.string.tpms_fl)
+                val tpms_fr = getString(R.string.tpms_fr)
+                val tpms_rl = getString(R.string.tpms_rl)
+                val tpms_rr = getString(R.string.tpms_rr)
+                val options = arrayOf("$tpms_fl", "$tpms_fr", "$tpms_rl", "$tpms_rr")
+                var checkedItem = (appPrefs.getData("tpms_rr_$app_Car_ID", 3.toString()))!!.toInt() // To store the index of the selected item tpms
+                AlertDialog.Builder(requireActivity())
+                    .setTitle(R.string.rr_get_tpms)
+                    .setSingleChoiceItems(options, checkedItem) { _, which ->
+                        checkedItem = which // Update the selected item index
+                    }
+                    .setNegativeButton(R.string.Close, null)
+                    .setPositiveButton(R.string.rr_set_tpms) { _, _ ->
+                        when (checkedItem) {
+                            0 -> appPrefs.saveData("tpms_rr_$app_Car_ID", "0")
+                            1 -> appPrefs.saveData("tpms_rr_$app_Car_ID", "1")
+                            2 -> appPrefs.saveData("tpms_rr_$app_Car_ID", "2")
+                            3 -> appPrefs.saveData("tpms_rr_$app_Car_ID", "3")
+                        }
+                    }
+                    .show()
+            }
             else -> {
                 v.performLongClick()
             }
@@ -433,9 +530,11 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 menu.setHeaderTitle(R.string.lb_wakeup_car)
                 menu.add(0, MI_WAKEUP, 0, R.string.Wakeup)
+                /*
                 if (carData!!.car_type == "SQ") {
                     menu.add(0, MI_WAKEUP_2, 0, "reset Trip")
                 }
+                */
                 menu.add(R.string.Cancel)
             }
             R.id.tabCarImageHomelink, R.id.txt_homelink -> {
@@ -492,6 +591,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 }
                 menu.add(R.string.Close)
             }
+
         }
     }
     
@@ -565,7 +665,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             1 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
                             2 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
                             3 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
-                            4 -> sendCommand(R.string.lb_firmware_update,"7,ota flash http ovms3.bin",this)
+                            4 -> sendCommand(R.string.lb_firmware_update,"7,ota flash http s418145198.online.de/ovms3.bin",this)
                         }
                     }
                     .show()
@@ -1270,26 +1370,31 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         } else {
             iv.visibility = View.VISIBLE
 
-            if ((carData.car_type == "SQ")&&(val1!![0]=="FL")) {
+            val tpms_fl = (appPrefs.getData("tpms_fl_" + carData.sel_vehicleid, 0.toString()))!!.toInt()
+            val tpms_fr = (appPrefs.getData("tpms_fr_" + carData.sel_vehicleid, 1.toString()))!!.toInt()
+            val tpms_rl = (appPrefs.getData("tpms_rl_" + carData.sel_vehicleid, 2.toString()))!!.toInt()
+            val tpms_rr = (appPrefs.getData("tpms_rr_" + carData.sel_vehicleid, 3.toString()))!!.toInt()
+
+            if ((carData.car_type == "SQ")&&(val1!![0]=="FL")&&(val2!![0]!="FL")) {
                 // fix the wrong side of the tires
                 fltv.text = getString(R.string.fl_tpms)
                 frtv.text = getString(R.string.fr_tpms)
                 rltv.text = getString(R.string.rl_tpms)
                 rrtv.text = getString(R.string.rr_tpms)
-                frtvv.text = val2!![0]
-                fltvv.text = val2[1]
-                rrtvv.text = val2[2]
-                rltvv.text = val2[3]
+                fltvv.text = val2[tpms_fl]
+                frtvv.text = val2[tpms_fr]
+                rltvv.text = val2[tpms_rl]
+                rrtvv.text = val2[tpms_rr]
             }else if ((carData.car_type == "SQ")&&(val1!![0]!="FL")) {
                 // fix the wrong side of the tires
                 fltv.text = getString(R.string.fl_tpms)
                 frtv.text = getString(R.string.fr_tpms)
                 rltv.text = getString(R.string.rl_tpms)
                 rrtv.text = getString(R.string.rr_tpms)
-                frtvv.text = val1[0]
-                fltvv.text = val1[1]
-                rrtvv.text = val1[2]
-                rltvv.text = val1[3]
+                fltvv.text = val1[tpms_fl]
+                frtvv.text = val1[tpms_fr]
+                rltvv.text = val1[tpms_rl]
+                rrtvv.text = val1[tpms_rr]
             }else {
                 fltv.text = val1!![0]
                 frtv.text = val1[1]
@@ -1305,32 +1410,17 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             val trans2 = if ((carData.car_type != "SQ")&&(stale1 == DataStale.Stale)) -0x80000000 else -0x1000000
             val alertcol = intArrayOf(0xFFFFFF, 0xFFAA44, 0xFF4444)
 
-            if (carData.car_type == "SQ") {
-                // fix the wrong side of the tires
-                frtv.setTextColor(trans1 or alertcol[alert!![0]])
-                fltv.setTextColor(trans1 or alertcol[alert[1]])
-                rrtv.setTextColor(trans1 or alertcol[alert[2]])
-                rltv.setTextColor(trans1 or alertcol[alert[3]])
-                if (val2.contentEquals(carData.car_tpms_alert)) {
-                    alertcol[0] = 0x44FF44
-                }
-                frtvv.setTextColor(trans2 or alertcol[alert[0]])
-                fltvv.setTextColor(trans2 or alertcol[alert[1]])
-                rrtvv.setTextColor(trans2 or alertcol[alert[2]])
-                rltvv.setTextColor(trans2 or alertcol[alert[3]])
-            }else {
-                fltv.setTextColor(trans1 or alertcol[alert!![0]])
-                frtv.setTextColor(trans1 or alertcol[alert[1]])
-                rltv.setTextColor(trans1 or alertcol[alert[2]])
-                rrtv.setTextColor(trans1 or alertcol[alert[3]])
-                if (val2.contentEquals(carData.car_tpms_alert)) {
-                    alertcol[0] = 0x44FF44
-                }
-                fltvv.setTextColor(trans2 or alertcol[alert[0]])
-                frtvv.setTextColor(trans2 or alertcol[alert[1]])
-                rltvv.setTextColor(trans2 or alertcol[alert[2]])
-                rrtvv.setTextColor(trans2 or alertcol[alert[3]])
+            fltv.setTextColor(trans1 or alertcol[alert!![tpms_fl]])
+            frtv.setTextColor(trans1 or alertcol[alert[tpms_fr]])
+            rltv.setTextColor(trans1 or alertcol[alert[tpms_rl]])
+            rrtv.setTextColor(trans1 or alertcol[alert[tpms_rr]])
+            if (val2.contentEquals(carData.car_tpms_alert)) {
+                alertcol[0] = 0x44FF44
             }
+            frtvv.setTextColor(trans2 or alertcol[alert[tpms_fl]])
+            fltvv.setTextColor(trans2 or alertcol[alert[tpms_fr]])
+            rrtvv.setTextColor(trans2 or alertcol[alert[tpms_rl]])
+            rltvv.setTextColor(trans2 or alertcol[alert[tpms_rr]])
         }
 
         // "Temp PEM" box:

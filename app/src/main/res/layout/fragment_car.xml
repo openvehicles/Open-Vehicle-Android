@@ -164,7 +164,9 @@
 			android:layout_x="2px"
 			android:layout_y="112px"
 			android:text="40psi"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:clickable="true"
+			android:focusable="true"/>
 
 		<TextView
 			android:id="@+id/textFRWheel"
@@ -180,7 +182,9 @@
 			android:layout_x="430px"
 			android:layout_y="112px"
 			android:text="40psi"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:clickable="true"
+			android:focusable="true"/>
 
 		<TextView
 			android:id="@+id/textRLWheel"
@@ -196,7 +200,9 @@
 			android:layout_x="2px"
 			android:layout_y="483px"
 			android:text="40psi"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:clickable="true"
+			android:focusable="true"/>
 
 		<TextView
 			android:id="@+id/textRRWheel"
@@ -212,7 +218,9 @@
 			android:layout_x="430px"
 			android:layout_y="483px"
 			android:text="40psi"
-			android:textStyle="bold" />
+			android:textStyle="bold"
+			android:clickable="true"
+			android:focusable="true"/>
 
 		<TextView
 			android:id="@+id/tabCarTextPEMLabel"

@@ -819,7 +819,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
     private fun updateCarInfoView(carData: CarData) {
         val headline = findViewById(R.id.txt_title) as TextView
         val odometer = String.format("⏲ %.1f %s", carData.car_odometer_raw / 10, carData.car_distance_units)
-        val power = String.format("%.1f kWh/100 km", carData.car_temp_motor_raw)
+        val power = String.format("%.1f kWh/100 km", carData.car_temp_pem_raw)
         headline.text = carData.sel_vehicle_label + "\n" + power + "\n" + odometer
         val carPos = carsStorage.getStoredCars().indexOf(carData)
         if (carPos != carSelectPos) {
@@ -908,7 +908,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     tvf.visibility = View.VISIBLE
                 }
                 if ((this.carData!!.car_type == "SQ")) {
-                    val etrSuffSOC = carData.car_temp_pem_raw.toInt() //car_chargelimit_minsremaining_soc
+                    val etrSuffSOC = carData.car_charge_duration_raw / 60
                     tvPowerInput.text = String.format("   %02d:%02d %s", etrSuffSOC / 60, etrSuffSOC % 60,"h")
                     tvPowerInput.visibility = View.VISIBLE
                     tvPowerLoss.text = String.format("⚡ %s %%",carData.car_charger_efficiency)

@@ -361,6 +361,18 @@
     <string name="fr_tpms">FR</string>
     <string name="rl_tpms">RL</string>
     <string name="rr_tpms">RR</string>
+    <string name="fl_get_tpms">set FL value from:</string>
+    <string name="fr_get_tpms">set FR value from:</string>
+    <string name="rl_get_tpms">set RL value from:</string>
+    <string name="rr_get_tpms">set RR value from:</string>
+    <string name="fl_set_tpms">set FL value</string>
+    <string name="fr_set_tpms">set FR value</string>
+    <string name="rl_set_tpms">set RL value</string>
+    <string name="rr_set_tpms">set RR value</string>
+    <string name="tpms_fl">front left</string>
+    <string name="tpms_fr">front right</string>
+    <string name="tpms_rl">rear left</string>
+    <string name="tpms_rr">rear right</string>
 
     <string name="cargroup_title">Car groups</string>
     <string name="cargroup_name_hint">Group name</string>

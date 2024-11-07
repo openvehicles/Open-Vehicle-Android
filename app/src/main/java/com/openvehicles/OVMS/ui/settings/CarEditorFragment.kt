@@ -290,6 +290,7 @@ class CarEditorFragment : BaseFragment() {
             "car_smart_eq_cabrio_crystalwhite",
             "car_smart_eq_cabrio_grey",
             "car_smart_eq_cabrio_lavaorange",
+            "car_smart_eq_cabrio_lavaorange_nosignal",
             "car_smart_44_black",
             "car_smart_44_white_silver",
             "car_smart_44_fl_black",
