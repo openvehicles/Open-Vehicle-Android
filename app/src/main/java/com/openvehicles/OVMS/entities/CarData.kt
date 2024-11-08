@@ -276,6 +276,8 @@ class CarData : Serializable {
     var car_charge_plugtype = 0
     var car_charge_power_kw_raw = 0.0
     var car_charge_power_kw = ""
+    var car_charge_kwh_grid = 0f
+    var car_charge_kwh_grid_total = 0f
     @JvmField
     var car_battery_voltage = 0.0
     var car_battery_current_raw = 0.0
@@ -351,6 +353,32 @@ class CarData : Serializable {
     @JvmField
     var car_energyrecd = 0f
 
+/*  not implemented yet?
+    // Car Gen Message "G"
+    var car_gen_inprogress = false
+    var car_gen_pilot = false
+    var car_gen_voltage = 0
+    var car_gen_current = 0f
+    var car_gen_power = 0f
+    var car_gen_efficiency = 0f
+    var car_gen_type  = ""
+    var car_gen_state  = ""
+    var car_gen_substate  = ""
+    var car_gen_mode  = ""
+    var car_gen_climit = 0f
+    var car_gen_limit_range = 0f
+    var car_gen_limit_soc = 0
+    var car_gen_gen_kwh = 0f
+    var car_gen_kwh_grid = 0f
+    var car_gen_kwh_grid_total = 0f
+    var car_gen_time = 0
+    var car_gen_timermode = 0
+    var car_gen_timerstart = 0
+    var car_gen_duration_empty = 0
+    var car_gen_duration_range = 0
+    var car_gen_duration_soc = 0
+    var car_gen_temp = 0f
+*/
     //
     // Renault Twizy specific
     //
@@ -693,6 +721,8 @@ class CarData : Serializable {
                 } else {
                     ""
                 }
+                car_charge_kwh_grid = dataParts[38].toFloat()
+                car_charge_kwh_grid_total = dataParts[39].toFloat()
             }
         } catch (e: Exception) {
             Log.e(TAG, "processStatus: ERROR", e)
@@ -1026,6 +1056,49 @@ class CarData : Serializable {
     }
 
     /**
+     * Process GEN message ("G")
+     */
+/*  not implemented yet?
+    fun processGen(msgdata: String): Boolean {
+        init()
+        Log.d(TAG, "processGen: $msgdata")
+        try {
+            val dataParts =
+                msgdata.split(",\\s*".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            if (dataParts.size >= 9) {
+                car_gen_inprogress = dataParts[0].toBoolean()
+                car_gen_pilot = dataParts[1].toBoolean()
+                car_gen_voltage = dataParts[2].toInt()
+                car_gen_current = dataParts[3].toFloat()
+                car_gen_power = dataParts[4].toFloat()
+                car_gen_efficiency = dataParts[5].toFloat()
+                car_gen_type = dataParts[6]
+                car_gen_state = dataParts[7]
+                car_gen_substate = dataParts[8]
+                car_gen_mode = dataParts[9]
+                car_gen_climit = dataParts[10].toFloat()
+                car_gen_limit_range = dataParts[11].toFloat()
+                car_gen_limit_soc = dataParts[12].toInt()
+                car_gen_gen_kwh = dataParts[13].toFloat()
+                car_gen_kwh_grid = dataParts[14].toFloat()
+                car_gen_kwh_grid_total = dataParts[15].toFloat()
+                car_gen_time = dataParts[16].toInt()
+                car_gen_timermode = dataParts[17].toInt()
+                car_gen_timerstart = dataParts[18].toInt()
+                car_gen_duration_empty = dataParts[19].toInt()
+                car_gen_duration_range = dataParts[20].toInt()
+                car_gen_duration_soc = dataParts[21].toInt()
+                car_gen_temp = dataParts[22].toFloat()
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "processGen: ERROR", e)
+            return false
+        }
+        recalc()
+        return true
+    }
+*/
+    /**
      * Get data extract suitable for system broadcast.
      *
      * The intended receivers are automation Apps like Automagic & Tasker,
@@ -1092,6 +1165,8 @@ class CarData : Serializable {
             b.putInt("car_chargelimit_minsremaining_range", car_chargelimit_minsremaining_range)
             b.putInt("car_chargelimit_soclimit", car_chargelimit_soclimit)
             b.putInt("car_chargelimit_minsremaining_soc", car_chargelimit_minsremaining_soc)
+            b.putFloat("car_charge_kwh_grid", car_charge_kwh_grid)
+            b.putFloat("car_charge_kwh_grid_total", car_charge_kwh_grid_total)
 
 
             //
@@ -1212,6 +1287,35 @@ class CarData : Serializable {
             // Capabilities (msgCode 'V')
             //
             b.putString("car_capabilities", car_capabilities)
+
+            //
+            //  Gen (msgCode 'G')
+            //
+            /* not implemented yet?
+            b.putBoolean("car_gen_inprogress", car_gen_inprogress)
+            b.putBoolean("car_gen_pilot", car_gen_pilot)
+            b.putInt("car_gen_voltage", car_gen_voltage)
+            b.putFloat("car_gen_current", car_gen_current)
+            b.putFloat("car_gen_power", car_gen_power)
+            b.putFloat("car_gen_efficiency", car_gen_efficiency)
+            b.putString("car_gen_type", car_gen_type)
+            b.putString("car_gen_state", car_gen_state)
+            b.putString("car_gen_substate", car_gen_substate)
+            b.putString("car_gen_mode", car_gen_mode)
+            b.putFloat("car_gen_climit", car_gen_climit)
+            b.putFloat("car_gen_limit_range", car_gen_limit_range)
+            b.putInt("car_gen_limit_soc", car_gen_limit_soc)
+            b.putFloat("car_gen_gen_kwh", car_gen_gen_kwh)
+            b.putFloat("car_gen_kwh_grid", car_gen_kwh_grid)
+            b.putFloat("car_gen_kwh_grid_total", car_gen_kwh_grid_total)
+            b.putInt("car_gen_time", car_gen_time)
+            b.putInt("car_gen_timermode", car_gen_timermode)
+            b.putInt("car_gen_timerstart", car_gen_timerstart)
+            b.putInt("car_gen_duration_empty", car_gen_duration_empty)
+            b.putInt("car_gen_duration_range", car_gen_duration_range)
+            b.putInt("car_gen_duration_soc", car_gen_duration_soc)
+            b.putFloat("car_gen_temp", car_gen_temp)
+            */
         } catch (e: Exception) {
             e.printStackTrace()
         }
