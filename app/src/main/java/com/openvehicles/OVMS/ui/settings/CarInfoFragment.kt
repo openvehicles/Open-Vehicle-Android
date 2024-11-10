@@ -86,7 +86,7 @@ class CarInfoFragment : BaseFragment() {
         setValue(
             rootView,
             R.id.txt_charge_info,
-            String.format("%.1f kWh  %sh  %s", carData!!.car_charge_kwhconsumed, carData!!.car_charge_timestamp, carData!!.car_charge_date)
+            String.format("%.1f %s  %s %s  %s", carData!!.car_charge_kwhconsumed,if (carData!!.car_charge_kwhconsumed > 0) "kWh" else "", carData!!.car_charge_timestamp,if (carData!!.car_charge_timestamp != "") "h" else "", carData!!.car_charge_date)
         )
 
         // Show known car service interval info:

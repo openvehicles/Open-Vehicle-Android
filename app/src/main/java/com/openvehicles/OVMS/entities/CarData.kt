@@ -873,9 +873,22 @@ class CarData : Serializable {
                 car_hardware = dataParts[8]
             }
             if (dataParts.size >= 10) {
-                car_mdm_mode = dataParts[9] // dataParts[10] = GSM state
-                val charge_date_raw = dataParts[11].split(" ")
-                car_charge_date = String.format("%s.%s.%s", charge_date_raw[2], charge_date_raw[0], charge_date_raw[3])
+                car_mdm_mode = dataParts[9]
+                // nothing to do = dataParts[10] = GSM state shows online, if GSM connected to network
+                val dateFormat = appPrefs!!.getData("option_date_format", "0") == "1"
+                if(!dateFormat) {
+                    car_charge_date = dataParts[11] // date format MM/DD/YY
+                } else {
+                    // date format MM/DD/YY
+                    val charge_date_raw = dataParts[11].split(" ")
+                    car_charge_date =  if(charge_date_raw.size > 3) {
+                        // date format MM/_D/YY ->  D/MM/YY - if has Day only one digit, the split make a array of 4 elements
+                        String.format("%s. %s. %s", charge_date_raw[2], charge_date_raw[0], charge_date_raw[3])
+                    } else {
+                        // date format MM/DD/YY -> DD/MM/YY
+                        String.format("%s. %s. %s", charge_date_raw[1], charge_date_raw[0], charge_date_raw[2])
+                    }
+                }
                 val charge_timestamp_raw = dataParts[12].split(":")
                 car_charge_timestamp = String.format("%s:%s", charge_timestamp_raw[0], charge_timestamp_raw[1])
             }

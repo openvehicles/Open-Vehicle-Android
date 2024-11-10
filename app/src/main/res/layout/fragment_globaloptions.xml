@@ -190,7 +190,7 @@
             android:padding="4dp">
 
             <TextView
-                android:text="@string/lb_options_firmware"
+                android:text=""
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"/>
@@ -200,6 +200,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/cb_options_firmware"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"/>
+
+            <CheckBox
+                android:text="@string/lb_options_date_format"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:id="@+id/cb_options_date_format"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"/>
         </TableRow>
