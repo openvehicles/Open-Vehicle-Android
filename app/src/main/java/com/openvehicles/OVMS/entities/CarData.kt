@@ -110,7 +110,12 @@ class CarData : Serializable {
     var car_type = ""
     var car_canwrite_raw = 0
     var car_canwrite = false
-    var car_gsmlock = ""
+    var car_gsm_provider = ""
+    var car_mdm_mode = ""
+    var car_charge_date_raw = ""
+    var car_charge_date = ""
+    var car_charge_timestamp = ""
+
     @JvmField
     var car_gsm_signal = ""
     var car_gsm_dbm = 0
@@ -278,6 +283,7 @@ class CarData : Serializable {
     var car_charge_power_kw = ""
     var car_charge_kwh_grid = 0f
     var car_charge_kwh_grid_total = 0f
+    var car_battery_capacity = 0f
     @JvmField
     var car_battery_voltage = 0.0
     var car_battery_current_raw = 0.0
@@ -723,6 +729,7 @@ class CarData : Serializable {
                 }
                 car_charge_kwh_grid = dataParts[38].toFloat()
                 car_charge_kwh_grid_total = dataParts[39].toFloat()
+                car_battery_capacity = dataParts[40].toFloat()
             }
         } catch (e: Exception) {
             Log.e(TAG, "processStatus: ERROR", e)
@@ -848,7 +855,7 @@ class CarData : Serializable {
                 car_type = dataParts[4]
             }
             if (dataParts.size >= 6) {
-                car_gsmlock = dataParts[5]
+                car_gsm_provider = dataParts[5]
             }
             if (dataParts.size >= 8) {
                 car_servicerange = if (dataParts[6] != "") {
@@ -864,6 +871,13 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 9) {
                 car_hardware = dataParts[8]
+            }
+            if (dataParts.size >= 10) {
+                car_mdm_mode = dataParts[9] // dataParts[10] = GSM state
+                val charge_date_raw = dataParts[11].split(" ")
+                car_charge_date = String.format("%s.%s.%s", charge_date_raw[2], charge_date_raw[0], charge_date_raw[3])
+                val charge_timestamp_raw = dataParts[12].split(":")
+                car_charge_timestamp = String.format("%s:%s", charge_timestamp_raw[0], charge_timestamp_raw[1])
             }
         } catch (e: Exception) {
             Log.e(TAG, "processFirmware: ERROR", e)
@@ -1167,7 +1181,7 @@ class CarData : Serializable {
             b.putInt("car_chargelimit_minsremaining_soc", car_chargelimit_minsremaining_soc)
             b.putFloat("car_charge_kwh_grid", car_charge_kwh_grid)
             b.putFloat("car_charge_kwh_grid_total", car_charge_kwh_grid_total)
-
+            b.putFloat("car_battery_capacity", car_battery_capacity)
 
             //
             // Location (msgCode 'L')
@@ -1244,10 +1258,14 @@ class CarData : Serializable {
             b.putString("car_vin", car_vin)
             b.putInt("car_gsm_dbm", car_gsm_dbm)
             b.putInt("car_gsm_bars", car_gsm_bars)
-            b.putString("car_gsm_lock", car_gsmlock)
+            b.putString("car_gsm_provider", car_gsm_provider)
             b.putInt("car_canwrite", car_canwrite_raw)
             b.putInt("car_servicedays", car_servicetime)
             b.putInt("car_servicedist", car_servicerange)
+            b.putString("car_mdm_mode", car_mdm_mode)
+            b.putString("car_charge_date_raw", car_charge_date_raw)
+            b.putString("car_charge_date", car_charge_date)
+            b.putString("car_charge_timestamp", car_charge_timestamp)
 
             //
             // TPMS new flexible wheel layout (msgCode 'Y')

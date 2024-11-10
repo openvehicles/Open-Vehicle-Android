@@ -55,7 +55,7 @@ class CarInfoFragment : BaseFragment() {
         setValue(rootView,
             R.id.txt_gsm,
             String.format(
-            "%s  %s",carData!!.car_gsm_signal,carData!!.car_gsmlock)
+            "%s  %s  %s",carData!!.car_gsm_signal, carData!!.car_gsm_provider, carData!!.car_mdm_mode)
         )
         setValue(
             rootView,
@@ -68,10 +68,10 @@ class CarInfoFragment : BaseFragment() {
                 "%.0f Ah   SoC: %.0f%%  %.1fkWh",
                 carData!!.car_CAC,
                 carData!!.car_soc_raw,
-                carData!!.car_inv_power_motor_kw
+                carData!!.car_battery_capacity
             ) else String.format("%.0f Ah", carData!!.car_CAC)
         )
-        setValue(rootView, R.id.txt_soh, String.format("%.1f%%", carData!!.car_soh))
+        setValue(rootView, R.id.txt_soh, String.format("%.0f%%", carData!!.car_soh))
         setValue(
             rootView, R.id.txt_12v_info, String.format(
                 "%.2fV (%s) %.1fA",
@@ -86,7 +86,7 @@ class CarInfoFragment : BaseFragment() {
         setValue(
             rootView,
             R.id.txt_charge_info,
-            String.format("%.1f kWh", carData!!.car_charge_kwhconsumed)
+            String.format("%.1f kWh  %sh  %s", carData!!.car_charge_kwhconsumed, carData!!.car_charge_timestamp, carData!!.car_charge_date)
         )
 
         // Show known car service interval info:

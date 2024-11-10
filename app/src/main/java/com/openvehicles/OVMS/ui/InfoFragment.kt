@@ -865,7 +865,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tv_or.visibility = View.VISIBLE
             val cmst = if(carData.car_type == "SQ") {
                 String.format(
-                    "▾ %.1fkWh      ⚡ %.1fkW",
+                    "%sh   ▾ %.1fkWh   ⚡ %.1fkW",
+                    carData.car_charge_timestamp,
                     carData.car_charge_kwhconsumed,
                     carData.car_charge_power_input_kw_raw
                 )
