@@ -839,7 +839,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     appPrefs.saveData("plugin_1_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_eq_1_off, "7,plugin disable xsq_v2data", this)
                                 } else {
-                                    appPrefs.saveData("plugin_1_$app_Car_ID", "on")
+                                    //appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                     /* disable plugin 1 activation it will replaced // to do
                                     if (appPrefs.getData("plugin_1_$app_Car_ID") == "off") {
                                         appPrefs.saveData("plugin_1_$app_Car_ID", "on")
