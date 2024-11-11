@@ -47,6 +47,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     private var pluginOVMS= false
     private var pluginEQ = false
     private var firmwareEnabled = false
+    private var dateFormat = false
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -62,6 +63,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         pluginOVMS = appPrefs!!.getData("option_plugin_ovms_$app_Car_ID", "0") == "1"
         pluginEQ = appPrefs!!.getData("option_plugin_eq_$app_Car_ID", "0") == "1"
         firmwareEnabled = appPrefs!!.getData("option_firmware_enabled_$app_Car_ID", "0") == "1"
+        dateFormat = appPrefs!!.getData("option_date_format", "0") == "1"
         var checkBox: CheckBox = findViewById(R.id.cb_options_service) as CheckBox
         checkBox.setChecked(serviceEnabled)
         checkBox.setOnClickListener(this)
@@ -89,6 +91,9 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         checkBox.setOnClickListener(this)
         checkBox = findViewById(R.id.cb_options_firmware) as CheckBox
         checkBox.setChecked(firmwareEnabled)
+        checkBox.setOnClickListener(this)
+        checkBox = findViewById(R.id.cb_options_date_format) as CheckBox
+        checkBox.setChecked(dateFormat)
         checkBox.setOnClickListener(this)
         setOnClick(requireView(), R.id.cb_options_reboot, this)
         setOnClick(requireView(), R.id.cb_options_apikey_renew, this)
@@ -147,6 +152,10 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
             R.id.cb_options_firmware -> {
                 firmwareEnabled = (v as CheckBox).isChecked
                 appPrefs!!.saveData("option_firmware_enabled_$app_Car_ID", if (firmwareEnabled) "1" else "0")
+            }
+            R.id.cb_options_date_format -> {
+                dateFormat = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_date_format", if (dateFormat) "1" else "0")
             }
             R.id.cb_options_reboot -> {
                 AlertDialog.Builder(context)

@@ -9,7 +9,11 @@ import com.openvehicles.OVMS.utils.AppPrefs
 import java.io.Serializable
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.Date
+import java.time.Instant
+import java.time.ZoneId
+import kotlin.text.format
 
 class CarData : Serializable {
 
@@ -110,7 +114,10 @@ class CarData : Serializable {
     var car_type = ""
     var car_canwrite_raw = 0
     var car_canwrite = false
-    var car_gsmlock = ""
+    var car_gsm_provider = ""
+    var car_mdm_mode = ""
+    var car_charge_timestamp = ""
+
     @JvmField
     var car_gsm_signal = ""
     var car_gsm_dbm = 0
@@ -278,6 +285,7 @@ class CarData : Serializable {
     var car_charge_power_kw = ""
     var car_charge_kwh_grid = 0f
     var car_charge_kwh_grid_total = 0f
+    var car_battery_capacity = 0f
     @JvmField
     var car_battery_voltage = 0.0
     var car_battery_current_raw = 0.0
@@ -723,6 +731,18 @@ class CarData : Serializable {
                 }
                 car_charge_kwh_grid = dataParts[38].toFloat()
                 car_charge_kwh_grid_total = dataParts[39].toFloat()
+                car_battery_capacity = dataParts[40].toFloat()
+            }
+
+            if (dataParts.size >= 42) {
+                val dateFormat = appPrefs!!.getData("option_date_format", "0") == "1"
+                val charge_timestamp_raw = dataParts[41].toInt()
+                val timestamp_formater = if(dateFormat) {
+                    DateTimeFormatter.ofPattern("dd.MM.yy  HH:mm").withZone(ZoneId.systemDefault())
+                } else {
+                   DateTimeFormatter.ofPattern("MM/dd yy  hh:mm").withZone(ZoneId.systemDefault())
+                }
+                car_charge_timestamp = timestamp_formater.format(Instant.ofEpochSecond(charge_timestamp_raw.toLong()))
             }
         } catch (e: Exception) {
             Log.e(TAG, "processStatus: ERROR", e)
@@ -809,6 +829,8 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 21) {
                 car_temp_cabin_raw = dataParts[20].toFloat()
+                car_mdm_mode = dataParts[21]
+                // nothing to do = dataParts[22] = GSM state shows online, if GSM connected to network
             }
         } catch (e: Exception) {
             Log.e(TAG, "processEnvironment: ERROR", e)
@@ -848,7 +870,7 @@ class CarData : Serializable {
                 car_type = dataParts[4]
             }
             if (dataParts.size >= 6) {
-                car_gsmlock = dataParts[5]
+                car_gsm_provider = dataParts[5]
             }
             if (dataParts.size >= 8) {
                 car_servicerange = if (dataParts[6] != "") {
@@ -1167,7 +1189,7 @@ class CarData : Serializable {
             b.putInt("car_chargelimit_minsremaining_soc", car_chargelimit_minsremaining_soc)
             b.putFloat("car_charge_kwh_grid", car_charge_kwh_grid)
             b.putFloat("car_charge_kwh_grid_total", car_charge_kwh_grid_total)
-
+            b.putFloat("car_battery_capacity", car_battery_capacity)
 
             //
             // Location (msgCode 'L')
@@ -1244,10 +1266,12 @@ class CarData : Serializable {
             b.putString("car_vin", car_vin)
             b.putInt("car_gsm_dbm", car_gsm_dbm)
             b.putInt("car_gsm_bars", car_gsm_bars)
-            b.putString("car_gsm_lock", car_gsmlock)
+            b.putString("car_gsm_provider", car_gsm_provider)
             b.putInt("car_canwrite", car_canwrite_raw)
             b.putInt("car_servicedays", car_servicetime)
             b.putInt("car_servicedist", car_servicerange)
+            b.putString("car_mdm_mode", car_mdm_mode)
+            b.putString("car_charge_timestamp", car_charge_timestamp)
 
             //
             // TPMS new flexible wheel layout (msgCode 'Y')

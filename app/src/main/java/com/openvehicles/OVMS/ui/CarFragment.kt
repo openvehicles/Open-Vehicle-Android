@@ -649,6 +649,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             }
             MI_HL_FW -> {
                 var options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
+                if(app_Car_ID.startsWith("ZORG-")) {
+                    options += "Test Version - ZorG"
+                }
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_plugin_firmware)
@@ -662,6 +665,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                             1 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
                             2 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
                             3 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
+                            4 -> sendCommand(R.string.lb_firmware_update,"7,ota flash http s418145198.online.de/ovms3.bin",this)
                         }
                     }
                     .show()
@@ -835,7 +839,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                                     appPrefs.saveData("plugin_1_$app_Car_ID", "off")
                                     sendCommand(R.string.lb_plugin_eq_1_off, "7,plugin disable xsq_v2data", this)
                                 } else {
-                                    appPrefs.saveData("plugin_1_$app_Car_ID", "on")
+                                    //appPrefs.saveData("plugin_1_$app_Car_ID", "on")
                                     /* disable plugin 1 activation it will replaced // to do
                                     if (appPrefs.getData("plugin_1_$app_Car_ID") == "off") {
                                         appPrefs.saveData("plugin_1_$app_Car_ID", "on")
@@ -1449,7 +1453,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             if (carData.stale_car_temps == DataStale.NoValue) {
                 pemtv.text = ""
             } else {
-                pemtv.text = String.format("%.1fkWh",carData.car_inv_power_motor_kw)
+                pemtv.text = String.format("%.1fkWh",carData.car_battery_capacity)
                 if (carData.stale_car_temps == DataStale.Stale) {
                     pemtv.setTextColor(-0x7f7f80)
                 } else {

@@ -696,13 +696,14 @@
     <string name="lb_options_plugin">Plugin</string>
     <string name="lb_options_firmware">Firmware</string>
     <string name="lb_options_firmware_update">Firmware Update</string>
+    <string name="lb_options_date_format">Date dd.MM.yyyy</string>">
     <string name="lb_options_fwpl_info">activate plugin and firmware option at Homelink menu</string>
     <string name="lb_options_firmware_on">Enable Firmware Update</string>
     <string name="lb_options_firmware_off">Disable Firmware Update</string>
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
-    <string name="lb_options_plugin_eq">smartEQ plugins</string>
-    <string name="lb_options_plugin_ovms">OVMS plugins</string>
+    <string name="lb_options_plugin_eq">smartEQ</string>
+    <string name="lb_options_plugin_ovms">OVMS</string>
     <string name="lb_options_plugin_inst">install smartEQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstall smartEQ Repo, need reboot!</string>
     <string name="lb_plugin_update">update Plugins</string>
