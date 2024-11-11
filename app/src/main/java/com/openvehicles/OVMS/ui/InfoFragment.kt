@@ -846,7 +846,7 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
         val tvPowerInput = findViewById(R.id.tabInfoTextChargePowerInput) as TextView
         val tvPowerLoss = findViewById(R.id.tabInfoTextChargePowerLoss) as TextView
 
-        if (!carData.car_chargeport_open || carData.car_charge_substate_i_raw == 0x07) {
+        if (carData.car_chargeport_open || carData.car_charge_substate_i_raw == 0x07) {
             // Charge port is closed or car is not plugged in
             findViewById(R.id.tabInfoImageCharger).visibility = View.INVISIBLE
             bar.visibility = View.INVISIBLE
@@ -864,9 +864,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tv.visibility = View.INVISIBLE
             tv_or.visibility = View.VISIBLE
             val cmst = if(carData.car_type == "SQ") {
+                val timestamp_arr = (carData.car_charge_timestamp).split(" ")
                 String.format(
                     "%sh   ▾ %.1fkWh   ⚡ %.1fkW",
-                    carData.car_charge_timestamp,
+                    timestamp_arr[2],
                     carData.car_charge_kwhconsumed,
                     carData.car_charge_power_input_kw_raw
                 )
