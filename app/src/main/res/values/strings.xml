@@ -696,7 +696,7 @@
     <string name="lb_options_plugin">Plugin</string>
     <string name="lb_options_firmware">Firmware</string>
     <string name="lb_options_firmware_update">Firmware Update</string>
-    <string name="lb_options_date_format">Date DD/MM/YYYY</string>">
+    <string name="lb_options_date_format">Date dd.MM.yyyy</string>">
     <string name="lb_options_fwpl_info">activate plugin and firmware option at Homelink menu</string>
     <string name="lb_options_firmware_on">Enable Firmware Update</string>
     <string name="lb_options_firmware_off">Disable Firmware Update</string>
