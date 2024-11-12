@@ -864,10 +864,10 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             tv.visibility = View.INVISIBLE
             tv_or.visibility = View.VISIBLE
             val cmst = if(carData.car_type == "SQ") {
-                val timestamp_arr = (carData.car_charge_timestamp).split(" ")
+                val chargeduration = carData.car_charge_duration_raw / 60
                 String.format(
-                    "%sh   ▾ %.1fkWh   ⚡ %.1fkW",
-                    timestamp_arr[2],
+                    "%02d:%02d%s   ▾ %.1fkWh   ⚡ %.1fkW",
+                    chargeduration / 60, chargeduration % 60,"h",
                     carData.car_charge_kwhconsumed,
                     carData.car_charge_power_input_kw_raw
                 )
@@ -915,8 +915,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                     tvf.visibility = View.VISIBLE
                 }
                 if ((this.carData!!.car_type == "SQ")) {
-                    val etrSuffSOC = carData.car_charge_duration_raw / 60
-                    tvPowerInput.text = String.format("   %02d:%02d %s", etrSuffSOC / 60, etrSuffSOC % 60,"h")
+                    val timestamp_arr = (carData.car_charge_timestamp).split(" ")
+                    tvPowerInput.text = String.format("%s %s",timestamp_arr[2],"h")
                     tvPowerInput.visibility = View.VISIBLE
                     tvPowerLoss.text = String.format("⚡ %s %%",carData.car_charger_efficiency)
                     tvPowerLoss.visibility = View.VISIBLE
