@@ -83,14 +83,17 @@ class CarInfoFragment : BaseFragment() {
                 carData!!.car_12v_current
             )
         )
+        val defaulttime = (carData!!.car_charge_timestamp.startsWith("01.01.70") || carData!!.car_charge_timestamp.startsWith("01/01 70"))
         setValue(
             rootView,
             R.id.txt_charge_info,
             String.format("%.1f %s  %s %s",
                 carData!!.car_charge_kwhconsumed,
                 "kWh",
-                carData!!.car_charge_timestamp,
-                if (carData!!.car_charge_timestamp != "") "h" else ""
+                if (defaulttime)
+                {""} else {carData!!.car_charge_timestamp},
+                if (defaulttime)
+                {""} else {"h"}
             )
         )
 

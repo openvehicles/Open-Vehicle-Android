@@ -648,7 +648,7 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                 true
             }
             MI_HL_FW -> {
-                var options = arrayOf("Dirty - Dimitrie78", "Edge - nightly Dev", "Eap - stable Dev", "Main - @Play Store")
+                var options = arrayOf("Edge - nightly Developer", "Eap - stable Developer", "Main - @PlayStore")
                 var checkedItem = -1 // To store the index of the selected item
                 AlertDialog.Builder(requireActivity())
                     .setTitle(R.string.lb_plugin_firmware)
@@ -658,10 +658,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
                     .setNegativeButton(R.string.Close, null)
                     .setPositiveButton(R.string.lb_firmware_update) { _, _ ->
                         when (checkedItem) {
-                            0 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dimitrie.eu/firmware/ota/v3.3/smarteq/ovms3.bin", this)
-                            1 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
-                            2 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
-                            3 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
+                            0 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/edge/ovms3.bin", this)
+                            1 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/eap/ovms3.bin", this)
+                            2 -> sendCommand(R.string.lb_firmware_update, "7,ota flash http ovms.dexters-web.de/firmware/ota/v3.3/main/ovms3.bin", this)
                         }
                     }
                     .show()
