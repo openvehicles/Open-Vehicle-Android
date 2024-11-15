@@ -184,7 +184,7 @@
 
     <string name="lb_ft_sq_led_state">#%d: LED Online State</string>
     <string name="lb_ft_sq_ios_tpms_fix">#%d: iOS TPMS fix</string>
-    <string name="lb_ft_sq_reset_trip_charge">#%d: reset trip at charge</string>
+    <string name="lb_ft_sq_reset_trip_charge">#%d: reset trip at charge = 1, at start = 0</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>
