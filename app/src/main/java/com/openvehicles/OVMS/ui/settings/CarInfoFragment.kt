@@ -52,11 +52,10 @@ class CarInfoFragment : BaseFragment() {
         setValue(rootView, R.id.txt_server, carData!!.server_firmware)
         setValue(rootView, R.id.txt_car, carData!!.car_firmware)
         setValue(rootView, R.id.txt_hardware, carData!!.car_hardware)
-        val netip = if(carData!!.car_net_type == "wifi") (carData!!.car_net_type).toUpperCase() else carData!!.car_mdm_mode
         setValue(rootView,
             R.id.txt_gsm,
             String.format(
-            "%s  %s  $netip",carData!!.car_gsm_signal, carData!!.car_gsm_provider, carData!!.car_mdm_mode)
+            "%s  %s  %s",carData!!.car_gsm_signal, carData!!.car_gsm_provider, carData!!.car_mdm_mode)
         )
         setValue(
             rootView,
