@@ -116,7 +116,7 @@ class CarData : Serializable {
     var car_canwrite = false
     var car_gsm_provider = ""
     var car_mdm_mode = ""
-    var car_charge_timestamp = ""
+    var car_net_type = ""
 
     @JvmField
     var car_gsm_signal = ""
@@ -163,6 +163,7 @@ class CarData : Serializable {
     var car_speed_units = ""
     var car_chargelimit_rangelimit = ""
     var car_max_idealrange = ""
+    var car_charge_timestamp = ""
     var stale_chargetimer = DataStale.NoValue
     var stale_status = DataStale.NoValue
 
@@ -386,6 +387,7 @@ class CarData : Serializable {
     var car_gen_duration_range = 0
     var car_gen_duration_soc = 0
     var car_gen_temp = 0f
+    var car_gen_timestamp = ""
 */
     //
     // Renault Twizy specific
@@ -829,8 +831,6 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 21) {
                 car_temp_cabin_raw = dataParts[20].toFloat()
-                car_mdm_mode = dataParts[21]
-                // nothing to do = dataParts[22] = GSM state shows online, if GSM connected to network
             }
         } catch (e: Exception) {
             Log.e(TAG, "processEnvironment: ERROR", e)
@@ -886,6 +886,13 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 9) {
                 car_hardware = dataParts[8]
+
+            }
+            if (dataParts.size >= 10) {
+                car_mdm_mode = dataParts[9].split(";")[0].toString()
+            }
+            if (dataParts.size >= 11) {
+                car_net_type = dataParts[10]
             }
         } catch (e: Exception) {
             Log.e(TAG, "processFirmware: ERROR", e)
@@ -1111,6 +1118,16 @@ class CarData : Serializable {
                 car_gen_duration_range = dataParts[20].toInt()
                 car_gen_duration_soc = dataParts[21].toInt()
                 car_gen_temp = dataParts[22].toFloat()
+                if (dataParts.size >= 23) {
+                val dateFormat = appPrefs!!.getData("option_date_format", "0") == "1"
+                val charge_timestamp_raw = dataParts[23].toInt()
+                val timestamp_formater = if(dateFormat) {
+                    DateTimeFormatter.ofPattern("dd.MM.yy  HH:mm").withZone(ZoneId.systemDefault())
+                } else {
+                   DateTimeFormatter.ofPattern("MM/dd yy  hh:mm").withZone(ZoneId.systemDefault())
+                }
+                    car_charge_timestamp = timestamp_formater.format(Instant.ofEpochSecond(charge_timestamp_raw.toLong()))
+                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "processGen: ERROR", e)
@@ -1190,6 +1207,7 @@ class CarData : Serializable {
             b.putFloat("car_charge_kwh_grid", car_charge_kwh_grid)
             b.putFloat("car_charge_kwh_grid_total", car_charge_kwh_grid_total)
             b.putFloat("car_battery_capacity", car_battery_capacity)
+            b.putString("car_charge_timestamp", car_charge_timestamp)
 
             //
             // Location (msgCode 'L')
@@ -1271,7 +1289,7 @@ class CarData : Serializable {
             b.putInt("car_servicedays", car_servicetime)
             b.putInt("car_servicedist", car_servicerange)
             b.putString("car_mdm_mode", car_mdm_mode)
-            b.putString("car_charge_timestamp", car_charge_timestamp)
+            b.putString("car_net_type", car_net_type)
 
             //
             // TPMS new flexible wheel layout (msgCode 'Y')
@@ -1339,6 +1357,7 @@ class CarData : Serializable {
             b.putInt("car_gen_duration_range", car_gen_duration_range)
             b.putInt("car_gen_duration_soc", car_gen_duration_soc)
             b.putFloat("car_gen_temp", car_gen_temp)
+            b.putString("car_gen_timestamp", car_gen_timestamp)
             */
         } catch (e: Exception) {
             e.printStackTrace()
