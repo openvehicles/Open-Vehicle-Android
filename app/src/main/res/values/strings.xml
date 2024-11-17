@@ -67,7 +67,7 @@
     <string name="Vehicle">Vehicle</string>
     <string name="WIN">VIN</string>
     <string name="Type">Type</string>
-    <string name="GMC">GSM</string>
+    <string name="GMC">NETWORK</string>
     <string name="CAC">CAC</string>
     <string name="SOH">SOH</string>
     <string name="Info12V">12V</string>
@@ -184,7 +184,7 @@
 
     <string name="lb_ft_sq_led_state">#%d: LED Online State</string>
     <string name="lb_ft_sq_ios_tpms_fix">#%d: iOS TPMS fix</string>
-    <string name="lb_ft_sq_reset_trip_charge">#%d: reset trip at charge</string>
+    <string name="lb_ft_sq_reset_trip_charge">#%d: reset trip at charge = 1, at start = 0</string>
 
     <string name="lb_cp_registered_telephone">#%d: Registered Telephone</string>
     <string name="lb_cp_module_password">#%d: Module Password</string>
@@ -703,6 +703,8 @@
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
     <string name="lb_options_plugin_eq">smartEQ</string>
+    <string name="lb_options_provider">Cellular Provider selection</string>
+    <string name="lb_options_provider_sel">select Provider</string>
     <string name="lb_options_plugin_ovms">OVMS</string>
     <string name="lb_options_plugin_inst">install smartEQ Repo</string>
     <string name="lb_options_plugin_deinst">deinstall smartEQ Repo, need reboot!</string>
@@ -710,7 +712,7 @@
     <string name="lb_plugin_script_reload">script reload</string>
     <string name="lb_plugin_firmware">Firmware install! Be careful! The Module needed 5 to 10 min. to install!</string>
     <string name="lb_firmware_update">update Firmware!!!</string>
-    <string name="lb_plugin_eq_1_on">Enable xsq disable option</string>
+    <string name="lb_plugin_eq_1_on">Enable (plugin disabled!)</string>
     <string name="lb_plugin_eq_1_off">Disable xsq -> standard metrics</string>
     <string name="lb_plugin_eq_2_on">Enable scheduled booster</string>
     <string name="lb_plugin_eq_2_off">Disable scheduled booster</string>

@@ -7,14 +7,14 @@
     <string name="LastUpdated" formatted="false">Letztes Update: %1$tD %1$tT</string>
     <string formatted="false" name="SOC">%s%%</string>
     <string name="AddCar">+</string>
-    <string name="Cancel">Abbrechen</string>
-    <string name="Delete">Entfernen</string>
-    <string name="Save">Speichern</string>
+    <string name="Cancel">abbrechen</string>
+    <string name="Delete">entfernen</string>
+    <string name="Save">speichern</string>
     <string name="DatabaseError">Datenbankfehler</string>
     <string name="PinShortcut">Anpinnen</string>
     <string name="PinRequestSuccess">Anpinnen OK: siehe Starter</string>
     <string name="PinRequestFailure">Anpinnen fehlgeschlagen</string>
-    <string name="Send">Absenden</string>
+    <string name="Send">absenden</string>
     <string name="Error">Fehler</string>
     <string name="Set">Einstellen</string>
     <string name="Control">Kontrolle</string>
@@ -57,14 +57,14 @@
     <string name="Location">Position</string>
     <string name="Messages">Nachrichten</string>
     <string name="Amps">Ampere</string>
-    <string name="Close">Schließen</string>
+    <string name="Close">schließen</string>
     <string name="Features">Features</string>
     <string name="Parameters">Parameter</string>
     <string name="CellularStats">Datenverbrauch</string>
     <string name="Vehicle">Fahrzeug</string>
     <string name="WIN">VIN</string>
     <string name="Type">Typ</string>
-    <string name="GMC">GSM</string>
+    <string name="GMC">NETWORK</string>
     <string name="Charged">Geladen</string>
     <string name="Service">Service</string>
     <string name="Server">Server</string>
@@ -686,8 +686,10 @@
     <string name="lb_plugin_update">Plugins updaten</string>
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_firmware_update">Firmware updaten!!!</string>
+    <string name="lb_options_provider">Mobilfunk Netzauswahl (IoT)</string>
+    <string name="lb_options_provider_sel">Mobilfunk Netzauswahl für IoT</string>
     <string name="lb_options_fwpl_info">aktiviert Plugin und Firmware option im Homelink menu</string>
-    <string name="lb_plugin_eq_1_on">aktiviere xsq Deaktivierungsoption</string>
+    <string name="lb_plugin_eq_1_on">aktiviere (Plugin deaktiviert!)</string>
     <string name="lb_plugin_eq_1_off">deaktiviere xsq -> Standard metrics</string>
     <string name="lb_plugin_eq_2_on">aktiviere Zeitgesteuert boostern</string>
     <string name="lb_plugin_eq_2_off">deaktiviere Zeitgesteuert boostern</string>
