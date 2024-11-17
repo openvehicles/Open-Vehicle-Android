@@ -686,8 +686,8 @@
     <string name="lb_plugin_update">Plugins updaten</string>
     <string name="lb_plugin_firmware">Firmware installieren! Das Modul braucht 5-10 min. für die Installation!</string>
     <string name="lb_firmware_update">Firmware updaten!!!</string>
-    <string name="lb_options_provider">Mobilfunknetz</string>
-    <string name="lb_options_provider_sel">Mobilfunk Netzauswahl</string>
+    <string name="lb_options_provider">Mobilfunk Netzauswahl (IoT)</string>
+    <string name="lb_options_provider_sel">Mobilfunk Netzauswahl für IoT</string>
     <string name="lb_options_fwpl_info">aktiviert Plugin und Firmware option im Homelink menu</string>
     <string name="lb_plugin_eq_1_on">aktiviere (Plugin deaktiviert!)</string>
     <string name="lb_plugin_eq_1_off">deaktiviere xsq -> Standard metrics</string>

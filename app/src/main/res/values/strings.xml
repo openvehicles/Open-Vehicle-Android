@@ -703,7 +703,7 @@
     <string name="lb_options_plugin_on">Enable Plugin Menu</string>
     <string name="lb_options_plugin_off">Disable Plugin Menu</string>
     <string name="lb_options_plugin_eq">smartEQ</string>
-    <string name="lb_options_provider">Cellular Provider</string>
+    <string name="lb_options_provider">Cellular Provider selection</string>
     <string name="lb_options_provider_sel">select Provider</string>
     <string name="lb_options_plugin_ovms">OVMS</string>
     <string name="lb_options_plugin_inst">install smartEQ Repo</string>
