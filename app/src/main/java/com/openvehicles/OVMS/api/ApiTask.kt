@@ -537,6 +537,12 @@ class ApiTask(
                 msgData
             ) else Log.w(TAG, "W MSG Invalid")
 
+            'X' -> if (carData.processGen(msgData)) publishProgress(
+                MsgType.UPDATE,
+                msgCode,
+                msgData
+            ) else Log.w(TAG, "X MSG Invalid")
+
             'Y' -> if (carData.processNewTPMS(msgData)) publishProgress(
                 MsgType.UPDATE,
                 msgCode,

@@ -361,8 +361,8 @@ class CarData : Serializable {
     @JvmField
     var car_energyrecd = 0f
 
-/*  not implemented yet?
-    // Car Gen Message "G"
+    // Car Gen Message "X"
+    // not implemented yet?
     var car_gen_inprogress = false
     var car_gen_pilot = false
     var car_gen_voltage = 0
@@ -376,7 +376,7 @@ class CarData : Serializable {
     var car_gen_climit = 0f
     var car_gen_limit_range = 0f
     var car_gen_limit_soc = 0
-    var car_gen_gen_kwh = 0f
+    var car_gen_kwh = 0f
     var car_gen_kwh_grid = 0f
     var car_gen_kwh_grid_total = 0f
     var car_gen_time = 0
@@ -387,7 +387,7 @@ class CarData : Serializable {
     var car_gen_duration_soc = 0
     var car_gen_temp = 0f
     var car_gen_timestamp = ""
-*/
+    
     //
     // Renault Twizy specific
     //
@@ -1081,9 +1081,9 @@ class CarData : Serializable {
     }
 
     /**
-     * Process GEN message ("G")
+     * Process GEN message ("X")
+     * not implemented yet?
      */
-/*  not implemented yet?
     fun processGen(msgdata: String): Boolean {
         init()
         Log.d(TAG, "processGen: $msgdata")
@@ -1104,7 +1104,7 @@ class CarData : Serializable {
                 car_gen_climit = dataParts[10].toFloat()
                 car_gen_limit_range = dataParts[11].toFloat()
                 car_gen_limit_soc = dataParts[12].toInt()
-                car_gen_gen_kwh = dataParts[13].toFloat()
+                car_gen_kwh = dataParts[13].toFloat()
                 car_gen_kwh_grid = dataParts[14].toFloat()
                 car_gen_kwh_grid_total = dataParts[15].toFloat()
                 car_gen_time = dataParts[16].toInt()
@@ -1132,7 +1132,6 @@ class CarData : Serializable {
         recalc()
         return true
     }
-*/
     /**
      * Get data extract suitable for system broadcast.
      *
@@ -1326,9 +1325,9 @@ class CarData : Serializable {
             b.putString("car_capabilities", car_capabilities)
 
             //
-            //  Gen (msgCode 'G')
+            //  Gen (msgCode 'X')
             //
-            /* not implemented yet?
+            // not implemented yet?
             b.putBoolean("car_gen_inprogress", car_gen_inprogress)
             b.putBoolean("car_gen_pilot", car_gen_pilot)
             b.putInt("car_gen_voltage", car_gen_voltage)
@@ -1342,7 +1341,7 @@ class CarData : Serializable {
             b.putFloat("car_gen_climit", car_gen_climit)
             b.putFloat("car_gen_limit_range", car_gen_limit_range)
             b.putInt("car_gen_limit_soc", car_gen_limit_soc)
-            b.putFloat("car_gen_gen_kwh", car_gen_gen_kwh)
+            b.putFloat("car_gen_kwh", car_gen_kwh)
             b.putFloat("car_gen_kwh_grid", car_gen_kwh_grid)
             b.putFloat("car_gen_kwh_grid_total", car_gen_kwh_grid_total)
             b.putInt("car_gen_time", car_gen_time)
@@ -1353,7 +1352,6 @@ class CarData : Serializable {
             b.putInt("car_gen_duration_soc", car_gen_duration_soc)
             b.putFloat("car_gen_temp", car_gen_temp)
             b.putString("car_gen_timestamp", car_gen_timestamp)
-            */
         } catch (e: Exception) {
             e.printStackTrace()
         }

@@ -866,8 +866,8 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
             val cmst = if(carData.car_type == "SQ") {
                 val chargeduration = carData.car_charge_duration_raw / 60
                 String.format(
-                    "%02d:%02d%s   ▾ %.1fkWh   ⚡ %.1fkW",
-                    chargeduration / 60, chargeduration % 60,"h",
+                    "⏱ %02d:%02d   ▾ %.1fkWh   ⚡ %.1fkW",
+                    chargeduration / 60, chargeduration % 60,
                     carData.car_charge_kwhconsumed,
                     carData.car_charge_power_input_kw_raw
                 )
