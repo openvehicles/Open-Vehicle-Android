@@ -80,9 +80,9 @@ class LogsFragment
 
         // Setup UI:
         layoutInflater = inflater
-        val progressOverlay = createProgressOverlay(inflater, container, false)
-        progressOverlay.setOnCancelListener(this)
         val rootView = inflater.inflate(R.layout.fragment_logs, null)
+        val progressOverlay = createProgressOverlay(rootView, false)
+        progressOverlay.setOnCancelListener(this)
 
         // Setup TabHost:
         val tabHost = rootView.findViewById<View>(R.id.tabHost) as TabHost

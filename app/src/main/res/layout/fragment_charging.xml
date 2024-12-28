@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui2.pages.ControlsFragment">
+
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/chargingProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/saveProgressBar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:elevation="3dp"
+        android:indeterminate="true"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/battTemp"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="@+id/battTemp"
+        app:srcCompat="@drawable/ic_temp" />
+
+    <ImageView
+        android:id="@+id/battIndicatorImg"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:rotation="90"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_batt_l0" />
+
+    <TextView
+        android:id="@+id/chargingState"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/battSoc"
+        app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+        tools:text="Charging..." />
+
+    <TextView
+        android:id="@+id/battSoc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+        tools:text="50%" />
+
+    <TextView
+        android:id="@+id/battTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/battVolt"
+        app:layout_constraintStart_toEndOf="@+id/imageView5"
+        app:layout_constraintTop_toTopOf="@+id/battVolt"
+        tools:text="10C" />
+
+    <TextView
+        android:id="@+id/battVolt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="35dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/battAmp"
+        app:layout_constraintTop_toTopOf="@+id/battAmp"
+        tools:text="370V" />
+
+    <TextView
+        android:id="@+id/battAmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+        app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        tools:text="30A" />
+
+    <TextView
+        android:id="@+id/battkW"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="35dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/battVolt"
+        app:layout_constraintStart_toEndOf="@+id/battAmp"
+        app:layout_constraintTop_toTopOf="@+id/battVolt"
+        tools:text="0.3kW" />
+
+    <Button
+        android:id="@+id/stopCharging"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/stop_charging_label"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/battAmp"
+        app:layout_constraintTop_toBottomOf="@+id/battIndicatorImg" />
+
+    <Button
+        android:id="@+id/startCharging"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
+        android:text="@string/start_charging_label"
+        app:layout_constraintEnd_toStartOf="@+id/battAmp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battIndicatorImg" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/startCharging">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                app:contentPadding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/startCharging">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textInputLayout"
+                        style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="5dp"
+                        android:spinnerMode="dropdown"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView13"
+                        tools:visibility="visible">
+
+                        <AutoCompleteTextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textView13"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lb_charge_power_limit"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.slider.RangeSlider
+                        android:id="@+id/ampSeekbar"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="7dp"
+                        android:stepSize="1.0"
+                        android:valueFrom="0f"
+                        android:valueTo="32f"
+                        app:layout_constraintBottom_toBottomOf="@+id/textInputLayout"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/ampLimit2"
+                        app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+                    <TextView
+                        android:id="@+id/ampLimit2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="7dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintBottom_toBottomOf="@+id/ampSeekbar"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/textInputLayout"
+                        tools:text="16A" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                app:contentPadding="12dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/textView17"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lb_charge_mode"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/chargeModeNote"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:visibility="gone"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/standard_modeswitch"
+                        tools:text="Charging note"
+                        tools:visibility="visible" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/standard_modeswitch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView17"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/standardChargeMode"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:insetRight="-12dp"
+                            android:text="Standard"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/storageChargeMode"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:insetLeft="-6dp"
+                            android:insetRight="-6dp"
+                            android:text="Storage"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/rangeChargeMode"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:insetLeft="-6dp"
+                            android:insetRight="-6dp"
+                            android:text="Range"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/performanceChargeMode"
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:insetLeft="-12dp"
+                            android:text="Perform"
+                            android:textSize="12sp" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCardView3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView2">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.slider.RangeSlider
+                        android:id="@+id/seekBar4"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="7dp"
+                        android:stepSize="1.0"
+                        android:valueFrom="1f"
+                        android:valueTo="100f"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/socLimit"
+                        app:layout_constraintTop_toBottomOf="@+id/sufficientSocLimitSwitch"
+                        app:values="@array/soc_value" />
+
+                    <TextView
+                        android:id="@+id/socLimit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintBottom_toBottomOf="@+id/seekBar4"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/seekBar4"
+                        tools:text="80%" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/sufficientSocLimitSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="5dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/lb_sufficient_soc"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:switchPadding="16dp" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCard4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCardView3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <com.google.android.material.slider.RangeSlider
+                        android:id="@+id/seekBar5"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="7dp"
+                        android:stepSize="1.0"
+                        android:valueFrom="1f"
+                        android:valueTo="100f"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/rangeLimit"
+                        app:layout_constraintTop_toBottomOf="@+id/sufficientRangeLimitSwitch" />
+
+
+                    <TextView
+                        android:id="@+id/rangeLimit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="12dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        app:layout_constraintBottom_toBottomOf="@+id/seekBar5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/seekBar5"
+                        tools:text="120 km" />
+
+                    <com.google.android.material.materialswitch.MaterialSwitch
+                        android:id="@+id/sufficientRangeLimitSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:layout_marginTop="5dp"
+                        android:layoutDirection="rtl"
+                        android:text="@string/lb_sufficient_range"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:switchPadding="16dp" />
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/materialCard5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="32dp"
+                app:contentPadding="12dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialCard4">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+
+                    <TextView
+                        android:id="@+id/textView20"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/charge_limit_action"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButtonToggleGroup
+                        android:id="@+id/limit_actionswitch"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/textView20"
+                        app:selectionRequired="true"
+                        app:singleSelection="true">
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/charge_limit_action_notify"
+                            android:textSize="12sp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            style="@style/Widget.Material3.Button.OutlinedButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/charge_limit_action_stop"
+                            android:textSize="12sp" />
+                    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

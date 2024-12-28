@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap android:src="@drawable/leaf_topview_fld" android:tint="?android:attr/windowBackground"/>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/leaf_topview_fld_t" android:tint="#1A2F4E"/>
+    </item>
+</layer-list>

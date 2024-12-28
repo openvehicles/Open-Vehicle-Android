@@ -749,7 +749,7 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
      * User interface handling:
      *
      */
-    private inner class TabInfo(
+    public inner class TabInfo(
         val titleResId: Int,
         val iconResId: Int,
         val fragmentClass: Class<out BaseFragment?>
@@ -764,7 +764,7 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
     }
 
 
-    private class NavAdapter(
+    public class NavAdapter(
         context: Context,
         objects: Array<TabInfo>
     ) : ArrayAdapter<TabInfo?>(
@@ -788,7 +788,7 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
         }
     }
 
-    private inner class MainPagerAdapter(
+    public inner class MainPagerAdapter(
         tabInfoItems: Array<TabInfo>
     ) : FragmentPagerAdapter(supportFragmentManager) {
 

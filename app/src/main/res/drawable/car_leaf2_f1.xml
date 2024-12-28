@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/car_leaf2_tireoverlay"  android:width="634px" android:height="335px" android:gravity="center" />
+    <item android:drawable="@drawable/car_leaf_f1" android:bottom="25px" android:left="20px" android:width="634px" android:height="335px" />
+</layer-list>

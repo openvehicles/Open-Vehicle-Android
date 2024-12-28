@@ -10,10 +10,10 @@ repositories {
 
 android {
     namespace 'com.openvehicles.OVMS'
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
-        minSdk 19
+        minSdk 21
         targetSdkVersion 33
     }
     buildTypes {
@@ -64,6 +64,18 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
     implementation 'com.google.code.gson:gson:2.10'
     implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
+    implementation 'androidx.navigation:navigation-fragment:2.8.5'
+    implementation 'androidx.navigation:navigation-ui:2.8.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.8.4'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.8.4'
+
+    implementation 'com.google.android.filament:filament-android:1.36.0'
+    implementation 'com.google.android.filament:filament-utils-android:1.36.0'
+    implementation 'com.google.android.filament:gltfio-android:1.36.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

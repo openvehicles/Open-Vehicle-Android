@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/car_roadster_f4" android:duration="35" />
+    <item android:drawable="@drawable/car_roadster_f3" android:duration="35" />
+    <item android:drawable="@drawable/car_roadster_f2" android:duration="35" />
+    <item android:drawable="@drawable/car_roadster_f1" android:duration="35" />
+</animation-list>

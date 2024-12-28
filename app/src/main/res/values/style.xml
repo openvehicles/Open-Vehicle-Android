@@ -20,6 +20,11 @@
         <item name="android:textSize">16sp</item>
     </style>
 
+    <style name="Theme.App2" parent="Theme.Material3.DynamicColors.Dark">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">
         <item name="android:background">@color/colorPrimary</item>
         <item name="background">@color/colorPrimary</item>
@@ -73,6 +78,12 @@
         <item name="android:gravity">center_vertical</item>
         <item name="android:textAppearance">?android:textAppearanceMedium</item>
     </style>
-    	
+
+    <declare-styleable name="BatteryIndicatorView">
+        <attr name="bat_borderColor" format="color"/>
+        <attr name="bat_infillColor" format="color"/>
+        <attr name="bat_percent" format="integer"/>
+        <attr name="bat_internalSpacing" format="float"/>
+    </declare-styleable>
 
 </resources>

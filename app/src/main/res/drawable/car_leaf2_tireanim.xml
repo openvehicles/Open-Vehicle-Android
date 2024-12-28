@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item android:drawable="@drawable/car_leaf2_f4" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f3" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f2" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f1" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f2" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f3" android:duration="35" />
+    <item android:drawable="@drawable/car_leaf2_f4" android:duration="35" />
+</animation-list>

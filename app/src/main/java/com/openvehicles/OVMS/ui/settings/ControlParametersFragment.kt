@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
+import android.widget.FrameLayout
 import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
@@ -44,8 +45,12 @@ class ControlParametersFragment : BaseFragment(), OnResultCommandListener, OnIte
         // create storage adapter:
         adapter = ControlParametersAdapter()
         listView!!.setAdapter(adapter)
-        createProgressOverlay(inflater, container, true)
-        return listView
+        val frameLayout = FrameLayout(container!!.context)
+        frameLayout.addView(listView)
+        frameLayout.addView(inflater.inflate(R.layout.progress_layer, null, false))
+
+        createProgressOverlay(frameLayout, true)
+        return frameLayout
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

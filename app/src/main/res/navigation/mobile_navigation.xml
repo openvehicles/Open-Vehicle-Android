@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="com.openvehicles.OVMS.ui2.pages.HomeFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_mapFragment"
+            app:destination="@id/mapFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_home_to_controlsFragment"
+            app:destination="@id/controlsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_home_to_climateFragment"
+            app:destination="@id/climateFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_home_to_settingsFragment"
+            app:destination="@id/settingsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim"
+            app:popUpTo="@id/navigation_home" />
+        <action
+            android:id="@+id/action_navigation_home_to_powerFragment"
+            app:destination="@id/powerFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_chargingFragment"
+            app:destination="@id/chargingFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/mapFragment"
+        android:name="com.openvehicles.OVMS.ui.MapFragment"
+        android:label="@string/Location" />
+    <fragment
+        android:id="@+id/controlsFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.ControlsFragment"
+        android:label="@string/controls_tab_label"
+        tools:layout="@layout/fragment_controls" />
+    <fragment
+        android:id="@+id/climateFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.ClimateFragment"
+        android:label="@string/textAC" />
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.SettingsFragment"
+        android:label="@string/Settings" >
+        <action
+            android:id="@+id/action_settingsFragment_to_carInfoFragment"
+            app:destination="@id/carInfoFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_settingsFragment_to_controlFragment"
+            app:destination="@id/controlFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_settingsFragment_to_carEditorFragment"
+            app:destination="@id/carEditorFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/powerFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.EnergyFragment"
+        android:label="@string/power_energy_description" >
+        <action
+            android:id="@+id/action_powerFragment_to_auxBatteryFragment"
+            app:destination="@id/auxBatteryFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_powerFragment_to_batteryFragment"
+            app:destination="@id/batteryFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/chargingFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.ChargingFragment"
+        android:label="@string/ChargingOverlay" />
+    <fragment
+        android:id="@+id/auxBatteryFragment"
+        android:name="com.openvehicles.OVMS.ui.AuxBatteryFragment"
+        android:label="@string/aux_battery_title" />
+    <fragment
+        android:id="@+id/batteryFragment"
+        android:name="com.openvehicles.OVMS.ui.BatteryFragment"
+        android:label="@string/battery_title" />
+    <fragment
+        android:id="@+id/carInfoFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.CarInfoFragment"
+        android:label="@string/lb_vehicle_info" />
+    <fragment
+        android:id="@+id/controlFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.ControlFragment"
+        android:label="@string/Control" >
+        <action
+            android:id="@+id/action_controlFragment_to_featuresFragment"
+            app:destination="@id/featuresFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_controlFragment_to_controlParametersFragment"
+            app:destination="@id/controlParametersFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_controlFragment_to_cellularStatsFragment"
+            app:destination="@id/cellularStatsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_controlFragment_to_logsFragment"
+            app:destination="@id/logsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
+    <fragment
+        android:id="@+id/featuresFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.FeaturesFragment"
+        android:label="@string/Features" />
+    <fragment
+        android:id="@+id/controlParametersFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.ControlParametersFragment"
+        android:label="@string/Parameters" />
+    <fragment
+        android:id="@+id/cellularStatsFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.CellularStatsFragment"
+        android:label="@string/CellularStats" />
+    <fragment
+        android:id="@+id/logsFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.LogsFragment"
+        android:label="LogsFragment" />
+    <fragment
+        android:id="@+id/carEditorFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.CarEditorFragment"
+        android:label="@string/btnAddCar" />
+
+</navigation>
