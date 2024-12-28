@@ -8,8 +8,6 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
-import android.location.Geocoder.GeocodeListener
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
@@ -41,7 +39,6 @@ import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.slider.RangeSlider
-import com.google.android.material.slider.Slider
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.api.OnResultCommandListener
@@ -703,27 +700,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if (context != null) {
             val geocoder = Geocoder(requireContext(), Locale.getDefault())
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    geocoder.getFromLocation(carData!!.car_latitude, carData!!.car_longitude, 1, GeocodeListener() {
-                        if (it.isNotEmpty()) {
-                            val returnedAddress = it[0]
-                            val strReturnedAddress = StringBuilder()
-                            for (i in 0 until returnedAddress.maxAddressLineIndex) {
-                                strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("")
-                            }
-                            geocodedLocation = strReturnedAddress.toString()
-                        }
-                    })
-                } else {
-                    val addresses = geocoder.getFromLocation(carData!!.car_latitude, carData!!.car_longitude, 1)
-                    if (!addresses.isNullOrEmpty()) {
-                        val returnedAddress = addresses[0]
-                        val strReturnedAddress = StringBuilder()
-                        for (i in 0 until returnedAddress.maxAddressLineIndex) {
-                            strReturnedAddress.append(returnedAddress.getAddressLine(i)).append("")
-                        }
-                        geocodedLocation = strReturnedAddress.toString()
-                    }
+                val addresses = geocoder.getFromLocation(carData!!.car_latitude, carData!!.car_longitude, 1)
+                if (!addresses.isNullOrEmpty()) {
+                    val returnedAddress = addresses[0]
+                    geocodedLocation = returnedAddress.getAddressLine(0)
                 }
             } catch (ignored: IOException) {
                 ignored.printStackTrace()
@@ -819,7 +799,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     override fun onNavigationItemSelected(itemPosition: Int, itemId: Long): Boolean {
-        Log.e("NAV", "ITEMS"+itemId)
         return true
     }
 }

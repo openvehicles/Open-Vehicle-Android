@@ -148,7 +148,6 @@ open class QuickAction {
     open fun renderAction() {
         val commandsAvailable = commandsAvailable()
         button.isEnabled = commandsAvailable
-        Log.e("NEWUI", "TABCONFIG: "+name+actionOnTint+actionOffTint)
         if (actionOnTint != null && actionOffTint != null) {
             try {
                 button.backgroundTintList =

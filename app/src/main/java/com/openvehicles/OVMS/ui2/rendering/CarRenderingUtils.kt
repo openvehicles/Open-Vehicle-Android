@@ -225,8 +225,6 @@ object CarRenderingUtils {
                 chargingResName += "_q_"
             }
 
-            Log.e("NEWUI", "CHGRES"+chargingResName)
-
             if (carData.car_charge_state_i_raw == 0x01 || carData.car_charge_state_i_raw == 0x02 || carData.car_charge_state_i_raw == 0x0f || carData.car_charging) {
                 val modeResource = Ui.getDrawableIdentifier(
                     context,

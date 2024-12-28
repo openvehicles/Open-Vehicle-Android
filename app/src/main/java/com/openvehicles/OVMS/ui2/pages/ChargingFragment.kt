@@ -379,7 +379,6 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             else -> {chargingInfo.visibility = View.GONE}
         }
         modeSwitcher.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            Log.e("CF", "MODECHECKED"+checkedId+"_"+isChecked)
             val checkedMode = when (checkedId) {
                 modeSwitcher[0].id -> 0
                 modeSwitcher[1].id -> 1
@@ -531,7 +530,6 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         limitActionSwitcher.clearOnButtonCheckedListeners()
         limitActionSwitcher.addOnButtonCheckedListener { group, checkedId, isChecked ->
-            Log.e("CF", "MODECHECKED"+checkedId+"_"+isChecked)
             var checkedMode = -1
             when (checkedId) {
                 limitActionSwitcher[0].id -> checkedMode = 0

@@ -32,6 +32,7 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     private var txtCodes: EditText? = null
     private var btnRevert: ImageButton? = null
     private var serviceEnabled = false
+    private var oldUiEnabled = false
     private var broadcastEnabled = false
     // Currently unused, may be reused if single messages shall be sent
     private var broadcastCodes: String? = null
@@ -44,12 +45,16 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         compatActivity?.setTitle(R.string.Options)
         appPrefs = AppPrefs(compatActivity!!, "ovms")
         serviceEnabled = appPrefs!!.getData("option_service_enabled", "0") == "1"
+        oldUiEnabled = appPrefs!!.getData("option_oldui_enabled", "0") == "1"
         broadcastEnabled = appPrefs!!.getData("option_broadcast_enabled", "0") == "1"
         broadcastCodes = appPrefs!!.getData("option_broadcast_codes", DEFAULT_BROADCAST_CODES)
         commandsEnabled = appPrefs!!.getData("option_commands_enabled", "0") == "1"
         var checkBox: CheckBox = findViewById(R.id.cb_options_service) as CheckBox
         checkBox.setChecked(serviceEnabled)
         checkBox.setOnClickListener(this)
+        var oldUiCheckbox: CheckBox = findViewById(R.id.cb_options_oldui) as CheckBox
+        oldUiCheckbox.setChecked(oldUiEnabled)
+        oldUiCheckbox.setOnClickListener(this)
         checkBox = findViewById(R.id.cb_options_broadcast) as CheckBox
         checkBox.setChecked(broadcastEnabled)
         checkBox.setOnClickListener(this)
@@ -81,6 +86,10 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
         val context = context ?: return
         val id = v.id
         when (id) {
+            R.id.cb_options_oldui -> {
+                oldUiEnabled = (v as CheckBox).isChecked
+                appPrefs!!.saveData("option_oldui_enabled", if (oldUiEnabled) "1" else "0")
+            }
             R.id.cb_options_service -> {
                 serviceEnabled = (v as CheckBox).isChecked
                 appPrefs!!.saveData("option_service_enabled", if (serviceEnabled) "1" else "0")
