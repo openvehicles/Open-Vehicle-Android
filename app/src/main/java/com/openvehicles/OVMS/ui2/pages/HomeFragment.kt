@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui2.pages
 
+import android.R.menu
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -9,10 +10,12 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -30,6 +33,8 @@ import android.widget.Toast
 import androidx.appcompat.app.ActionBar
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -105,6 +110,21 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val menuHost: MenuHost = requireActivity()
+
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.home_menu, menu)
+            }
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                when(menuItem.itemId) {
+                    R.id.notifications -> findNavController().navigate(R.id.action_navigation_home_to_notificationsFragment)
+                }
+                return true
+            }
+        }, viewLifecycleOwner)
+
         val quickActionsRecyclerView = findViewById(R.id.quickActonBar) as RecyclerView
         quickActionsAdapter = QuickActionsAdapter(context)
         quickActionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
@@ -140,14 +160,13 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     }
 
-
     private fun initialiseCarDropDown() {
         val cars = getStoredCars()
         val spinner = (activity as MainActivityUI2).findViewById(R.id.spinner_toolbar) as Spinner?
         val mArrayAdapter =
             NavAdapter(requireContext(), cars.map { CarPickerItem(it, it.sel_vehicle_label) }.toTypedArray())
         if (spinner != null) {
-            spinner.setAdapter(mArrayAdapter)
+            spinner.adapter = mArrayAdapter
             if (carData != null)
                 spinner.setSelection(cars.indexOfFirst { cD -> cD.hashCode() == carData.hashCode()  })
         }

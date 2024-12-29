@@ -10,7 +10,7 @@ import com.openvehicles.OVMS.ui.utils.Ui
  * Quick action handling climate control
  */
 class LockQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("lock", R.drawable.ic_lock_open, apiServiceGetter, actionOnTint = R.attr.colorSurfaceContainer, actionOffTint = R.attr.colorTertiaryContainer) {
+    QuickAction("lock", R.drawable.ic_lock_open, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorTertiaryContainer) {
     override fun renderAction() {
         super.renderAction()
     }

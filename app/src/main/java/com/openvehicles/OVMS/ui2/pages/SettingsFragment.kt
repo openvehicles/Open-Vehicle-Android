@@ -131,12 +131,7 @@ class SettingsFragment : BaseFragment(), OnItemClickListener {
     }
 
     private fun showGlobalOptions() {
-        show(
-            requireActivity(),
-            GlobalOptionsFragment::class.java,
-            null,
-            Configuration.ORIENTATION_UNDEFINED
-        )
+        findNavController().navigate(R.id.globalOptionsFragment)
     }
 
     /*

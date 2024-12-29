@@ -24,7 +24,7 @@
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/action_button"
-        style="@style/Widget.Material3.FloatingActionButton.Tertiary"
+        style="@style/ThemeOverlay.Material3.FloatingActionButton.Secondary"
         android:layout_width="50dp"
         android:layout_height="50dp"
         android:clickable="true"

@@ -50,6 +50,12 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_notificationsFragment"
+            app:destination="@id/notificationsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -83,6 +89,12 @@
         <action
             android:id="@+id/action_settingsFragment_to_carEditorFragment"
             app:destination="@id/carEditorFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_settingsFragment_to_globalOptionsFragment"
+            app:destination="@id/globalOptionsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
@@ -170,5 +182,13 @@
         android:id="@+id/carEditorFragment"
         android:name="com.openvehicles.OVMS.ui.settings.CarEditorFragment"
         android:label="@string/btnAddCar" />
+    <fragment
+        android:id="@+id/globalOptionsFragment"
+        android:name="com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment"
+        android:label="@string/Options" />
+    <fragment
+        android:id="@+id/notificationsFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.NotificationsFragment"
+        android:label="@string/pushnotifications" />
 
 </navigation>

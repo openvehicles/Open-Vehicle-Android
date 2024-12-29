@@ -10,7 +10,7 @@ import com.openvehicles.OVMS.ui.utils.Ui
  * Quick action handling climate control
  */
 class ValetQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("valet", R.drawable.ic_valet, apiServiceGetter, actionOnTint = R.attr.colorTertiaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
+    QuickAction("valet", R.drawable.ic_valet, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
     override fun renderAction() {
         super.renderAction()
     }

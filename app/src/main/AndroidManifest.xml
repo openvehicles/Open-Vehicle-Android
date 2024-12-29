@@ -32,7 +32,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".ui2.MainActivityUI2"
-            android:theme="@style/Theme.Material3.Dark.NoActionBar"
+            android:theme="@style/Theme.App2"
             android:configChanges="orientation|keyboardHidden"
             android:exported="true"
             android:hardwareAccelerated="true"

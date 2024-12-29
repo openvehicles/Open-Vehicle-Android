@@ -30,8 +30,16 @@ class NotificationData : Serializable {
             TYPE_COMMAND -> R.drawable.ic_action_send
             TYPE_RESULT_SUCCESS -> android.R.drawable.ic_menu_revert
             TYPE_RESULT_ERROR -> android.R.drawable.ic_menu_help
-            else -> android.R.drawable.ic_menu_info_details
+            else -> R.drawable.ic_action_about
         }
+
+    val msgType: Int
+        get() = when (Type) {
+            TYPE_USSD, TYPE_COMMAND -> 0
+            TYPE_ALERT, TYPE_ERROR, TYPE_INFO -> -1
+            else -> 1
+        }
+
 
     constructor(ID: Long, type: Int, timestamp: Date, title: String, message: String) {
         this.ID = ID

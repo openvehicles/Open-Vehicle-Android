@@ -41,7 +41,6 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_settings)
         compatActivity?.setTitle(R.string.Options)
         appPrefs = AppPrefs(compatActivity!!, "ovms")
         serviceEnabled = appPrefs!!.getData("option_service_enabled", "0") == "1"

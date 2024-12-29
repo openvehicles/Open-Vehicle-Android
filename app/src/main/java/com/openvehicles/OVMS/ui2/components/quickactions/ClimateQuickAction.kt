@@ -7,7 +7,7 @@ import com.openvehicles.OVMS.api.ApiService
  * Quick action handling climate control
  */
 class ClimateQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("climate", R.drawable.ic_ac, apiServiceGetter, actionOnTint = R.attr.colorTertiaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
+    QuickAction("climate", R.drawable.ic_ac, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
     override fun renderAction() {
         super.renderAction()
     }
