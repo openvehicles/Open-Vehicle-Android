@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.fragment.findNavController
 import com.androidmapsextensions.CircleOptions
 import com.androidmapsextensions.ClusterGroup
 import com.androidmapsextensions.ClusteringSettings
@@ -275,6 +276,14 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             item.setChecked(newState)
             updateMapDetails(false)
         } else if (menuId == R.id.mi_map_settings) {
+            var baseActivity: BaseFragmentActivity? = null
+            try {
+                baseActivity = activity as BaseFragmentActivity?
+            } catch (ignored: Exception) {}
+            if (baseActivity == null) {
+                findNavController().navigate(R.id.action_mapFragment_to_mapSettingsFragment)
+                return false
+            }
             show(
                 requireActivity(),
                 MapSettingsFragment::class.java,

@@ -10,131 +10,80 @@
 		android:orientation="vertical"
 		android:scrollbars="vertical">
 
-		<com.google.android.material.textfield.TextInputLayout
+		<EditText
+			android:id="@+id/txt_vehicle_id"
+			android:layout_width="150dp"
+			android:layout_height="wrap_content"
+			android:hint="@string/lb_vehicle_id"
+			android:inputType="textNoSuggestions|textCapCharacters">
+
+			<requestFocus />
+		</EditText>
+
+		<EditText
+			android:id="@+id/txt_vehicle_label"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
+			android:layout_marginTop="8dp"
+			android:hint="@string/lb_vehicle_label"
+			android:inputType="textCapWords" />
 
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_vehicle_id"
-				android:layout_width="150dp"
-				android:layout_height="wrap_content"
-				android:hint="@string/lb_vehicle_id"
-				android:inputType="textNoSuggestions|textCapCharacters">
-
-				<requestFocus />
-			</com.google.android.material.textfield.TextInputEditText>
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
+		<EditText
+			android:id="@+id/txt_server_passwd"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
+			android:layout_marginTop="8dp"
+			android:hint="@string/lb_server_passwd"
+			android:inputType="textPassword" />
 
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_vehicle_label"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
-				android:hint="@string/lb_vehicle_label"
-				android:inputType="textCapWords" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
+		<EditText
+			android:id="@+id/txt_module_passwd"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
-
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_server_passwd"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
-				android:hint="@string/lb_server_passwd"
-				android:inputType="textPassword" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
-
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_module_passwd"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="8dp"
-				android:hint="@string/lb_module_passwd"
-				android:inputType="textPassword" />
-
-		</com.google.android.material.textfield.TextInputLayout>
+			android:layout_marginTop="8dp"
+			android:hint="@string/lb_module_passwd"
+			android:inputType="textPassword" />
 
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="12dp"
-			android:layout_marginBottom="12dp"
 			android:text="@string/lb_select_server" />
 
-		<com.google.android.material.textfield.TextInputLayout
-			style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content" 				android:layout_marginBottom="5dp">
-
-			<com.google.android.material.textfield.MaterialAutoCompleteTextView
-				android:id="@+id/select_server"
-				android:layout_width="match_parent"
-				android:inputType="none"
-				android:layout_height="wrap_content"
- />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
+		<Spinner
+			android:id="@+id/select_server"
+			style="@style/Widget.AppCompat.Spinner.Underlined"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
+			android:layout_column="1"
+			android:background="@drawable/spinner_ab_focused_ovms"
+			android:entries="@array/select_server_options" />
 
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_server_address"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_marginTop="12dp"
-				android:layout_marginBottom="5dp"
-				android:ems="10"
-				android:hint="@string/ServerNameOrIP"
-				android:inputType="text"
-				android:text="" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
-		<com.google.android.material.textfield.TextInputLayout
+		<EditText
+			android:id="@+id/txt_server_address"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_marginBottom="5dp">
+			android:layout_marginTop="8dp"
+			android:ems="10"
+			android:hint="@string/ServerNameOrIP"
+			android:inputType="text"
+			android:text="" />
 
-			<com.google.android.material.textfield.TextInputEditText
-				android:id="@+id/txt_gcm_senderid"
-				android:layout_width="match_parent"
-				android:layout_height="wrap_content"
-				android:layout_gravity="center_horizontal"
-				android:layout_marginTop="8dp"
-				android:ems="10"
-				android:hint="@string/GcmSenderID"
-				android:inputType="number" />
-
-		</com.google.android.material.textfield.TextInputLayout>
-
+		<EditText
+			android:id="@+id/txt_gcm_senderid"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:ems="10"
+			android:hint="@string/GcmSenderID"
+			android:inputType="number" />
 
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="12dp"
 			android:text="@string/lb_slide_choice_vehicle" />
-
 
 		<Gallery
 			android:id="@+id/ga_car"
