@@ -289,7 +289,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             if (carData?.car_started == true) {
                 statusText.text = carData.car_speed
             }
-            if (carData?.car_charging == true) {
+            if (carData?.car_charging == true || carData?.car_charge_state_i_raw == 14) {
                 statusText.setText(R.string.state_charging_label)
 
                 val etrFull = carData.car_chargefull_minsremaining
@@ -475,7 +475,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             chargingResName += "_q"
         }
 
-        val chargePortOpen = if (carData?.car_type == "NL") (carData.car_charging || carData.car_charge_timer) else carData?.car_chargeport_open == true
+        val chargePortOpen = if (carData?.car_type == "NL") (carData.car_charging || carData.car_charge_timer || carData.car_charge_state_i_raw == 14) else carData?.car_chargeport_open == true
 
 
         if (chargePortOpen || CAR_RENDER_TEST_MODE_CHG) {
@@ -487,7 +487,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
         }
 
-        if (carData?.car_charge_timer == true) {
+        if (carData?.car_charge_state_i_raw == 0x0d || carData?.car_charge_state_i_raw == 0x0e || carData?.car_charge_state_i_raw == 0x101 || carData?.car_charge_state_i_raw == 0x04 || carData?.car_charge_timer == true) {
             val modeResource = Ui.getDrawableIdentifier(
                 context,
                 chargingResName +"_cw"
@@ -497,7 +497,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         }
 
 
-        if (carData?.car_charging == true || CAR_RENDER_TEST_MODE_CHG) {
+        if (carData?.car_charge_state_i_raw == 0x01 || carData?.car_charge_state_i_raw == 0x02 || carData?.car_charge_state_i_raw == 0x0f || carData?.car_charging == true || CAR_RENDER_TEST_MODE_CHG) {
             val modeResource = Ui.getDrawableIdentifier(
                 context,
                 chargingResName +"_chg"
