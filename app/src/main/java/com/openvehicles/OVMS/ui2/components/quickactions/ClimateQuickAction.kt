@@ -1,15 +1,19 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
+import android.content.Context
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 
 /**
  * Quick action handling climate control
  */
-class ClimateQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("climate", R.drawable.ic_ac, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
-    override fun renderAction() {
-        super.renderAction()
+class ClimateQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
+    QuickAction(ACTION_ID, R.drawable.ic_ac, apiServiceGetter,
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.attr.colorSurfaceContainer,
+        label = context?.getString(R.string.climate_control_short)) {
+    companion object {
+        const val ACTION_ID = "climate"
     }
 
     override fun onAction() {
@@ -19,10 +23,6 @@ class ClimateQuickAction(apiServiceGetter: () -> ApiService?) :
             sendCommand("26,0")
     }
 
-    override fun onCommandFinish(command: String) {
-        super.onCommandFinish(command)
-
-    }
 
     override fun getStateFromCarData(): Boolean {
         return getCarData()?.car_hvac_on == true

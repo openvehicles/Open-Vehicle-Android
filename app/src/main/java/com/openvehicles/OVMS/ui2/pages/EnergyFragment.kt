@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
@@ -66,15 +67,19 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
         val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l1)!!.toBitmap()
 
         val soc = carData?.car_soc_raw ?: 0f
-        val iconWidth = icon.height.times(((soc.toDouble()/100.0)))
-        val iconDiff = icon.height-iconWidth
+        val iconWidth = icon.height.minus(22).times(((soc / 100.0))).plus(7.5)
         if (iconWidth > 0) {
-            val mBitmap = Bitmap.createBitmap(icon, 0,iconDiff.toInt(), icon.width, iconWidth.toInt())
+            val matrix = Matrix()
+            matrix.postRotate(180f)
+            val mBitmap =
+                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.toInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 
             if (carData?.car_charging == true) {
-                layer1Drawable.setTint(context?.resources?.getColor(R.color.colorAccent) ?: Color.GREEN)
+                layer1Drawable.setTint(
+                    context?.resources?.getColor(R.color.colorAccent) ?: Color.GREEN
+                )
             } else if (soc <= 10) {
                 layer1Drawable.setTint(Color.RED)
             } else if (soc <= 20) {
@@ -105,6 +110,11 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
         val consRegen = findViewById(R.id.regenAmount) as TextView
         val consSpent = findViewById(R.id.consumeAmount) as TextView
         val consTrip = findViewById(R.id.consumeTrip) as TextView
+        val whTrip = findViewById(R.id.consumptionTrip) as TextView
+        var consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
+        if (consumption?.isNaN() == true)
+            consumption = 0f
+        whTrip.text = String.format("%.1f Wh/%s", consumption, carData?.car_distance_units)
         consRegen.text = String.format("%2.2f kWh", carData?.car_energyrecd)
         consSpent.text = String.format("%2.2f kWh", carData?.car_energyused)
         consTrip.text = String.format("%.1f %s", carData?.car_tripmeter_raw?.div(10), carData?.car_distance_units)

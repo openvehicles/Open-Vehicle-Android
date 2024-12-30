@@ -5,13 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
-    android:layout_height="65dp"
+    android:layout_height="wrap_content"
     android:layout_margin="6dp"
+    android:minHeight="65dp"
     app:cardBackgroundColor="?attr/colorSecondaryContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_margin="12dp">
 
 
@@ -27,6 +29,7 @@
             tools:srcCompat="@drawable/ic_ac" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -49,7 +52,7 @@
             <TextView
                 android:id="@+id/tabExtraInfo"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:alpha="0.8"
                 android:text="TextView"
                 android:textColor="?attr/colorOnSecondaryContainer"
@@ -63,9 +66,9 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginEnd="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@+id/linearLayout"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/linearLayout"
             app:srcCompat="@drawable/ic_tab_chevron"
             app:tint="?attr/colorOnSecondaryContainer" />
     </androidx.constraintlayout.widget.ConstraintLayout>

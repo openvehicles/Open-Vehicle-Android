@@ -18,7 +18,7 @@ import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui2.components.quickactions.ClimateQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.QuickActionsAdapter
+import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAdapter
 import com.openvehicles.OVMS.ui2.rendering.CarRenderingUtils
 import com.openvehicles.OVMS.utils.CarsStorage
 import java.text.DecimalFormat
@@ -93,9 +93,9 @@ class ClimateFragment : BaseFragment(), OnResultCommandListener {
         outsideTempUnitText.text = "°"+carData?.car_temp_ambient?.split("°")?.last()
 
 
-        climateActionsAdapter.mData = emptyList()
+        climateActionsAdapter.mData.clear()
         climateActionsAdapter.setCarData(carData)
-        climateActionsAdapter.mData += ClimateQuickAction {getService()}
+        climateActionsAdapter.mData += ClimateQuickAction({getService()})
         climateActionsAdapter.notifyDataSetChanged()
     }
 

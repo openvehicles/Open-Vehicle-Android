@@ -127,6 +127,7 @@
         <item translatable="false"></item>
     </string-array>
 
+
     <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
     <string name="lb_ft_minimum_soc">#%d: Minimum SOC</string>
@@ -726,6 +727,7 @@
     <string name="cartype_DEMO" translatable="false">Demonstration Vehicle</string>
     <string name="cartype_FT5E" translatable="false">Fiat 500e</string>
     <string name="cartype_HIONVFL" translatable="false">Hyundai Ioniq vFL</string>
+    <string name="cartype_I5" translatable="false">Hyundai Ioniq 5</string>
     <string name="cartype_JLRI" translatable="false">Jaguar i-Pace</string>
     <string name="cartype_KN" translatable="false">Kia Niro / Hyundai Kona EV</string>
     <string name="cartype_KS" translatable="false">Kia Soul EV</string>
@@ -766,4 +768,27 @@
     <string name="edit_car">Edit car</string>
     <string name="lb_options_old_ui">Old UI</string>
     <string name="lb_options_old_ui_cb">Use old UI instead of new (requires restart)</string>
+    <string name="app_ui_prefs_home_show_range">Show range information with SoC</string>
+    <string name="app_ui_prefs_charging_always_show_time_est">Always show charging time estimations</string>
+    <string name="app_ui_prefs_charging_always_show_time_est_i">Always show time estimations on charging screen, even when car is not charging</string>
+    <string name="app_ui_prefs_home_range_display_mode">Car range displayed in home screen</string>
+    <string name="other_settings">Other settings</string>
+    <string name="legacy_settings_title">OVMS Legacy Settings</string>
+    <string name="app_settings">App settings</string>
+    <string name="quick_actions">Quick actions</string>
+    <string name="app_ui_prefs_home_quick_actions_i">Customise and re-arrange Quick Actions</string>
+    <string name="consumption">Consumption</string>
+    <string name="modify_quick_actions">Modify quick actions</string>
+    <string name="quick_actions_modify_hint">Hint: drag to re-arrange, click to remove</string>
+    <string name="climate_control_short">Climate</string>
+    <string name="central_locking_action_label">Lock</string>
+    <string name="Garage">Garage</string>
+    <string name="custom_command">Custom</string>
+    <string name="max_quick_actions_reached">No more space, remove a quick action and try again</string>
+    <string name="dlg_choose_icon_action_title">Choose action icon</string>
+    <string name="invalid_command">Invalid command! Please enter a valid command</string>
+    <string-array name="home_range_display_mode_labels" translatable="false">
+        <item>@string/IdealShort</item>
+        <item>@string/EstimatedShort</item>
+    </string-array>
 </resources>

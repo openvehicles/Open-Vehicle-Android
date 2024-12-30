@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <resources>
     <item type="id" name="content"/>
-	<style name="Theme.App" parent="Theme.AppCompat" >
+	<style name="Theme.App" parent="Theme.AppCompat">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -23,6 +23,17 @@
     <style name="Theme.App2" parent="Theme.Material3.DynamicColors.Dark">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
+        <item name="windowActionModeOverlay">true</item>
+    </style>
+
+
+    <style name="ThemeOverlay.App.Preference" parent="PreferenceThemeOverlay">
+        <item name="switchPreferenceCompatStyle">@style/App.Preference.SwitchPreference</item>
+    </style>
+
+    <style name="App.Preference.SwitchPreference" parent="Preference.SwitchPreference.Material">
+        <item name="android:widgetLayout">@layout/material3_preference_switch_layout</item>
     </style>
 
     <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">

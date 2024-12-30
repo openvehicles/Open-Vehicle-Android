@@ -24,8 +24,9 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/climate_card"
         android:layout_width="0dp"
-        android:layout_height="90dp"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:minHeight="90dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">

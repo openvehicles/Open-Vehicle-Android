@@ -459,7 +459,12 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
                 } else {
                     val tv = v!!.findViewById<View>(R.id.textNotificationsListTitle) as TextView
                     tv.text = it.Title
-
+                    tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, fragment.fontSize)
+                    if (fragment.fontMonospace) {
+                        tv.setTypeface(Typeface.MONOSPACE)
+                    } else {
+                        tv.setTypeface(Typeface.DEFAULT)
+                    }
                     if (it.msgType == 1) {
                         tv.text = it.messageFormatted
                     }
