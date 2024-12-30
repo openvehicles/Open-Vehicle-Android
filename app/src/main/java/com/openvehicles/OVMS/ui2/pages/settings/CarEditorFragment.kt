@@ -1,5 +1,6 @@
-package com.openvehicles.OVMS.ui.settings
+package com.openvehicles.OVMS.ui2.pages.settings
 
+import android.R.attr.type
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,12 +10,17 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.BaseAdapter
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Gallery
 import android.widget.ImageView
-import android.widget.Spinner
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
+import com.google.android.material.textfield.MaterialAutoCompleteTextView
+import com.google.android.material.textfield.TextInputLayout
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
@@ -31,13 +37,14 @@ import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 import com.openvehicles.OVMS.utils.CarsStorage.saveStoredCars
 
+
 class CarEditorFragment : BaseFragment() {
 
     private var carData: CarData? = null
     private var isSelectedCar = false
     private var editPosition = 0
     private var galleryCar: Gallery? = null
-    private var selectServer: Spinner? = null
+    private var selectServer: MaterialAutoCompleteTextView? = null
     private var selectServerPosition = 0
     private lateinit var servers: Array<String>
     private lateinit var gcmSenders: Array<String>
@@ -55,7 +62,6 @@ class CarEditorFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_edit)
         editPosition = requireArguments().getInt("position", -1)
         if (editPosition >= 0) {
             try {
@@ -70,27 +76,21 @@ class CarEditorFragment : BaseFragment() {
                 isSelectedCar = false
             }
         }
-        selectServer = requireView().findViewById<View>(R.id.select_server) as Spinner
+
+        selectServer = requireView().findViewById<View>(R.id.select_server) as MaterialAutoCompleteTextView
+        val adapter: ArrayAdapter<String> = ArrayAdapter(
+            requireContext(),
+            R.layout.dropdown_menu_popup_item,
+            requireContext().resources.getStringArray(R.array.select_server_options)
+        )
+        selectServer!!.setAdapter(adapter);
         selectServerPosition = -1
         servers = resources.getStringArray(R.array.select_server_options)
         gcmSenders = resources.getStringArray(R.array.select_server_gcm_senders)
         server = requireView().findViewById<View>(R.id.txt_server_address) as EditText
         gcmSender = requireView().findViewById<View>(R.id.txt_gcm_senderid) as EditText
-        selectServer!!.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View,
-                position: Int,
-                id: Long
-            ) {
-                setSelectedServer(position, true)
-            }
-
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                // nop
-            }
-        }
+        selectServer!!.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, view, position, id -> setSelectedServer(position, true) }
         galleryCar = requireView().findViewById<View>(R.id.ga_car) as Gallery
         galleryCar!!.setAdapter(CarImgAdapter())
         setHasOptionsMenu(true)
@@ -104,7 +104,8 @@ class CarEditorFragment : BaseFragment() {
     override fun onPrepareOptionsMenu(menu: Menu) {
         Log.d("CarEditorFragment", "onPrepareOptionsMenu edit car: " + (getStoredCars().size > 1))
         menu.findItem(R.id.mi_delete).setVisible(carData != null && getStoredCars().size > 1)
-        menu.findItem(R.id.mi_control).setVisible(isSelectedCar)
+        // hide control, not necessary
+        menu.findItem(R.id.mi_control).setVisible(false)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -115,13 +116,6 @@ class CarEditorFragment : BaseFragment() {
             }
             R.id.mi_delete -> {
                 delete()
-                true
-            }
-            R.id.mi_control -> {
-                val args = Bundle()
-                args.putInt("position", editPosition)
-                val activity = activity as BaseFragmentActivity?
-                activity!!.setNextFragment(ControlFragment::class.java, args)
                 true
             }
             else -> false
@@ -145,7 +139,13 @@ class CarEditorFragment : BaseFragment() {
                 }
                 changeCar(selCar)
                 // back to previous fragment:
-                requireActivity().finish()
+                var baseActivity: BaseFragmentActivity? = null
+                try {
+                    baseActivity = activity as BaseFragmentActivity?
+                    baseActivity?.finish()
+                } catch (ignored: Exception) {
+                    findNavController().popBackStack()
+                }
             }
             .show()
     }
@@ -195,7 +195,13 @@ class CarEditorFragment : BaseFragment() {
             getStoredCars().add(carData!!)
         }
         saveStoredCars()
-        requireActivity().finish()
+        var baseActivity: BaseFragmentActivity? = null
+        try {
+            baseActivity = activity as BaseFragmentActivity?
+            baseActivity?.finish()
+        } catch (ignored: Exception) {
+            findNavController().popBackStack()
+        }
     }
 
     private fun load() {
@@ -205,7 +211,7 @@ class CarEditorFragment : BaseFragment() {
             setSelectedServer(0, false)
         } else {
             // edit existing car:
-            compatActivity?.setTitle(carData!!.sel_vehicleid)
+            compatActivity?.supportActionBar?.setTitle(carData!!.sel_vehicleid)
             setValue(rootView!!, R.id.txt_vehicle_id, carData!!.sel_vehicleid)
             setValue(rootView, R.id.txt_vehicle_label, carData!!.sel_vehicle_label)
             setValue(rootView, R.id.txt_server_passwd, carData!!.sel_server_password)
@@ -251,8 +257,8 @@ class CarEditorFragment : BaseFragment() {
             if (position < servers.size - 1) {
                 server!!.setText(servers[position])
                 gcmSender!!.setText(gcmSenders[position])
-                server!!.visibility = View.GONE
-                gcmSender!!.visibility = View.GONE
+                (server!!.parent as FrameLayout).visibility = View.GONE
+                (gcmSender!!.parent as FrameLayout).visibility = View.GONE
             } else {
                 if (userAction) {
                     server!!.setText("")
@@ -262,11 +268,11 @@ class CarEditorFragment : BaseFragment() {
                     server!!.setText(if (carData != null) carData!!.sel_server else "")
                     gcmSender!!.setText(if (carData != null) carData!!.sel_gcm_senderid else "")
                 }
-                server!!.visibility = View.VISIBLE
-                gcmSender!!.visibility = View.VISIBLE
+                (server!!.parent as FrameLayout).visibility = View.VISIBLE
+                (gcmSender!!.parent as FrameLayout).visibility = View.VISIBLE
             }
             if (!userAction) {
-                selectServer!!.setSelection(position)
+                selectServer!!.setText(requireContext().resources.getStringArray(R.array.select_server_options)[position], false)
             }
         }
     }

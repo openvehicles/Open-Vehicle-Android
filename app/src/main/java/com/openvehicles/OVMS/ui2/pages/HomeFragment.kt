@@ -487,7 +487,16 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
         }
 
-        if (carData?.car_charge_state_i_raw == 0x0d || carData?.car_charge_state_i_raw == 0x0e || carData?.car_charge_state_i_raw == 0x101 || carData?.car_charge_state_i_raw == 0x04 || carData?.car_charge_timer == true) {
+
+        // For some reason some cars do not show timed charge as car_charge_timer
+        val rawTimerStatus =
+                    carData?.car_chargeport_open == true &&
+                    (carData.car_charge_state_i_raw == 0x0d ||
+                     carData.car_charge_state_i_raw == 0x0e ||
+                     carData.car_charge_state_i_raw == 0x101)
+
+
+        if (carData?.car_charge_timer == true || rawTimerStatus) {
             val modeResource = Ui.getDrawableIdentifier(
                 context,
                 chargingResName +"_cw"
