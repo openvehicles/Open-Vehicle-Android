@@ -778,6 +778,15 @@
     <string name="quick_actions">Quick actions</string>
     <string name="app_ui_prefs_home_quick_actions_i">Customise and re-arrange Quick Actions</string>
     <string name="consumption">Consumption</string>
+    <string name="modify_quick_actions">Modify quick actions</string>
+    <string name="quick_actions_modify_hint">Hint: drag to re-arrange, click to remove</string>
+    <string name="climate_control_short">Climate</string>
+    <string name="central_locking_action_label">Lock</string>
+    <string name="Garage">Garage</string>
+    <string name="custom_command">Custom</string>
+    <string name="max_quick_actions_reached">No more space, remove a quick action and try again</string>
+    <string name="dlg_choose_icon_action_title">Choose action icon</string>
+    <string name="invalid_command">Invalid command! Please enter a valid command</string>
     <string-array name="home_range_display_mode_labels" translatable="false">
         <item>@string/IdealShort</item>
         <item>@string/EstimatedShort</item>

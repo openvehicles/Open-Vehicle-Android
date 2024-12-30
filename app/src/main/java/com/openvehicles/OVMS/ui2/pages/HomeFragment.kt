@@ -1,6 +1,7 @@
 package com.openvehicles.OVMS.ui2.pages
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
@@ -32,6 +33,8 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.view.MenuHost
@@ -42,29 +45,55 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.flexbox.FlexDirection
+import com.google.android.flexbox.FlexboxLayoutManager
+import com.google.android.flexbox.JustifyContent
+import com.google.android.gms.common.util.Base64Utils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.slider.RangeSlider
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.maltaisn.icondialog.IconDialog
+import com.maltaisn.icondialog.IconDialogSettings
+import com.maltaisn.icondialog.data.Icon
+import com.maltaisn.icondialog.pack.IconPack
+import com.openvehicles.OVMS.BaseApp
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
+import com.openvehicles.OVMS.entities.StoredCommand
 import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.ui2.components.hometabs.HomeTab
 import com.openvehicles.OVMS.ui2.components.hometabs.HomeTabsAdapter
+import com.openvehicles.OVMS.ui2.components.quickactions.ChargingQuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.ClimateQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.HomeLinkQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.CustomCommandQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink1QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink2QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink3QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.LockQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.QuickActionsAdapter
+import com.openvehicles.OVMS.ui2.components.quickactions.QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode1QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode2QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode3QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveModeDefaultQuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.ValetQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.WakeupQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAdapter
+import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsEditorAdapter
 import com.openvehicles.OVMS.ui2.misc.CarAnimationDrawable
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 import java.io.IOException
+import java.util.Base64
 import java.util.Locale
+import java.util.concurrent.locks.Lock
 import kotlin.math.floor
 import kotlin.properties.Delegates
 
@@ -74,19 +103,29 @@ import kotlin.properties.Delegates
  * Use the [HomeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.ItemClickListener,  ActionBar.OnNavigationListener {
+class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.ItemClickListener,  ActionBar.OnNavigationListener, IconDialog.Callback {
 
     private var carData: CarData? = null
+    override var iconDialogIconPack: IconPack? = null
     private lateinit var quickActionsAdapter: QuickActionsAdapter
+    private lateinit var quickActionsEditorAdapter: QuickActionsEditorAdapter
     private lateinit var tabsAdapter: HomeTabsAdapter
     private var textColor by Delegates.notNull<Int>()
+
+    private lateinit var appPrefs: AppPrefs
 
     private val CAR_RENDER_TEST_MODE_T = false
     private val CAR_RENDER_TEST_MODE_D = false
     private val CAR_RENDER_TEST_MODE_HD = false
     private val CAR_RENDER_TEST_MODE_CHG = false
 
-    private val lastQuickActionConfig: String? = null
+    private var lastQuickActionConfig: String? = null
+
+    private var showEditAction = false
+        set(value) {
+            quickActionsAdapter.editMode = value
+            findViewById(R.id.modifyQuickActions).visibility = if (value) View.VISIBLE else View.GONE
+        }
 
     companion object {
         private val TAB_CONTROLS = 1
@@ -95,12 +134,31 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         private val TAB_CLIMATE = 4
         private val TAB_SETTINGS = 5
         private val TAB_ENERGY = 6
+        private val ICON_DIALOG_TAG = "add-quickaction-icon-dialog"
+
+        private fun getEditorQuickActions(context: Context): List<QuickAction> {
+            return listOf(
+                ChargingQuickAction({null}, context),
+                ClimateQuickAction({null}, context),
+                LockQuickAction({null}, context),
+                WakeupQuickAction({null}, context),
+                ValetQuickAction({null}, context),
+                Homelink1QuickAction({null}, context),
+                Homelink2QuickAction({null}, context),
+                Homelink3QuickAction({null}, context),
+                TwizyDriveModeDefaultQuickAction({null}, context),
+                TwizyDriveMode1QuickAction({null}, context),
+                TwizyDriveMode2QuickAction({null}, context),
+                TwizyDriveMode3QuickAction({null}, context),
+                CustomCommandQuickAction("custom", AppCompatResources.getDrawable(context, R.drawable.ic_custom_command)!!, "", {null}, context.getString(R.string.custom_command)),
+                )
+        }
+
     }
-
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        iconDialogIconPack = (requireActivity().application as BaseApp).iconPack
     }
 
     override fun onCreateView(
@@ -113,8 +171,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        appPrefs = AppPrefs(requireContext(), "ovms")
 
         val menuHost: MenuHost = requireActivity()
+
+
 
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -130,7 +191,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         }, viewLifecycleOwner)
 
         val quickActionsRecyclerView = findViewById(R.id.quickActonBar) as RecyclerView
-        quickActionsAdapter = QuickActionsAdapter(context)
+        val modifyQuickActionsRecyclerView = findViewById(R.id.modifyQuickActionsRecyclerView) as RecyclerView
+        quickActionsAdapter = QuickActionsAdapter(context, {_ ->
+            saveQuickActions(quickActionsAdapter.mData.toList())
+            updateQuickActionEditorItems()
+        })
 
         val callback: ItemTouchHelper.Callback = object : ItemTouchHelper.Callback() {
 
@@ -141,13 +206,46 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
                 Log.e("HF", "SELCHNGE"+actionState)
+                if (actionState == 2 && !quickActionsAdapter.editMode) {
+                    showEditAction = true
+                    quickActionsAdapter.notifyDataSetChanged()
+                    (activity as MainActivityUI2?)?.startSupportActionMode(object : androidx.appcompat.view.ActionMode.Callback {
+
+                        override fun onCreateActionMode(
+                            mode: androidx.appcompat.view.ActionMode?,
+                            menu: Menu?
+                        ): Boolean {
+                            return true
+                        }
+
+                        override fun onPrepareActionMode(
+                            mode: androidx.appcompat.view.ActionMode?,
+                            menu: Menu?
+                        ): Boolean {
+                            mode?.title = getString(R.string.modify_quick_actions)
+                            return true
+                        }
+
+                        override fun onActionItemClicked(
+                            mode: androidx.appcompat.view.ActionMode?,
+                            item: MenuItem?
+                        ): Boolean {
+                            return true
+                        }
+
+                        override fun onDestroyActionMode(mode: androidx.appcompat.view.ActionMode?) {
+                            showEditAction = false
+                            quickActionsAdapter.notifyDataSetChanged()
+                        }
+                    })
+                }
             }
 
             override fun getMovementFlags(
                 recyclerView: RecyclerView,
                 viewHolder: RecyclerView.ViewHolder
             ): Int {
-                val dragFlags = ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+                val dragFlags = ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT or ItemTouchHelper.DOWN
                 return makeMovementFlags(dragFlags, 0)
             }
 
@@ -158,6 +256,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             ): Boolean {
                 Log.e("HF", "MOVE"+target.layoutPosition+","+target.oldPosition)
                 quickActionsAdapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                saveQuickActions(quickActionsAdapter.mData)
                 return true
             }
 
@@ -167,8 +266,21 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         }
 
-        quickActionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        val quickActionsManager = FlexboxLayoutManager(requireContext())
+        quickActionsManager.flexDirection = FlexDirection.ROW
+        quickActionsManager.justifyContent = JustifyContent.SPACE_EVENLY
+        quickActionsRecyclerView.layoutManager = quickActionsManager
         quickActionsRecyclerView.adapter = quickActionsAdapter
+
+        // Quick Actions editor
+        quickActionsEditorAdapter = QuickActionsEditorAdapter(requireContext(), {onQuickActionAddRequest(it)})
+        quickActionsEditorAdapter.mData += getEditorQuickActions(requireContext())
+        modifyQuickActionsRecyclerView.adapter = quickActionsEditorAdapter
+        val quickActionsEditorManager = FlexboxLayoutManager(requireContext())
+        quickActionsEditorManager.flexDirection = FlexDirection.ROW
+        quickActionsEditorManager.justifyContent = JustifyContent.CENTER
+        modifyQuickActionsRecyclerView.layoutManager = quickActionsEditorManager
+
         val touchHelper = ItemTouchHelper(callback)
         touchHelper.attachToRecyclerView(quickActionsRecyclerView)
 
@@ -725,24 +837,160 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
 
     private fun initialiseQuickActions(carData: CarData?) {
-
-        if (lastQuickActionConfig == null || lastQuickActionConfig != carData?.sel_vehicleid) {
-            // TODO Load config from settings for each vehicle
-            quickActionsAdapter.mData = emptyList()
-            quickActionsAdapter.mData += LockQuickAction {getService()}
-            if (carData?.car_type == "RT") {
-                // Renault Twizy: use Homelink for profile switching:
-                quickActionsAdapter.mData += HomeLinkQuickAction("hl_default", R.drawable.ic_drive_profile, "24", {getService()})
-            } else {
-                quickActionsAdapter.mData += ClimateQuickAction {getService()}
+        if (lastQuickActionConfig == null || quickActionsAdapter.mData.isEmpty() || lastQuickActionConfig != carData?.sel_vehicleid) {
+            // TODO Load config from settings for selected vehicle
+            var savedQuickActionConfig: Array<String> = Gson().fromJson(
+                appPrefs.getData("quick_actions_"+carData?.sel_vehicleid, "[]"),
+                Array<String>::class.java
+            )
+            if (savedQuickActionConfig.isEmpty()) {
+                // Get default config and save most optimised version for the vehicle
+                val defaultIdConfig: Array<String> = when (carData?.sel_vehicleid) {
+                    "RT" -> arrayOf("charging", "valet", "rt_profile_0", "rt_profile_1", "rt_profile_2", "rt_profile_3")
+                    else -> arrayOf(
+                        LockQuickAction({null}),
+                        ChargingQuickAction({null}),
+                        ValetQuickAction({null}),
+                        WakeupQuickAction({null}),
+                        Homelink1QuickAction({null}),
+                        Homelink2QuickAction({null}),
+                        Homelink3QuickAction({null})
+                    ).filter { it.commandsAvailable() }.map { it.id }.take(6).toTypedArray()
+                }
+                saveQuickActions(null, defaultIdConfig)
+                savedQuickActionConfig = defaultIdConfig
             }
-            quickActionsAdapter.mData += ValetQuickAction {getService()}
-            quickActionsAdapter.mData += HomeLinkQuickAction("hl_1", R.drawable.ic_homelink_1, "24,0", {getService()})
-            quickActionsAdapter.mData += HomeLinkQuickAction("hl_2", R.drawable.ic_homelink_2, "24,1", {getService()})
-            quickActionsAdapter.mData += HomeLinkQuickAction("hl_3", R.drawable.ic_homelink_3, "24,2", {getService()})
-        }
+            lastQuickActionConfig = carData?.sel_vehicleid
 
+            quickActionsAdapter.mData.clear()
+
+            for (action in savedQuickActionConfig) {
+                getActionFromId(action) { getService() }?.let {
+                    quickActionsAdapter.mData.add(it)
+                }
+            }
+            updateQuickActionEditorItems()
+        }
         updateQuickActions(carData)
+    }
+
+    private fun getActionFromId(id: String, apiServiceGetter: () -> ApiService?): QuickAction? {
+        return when (id) {
+            ChargingQuickAction.ACTION_ID -> ChargingQuickAction(apiServiceGetter)
+            ClimateQuickAction.ACTION_ID -> ClimateQuickAction(apiServiceGetter)
+            LockQuickAction.ACTION_ID -> LockQuickAction(apiServiceGetter)
+            ValetQuickAction.ACTION_ID -> ValetQuickAction(apiServiceGetter)
+            WakeupQuickAction.ACTION_ID -> WakeupQuickAction(apiServiceGetter)
+            else -> {
+                if (id.startsWith("rt_profile_")) {
+                    return id.replace("rt_profile_", "").toIntOrNull().let {profileNum ->
+                        when (profileNum) {
+                            0 -> TwizyDriveModeDefaultQuickAction(apiServiceGetter)
+                            1 -> TwizyDriveMode1QuickAction(apiServiceGetter)
+                            2 -> TwizyDriveMode2QuickAction(apiServiceGetter)
+                            3 -> TwizyDriveMode3QuickAction(apiServiceGetter)
+                            else -> null
+                        }
+                    }
+                }
+                if (id.startsWith("hl_")) {
+                    return id.replace("hl_", "").toIntOrNull().let {profileNum ->
+                        when (profileNum) {
+                            1 -> Homelink1QuickAction(apiServiceGetter)
+                            2 -> Homelink2QuickAction(apiServiceGetter)
+                            3 -> Homelink3QuickAction(apiServiceGetter)
+                            else -> null
+                        }
+                    }
+                }
+                if (id.startsWith("custom_")) {
+                    try {
+                        val customCommand: StoredCommand? = com.openvehicles.OVMS.utils.Base64.decodeToObject(id.removePrefix("custom_"), 0, StoredCommand::class.java.classLoader) as StoredCommand?
+                        Log.e("HF", "PARSED_CUSTOMACTION:"+Gson().toJson(customCommand))
+                        return iconDialogIconPack?.getIcon(customCommand?.title?.toInt() ?: -1)?.drawable?.let {icon ->
+                            return CustomCommandQuickAction(id, icon, customCommand!!.command, {getService()})
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+                return null
+            }
+        }
+    }
+
+    /*
+       Update available editor items based on currently shown items
+     */
+    private fun updateQuickActionEditorItems() {
+        quickActionsEditorAdapter.mData.clear()
+        for (itm in getEditorQuickActions(requireContext())) {
+            if (quickActionsAdapter.mData.find { it.id == itm.id } == null && (!itm.id.startsWith("rt_") || carData?.car_type == "RT")) {
+                quickActionsEditorAdapter.mData.add(itm)
+            }
+        }
+        quickActionsEditorAdapter.notifyDataSetChanged()
+
+    }
+
+    private fun saveQuickActions(actions: List<QuickAction>?, ids: Array<String>? = null) {
+        carData?.sel_vehicleid.let {
+            appPrefs.saveData("quick_actions_$it", Gson().toJson(ids ?: (actions?.map { itm -> itm.id}?.toTypedArray() ?: emptyArray<String>())))
+        }
+    }
+
+    private fun onQuickActionAddRequest(id: String) {
+        if (quickActionsAdapter.mData.size > 5) {
+            Toast.makeText(context, getString(R.string.max_quick_actions_reached), Toast.LENGTH_SHORT).show()
+            return
+        }
+        if (quickActionsAdapter.mData.find { it.id == id } == null) {
+            if (id == "custom") {
+                // handle custom separetely
+                val dialogSettings = IconDialogSettings.Builder()
+                dialogSettings.dialogTitle = R.string.dlg_choose_icon_action_title
+                dialogSettings.maxSelection = 1
+                val iconDialog = childFragmentManager.findFragmentByTag(ICON_DIALOG_TAG) as IconDialog?
+                    ?: IconDialog.newInstance(dialogSettings.build())
+                iconDialog.show(childFragmentManager, ICON_DIALOG_TAG)
+                return
+            }
+            getActionFromId(id) { getService() }?.let {
+                quickActionsAdapter.mData.add(it)
+                quickActionsAdapter.notifyItemInserted(quickActionsAdapter.mData.size-1)
+                updateQuickActionEditorItems()
+                saveQuickActions(quickActionsAdapter.mData)
+            }
+        }
+    }
+
+    override fun onIconDialogIconsSelected(dialog: IconDialog, icons: List<Icon>) {
+        if (icons.isEmpty()) {
+            return
+        }
+        val view = LayoutInflater.from(context).inflate(R.layout.dlg_stored_command, null)
+        view.findViewById<View>(R.id.etxt_input_title).visibility = View.GONE
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage(R.string.stored_commands_add)
+            .setView(view)
+            .setNegativeButton(R.string.Cancel, null)
+            .setPositiveButton(R.string.Save) { dialog1: DialogInterface?, which: Int ->
+                val cmd = Ui.getValue(view, R.id.etxt_input_command)
+                if (cmd.isEmpty()) {
+                    Toast.makeText(context, R.string.invalid_command, Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+                val iconId = icons.first().id.toString()
+                val customCommand = StoredCommand(iconId, cmd)
+                Log.e("HF", "CUSTOMACTION:"+Gson().toJson(customCommand))
+                getActionFromId("custom_${com.openvehicles.OVMS.utils.Base64.encodeObject(customCommand)}") { getService() }?.let {
+                    quickActionsAdapter.mData.add(it)
+                    quickActionsAdapter.notifyItemInserted(quickActionsAdapter.mData.size-1)
+                    updateQuickActionEditorItems()
+                    saveQuickActions(quickActionsAdapter.mData)
+                }
+            }
+            .create().show()
     }
 
     private fun initialiseTabs(carData: CarData?) {
@@ -764,7 +1012,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             getString(R.string.textAC).lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, climateData)
 
-        val consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
+        var consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
+        if (consumption?.isNaN() == true)
+            consumption = 0f
         val st = String.format(
             "%.1f Wh/%s, Regen %.1f kWh, Trip %s",
             consumption,
@@ -781,7 +1031,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 val addresses = geocoder.getFromLocation(carData!!.car_latitude, carData!!.car_longitude, 1)
                 if (!addresses.isNullOrEmpty()) {
                     val returnedAddress = addresses[0]
-                    geocodedLocation = returnedAddress.getAddressLine(0)
+                    if (returnedAddress.thoroughfare != null)
+                        geocodedLocation = "${returnedAddress.thoroughfare} ${returnedAddress.subThoroughfare ?: returnedAddress.premises ?: ""}"
+                    else
+                        geocodedLocation = returnedAddress.getAddressLine(0)
                 }
             } catch (ignored: IOException) {
                 ignored.printStackTrace()
@@ -807,6 +1060,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if (etrFull > 0 && etrSuffRange > 0) {
             chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
         }
+
         tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), chargingNote.joinToString(separator = ","))
         tabsAdapter.mData += HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), st)
 
@@ -865,7 +1119,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         this.carData = carData
         setupVisualisation(carData)
         initialiseChargingCard(carData)
-        updateQuickActions(carData)
+        initialiseQuickActions(carData)
         initialiseTabs(carData)
         initialiseBottomInfo(carData)
         initialiseCarDropDown()

@@ -66,6 +66,30 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         progressBar.visibility = View.INVISIBLE
 
+        // Charging time
+
+        val chargingTimes: TextView = findViewById(R.id.chargingTimes) as TextView
+
+        val etrFull = carData?.car_chargefull_minsremaining ?: 0
+        val suffSOC = carData?.car_chargelimit_soclimit ?: 0
+        val etrSuffSOC = carData?.car_chargelimit_minsremaining_soc ?: 0
+        val suffRange = carData?.car_chargelimit_rangelimit_raw ?: 0
+        val etrSuffRange = carData?.car_chargelimit_minsremaining_range ?: 0
+
+        var chargingNote = emptyList<String>()
+        if (suffSOC > 0 && etrSuffSOC > 0) {
+            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
+        }
+        if (suffRange > 0 && etrSuffRange > 0) {
+            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
+        }
+        if (etrFull > 0 && etrSuffRange > 0) {
+            chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
+        }
+
+        chargingTimes.text = chargingNote.joinToString(separator = "\n")
+        chargingTimes.visibility = if (chargingNote.isNotEmpty()) View.VISIBLE else View.GONE
+
 
         if (carData?.car_charging == true) {
             progressBar.visibility = View.VISIBLE

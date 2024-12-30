@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
+import android.content.Context
 import android.widget.ImageView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
@@ -9,10 +10,14 @@ import com.openvehicles.OVMS.ui.utils.Ui
 /**
  * Quick action handling climate control
  */
-class ValetQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("valet", R.drawable.ic_valet, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
-    override fun renderAction() {
-        super.renderAction()
+class ValetQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
+    QuickAction(ACTION_ID, R.drawable.ic_valet, apiServiceGetter,
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.attr.colorSurfaceContainer,
+        label = context?.getString(R.string.lb_valet_mode)) {
+
+    companion object {
+        const val ACTION_ID = "valet"
     }
 
     override fun onAction() {

@@ -1,5 +1,7 @@
 package com.openvehicles.OVMS.entities
 
+import java.io.Serializable
+
 class StoredCommand(
 
     @JvmField
@@ -9,7 +11,7 @@ class StoredCommand(
     @JvmField
     var command: String
 
-) : Comparable<StoredCommand> {
+) : Comparable<StoredCommand>, Serializable {
 
     constructor(title: String, command: String) : this(0, title, command)
 

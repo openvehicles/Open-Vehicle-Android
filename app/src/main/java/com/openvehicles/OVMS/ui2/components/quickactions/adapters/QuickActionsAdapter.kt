@@ -1,22 +1,25 @@
-package com.openvehicles.OVMS.ui2.components.quickactions
+package com.openvehicles.OVMS.ui2.components.quickactions.adapters
 
-import android.R.attr.data
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
+import com.openvehicles.OVMS.ui2.components.quickactions.QuickAction
 import java.util.Collections
 
 
 class QuickActionsAdapter internal constructor(
     context: Context?,
-    var mData: List<QuickAction> = emptyList()
+    val removeAction: ((action: QuickAction) -> Unit)? = null,
+    val mData: MutableList<QuickAction> = arrayListOf()
 ) : RecyclerView.Adapter<QuickActionsAdapter.ViewHolder>() {
     private val mInflater: LayoutInflater
     private var carData: CarData? = null
+    var editMode = false
 
     init {
         mInflater = LayoutInflater.from(context)
@@ -31,7 +34,16 @@ class QuickActionsAdapter internal constructor(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val action = mData[position]
         action.setCarData(carData)
-        action.initAction(holder.itemView)
+        action.initAction(holder.itemView, {
+            if (editMode) {
+                if (itemCount > 1) {
+                    mData.removeAt(holder.bindingAdapterPosition)
+                    notifyItemRemoved(holder.bindingAdapterPosition)
+                    removeAction?.invoke(action)
+                }
+            }
+            !editMode
+        }, editMode)
     }
 
     override fun getItemCount(): Int {
@@ -39,6 +51,8 @@ class QuickActionsAdapter internal constructor(
     }
 
     fun onRowMoved(fromPosition: Int, toPosition: Int) {
+        if (!editMode)
+            return
         if (fromPosition < toPosition) {
             for (i in fromPosition until toPosition) {
                 Collections.swap(mData, i, i + 1)

@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
+import android.content.Context
 import android.widget.ImageView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
@@ -9,10 +10,14 @@ import com.openvehicles.OVMS.ui.utils.Ui
 /**
  * Quick action handling climate control
  */
-class LockQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("lock", R.drawable.ic_lock_open, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorTertiaryContainer) {
-    override fun renderAction() {
-        super.renderAction()
+class LockQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
+    QuickAction(ACTION_ID, R.drawable.ic_lock_open, apiServiceGetter,
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.attr.colorTertiaryContainer,
+        label = context?.getString(R.string.central_locking_action_label)) {
+
+    companion object {
+        const val ACTION_ID = "lock"
     }
 
     override fun onAction() {
@@ -63,7 +68,7 @@ class LockQuickAction(apiServiceGetter: () -> ApiService?) :
             })
     }
 
-    override fun getLiveCarIcon(state: Boolean): Int {
+    override fun getLiveCarIconId(state: Boolean): Int {
         return if (state) R.drawable.ic_lock_closed else R.drawable.ic_lock_open
     }
 

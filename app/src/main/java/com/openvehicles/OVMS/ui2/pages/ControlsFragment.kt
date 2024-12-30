@@ -22,10 +22,18 @@ import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui2.components.quickactions.ChargingQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.HomeLinkQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.CustomCommandQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink1QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink2QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.Homelink3QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.LockQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.QuickActionsAdapter
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode1QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode2QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode3QuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveModeDefaultQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAdapter
 import com.openvehicles.OVMS.ui2.components.quickactions.ValetQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.WakeupQuickAction
 import com.openvehicles.OVMS.ui2.rendering.CarRenderingUtils
 import com.openvehicles.OVMS.utils.CarsStorage
 
@@ -240,26 +248,29 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
     }
 
     private fun initialiseSideActions(carData: CarData?) {
-        sideActionsAdapter.mData = emptyList()
+        sideActionsAdapter.mData.clear()
         centerActionsAdapter.setCarData(carData)
         if (carData?.car_type == "RT") {
             // Renault Twizy: use Homelink for profile switching:
-            sideActionsAdapter.mData += HomeLinkQuickAction("hl_default", R.drawable.ic_drive_profile, "24", {getService()})
+            sideActionsAdapter.mData += TwizyDriveModeDefaultQuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += TwizyDriveMode1QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += TwizyDriveMode2QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += TwizyDriveMode3QuickAction({getService()}).setCarData(carData)
         } else {
-            sideActionsAdapter.mData += HomeLinkQuickAction("hl_1", R.drawable.ic_homelink_1, "24,0", {getService()})
-            sideActionsAdapter.mData += HomeLinkQuickAction("hl_2", R.drawable.ic_homelink_2, "24,1", {getService()})
-            sideActionsAdapter.mData += HomeLinkQuickAction("hl_3", R.drawable.ic_homelink_3, "24,2", {getService()})
+            sideActionsAdapter.mData += Homelink1QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += Homelink2QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += Homelink3QuickAction({getService()}).setCarData(carData)
         }
         sideActionsAdapter.notifyDataSetChanged()
     }
 
     private fun initialiseMainActions(carData: CarData?) {
-        centerActionsAdapter.mData = emptyList()
+        centerActionsAdapter.mData.clear()
         centerActionsAdapter.setCarData(carData)
-        centerActionsAdapter.mData += LockQuickAction {getService()}
-        centerActionsAdapter.mData += ValetQuickAction {getService()}
-        centerActionsAdapter.mData += HomeLinkQuickAction("wakeup", R.drawable.ic_wakeup, "18", {getService()})
-        centerActionsAdapter.mData += ChargingQuickAction {getService()}
+        centerActionsAdapter.mData += LockQuickAction({getService()})
+        centerActionsAdapter.mData += ValetQuickAction({getService()})
+        centerActionsAdapter.mData += WakeupQuickAction({getService()})
+        centerActionsAdapter.mData += ChargingQuickAction({getService()})
         centerActionsAdapter.notifyDataSetChanged()
     }
 

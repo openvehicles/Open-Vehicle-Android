@@ -111,7 +111,9 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
         val consSpent = findViewById(R.id.consumeAmount) as TextView
         val consTrip = findViewById(R.id.consumeTrip) as TextView
         val whTrip = findViewById(R.id.consumptionTrip) as TextView
-        val consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
+        var consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
+        if (consumption?.isNaN() == true)
+            consumption = 0f
         whTrip.text = String.format("%.1f Wh/%s", consumption, carData?.car_distance_units)
         consRegen.text = String.format("%2.2f kWh", carData?.car_energyrecd)
         consSpent.text = String.format("%2.2f kWh", carData?.car_energyused)

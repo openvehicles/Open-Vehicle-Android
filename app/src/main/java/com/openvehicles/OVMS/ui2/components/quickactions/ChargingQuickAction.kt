@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
+import android.content.Context
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
@@ -7,12 +8,14 @@ import com.openvehicles.OVMS.api.ApiService
 /**
  * Quick action handling climate control
  */
-class ChargingQuickAction(apiServiceGetter: () -> ApiService?) :
-    QuickAction("charging", R.drawable.ic_charging, apiServiceGetter, actionOnTint = R.attr.colorSecondaryContainer, actionOffTint = R.attr.colorSurfaceContainer) {
-    override fun renderAction() {
-        super.renderAction()
-    }
+class ChargingQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
+    QuickAction(ACTION_ID, R.drawable.ic_charging, apiServiceGetter,
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.attr.colorSurfaceContainer, label = context?.getString(R.string.state_charging_label)) {
 
+    companion object {
+        const val ACTION_ID = "charging"
+    }
     override fun onAction() {
         var context = context ?: return
         if (getCarData()?.car_charging == true) {
@@ -37,6 +40,6 @@ class ChargingQuickAction(apiServiceGetter: () -> ApiService?) :
 
 
     override fun commandsAvailable(): Boolean {
-        return this.getCarData()?.car_chargeport_open == true && getCarData()?.car_charge_state_i_raw != 0x101 && getCarData()?.car_charge_state_i_raw != 0x115
+        return true
     }
 }
