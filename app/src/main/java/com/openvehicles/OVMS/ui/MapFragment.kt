@@ -276,9 +276,9 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             item.setChecked(newState)
             updateMapDetails(false)
         } else if (menuId == R.id.mi_map_settings) {
-            var baseActivity: BaseFragmentActivity? = null
+            var baseActivity: MainActivity? = null
             try {
-                baseActivity = activity as BaseFragmentActivity?
+                baseActivity = activity as MainActivity?
             } catch (ignored: Exception) {}
             if (baseActivity == null) {
                 findNavController().navigate(R.id.action_mapFragment_to_mapSettingsFragment)
