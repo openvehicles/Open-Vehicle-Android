@@ -56,7 +56,7 @@ class CarEditorFragment : BaseFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_careditor, null)
+        return inflater.inflate(R.layout.fragment_careditor_v2, null)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
