@@ -15,7 +15,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.Switch
+import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -26,7 +26,6 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.progressindicator.LinearProgressIndicator
 import com.google.android.material.slider.RangeSlider
-import com.google.gson.Gson
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -161,14 +160,29 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         socBattLayers += ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)!!
 
+        val limitIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chargelimit)!!.toBitmap()
+        val socLimit = carData?.car_chargelimit_soclimit ?: 0
+        val limitIconWidth = limitIcon.height.minus(22).times(((socLimit / 100.0))).plus(7.5)
+        if (limitIconWidth > 0) {
+            val matrix = Matrix()
+            matrix.postRotate(180f)
+            val mBitmap =
+                Bitmap.createBitmap(limitIcon, 0, 0, limitIcon.width, limitIconWidth.toInt(), matrix, true)
+            val layer1Drawable = BitmapDrawable(resources, mBitmap)
+            layer1Drawable.gravity = Gravity.BOTTOM
+
+            socBattLayers += layer1Drawable
+        }
+
         val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l1)!!.toBitmap()
 
         val soc = carData?.car_soc_raw ?: 0f
-        val iconWidth = icon.height.times(((soc.toDouble() / 100.0)))
-        val iconDiff = icon.height - iconWidth
+        val iconWidth = icon.height.minus(22).times(((soc / 100.0))).plus(7.5)
         if (iconWidth > 0) {
+            val matrix = Matrix()
+            matrix.postRotate(180f)
             val mBitmap =
-                Bitmap.createBitmap(icon, 0, iconDiff.toInt(), icon.width, iconWidth.toInt())
+                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.toInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 
@@ -186,22 +200,7 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             socBattLayers += layer1Drawable
         }
 
-        val socLimit = carData?.car_chargelimit_soclimit ?: 0
-        if (socLimit > 0) {
-            socBattLayers += ContextCompat.getDrawable(
-                requireContext(),
-                R.drawable.ic_chargelimit
-            )!!
-        }
-
-
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
-        if (socLimit > 0) {
-            socBattLayer.setLayerInset(
-                socBattLayers.count() - 1, 0,
-                (52 - 1.1 * socLimit.coerceIn(0, 100)).toInt(), 0, 0
-            )
-        }
         socBattIcon.setImageDrawable(socBattLayer)
         socText.text = carData?.car_soc
         var showSoc = true

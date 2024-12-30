@@ -577,7 +577,6 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
 
     override fun clearCache() {
         database.clearMapDetails()
-        MainActivity.updateLocation!!.updateLocation()
     }
 
     override fun updateFilter(connectionList: String?) {

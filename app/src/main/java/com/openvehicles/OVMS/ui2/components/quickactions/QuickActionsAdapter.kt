@@ -1,13 +1,15 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
+import android.R.attr.data
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
+import java.util.Collections
+
 
 class QuickActionsAdapter internal constructor(
     context: Context?,
@@ -34,6 +36,19 @@ class QuickActionsAdapter internal constructor(
 
     override fun getItemCount(): Int {
         return mData.size
+    }
+
+    fun onRowMoved(fromPosition: Int, toPosition: Int) {
+        if (fromPosition < toPosition) {
+            for (i in fromPosition until toPosition) {
+                Collections.swap(mData, i, i + 1)
+            }
+        } else {
+            for (i in fromPosition downTo toPosition + 1) {
+                Collections.swap(mData, i, i - 1)
+            }
+        }
+        notifyItemMoved(fromPosition, toPosition)
     }
 
     fun setCarData(carData: CarData?) {

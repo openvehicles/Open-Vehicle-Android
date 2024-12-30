@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="home_range_display_mode">
+        <item>ideal</item>
+        <item>estimated</item>
+    </string-array>
+
+    <string-array name="home_range_display_mode_default">
+        <item>estimated</item>
+    </string-array>
+</resources>

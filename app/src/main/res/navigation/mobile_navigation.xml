@@ -100,8 +100,8 @@
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
         <action
-            android:id="@+id/action_settingsFragment_to_globalOptionsFragment"
-            app:destination="@id/globalOptionsFragment"
+            android:id="@+id/action_settingsFragment_to_appUISettingsFragment"
+            app:destination="@id/appUISettingsFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
@@ -201,5 +201,16 @@
         android:id="@+id/mapSettingsFragment"
         android:name="com.openvehicles.OVMS.ui.MapSettingsFragment"
         android:label="@string/mi_map_settings" />
+    <fragment
+        android:id="@+id/appUISettingsFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.settings.AppUISettingsFragment"
+        android:label="@string/app_settings">
+        <action
+            android:id="@+id/action_appUISettingsFragment_to_globalOptionsFragment"
+            app:destination="@id/globalOptionsFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+    </fragment>
 
 </navigation>

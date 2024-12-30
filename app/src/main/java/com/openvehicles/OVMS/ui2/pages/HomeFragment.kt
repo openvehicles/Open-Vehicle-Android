@@ -1,15 +1,16 @@
 package com.openvehicles.OVMS.ui2.pages
 
-import android.R.menu
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.Matrix
 import android.graphics.drawable.AnimationDrawable
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -37,6 +38,7 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -84,6 +86,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private val CAR_RENDER_TEST_MODE_HD = false
     private val CAR_RENDER_TEST_MODE_CHG = false
 
+    private val lastQuickActionConfig: String? = null
+
     companion object {
         private val TAB_CONTROLS = 1
         private val TAB_LOCATION = 2
@@ -127,8 +131,46 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         val quickActionsRecyclerView = findViewById(R.id.quickActonBar) as RecyclerView
         quickActionsAdapter = QuickActionsAdapter(context)
+
+        val callback: ItemTouchHelper.Callback = object : ItemTouchHelper.Callback() {
+
+            override fun isLongPressDragEnabled(): Boolean {
+                return true
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                Log.e("HF", "SELCHNGE"+actionState)
+            }
+
+            override fun getMovementFlags(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder
+            ): Int {
+                val dragFlags = ItemTouchHelper.RIGHT or ItemTouchHelper.LEFT
+                return makeMovementFlags(dragFlags, 0)
+            }
+
+            override fun onMove(
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
+            ): Boolean {
+                Log.e("HF", "MOVE"+target.layoutPosition+","+target.oldPosition)
+                quickActionsAdapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+                return true
+            }
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                Log.e("HF", "SWIPED"+direction)
+            }
+
+        }
+
         quickActionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         quickActionsRecyclerView.adapter = quickActionsAdapter
+        val touchHelper = ItemTouchHelper(callback)
+        touchHelper.attachToRecyclerView(quickActionsRecyclerView)
 
         val homeTabsRecyclerView = findViewById(R.id.menuItems) as RecyclerView
         tabsAdapter = HomeTabsAdapter(context)
@@ -249,15 +291,19 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l1)!!.toBitmap()
 
         val soc = carData?.car_soc_raw ?: 0f
-        val iconWidth = icon.height.times(((soc.toDouble()/100.0)))
-        val iconDiff = icon.height-iconWidth
+        val iconWidth = icon.height.minus(22).times(((soc / 100.0))).plus(7.5)
         if (iconWidth > 0) {
-            val mBitmap = Bitmap.createBitmap(icon, 0,iconDiff.toInt(), icon.width, iconWidth.toInt())
+            val matrix = Matrix()
+            matrix.postRotate(180f)
+            val mBitmap =
+                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.toInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 
             if (carData?.car_charging == true) {
-                layer1Drawable.setTint(context?.resources?.getColor(R.color.colorAccent) ?: Color.GREEN)
+                layer1Drawable.setTint(
+                    context?.resources?.getColor(R.color.colorAccent) ?: Color.GREEN
+                )
             } else if (soc <= 10) {
                 layer1Drawable.setTint(Color.RED)
             } else if (soc <= 20) {
@@ -679,15 +725,18 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
 
     private fun initialiseQuickActions(carData: CarData?) {
-        quickActionsAdapter.mData = emptyList()
-        quickActionsAdapter.mData += LockQuickAction {getService()}
-        quickActionsAdapter.mData += ClimateQuickAction {getService()}
-        quickActionsAdapter.mData += ValetQuickAction {getService()}
 
-        if (carData?.car_type == "RT") {
-            // Renault Twizy: use Homelink for profile switching:
-            quickActionsAdapter.mData += HomeLinkQuickAction("hl_default", R.drawable.ic_drive_profile, "24", {getService()})
-        } else {
+        if (lastQuickActionConfig == null || lastQuickActionConfig != carData?.sel_vehicleid) {
+            // TODO Load config from settings for each vehicle
+            quickActionsAdapter.mData = emptyList()
+            quickActionsAdapter.mData += LockQuickAction {getService()}
+            if (carData?.car_type == "RT") {
+                // Renault Twizy: use Homelink for profile switching:
+                quickActionsAdapter.mData += HomeLinkQuickAction("hl_default", R.drawable.ic_drive_profile, "24", {getService()})
+            } else {
+                quickActionsAdapter.mData += ClimateQuickAction {getService()}
+            }
+            quickActionsAdapter.mData += ValetQuickAction {getService()}
             quickActionsAdapter.mData += HomeLinkQuickAction("hl_1", R.drawable.ic_homelink_1, "24,0", {getService()})
             quickActionsAdapter.mData += HomeLinkQuickAction("hl_2", R.drawable.ic_homelink_2, "24,1", {getService()})
             quickActionsAdapter.mData += HomeLinkQuickAction("hl_3", R.drawable.ic_homelink_3, "24,2", {getService()})
@@ -715,12 +764,13 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             getString(R.string.textAC).lowercase()
                 .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }, climateData)
 
+        val consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
         val st = String.format(
-            "%.1f, Regen %.1f kWh, %s, Ideal: %s",
-            carData?.car_energyused?.times(10)?.let { floor(it.toDouble()) }?.div(10) ?: 0,
+            "%.1f Wh/%s, Regen %.1f kWh, Trip %s",
+            consumption,
+            carData?.car_distance_units,
             carData?.car_energyrecd?.times(10)?.let { floor(it.toDouble()) }?.div(10) ?: 0,
-            carData?.car_range_estimated,
-            carData?.car_range_ideal
+            carData?.car_tripmeter
         )
 
 
@@ -741,8 +791,23 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         tabsAdapter.mData += HomeTab(TAB_LOCATION, R.drawable.ic_navigation, getString(R.string.Location), geocodedLocation)
 
 
+        val etrFull = carData?.car_chargefull_minsremaining ?: 0
+        val suffSOC = carData?.car_chargelimit_soclimit ?: 0
+        val etrSuffSOC = carData?.car_chargelimit_minsremaining_soc ?: 0
+        val suffRange = carData?.car_chargelimit_rangelimit_raw ?: 0
+        val etrSuffRange = carData?.car_chargelimit_minsremaining_range ?: 0
 
-        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), null)
+        var chargingNote = emptyList<String>()
+        if (suffSOC > 0 && etrSuffSOC > 0) {
+            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
+        }
+        if (suffRange > 0 && etrSuffRange > 0) {
+            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
+        }
+        if (etrFull > 0 && etrSuffRange > 0) {
+            chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
+        }
+        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), chargingNote.joinToString(separator = ","))
         tabsAdapter.mData += HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), st)
 
         tabsAdapter.mData += HomeTab(TAB_SETTINGS, R.drawable.ic_settings, getString(R.string.Settings), null)

@@ -131,7 +131,7 @@ class SettingsFragment : BaseFragment(), OnItemClickListener {
     }
 
     private fun showGlobalOptions() {
-        findNavController().navigate(R.id.globalOptionsFragment)
+        findNavController().navigate(R.id.action_settingsFragment_to_appUISettingsFragment)
     }
 
     /*

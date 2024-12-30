@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/title_home">
+
+        <MultiSelectListPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/app_ui_prefs_home_range_display_mode"
+            app:defaultValue="@array/home_range_display_mode_default"
+            app:entries="@array/home_range_display_mode_labels"
+            app:entryValues="@array/home_range_display_mode"
+            app:key="home_range_display_mode" />
+
+        <Preference
+            android:title="@string/quick_actions"
+            android:summary="@string/app_ui_prefs_home_quick_actions_i"
+            android:key="home_quick_actions"
+            />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="Preference category">
+
+        <SwitchPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/app_ui_prefs_charging_always_show_time_est"
+            app:key="charging_always_show_time_est"
+            app:summary="@string/app_ui_prefs_charging_always_show_time_est_i" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/other_settings">
+        <Preference
+            android:key="legacy_settings"
+            android:title="@string/legacy_settings_title"/>
+    </PreferenceCategory>
+</PreferenceScreen>
