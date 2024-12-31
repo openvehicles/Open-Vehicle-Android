@@ -33,7 +33,6 @@ import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.ActionBar
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -48,13 +47,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.flexbox.FlexDirection
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.google.android.gms.common.util.Base64Utils
 import com.google.android.material.card.MaterialCardView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.slider.RangeSlider
 import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.maltaisn.icondialog.IconDialog
 import com.maltaisn.icondialog.IconDialogSettings
 import com.maltaisn.icondialog.data.Icon
@@ -91,9 +88,7 @@ import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 import java.io.IOException
-import java.util.Base64
 import java.util.Locale
-import java.util.concurrent.locks.Lock
 import kotlin.math.floor
 import kotlin.properties.Delegates
 
@@ -394,6 +389,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         // SOC icon and label
         val socText: TextView = findViewById(R.id.battPercent) as TextView
+        val rangeText: TextView = findViewById(R.id.battRange) as TextView
         val socBattIcon = findViewById(R.id.batteryIndicatorView) as ImageView
 
         var socBattLayers = emptyList<Drawable>()
@@ -428,6 +424,30 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
         socBattIcon.setImageDrawable(socBattLayer)
         socText.text = carData?.car_soc
+
+        val rangeDisplay = appPrefs.appUIPrefs.getStringSet("home_range_display_mode", HashSet<String>())
+        val idealRange = rangeDisplay?.contains("ideal") == true
+        val estimatedRange = rangeDisplay?.contains("estimated") == true
+
+        if (idealRange && estimatedRange) {
+            rangeText.text = "I: ${carData?.car_range_ideal}, E: ${carData?.car_range_estimated}"
+        } else if (idealRange || estimatedRange) {
+            rangeText.text = if (idealRange) carData?.car_range_ideal else carData?.car_range_estimated
+        } else {
+            var socState = 0
+            val socToggleListener = {
+                socState += 1
+                if (socState > 2)
+                    socState = 0
+                socText.text = when (socState) {
+                    1 -> "I: ${carData?.car_range_ideal}"
+                    2 -> "E: ${carData?.car_range_estimated}"
+                    else -> carData?.car_soc
+                }
+            }
+            socText.setOnClickListener { socToggleListener() }
+            socBattIcon.setOnClickListener { socToggleListener() }
+        }
 
         // Status label
 
@@ -1052,10 +1072,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         var chargingNote = emptyList<String>()
         if (suffSOC > 0 && etrSuffSOC > 0) {
-            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
+            chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
         }
         if (suffRange > 0 && etrSuffRange > 0) {
-            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
+            chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
         }
         if (etrFull > 0 && etrSuffRange > 0) {
             chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))

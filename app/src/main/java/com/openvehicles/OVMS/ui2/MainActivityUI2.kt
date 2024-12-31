@@ -1,20 +1,31 @@
 package com.openvehicles.OVMS.ui2
 
+import android.Manifest
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.Spinner
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -46,6 +57,8 @@ class MainActivityUI2 : ApiActivity() {
     private var apiErrorMessage: String? = null
     private lateinit var appPrefs: AppPrefs
     private lateinit var uuid: String
+    private var versionName = ""
+    private var versionCode = 0
 
     private var tokenRequested = false
     private var apiEventReceiver: BroadcastReceiver? = null
@@ -134,13 +147,132 @@ class MainActivityUI2 : ApiActivity() {
         setSupportActionBar(toolbar)
         registerReceiver(apiEventReceiver, IntentFilter(ApiService.ACTION_APIEVENT))
 
-
+        // check for update, Google Play Services & permissions:
+        checkVersion()
 
         val abc = AppBarConfiguration.Builder(R.id.navigation_home).build();
         val navHostFragment = supportFragmentManager.fragments.first() as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupActionBarWithNavController(this, navHostFragment.navController, abc)
 
+    }
+
+    /**
+     * Check for update, show changes info
+     */
+    private fun checkVersion() {
+        try {
+            // get App version
+            val pInfo = packageManager.getPackageInfo(packageName, 0)
+            versionName = pInfo.versionName
+            versionCode = pInfo.versionCode
+            if (appPrefs.getData("lastUsedVersionName", "") != versionName) {
+                showVersion()
+            } else {
+                checkPlayServices()
+            }
+        } catch (e: PackageManager.NameNotFoundException) {
+            // ignore
+            checkPlayServices()
+        }
+    }
+
+    fun showVersion() {
+        val msg = TextView(this)
+        val scale = resources.displayMetrics.density
+        val pad = (25 * scale + 0.5f).toInt()
+        msg.setPadding(pad, pad, pad, pad)
+        msg.text = Html.fromHtml(getString(R.string.about_message))
+        msg.movementMethod = LinkMovementMethod.getInstance()
+        msg.isClickable = true
+        MaterialAlertDialogBuilder(this@MainActivityUI2)
+            .setTitle(getString(R.string.about_title, versionName, versionCode))
+            .setView(msg)
+            .setPositiveButton(R.string.msg_ok) { dialog1: DialogInterface?, which: Int ->
+                appPrefs.saveData(
+                    "lastUsedVersionName",
+                    versionName
+                )
+            }
+            .setOnDismissListener { dialog12: DialogInterface? -> checkPlayServices() }
+            .show()
+    }
+
+
+    /**
+     * Check the device for Google Play Services, tell user if missing.
+     */
+    private fun checkPlayServices() {
+        if (appPrefs.getData("skipPlayServicesCheck", "0") == "1") {
+            return
+        }
+        val apiAvailability = GoogleApiAvailability.getInstance()
+        val resultCode = apiAvailability.isGooglePlayServicesAvailable(this)
+        if (resultCode != ConnectionResult.SUCCESS) {
+            AlertDialog.Builder(this@MainActivityUI2)
+                .setTitle(R.string.common_google_play_services_install_title)
+                .setMessage(R.string.play_services_recommended)
+                .setPositiveButton(R.string.remind, null)
+                .setNegativeButton(R.string.dontremind) { dialog1: DialogInterface?, which: Int ->
+                    appPrefs.saveData(
+                        "skipPlayServicesCheck",
+                        "1"
+                    )
+                }
+                .setOnDismissListener { dialog12: DialogInterface? -> checkPermissions() }
+                .show()
+        } else {
+            checkPermissions()
+        }
+    }
+
+    /**
+     * Check / request permissions
+     */
+    private fun checkPermissions() {
+        val permissions = ArrayList<String>(2)
+        var showRationale = false
+
+        // ACCESS_FINE_LOCATION: needed for the "My location" map button
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
+            showRationale = ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.ACCESS_FINE_LOCATION
+            )
+        }
+
+        // POST_NOTIFICATIONS: needed on Android >= 13 to create notifications
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            permissions.add(Manifest.permission.POST_NOTIFICATIONS)
+            showRationale = showRationale or ActivityCompat.shouldShowRequestPermissionRationale(
+                this, Manifest.permission.POST_NOTIFICATIONS
+            )
+        }
+        if (permissions.isNotEmpty()) {
+            val permArray = arrayOfNulls<String>(permissions.size)
+            permissions.toArray(permArray)
+            if (showRationale) {
+                AlertDialog.Builder(this@MainActivityUI2)
+                    .setTitle(R.string.needed_permissions_title)
+                    .setMessage(R.string.needed_permissions_message)
+                    .setNegativeButton(R.string.later, null)
+                    .setPositiveButton(R.string.msg_ok) { dialog1: DialogInterface?, which: Int ->
+                        ActivityCompat.requestPermissions(
+                            this@MainActivityUI2,
+                            permArray,
+                            0
+                        )
+                    }
+                    .show()
+            } else {
+                ActivityCompat.requestPermissions(this@MainActivityUI2, permArray, 0)
+            }
+        }
     }
 
 

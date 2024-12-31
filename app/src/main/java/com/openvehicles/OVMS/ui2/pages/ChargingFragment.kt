@@ -30,6 +30,7 @@ import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
+import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import kotlin.math.max
 
@@ -37,8 +38,7 @@ import kotlin.math.max
 class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
     private var carData: CarData? = null
-
-
+    private lateinit var appPrefs: AppPrefs
     private lateinit var commandProgress: LinearProgressIndicator
 
 
@@ -52,6 +52,7 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        appPrefs = AppPrefs(requireContext(), "ovms")
         carData = CarsStorage.getSelectedCarData()
 
         commandProgress = findViewById(R.id.saveProgressBar) as LinearProgressIndicator
@@ -77,16 +78,18 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         val etrSuffRange = carData?.car_chargelimit_minsremaining_range ?: 0
 
         var chargingNote = emptyList<String>()
-        if (suffSOC > 0 && etrSuffSOC > 0) {
-            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
-        }
-        if (suffRange > 0 && etrSuffRange > 0) {
-            chargingNote += String.format("~%s: %d%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
-        }
-        if (etrFull > 0 && etrSuffRange > 0) {
-            chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
-        }
+        if (appPrefs.appUIPrefs.getBoolean("charging_always_show_time_est", true) || carData?.car_charging == true) {
+            if (suffSOC > 0 && etrSuffSOC > 0) {
+                chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
+            }
+            if (suffRange > 0 && etrSuffRange > 0) {
+                chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
+            }
+            if (etrFull > 0 && etrSuffRange > 0) {
+                chargingNote += String.format("~%s: 100%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
+            }
 
+        }
         chargingTimes.text = chargingNote.joinToString(separator = "\n")
         chargingTimes.visibility = if (chargingNote.isNotEmpty()) View.VISIBLE else View.GONE
 
