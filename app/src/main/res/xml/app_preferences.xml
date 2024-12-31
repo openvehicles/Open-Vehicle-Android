@@ -16,21 +16,16 @@
             app:entryValues="@array/home_range_display_mode"
             app:key="home_range_display_mode" />
 
-        <Preference
-            android:title="@string/quick_actions"
-            android:summary="@string/app_ui_prefs_home_quick_actions_i"
-            android:key="home_quick_actions"
-            />
     </PreferenceCategory>
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="Preference category">
+        android:title="@string/state_charging_label">
 
         <SwitchPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:title="@string/app_ui_prefs_charging_always_show_time_est"
             app:key="charging_always_show_time_est"
             app:summary="@string/app_ui_prefs_charging_always_show_time_est_i" />

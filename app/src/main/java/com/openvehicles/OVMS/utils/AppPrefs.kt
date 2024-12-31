@@ -6,6 +6,7 @@ package com.openvehicles.OVMS.utils
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.preference.PreferenceManager
 
 /**
  * @author android
@@ -16,6 +17,7 @@ class AppPrefs(
 ) {
 
     private val appSharedPrefs: SharedPreferences = context.getSharedPreferences(prefName, Activity.MODE_PRIVATE)
+    val appUIPrefs: SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
     private val prefsEditor: SharedPreferences.Editor = appSharedPrefs.edit()
 
     /**

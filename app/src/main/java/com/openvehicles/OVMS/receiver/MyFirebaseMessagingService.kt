@@ -15,6 +15,7 @@ import com.openvehicles.OVMS.api.ApiService.Companion.sendKustomBroadcast
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Ui
+import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.OVMSNotifications
 import com.openvehicles.OVMS.utils.Sys
@@ -125,7 +126,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             Log.d(TAG, "adding notification to system & UI")
 
             // create App launch Intent:
-            val notificationIntent = Intent(this, MainActivity::class.java)
+            val notificationIntent = Intent(this,
+                if (appPrefs?.getData("option_oldui_enabled", "0") == "1") MainActivity::class.java
+                else MainActivityUI2::class.java)
             notificationIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
             notificationIntent.putExtra("onNotification", true)
             val launchOVMSIntent = PendingIntent.getActivity(
@@ -133,8 +136,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 Sys.getMutableFlags(PendingIntent.FLAG_ONE_SHOT, false)
             )
 
+            /*
+                PNG icons (colored) are not shown anymore on newer androids, better use drawable vector
+             */
             // determine icon for this car:
-            val icon: Int = when {
+            /*val icon: Int = when {
                 car.sel_vehicle_image.startsWith("car_imiev_") -> R.drawable.map_car_imiev // one map icon for all colors
                 car.sel_vehicle_image.startsWith("car_i3_") -> R.drawable.map_car_i3 // one map icon for all colors
                 car.sel_vehicle_image.startsWith("car_smart_") -> R.drawable.map_car_smart // one map icon for all colors
@@ -142,13 +148,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 car.sel_vehicle_image.startsWith("car_kangoo_") -> R.drawable.map_car_kangoo // one map icon for all colors
                 car.sel_vehicle_image.startsWith("car_nrjk") -> R.drawable.map_car_nrjk // one map icon for all colors and models
                 else -> Ui.getDrawableIdentifier(this, "map_" + car.sel_vehicle_image)
-            }
+            }*/
 
             // create Notification builder:
             val mBuilder = NotificationCompat.Builder(this, "default")
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_ALL)
-                .setSmallIcon(if (icon != 0) icon else R.drawable.map_car_default)
+                .setSmallIcon(R.drawable.ic_notification_icon)
                 .setContentTitle(contentTitle)
                 .setContentText(contentText.replace('\r', '\n'))
                 .setContentIntent(launchOVMSIntent)

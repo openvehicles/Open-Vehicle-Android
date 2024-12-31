@@ -43,13 +43,12 @@
                 android:id="@+id/carStatus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="7dp"
                 android:text="TextView"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toEndOf="@+id/carUpdatingProgress"
-                app:layout_constraintTop_toBottomOf="@+id/battPercent" />
+                app:layout_constraintTop_toBottomOf="@+id/batteryIndicatorView" />
 
             <FrameLayout
                 android:id="@+id/carStatusRenderFrame"
@@ -75,16 +74,26 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="@+id/batteryIndicatorView"
                 app:layout_constraintStart_toEndOf="@+id/batteryIndicatorView"
                 app:layout_constraintTop_toTopOf="@+id/batteryIndicatorView"
                 tools:text="80%" />
 
+            <TextView
+                android:id="@+id/battRange"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/battPercent"
+                app:layout_constraintStart_toEndOf="@+id/battPercent"
+                app:layout_constraintTop_toTopOf="@+id/battPercent" />
+
             <ImageView
                 android:id="@+id/batteryIndicatorView"
-                android:layout_width="38dp"
-                android:layout_height="38dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:rotation="90"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent">
