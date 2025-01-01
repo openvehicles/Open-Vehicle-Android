@@ -9,13 +9,13 @@ import com.openvehicles.OVMS.api.ApiService
  */
 
 class Homelink1QuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null):
-    HomelinkQuickAction(1, R.drawable.ic_homelink_1, "${context?.getString(R.string.Garage)} 1", apiServiceGetter)
+    HomelinkQuickAction(0, R.drawable.ic_homelink_1, "${context?.getString(R.string.Garage)} 1", apiServiceGetter)
 
 class Homelink2QuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null):
-    HomelinkQuickAction(2, R.drawable.ic_homelink_2, "${context?.getString(R.string.Garage)} 2", apiServiceGetter)
+    HomelinkQuickAction(1, R.drawable.ic_homelink_2, "${context?.getString(R.string.Garage)} 2", apiServiceGetter)
 
 class Homelink3QuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null):
-    HomelinkQuickAction(3, R.drawable.ic_homelink_3, "${context?.getString(R.string.Garage)} 3", apiServiceGetter)
+    HomelinkQuickAction(2, R.drawable.ic_homelink_3, "${context?.getString(R.string.Garage)} 3", apiServiceGetter)
 open class HomelinkQuickAction(val garageNumber: Int,  icon: Int, label: String?, apiServiceGetter: () -> ApiService?) :
     QuickAction("hl_$garageNumber", icon, apiServiceGetter, label = label) {
 

@@ -18,9 +18,9 @@ class ClimateQuickAction(apiServiceGetter: () -> ApiService?, context: Context? 
 
     override fun onAction() {
         if (getCarData()?.car_hvac_on == true)
-            sendCommand("26,1")
-        else
             sendCommand("26,0")
+        else
+            sendCommand("26,1")
     }
 
 
