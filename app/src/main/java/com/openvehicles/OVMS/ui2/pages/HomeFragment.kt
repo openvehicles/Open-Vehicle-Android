@@ -115,8 +115,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private val CAR_RENDER_TEST_MODE_CHG = false
 
     private var lastQuickActionConfig: String? = null
-
+    private var socState = 0
     private var showEditAction = false
+
         set(value) {
             quickActionsAdapter.editMode = value
             findViewById(R.id.modifyQuickActions).visibility = if (value) View.VISIBLE else View.GONE
@@ -198,9 +199,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 return true
             }
 
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            }
+
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-                Log.e("HF", "SELCHNGE"+actionState)
                 if (actionState == 2 && !quickActionsAdapter.editMode) {
                     showEditAction = true
                     quickActionsAdapter.notifyDataSetChanged()
@@ -249,14 +252,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 viewHolder: RecyclerView.ViewHolder,
                 target: RecyclerView.ViewHolder
             ): Boolean {
-                Log.e("HF", "MOVE"+target.layoutPosition+","+target.oldPosition)
                 quickActionsAdapter.onRowMoved(viewHolder.getAdapterPosition(), target.getAdapterPosition());
                 saveQuickActions(quickActionsAdapter.mData)
                 return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                Log.e("HF", "SWIPED"+direction)
             }
 
         }
@@ -434,7 +432,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         } else if (idealRange || estimatedRange) {
             rangeText.text = if (idealRange) carData?.car_range_ideal else carData?.car_range_estimated
         } else {
-            var socState = 0
             val socToggleListener = {
                 socState += 1
                 if (socState > 2)
@@ -926,7 +923,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 if (id.startsWith("custom_")) {
                     try {
                         val customCommand: StoredCommand? = com.openvehicles.OVMS.utils.Base64.decodeToObject(id.removePrefix("custom_"), 0, StoredCommand::class.java.classLoader) as StoredCommand?
-                        Log.e("HF", "PARSED_CUSTOMACTION:"+Gson().toJson(customCommand))
                         return iconDialogIconPack?.getIcon(customCommand?.title?.toInt() ?: -1)?.drawable?.let {icon ->
                             return CustomCommandQuickAction(id, icon, customCommand!!.command, {getService()})
                         }
@@ -1002,7 +998,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 }
                 val iconId = icons.first().id.toString()
                 val customCommand = StoredCommand(iconId, cmd)
-                Log.e("HF", "CUSTOMACTION:"+Gson().toJson(customCommand))
                 getActionFromId("custom_${com.openvehicles.OVMS.utils.Base64.encodeObject(customCommand)}") { getService() }?.let {
                     quickActionsAdapter.mData.add(it)
                     quickActionsAdapter.notifyItemInserted(quickActionsAdapter.mData.size-1)
