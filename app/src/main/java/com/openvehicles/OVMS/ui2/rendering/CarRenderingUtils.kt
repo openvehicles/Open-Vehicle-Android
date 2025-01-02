@@ -12,20 +12,45 @@ object CarRenderingUtils {
     fun getTopDownCarLayers(carData: CarData, context: Context, climate: Boolean = false, heat: Boolean = false): List<Drawable> {
         var layers = emptyList<Drawable>()
 
-        val name_splitted = carData.sel_vehicle_image?.split("_");
 
-        var otherResName = name_splitted?.minus(name_splitted.last())?.joinToString("_")?.replace("car_", "")
-        var otherBodyResName = carData.sel_vehicle_image?.replace("car_", "")
+        var overlayResource: String = carData.sel_vehicle_image
+
+
+        val name_splitted = carData.sel_vehicle_image.split("_");
+
+
+
+        if (carData.sel_vehicle_image.startsWith("car_imiev_")
+            || carData.sel_vehicle_image.startsWith("car_i3_")
+            || carData.sel_vehicle_image.startsWith("car_smart_")
+            || carData.sel_vehicle_image.startsWith("car_smart_")
+            || carData.sel_vehicle_image.startsWith("car_ampera_")
+            || carData.sel_vehicle_image.startsWith("car_twizy_")
+            || carData.sel_vehicle_image.startsWith("car_kangoo_")
+            || carData.sel_vehicle_image.startsWith("car_nrjk")) {
+            // Mitsubishi i-MiEV: one ol image for all colors:
+            overlayResource = name_splitted.minus(name_splitted.last())
+                .joinToString("_")
+        } else if (carData.sel_vehicle_image.startsWith("car_holdenvolt_")) {
+            // Holdenvolt: one ol image for all colors (same as ampera):
+            overlayResource = "car_ampera"
+        } else if (carData.sel_vehicle_image.startsWith("car_kianiro_")) {
+            overlayResource = "car_kianiro_grey"
+        }
+
+        var otherResName = overlayResource.split("_").minus(name_splitted.last())
+            .joinToString("_").replace("car_", "")
+        val otherBodyResName = overlayResource.replace("car_", "")
 
         if (carData.car_type.startsWith("VA"))
             otherResName = "voltampera"
 
-
+        Log.e("CRU", overlayResource)
 
         layers = layers.plus(
             ContextCompat.getDrawable(context, Ui.getDrawableIdentifier(
                 context,
-                "ol_"+carData.sel_vehicle_image
+                "ol_"+overlayResource
             ))!!)
 
         if (climate) {
