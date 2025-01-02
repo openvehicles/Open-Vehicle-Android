@@ -477,7 +477,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     statusText.text = String.format(getString(R.string.charging_estimation_soc), String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60))
                 } else if (suffRange > 0 && etrSuffRange > 0) {
                     statusText.text = String.format(getString(R.string.charging_estimation_range), String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60))
-                } else if (etrFull > 0 && etrSuffRange > 0) {
+                } else if (etrFull > 0) {
                     statusText.text = String.format(getString(R.string.charging_estimation_full), String.format("%02d:%02d", etrFull / 60, etrFull % 60))
                 }
 
@@ -1072,11 +1072,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if (suffRange > 0 && etrSuffRange > 0) {
             chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
         }
-        if (etrFull > 0 && etrSuffRange > 0) {
+        if (etrFull > 0) {
             chargingNote += String.format("~%s: 100%%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
         }
 
-        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), chargingNote.joinToString(separator = ","))
+        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), chargingNote.joinToString(separator = ", "))
         tabsAdapter.mData += HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), st)
 
         tabsAdapter.mData += HomeTab(TAB_SETTINGS, R.drawable.ic_settings, getString(R.string.Settings), null)

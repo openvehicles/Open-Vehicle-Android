@@ -485,6 +485,7 @@
                         app:singleSelection="true">
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/cl_action_notify"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -492,6 +493,7 @@
                             android:textSize="12sp" />
 
                         <com.google.android.material.button.MaterialButton
+                            android:id="@+id/cl_action_stop"
                             style="@style/Widget.Material3.Button.OutlinedButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

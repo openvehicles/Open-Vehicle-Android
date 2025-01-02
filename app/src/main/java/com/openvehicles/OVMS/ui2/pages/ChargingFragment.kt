@@ -8,14 +8,12 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
-import android.widget.SeekBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
@@ -41,6 +39,11 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
     private lateinit var appPrefs: AppPrefs
     private lateinit var commandProgress: LinearProgressIndicator
 
+    private var chargeSuffRange = 0
+    private var chargeSuffSOC = 0
+    private var chargeLimitAction = -1
+    private var chargeRangeDrop = -1
+    private var chargeSocDrop = -1
 
 
     override fun onCreateView(
@@ -59,6 +62,11 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         initialiseBatteryStats(carData)
         initialiseBatteryControls(carData)
+
+        if (carData?.car_type == "RT" || carData?.car_type == "VWUP" || carData?.car_type == "NL") {
+            // Request info about limits
+            sendCommand("203", this)
+        }
     }
 
 
@@ -85,7 +93,7 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             if (suffRange > 0 && etrSuffRange > 0) {
                 chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
             }
-            if (etrFull > 0 && etrSuffRange > 0) {
+            if (etrFull > 0) {
                 chargingNote += String.format("~%s: 100%%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
             }
 
@@ -405,6 +413,8 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             else -> {chargingInfo.visibility = View.GONE}
         }
         modeSwitcher.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (!isChecked)
+                return@addOnButtonCheckedListener
             val checkedMode = when (checkedId) {
                 modeSwitcher[0].id -> 0
                 modeSwitcher[1].id -> 1
@@ -421,19 +431,21 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                 sendCommandWithProgress(String.format("10,%d", checkedMode), this@ChargingFragment)
             }
         }
+    }
 
+    private fun initialiseSpecialBatteryControls(carData: CarData?) {
         // Sufficient SOC and range switches
         val socLimit = findViewById(R.id.socLimit) as TextView
         val rangeLimit = findViewById(R.id.rangeLimit) as TextView
 
         val sufficientSocLimitSwitch = findViewById(R.id.sufficientSocLimitSwitch) as MaterialSwitch
         val sufficientSocSeekbar = findViewById(R.id.seekBar4) as RangeSlider
-        sufficientSocLimitSwitch.isEnabled = carData?.car_type == "RT" || carData?.car_type == "VWUP"
-        sufficientSocSeekbar.isEnabled = carData?.car_type == "RT" || carData?.car_type == "VWUP"
-        sufficientSocLimitSwitch.isChecked = (carData?.car_chargelimit_soclimit ?: 0) > 0
+        sufficientSocLimitSwitch.isEnabled = carData?.car_type == "RT" || carData?.car_type == "VWUP" || carData?.car_type == "NL"
+        sufficientSocSeekbar.isEnabled = carData?.car_type == "RT" || carData?.car_type == "VWUP" || carData?.car_type == "NL"
+        sufficientSocLimitSwitch.isChecked = chargeSuffSOC > 0
         sufficientSocSeekbar.isEnabled = sufficientSocLimitSwitch.isChecked && sufficientSocLimitSwitch.isEnabled
         sufficientSocSeekbar.values =
-            if ((carData?.car_chargelimit_soclimit ?: 0) > 0) listOf(carData!!.car_chargelimit_soclimit.toFloat())
+            if (chargeSuffSOC > 0) listOf(chargeSuffSOC.toFloat())
             else listOf(1.0f)
 
         socLimit.text = "${sufficientSocSeekbar.values.first().toInt()}%"
@@ -451,10 +463,20 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                     )
                     return@setOnCheckedChangeListener
                 }
+                if (carData?.car_type == "NL") {
+                    sendCommandWithProgress(
+                        String.format(
+                            "204,%d,%d",
+                            chargeSuffRange, 0
+                        ),
+                        this@ChargingFragment
+                    )
+                    return@setOnCheckedChangeListener
+                }
                 sendCommandWithProgress(
                     String.format(
                         "204,%d,%d,%d,%d",
-                        carData?.car_chargelimit_rangelimit_raw ?: 0, 0, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw ?: 0
+                        chargeSuffRange, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw ?: 0
                     ),
                     this@ChargingFragment
                 )
@@ -479,10 +501,20 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                     )
                     return
                 }
+                if (carData?.car_type == "NL") {
+                    sendCommandWithProgress(
+                        String.format(
+                            "204,%d,%d",
+                            chargeSuffRange, sufficientSocSeekbar.values.first().toInt()
+                        ),
+                        this@ChargingFragment
+                    )
+                    return
+                }
                 sendCommandWithProgress(
                     String.format(
                         "204,%d,%d,%d,%d",
-                        carData?.car_chargelimit_rangelimit_raw ?: 0, sufficientSocSeekbar.values.first().toInt(), carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw ?: 0
+                        chargeSuffRange, sufficientSocSeekbar.values.first().toInt(), carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw ?: 0
                     ),
                     this@ChargingFragment
                 )
@@ -499,14 +531,14 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         val sufficientRangeLimitSwitch = findViewById(R.id.sufficientRangeLimitSwitch) as MaterialSwitch
         val sufficientRangeSeekbar = findViewById(R.id.seekBar5) as RangeSlider
-        sufficientRangeLimitSwitch.isEnabled = carData?.car_type == "RT"
-        sufficientRangeSeekbar.isEnabled = carData?.car_type == "RT"
+        sufficientRangeLimitSwitch.isEnabled = carData?.car_type == "RT" || carData?.car_type == "NL"
+        sufficientRangeSeekbar.isEnabled = carData?.car_type == "RT" || carData?.car_type == "NL"
 
         sufficientRangeLimitSwitch.text = getString(R.string.lb_sufficient_range, carData?.car_distance_units)
-        sufficientRangeLimitSwitch.isChecked = (carData?.car_chargelimit_rangelimit_raw ?: 0) > 0
+        sufficientRangeLimitSwitch.isChecked = chargeSuffRange > 0
         sufficientRangeSeekbar.isEnabled = sufficientRangeLimitSwitch.isChecked && sufficientRangeLimitSwitch.isEnabled
         sufficientRangeSeekbar.values =
-            if ((carData?.car_chargelimit_rangelimit_raw ?: 0) > 0) listOf(carData!!.car_chargelimit_rangelimit_raw.toFloat())
+            if ((chargeSuffRange) > 0) listOf(chargeSuffRange.toFloat())
             else listOf(1.0f)
         sufficientRangeSeekbar.valueTo = max((carData!!.car_max_idealrange_raw + 25).toDouble(), 50.0).toFloat()
         rangeLimit.text = "${sufficientRangeSeekbar.values.first().toInt()} ${carData?.car_distance_units}"
@@ -514,10 +546,20 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         sufficientRangeLimitSwitch.setOnCheckedChangeListener { compoundButton, b ->
             sufficientRangeSeekbar.isEnabled = sufficientRangeLimitSwitch.isChecked
             if (!sufficientRangeLimitSwitch.isChecked) {
+                if (carData.car_type == "NL") {
+                    sendCommandWithProgress(
+                        String.format(
+                            "204,%d",
+                            0
+                        ),
+                        this@ChargingFragment
+                    )
+                    return@setOnCheckedChangeListener
+                }
                 sendCommandWithProgress(
                     String.format(
                         "204,%d,%d,%d,%d",
-                        0, carData?.car_chargelimit_soclimit ?: 0, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw
+                        0, chargeSuffSOC, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw
                     ),
                     this@ChargingFragment
                 )
@@ -534,8 +576,8 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             override fun onStopTrackingTouch(slider: RangeSlider) {
                 sendCommandWithProgress(
                     String.format(
-                        "204,%d,%d,%d,%d",
-                        sufficientRangeSeekbar.values.first().toInt(), carData?.car_chargelimit_soclimit ?: 0, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, carData?.car_charge_mode_i_raw
+                        "204,%d",
+                        sufficientRangeSeekbar.values.first().toInt()
                     ),
                     this@ChargingFragment
                 )
@@ -552,21 +594,37 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
 
         // Charge notification mode
         val limitActionSwitcher = findViewById(R.id.limit_actionswitch) as MaterialButtonToggleGroup
-        limitActionSwitcher.isEnabled = carData?.car_type == "RT" || carData?.car_type == "VWUP"
-
+        limitActionSwitcher.isEnabled = (carData?.car_type == "RT" || carData?.car_type == "VWUP" || carData?.car_type == "NL") && chargeLimitAction != -1
+        limitActionSwitcher.clearOnButtonCheckedListeners()
+        when (chargeLimitAction) {
+            0 -> limitActionSwitcher.check(R.id.cl_action_notify)
+            1 -> limitActionSwitcher.check(R.id.cl_action_stop)
+        }
         limitActionSwitcher.clearOnButtonCheckedListeners()
         limitActionSwitcher.addOnButtonCheckedListener { group, checkedId, isChecked ->
+            if (!isChecked)
+                return@addOnButtonCheckedListener
             var checkedMode = -1
             when (checkedId) {
-                limitActionSwitcher[0].id -> checkedMode = 0
-                limitActionSwitcher[1].id -> checkedMode = 1
+                R.id.cl_action_notify -> checkedMode = 0
+                R.id.cl_action_stop -> checkedMode = 1
             }
             if (checkedMode != -1) {
                 if (carData.car_type == "VWUP") {
                     sendCommandWithProgress(
                         String.format(
                             "204,%d,%d,%d",
-                            carData?.car_chargelimit_soclimit ?: 0, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, checkedMode
+                            chargeSuffSOC, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, checkedMode
+                        ),
+                        this@ChargingFragment
+                    )
+                    return@addOnButtonCheckedListener
+                }
+                if (carData.car_type == "NL") {
+                    sendCommandWithProgress(
+                        String.format(
+                            "204,%d,%d,%d",
+                            chargeSuffRange, chargeSuffSOC, checkedMode
                         ),
                         this@ChargingFragment
                     )
@@ -575,13 +633,12 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                 sendCommandWithProgress(
                     String.format(
                         "204,%d,%d,%d,%d",
-                        carData?.car_chargelimit_rangelimit_raw ?: 0, carData?.car_chargelimit_soclimit ?: 0, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, checkedMode
+                        chargeSuffRange, chargeSuffSOC, carData?.car_charge_currentlimit_raw?.toInt() ?: 0, checkedMode
                     ),
                     this@ChargingFragment
                 )
             }
         }
-
     }
 
     private fun startCharge() {
@@ -617,6 +674,32 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         val context: Context? = activity
         if (context != null) {
             when (resCode) {
+                0 -> {
+                    if (result.size > 4) {
+                        // If command returns parameters for adjustment, enable these controls.
+                        when (carData?.car_type) {
+                            "NL" -> {
+                                chargeSuffRange = result[2].toIntOrNull() ?: -1
+                                chargeSuffSOC = result[3].toIntOrNull() ?: -1
+                                chargeLimitAction = result[4].toIntOrNull() ?: -1
+                                chargeRangeDrop = result[5].toIntOrNull() ?: -1
+                                chargeSocDrop = result[6].toIntOrNull() ?: -1
+                                initialiseSpecialBatteryControls(carData)
+                            }
+                            "VWUP" -> {
+                                chargeSuffSOC = result[2].toIntOrNull() ?: -1
+                                chargeLimitAction = result.lastOrNull()?.toIntOrNull() ?: -1
+                                initialiseSpecialBatteryControls(carData)
+                            }
+                            "RT" -> {
+                                chargeSuffRange = result[2].toIntOrNull() ?: -1
+                                chargeSuffSOC = result[3].toIntOrNull() ?: -1
+                                chargeLimitAction = result.lastOrNull()?.toIntOrNull() ?: -1
+                                initialiseSpecialBatteryControls(carData)
+                            }
+                        }
+                    }
+                }
                 1 -> Toast.makeText(
                     context, cmdMessage + " " + getString(R.string.err_failed, resText),
                     Toast.LENGTH_SHORT
@@ -626,7 +709,6 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                     context, cmdMessage + " " + getString(R.string.err_unsupported_operation),
                     Toast.LENGTH_SHORT
                 ).show()
-
                 3 -> Toast.makeText(
                     context, cmdMessage + " " + getString(R.string.err_unimplemented_operation),
                     Toast.LENGTH_SHORT
