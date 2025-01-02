@@ -266,8 +266,9 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         }
 
         if (carData?.car_charge_linevoltage_raw != null) {
+            // Divide by -1000, because current is negative when charging
             chargingPower =
-                (carData.car_charge_linevoltage_raw.toDouble() * carData.car_charge_current_raw.toDouble()) / 1000.0
+                (carData.car_charge_linevoltage_raw.toDouble() * carData.car_charge_current_raw.toDouble()) / -1000.0
         }
 
         battkW.text = String.format("%2.2f kW", chargingPower)

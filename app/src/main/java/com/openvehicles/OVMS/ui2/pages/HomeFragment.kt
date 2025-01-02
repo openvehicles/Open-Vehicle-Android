@@ -740,7 +740,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         }
 
         if (carData?.car_charge_linevoltage_raw != null) {
-            chargingPower = (carData.car_charge_linevoltage_raw.toDouble()*carData.car_charge_current_raw.toDouble())/1000.0
+            // Divide by -1000, because current is negative when charging
+            chargingPower =
+                (carData.car_charge_linevoltage_raw.toDouble() * carData.car_charge_current_raw.toDouble()) / -1000.0
         }
 
         chargingCardSubtitle.text = String.format("%2.2f kW, %s %s, Battery: %s", chargingPower, carData?.car_charge_linevoltage, carData?.car_charge_current, carData?.car_temp_battery)
