@@ -259,14 +259,14 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         centerActionsAdapter.setCarData(carData)
         if (carData?.car_type == "RT") {
             // Renault Twizy: use Homelink for profile switching:
-            sideActionsAdapter.mData += TwizyDriveModeDefaultQuickAction({getService()}).setCarData(carData)
-            sideActionsAdapter.mData += TwizyDriveMode1QuickAction({getService()}).setCarData(carData)
-            sideActionsAdapter.mData += TwizyDriveMode2QuickAction({getService()}).setCarData(carData)
-            sideActionsAdapter.mData += TwizyDriveMode3QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += TwizyDriveModeDefaultQuickAction({getService()})
+            sideActionsAdapter.mData += TwizyDriveMode1QuickAction({getService()})
+            sideActionsAdapter.mData += TwizyDriveMode2QuickAction({getService()})
+            sideActionsAdapter.mData += TwizyDriveMode3QuickAction({getService()})
         } else {
-            sideActionsAdapter.mData += Homelink1QuickAction({getService()}).setCarData(carData)
-            sideActionsAdapter.mData += Homelink2QuickAction({getService()}).setCarData(carData)
-            sideActionsAdapter.mData += Homelink3QuickAction({getService()}).setCarData(carData)
+            sideActionsAdapter.mData += Homelink1QuickAction({getService()})
+            sideActionsAdapter.mData += Homelink2QuickAction({getService()})
+            sideActionsAdapter.mData += Homelink3QuickAction({getService()})
         }
         sideActionsAdapter.notifyDataSetChanged()
     }
@@ -284,8 +284,10 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
     override fun update(carData: CarData?) {
         this.carData = carData
         updateTPMSData(carData)
-        initialiseSideActions(carData)
-        initialiseMainActions(carData)
+        sideActionsAdapter.setCarData(carData)
+        centerActionsAdapter.setCarData(carData)
+        sideActionsAdapter.notifyDataSetChanged()
+        centerActionsAdapter.notifyDataSetChanged()
         initialiseCarRendering(carData)
     }
 

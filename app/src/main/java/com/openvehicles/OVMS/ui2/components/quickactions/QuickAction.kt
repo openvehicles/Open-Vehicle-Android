@@ -186,7 +186,7 @@ open class QuickAction {
         } else {
             val typedValue = TypedValue()
             val theme = context!!.theme
-            theme.resolveAttribute(R.attr.colorSecondaryContainer, typedValue, true)
+            theme.resolveAttribute(R.attr.colorPrimarySurface, typedValue, true)
             @ColorInt val color = typedValue.data
             button.backgroundTintList =
                 ColorStateList.valueOf(color)
