@@ -1,7 +1,6 @@
 package com.openvehicles.OVMS.ui2.pages
 
 import android.content.Context
-import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
@@ -19,16 +18,22 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
+import com.openvehicles.OVMS.ui2.components.energymetrics.EnergyMetric
+import com.openvehicles.OVMS.ui2.components.energymetrics.EnergyMetricsAdapter
 import com.openvehicles.OVMS.utils.CarsStorage
+import java.util.Locale
 
 
-class EnergyFragment : BaseFragment(), OnResultCommandListener {
+class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAdapter.ItemClickListener {
 
     private var carData: CarData? = null
+    private lateinit var energyMetricsAdapter: EnergyMetricsAdapter
 
 
 
@@ -42,13 +47,17 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         carData = CarsStorage.getSelectedCarData()
-
+        energyMetricsAdapter = EnergyMetricsAdapter(context)
+        energyMetricsAdapter.setClickListener(this)
+        val metricsRecyclerView = findViewById(R.id.metricsRecyclerView) as RecyclerView
+        metricsRecyclerView.adapter = energyMetricsAdapter
+        metricsRecyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         initialiseEnergyStats(carData)
     }
 
 
     private fun initialiseEnergyStats(carData: CarData?) {
-
+        energyMetricsAdapter.mData = emptyList()
         // Battery content
 
         val battSoh = findViewById(R.id.battSoh) as TextView
@@ -104,29 +113,55 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
         val batteryTemp = findViewById(R.id.battTemp) as TextView
         batteryTemp.text = carData?.car_temp_battery
 
+        // Battery power
 
-        // regen and consumed kWh
+        val battVolt = findViewById(R.id.battVolt) as TextView
+        val battAmp = findViewById(R.id.battAmp) as TextView
+        val battkW = findViewById(R.id.battkW) as TextView
+        battVolt.text = String.format("%2.1f V", carData?.car_battery_voltage)
+        battAmp.text = String.format("%2.1f A", carData?.car_battery_current_raw)
+        battkW.text = String.format("%2.2f kW", carData?.car_power)
 
-        val consRegen = findViewById(R.id.regenAmount) as TextView
-        val consSpent = findViewById(R.id.consumeAmount) as TextView
-        val consTrip = findViewById(R.id.consumeTrip) as TextView
-        val whTrip = findViewById(R.id.consumptionTrip) as TextView
+        // Metrics
+
+        energyMetricsAdapter.mData += EnergyMetric("${getString(R.string.textMOTOR).lowercase()
+            .replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) 
+            else it.toString() }} ${getString(R.string.temp)}",
+            carData?.car_temp_motor)
+
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.lb_motor_power),
+            String.format("%2.1f kW", carData?.car_inv_power_motor_kw))
+
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.last_trip),
+            String.format("%.1f %s", carData?.car_tripmeter_raw?.div(10), carData?.car_distance_units))
+
         var consumption = (carData?.car_energyused?.minus(carData.car_energyrecd))?.times(100)?.div(carData.car_tripmeter_raw.div(10))
         if (consumption?.isNaN() == true)
             consumption = 0f
-        whTrip.text = String.format("%.1f Wh/%s", consumption, carData?.car_distance_units)
-        consRegen.text = String.format("%2.2f kWh", carData?.car_energyrecd)
-        consSpent.text = String.format("%2.2f kWh", carData?.car_energyused)
-        consTrip.text = String.format("%.1f %s", carData?.car_tripmeter_raw?.div(10), carData?.car_distance_units)
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.consumption),
+            String.format("%.1f Wh/%s", consumption, carData?.car_distance_units))
 
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.consumed_amount_label),
+            String.format("%2.2f kWh", carData?.car_energyused))
 
-        // 12V batt
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.regen_amount_label),
+            String.format("%2.2f kWh", carData?.car_energyrecd))
 
-        val batt12v = findViewById(R.id.batt12v) as TextView
-        batt12v.text = String.format("%2.2f V", carData?.car_12vline_voltage)
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.drive_mode),
+            when (carData?.car_drivemode) {
+                0 -> getString(R.string.normal)
+                1 -> getString(R.string.drive_mode_eco)
+                else -> getString(R.string.unknown)
+            })
+
+        energyMetricsAdapter.mData += EnergyMetric(getString(R.string.text12VBATT),
+            String.format("%2.2f V", carData?.car_12vline_voltage))
+
+        energyMetricsAdapter.notifyDataSetChanged()
 
         // Energy stats
         val energyHistoryLink = findViewById(R.id.energy_history)
+        energyHistoryLink.visibility = if (carData?.car_type == "RT") View.VISIBLE else View.GONE
         energyHistoryLink.findViewById<TextView>(R.id.tabName).setText(R.string.power_title)
         energyHistoryLink.findViewById<ImageView>(R.id.tabIcon).setImageResource(R.drawable.ic_action_chart)
         energyHistoryLink.setOnClickListener {
@@ -173,6 +208,10 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener {
             }
         }
         cancelCommand()
+    }
+
+    override fun onItemClick(view: View?, position: Int) {
+
     }
 
 }

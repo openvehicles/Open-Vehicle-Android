@@ -108,6 +108,16 @@
                 app:layout_constraintTop_toTopOf="@+id/cabinTemp"
                 app:layout_constraintVertical_bias="0.26999998"
                 tools:text="°C" />
+
+            <TextView
+                android:id="@+id/staleDataLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAllCaps="false"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="@string/stale_data" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 

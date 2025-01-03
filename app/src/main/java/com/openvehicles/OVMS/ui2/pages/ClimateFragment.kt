@@ -1,8 +1,10 @@
 package com.openvehicles.OVMS.ui2.pages
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +15,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -85,13 +88,75 @@ class ClimateFragment : BaseFragment(), OnResultCommandListener {
         val insideTempUnitText = findViewById(R.id.tempUnit2) as TextView
         val outsideTempText = findViewById(R.id.ambientTemp) as TextView
         val outsideTempUnitText = findViewById(R.id.tempUnit1) as TextView
+        val staleLabel = findViewById(R.id.staleDataLabel) as TextView
 
-        outsideTempText.text = DecimalFormat("##.##").format((carData?.car_temp_ambient_raw ?: 0.0))
-        insideTempText.text = DecimalFormat("##.##").format((carData?.car_temp_cabin_raw ?: 0.0))
+        outsideTempText.alpha = 1f
+        insideTempText.alpha = 1f
+
+        outsideTempText.text =
+            if (carData?.stale_ambient_temp == CarData.DataStale.NoValue) "--" else DecimalFormat("##.##").format((carData?.car_temp_ambient_raw ?: 0.0))
+        insideTempText.text =
+            if (carData?.stale_car_temps == CarData.DataStale.NoValue) "--" else DecimalFormat("##.##").format((carData?.car_temp_cabin_raw ?: 0.0))
 
         insideTempUnitText.text = "°"+carData?.car_temp_cabin?.split("°")?.last()
         outsideTempUnitText.text = "°"+carData?.car_temp_ambient?.split("°")?.last()
 
+        var dataStale: CarData.DataStale = CarData.DataStale.Good
+
+        staleLabel.visibility = View.GONE
+
+        if (carData?.stale_ambient_temp != CarData.DataStale.Good) {
+            dataStale = carData!!.stale_ambient_temp
+            outsideTempText.alpha = 0.6f
+        }
+
+        if (carData.stale_car_temps != CarData.DataStale.Good) {
+            dataStale = carData.stale_car_temps
+            insideTempText.alpha = 0.6f
+        }
+
+        if (dataStale == CarData.DataStale.NoValue) {
+            staleLabel.setTextColor(Color.RED)
+            staleLabel.text = getString(R.string.no_data).lowercase()
+            staleLabel.visibility = View.VISIBLE
+        }
+
+        if (dataStale == CarData.DataStale.Stale) {
+            staleLabel.setTextColor(Color.YELLOW)
+            staleLabel.text = getString(R.string.stale_data).lowercase()
+            staleLabel.visibility = View.VISIBLE
+        }
+
+        val now = System.currentTimeMillis()
+        var seconds = (now - (carData.car_lastupdated?.time ?: 0)) / 1000
+        var minutes = seconds / 60
+        var hours = minutes / 60
+        var days = minutes / (60 * 24)
+
+
+        if (minutes > 0L) {
+            staleLabel.visibility = View.VISIBLE
+            staleLabel.setTextColor(Color.YELLOW)
+            val periodText: String
+            if (minutes == 1L) {
+                periodText = getText(R.string.min1).toString()
+            } else if (days > 1) {
+                periodText = String.format(getText(R.string.ndays).toString(), days)
+            } else if (hours > 1) {
+                periodText = String.format(getText(R.string.nhours).toString(), hours)
+            } else if (minutes > 60) {
+                periodText = String.format(
+                    getText(R.string.nmins).toString(),
+                    minutes
+                )
+            } else {
+                periodText = String.format(
+                    getText(R.string.nmins).toString(),
+                    minutes
+                )
+            }
+            staleLabel.text = periodText
+        }
 
         climateActionsAdapter.mData.clear()
         climateActionsAdapter.setCarData(carData)

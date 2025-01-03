@@ -1,9 +1,6 @@
-package com.openvehicles.OVMS.ui2.pages
+package com.openvehicles.OVMS.ui2.pages.settings
 
 import android.content.Context
-import android.content.res.ColorStateList
-import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,16 +16,10 @@ import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.navigation.fragment.findNavController
-import com.google.android.material.card.MaterialCardView
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
-import com.openvehicles.OVMS.ui.BaseFragmentActivity.Companion.show
-import com.openvehicles.OVMS.ui.settings.CarEditorFragment
-import com.openvehicles.OVMS.ui.settings.CarInfoFragment
-import com.openvehicles.OVMS.ui.settings.ControlFragment
-import com.openvehicles.OVMS.ui.settings.GlobalOptionsFragment
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 

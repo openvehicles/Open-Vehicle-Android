@@ -227,7 +227,7 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
                             itemsAdapter!!.notifyDataSetChanged()
                             cmdInput.setTextSize(TypedValue.COMPLEX_UNIT_SP, fontSize * 1.2f)
                         }
-                    })
+                    }, true)
                 return true
             }
             R.id.mi_stored_commands -> {
@@ -446,14 +446,12 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
                         tv.setTypeface(Typeface.DEFAULT)
                     }
                     tv.setTextSize(TypedValue.COMPLEX_UNIT_SP, fragment.fontSize)
-                    tv.text = it.Message
+                    tv.text = it.messageFormatted
 
                     // set title & timestamp:
                     tv = v!!.findViewById<View>(R.id.textNotificationsListTitle) as TextView
                     tv.text = it.Title
 
-                    tv.visibility = View.VISIBLE
-                    tv.text = it.messageFormatted
                     val tstamp = v.findViewById<View>(R.id.textNotificationsListTimestamp) as TextView
                     tstamp.text = dateFormat.format(it.Timestamp)
                 } else {
