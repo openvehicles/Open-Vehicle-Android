@@ -177,6 +177,20 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         if ((alert?.get(3) ?: 0) != 0)
             rrTPMS.setTextColor(alertcol[alert!![3]])
 
+        if (stale1 == CarData.DataStale.NoValue) {
+            staleTPMS.setTextColor(Color.RED)
+            staleTPMS.text = getString(R.string.no_data).lowercase()
+        }
+
+        if (stale1 == CarData.DataStale.Stale) {
+            staleTPMS.setTextColor(Color.YELLOW)
+            staleTPMS.text = getString(R.string.stale_data).lowercase()
+        }
+
+        if (stale1 == CarData.DataStale.Good) {
+            context?.resources?.getColor(R.color.colorAccent)?.let { staleTPMS.setTextColor(it) }
+            staleTPMS.text = getString(R.string.latest_data).lowercase()
+        }
 
         val now = System.currentTimeMillis()
         var seconds = (now - (carData?.car_lastupdated?.time ?: 0)) / 1000
@@ -184,10 +198,10 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         var hours = minutes / 60
         var days = minutes / (60 * 24)
 
-        if (minutes == 0L) {
-            staleTPMS.text = getString(R.string.live)
-        } else {
-            var periodText = ""
+
+        if (minutes > 0L) {
+            staleTPMS.setTextColor(Color.YELLOW)
+            var periodText: String
             if (minutes == 1L) {
                 periodText = getText(R.string.min1).toString()
             } else if (days > 1) {
@@ -206,13 +220,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 )
             }
             staleTPMS.text = periodText
-        }
-
-        if (stale1 == CarData.DataStale.Stale) {
-            staleTPMS.setTextColor(Color.YELLOW)
-        }
-        if (stale1 == CarData.DataStale.Good) {
-            context?.resources?.getColor(R.color.colorAccent)?.let { staleTPMS.setTextColor(it) }
         }
 
         if ((alert?.find { it > 0 } ?: 0) > 0) {

@@ -57,26 +57,29 @@
 
             <ImageButton
                 android:id="@+id/btn_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_action_edit" />
 
             <ImageButton
                 android:id="@+id/btn_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_action_control" />
 
             <ImageButton
                 android:id="@+id/btn_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
+                android:scaleType="centerCrop"
                 android:src="@drawable/ic_action_about" />
 
         </LinearLayout>

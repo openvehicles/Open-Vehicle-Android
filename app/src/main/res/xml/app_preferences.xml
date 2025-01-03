@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:title="@string/state_charging_label">
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:defaultValue="true"
@@ -33,9 +33,41 @@
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:title="@string/other_settings">
+        android:title="@string/lb_communications"
+        app:allowDividerBelow="true">
+
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_service_cb"
+            app:key="communication_bg_connection"
+            app:summary="@string/lb_options_service_info" />
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_broadcast_cb"
+            app:key="communication_broadcast" />
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_commands_cb"
+            app:key="communication_commands" />
         <Preference
-            android:key="legacy_settings"
-            android:title="@string/legacy_settings_title"/>
+            android:title="@string/lb_options_apikey"
+            app:summary=""
+            app:key="api_key" />
     </PreferenceCategory>
+    <PreferenceCategory android:title="@string/other_settings">
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_old_ui"
+            app:summary="@string/lb_options_old_ui_cb"
+            app:key="other_oldui" />
+    </PreferenceCategory>
+    <com.openvehicles.OVMS.ui2.components.settings.CommunicationsNoticePreference />
 </PreferenceScreen>

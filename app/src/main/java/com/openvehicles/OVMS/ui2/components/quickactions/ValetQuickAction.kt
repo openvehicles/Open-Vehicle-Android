@@ -79,7 +79,7 @@ class ValetQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = 
                     }
                     sendCommand(cmd)
                 }
-            })
+            }, true)
     }
 
     override fun onCommandFinish(command: String) {

@@ -65,7 +65,7 @@ class LockQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = n
                     }
                     sendCommand(cmd)
                 }
-            })
+            }, true)
     }
 
     override fun getLiveCarIconId(state: Boolean): Int {

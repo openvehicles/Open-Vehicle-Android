@@ -101,6 +101,7 @@ import kotlin.properties.Delegates
 class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.ItemClickListener,  ActionBar.OnNavigationListener, IconDialog.Callback {
 
     private var carData: CarData? = null
+    private var lastPresentCarId: String? = null
     override var iconDialogIconPack: IconPack? = null
     private lateinit var quickActionsAdapter: QuickActionsAdapter
     private lateinit var quickActionsEditorAdapter: QuickActionsEditorAdapter
@@ -421,7 +422,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         }
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
         socBattIcon.setImageDrawable(socBattLayer)
-        socText.text = carData?.car_soc
+        socText.text = when (socState) {
+            1 -> "I: ${carData?.car_range_ideal}"
+            2 -> "E: ${carData?.car_range_estimated}"
+            else -> carData?.car_soc
+        }
 
         val rangeDisplay = appPrefs.appUIPrefs.getStringSet("home_range_display_mode", HashSet<String>())
         val idealRange = rangeDisplay?.contains("ideal") == true
@@ -692,7 +697,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
 
         val newDrawable = LayerDrawable(layers.toTypedArray())
-        if ((image.drawable as LayerDrawable?)?.numberOfLayers !== newDrawable.numberOfLayers) {
+        if ((image.drawable as LayerDrawable?)?.numberOfLayers != newDrawable.numberOfLayers || lastPresentCarId != carData?.sel_vehicleid) {
             val anim_in: Animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_in)
             image.setImageDrawable(
                 newDrawable
@@ -703,6 +708,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 override fun onAnimationEnd(animation: Animation) {}
             })
             image.startAnimation(anim_in)
+            lastPresentCarId = carData?.sel_vehicleid
         } else if (speedShownInUI) {
             image.setImageDrawable(
                 newDrawable
@@ -1072,7 +1078,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffSOC / 60, etrSuffSOC % 60), suffSOC)
         }
         if (suffRange > 0 && etrSuffRange > 0) {
-            chargingNote += String.format("~%s: %d%%", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange)
+            chargingNote += String.format("~%s: %d%s", String.format("%02d:%02d", etrSuffRange / 60, etrSuffRange % 60), suffRange, carData?.car_distance_units)
         }
         if (etrFull > 0) {
             chargingNote += String.format("~%s: 100%%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))

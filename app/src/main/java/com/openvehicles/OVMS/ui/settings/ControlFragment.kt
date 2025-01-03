@@ -151,9 +151,8 @@ class ControlFragment
                 if (baseActivity == null) {
                     findNavController().navigate(R.id.action_controlFragment_to_logsFragment, args)
                 } else {
-                    baseActivity.setNextFragment(LogsFragment::class.java)
+                    baseActivity.setNextFragment(LogsFragment::class.java, args)
                 }
-                baseActivity!!.setNextFragment(LogsFragment::class.java, args)
             }
         }
     }

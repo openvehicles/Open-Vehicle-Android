@@ -771,7 +771,7 @@
     <string name="app_ui_prefs_home_show_range">Show range information with SoC</string>
     <string name="app_ui_prefs_charging_always_show_time_est">Always show charging time estimations</string>
     <string name="app_ui_prefs_charging_always_show_time_est_i">Always show time estimations on charging screen, even when car is not charging</string>
-    <string name="app_ui_prefs_home_range_display_mode">Car range displayed in home screen</string>
+    <string name="app_ui_prefs_home_range_display_mode">Car range display mode</string>
     <string name="other_settings">Other settings</string>
     <string name="legacy_settings_title">OVMS Legacy Settings</string>
     <string name="app_settings">App settings</string>
@@ -787,6 +787,18 @@
     <string name="max_quick_actions_reached">No more space, remove a quick action and try again</string>
     <string name="dlg_choose_icon_action_title">Choose action icon</string>
     <string name="invalid_command">Invalid command! Please enter a valid command</string>
+    <string name="no_data">No data</string>
+    <string name="latest_data">Latest</string>
+    <string name="stale_data">Stale</string>
+    <string name="none">None</string>
+    <string name="home_soc_hint">Hint: You can click on battery icon or SoC text to temporarily show range</string>
+    <string name="lb_motor_power">Motor Power</string>
+    <string name="drive_mode">Drive Mode</string>
+    <string name="normal">Normal</string>
+    <string name="drive_mode_eco">ECO/B Mode</string>
+    <string name="unknown">Unknown</string>
+    <string name="temp">Temperature</string>
+    <string name="lb_communications">Communications</string>
     <string-array name="home_range_display_mode_labels" translatable="false">
         <item>@string/IdealShort</item>
         <item>@string/EstimatedShort</item>
