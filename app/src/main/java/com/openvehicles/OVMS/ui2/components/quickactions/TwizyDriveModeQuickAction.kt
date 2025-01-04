@@ -18,7 +18,7 @@ class TwizyDriveMode2QuickAction(apiServiceGetter: () -> ApiService?, context: C
 
 class TwizyDriveMode3QuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null):
     TwizyDriveModeQuickAction(3, R.drawable.ic_profile3, "${context?.getString(R.string.Profile)} 3", apiServiceGetter)
-open class TwizyDriveModeQuickAction(val profileNumber: Int,  icon: Int, label: String?, apiServiceGetter: () -> ApiService?) :
+open class TwizyDriveModeQuickAction(private val profileNumber: Int, icon: Int, label: String?, apiServiceGetter: () -> ApiService?) :
     QuickAction("rt_profile_${profileNumber}", icon, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
         actionOffTint = R.attr.colorTertiaryContainer, label = label) {

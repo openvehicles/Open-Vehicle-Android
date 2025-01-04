@@ -908,24 +908,20 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             WakeupQuickAction.ACTION_ID -> WakeupQuickAction(apiServiceGetter)
             else -> {
                 if (id.startsWith("rt_profile_")) {
-                    return id.replace("rt_profile_", "").toIntOrNull().let {profileNum ->
-                        when (profileNum) {
-                            0 -> TwizyDriveModeDefaultQuickAction(apiServiceGetter)
-                            1 -> TwizyDriveMode1QuickAction(apiServiceGetter)
-                            2 -> TwizyDriveMode2QuickAction(apiServiceGetter)
-                            3 -> TwizyDriveMode3QuickAction(apiServiceGetter)
-                            else -> null
-                        }
+                    return when (id) {
+                        "rt_profile_0" -> TwizyDriveModeDefaultQuickAction(apiServiceGetter)
+                        "rt_profile_1" -> TwizyDriveMode1QuickAction(apiServiceGetter)
+                        "rt_profile_2" -> TwizyDriveMode2QuickAction(apiServiceGetter)
+                        "rt_profile_3" -> TwizyDriveMode3QuickAction(apiServiceGetter)
+                        else -> null
                     }
                 }
                 if (id.startsWith("hl_")) {
-                    return id.replace("hl_", "").toIntOrNull().let {profileNum ->
-                        when (profileNum) {
-                            1 -> Homelink1QuickAction(apiServiceGetter)
-                            2 -> Homelink2QuickAction(apiServiceGetter)
-                            3 -> Homelink3QuickAction(apiServiceGetter)
-                            else -> null
-                        }
+                    return when (id) {
+                        "hl_0" -> Homelink1QuickAction(apiServiceGetter)
+                        "hl_1" -> Homelink2QuickAction(apiServiceGetter)
+                        "hl_2" -> Homelink3QuickAction(apiServiceGetter)
+                        else -> null
                     }
                 }
                 if (id.startsWith("custom_")) {
