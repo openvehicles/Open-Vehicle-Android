@@ -8,7 +8,9 @@ import com.openvehicles.OVMS.api.ApiService
  * Quick action handling custom commands
  */
 class WakeupQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
-    QuickAction(ACTION_ID, R.drawable.ic_wakeup, apiServiceGetter, label = context?.getString(R.string.Wakeup)) {
+    QuickAction(ACTION_ID, R.drawable.ic_car_sleep, apiServiceGetter, label = context?.getString(R.string.Wakeup),
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.color.cardview_dark_background) {
 
     companion object {
         const val ACTION_ID = "wakeup"
@@ -19,7 +21,7 @@ class WakeupQuickAction(apiServiceGetter: () -> ApiService?, context: Context? =
     }
 
     override fun getStateFromCarData(): Boolean {
-        return false
+        return getCarData()?.car_awake == true
     }
 
     override fun commandsAvailable(): Boolean {
