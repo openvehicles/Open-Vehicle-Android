@@ -159,21 +159,30 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
 
         energyMetricsAdapter.notifyDataSetChanged()
 
-        // Energy stats
-        val energyHistoryLink = findViewById(R.id.energy_history)
-        energyHistoryLink.visibility = if (carData?.car_type == "RT") View.VISIBLE else View.GONE
-        energyHistoryLink.findViewById<TextView>(R.id.tabName).setText(R.string.power_title)
-        energyHistoryLink.findViewById<ImageView>(R.id.tabIcon).setImageResource(R.drawable.ic_action_chart)
-        energyHistoryLink.setOnClickListener {
-            findNavController().navigate(R.id.action_powerFragment_to_batteryFragment)
+        // Power & Energy history (currently only supported for Renault Twizy)
+        val powerHistoryLink = findViewById(R.id.power_history)
+        powerHistoryLink.visibility = if (carData?.car_type == "RT") View.VISIBLE else View.GONE
+        powerHistoryLink.findViewById<TextView>(R.id.tabName).setText(R.string.power_title)
+        powerHistoryLink.findViewById<ImageView>(R.id.tabIcon).setImageResource(R.drawable.ic_action_chart)
+        powerHistoryLink.setOnClickListener {
+            findNavController().navigate(R.id.action_energyFragment_to_powerFragment)
         }
 
-        // 12V stats
+        // Main battery history (currently only supported for Renault Twizy)
+        val batteryHistoryLink = findViewById(R.id.battery_history)
+        batteryHistoryLink.visibility = if (carData?.car_type == "RT") View.VISIBLE else View.GONE
+        batteryHistoryLink.findViewById<TextView>(R.id.tabName).setText(R.string.battery_title)
+        batteryHistoryLink.findViewById<ImageView>(R.id.tabIcon).setImageResource(R.drawable.ic_action_chart)
+        batteryHistoryLink.setOnClickListener {
+            findNavController().navigate(R.id.action_energyFragment_to_batteryFragment)
+        }
+
+        // 12V battery history
         val history12VLink = findViewById(R.id.history_12v)
         history12VLink.findViewById<TextView>(R.id.tabName).setText(R.string.aux_battery_title)
         history12VLink.findViewById<ImageView>(R.id.tabIcon).setImageResource(R.drawable.ic_12vbatt)
         history12VLink.setOnClickListener {
-            findNavController().navigate(R.id.action_powerFragment_to_auxBatteryFragment)
+            findNavController().navigate(R.id.action_energyFragment_to_auxBatteryFragment)
         }
     }
 

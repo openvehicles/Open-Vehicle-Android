@@ -242,6 +242,7 @@
     <string name="nmins">%d Minuten</string>
     <string name="min1">1 Minute</string>
     <string name="justnow">Gerade eben</string>
+    <string name="last_seen">Letztes Update vor %s</string>
     <string name="mph">mph</string>
     <string name="kph">km/h</string>
     <string name="slidetocharge">SLIDE TO\nCHARGE</string>
@@ -263,6 +264,7 @@
     <string name="textHOMELINK">HOMELINK</string>
     <string name="textPROFILE">PROFIL</string>
     <string name="textAMBIENT">AUSSEN</string>
+    <string name="textCABIN">INNEN</string>
     <string name="text12VBATT">12V BATT</string>
     <string name="textHVBATT">HV BATT</string>
     <string name="textMOTOR">MOTOR</string>
@@ -686,5 +688,39 @@
         <p>Viel Spaß!</p>
     ]]></string>
     <string name="mi_app_about">Über OVMS</string>
+    <string name="parked">Geparkt</string>
+    <string name="start_charging_label">Ladung starten</string>
+    <string name="stop_charging_label">Ladung stoppen</string>
+    <string name="charge_limit_action">Aktion bei Ladegrenze</string>
+    <string name="charge_limit_action_notify">Nachricht</string>
+    <string name="charge_limit_action_stop">Ladestopp</string>
+    <string name="regen_amount_label">Zurückgewonnen</string>
+    <string name="consumed_amount_label">Verbraucht</string>
+    <string name="last_trip">Letzte Fahrt</string>
+    <string name="lb_options_old_ui">Altes UI</string>
+    <string name="lb_options_old_ui_cb">Alte Benutzeroberfläche verwenden (benötigt Neustart)</string>
+    <string name="app_ui_prefs_charging_always_show_time_est">Ladezeitschätzungen</string>
+    <string name="app_ui_prefs_charging_always_show_time_est_i">Ladezeiten immer anzeigen (auch wenn nicht ladend)</string>
+    <string name="app_ui_prefs_home_range_display_mode">Reichweitenanzeige</string>
+    <string name="other_settings">Weitere Einstellungen</string>
+    <string name="app_settings">App-Einstellungen</string>
+    <string name="quick_actions">Schnellzugriff</string>
+    <string name="consumption">Verbrauch</string>
+    <string name="modify_quick_actions">Schnellzugriff anpassen</string>
+    <string name="quick_actions_modify_hint">Hinweis: ziehen = neu anordnen, klicken = entfernen</string>
+    <string name="climate_control_short">Klimatisierung</string>
+    <string name="custom_command">Eigenes Kommando</string>
+    <string name="max_quick_actions_reached">Maximale Anzahl Buttons erreicht</string>
+    <string name="dlg_choose_icon_action_title">Icon für Aktion auswählen</string>
+    <string name="invalid_command">Ungültiges Kommando!</string>
+    <string name="no_data">Keine Daten</string>
+    <string name="lb_motor_power">Motorleistung</string>
+    <string name="drive_mode">Fahrmodus</string>
+    <string name="unknown">Unbekannt</string>
+    <string name="temp">Temperatur</string>
+    <string name="lb_communications">Kommunikation</string>
+
+    <string name="controls_tab_label">Steuerung</string>
+    <string name="charging_tab_label">Laden</string>
 
 </resources>

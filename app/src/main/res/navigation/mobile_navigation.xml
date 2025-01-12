@@ -39,8 +39,8 @@
             app:popExitAnim="@anim/nav_default_exit_anim"
             app:popUpTo="@id/navigation_home" />
         <action
-            android:id="@+id/action_navigation_home_to_powerFragment"
-            app:destination="@id/powerFragment"
+            android:id="@+id/action_navigation_home_to_energyFragment"
+            app:destination="@id/energyFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
@@ -107,18 +107,24 @@
             app:popExitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
-        android:id="@+id/powerFragment"
+        android:id="@+id/energyFragment"
         android:name="com.openvehicles.OVMS.ui2.pages.EnergyFragment"
         android:label="@string/power_energy_description" >
         <action
-            android:id="@+id/action_powerFragment_to_auxBatteryFragment"
+            android:id="@+id/action_energyFragment_to_auxBatteryFragment"
             app:destination="@id/auxBatteryFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
         <action
-            android:id="@+id/action_powerFragment_to_batteryFragment"
+            android:id="@+id/action_energyFragment_to_batteryFragment"
             app:destination="@id/batteryFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_energyFragment_to_powerFragment"
+            app:destination="@id/powerFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
@@ -135,6 +141,10 @@
         android:id="@+id/batteryFragment"
         android:name="com.openvehicles.OVMS.ui.BatteryFragment"
         android:label="@string/battery_title" />
+    <fragment
+        android:id="@+id/powerFragment"
+        android:name="com.openvehicles.OVMS.ui.PowerFragment"
+        android:label="@string/power_title" />
     <fragment
         android:id="@+id/carInfoFragment"
         android:name="com.openvehicles.OVMS.ui.settings.CarInfoFragment"

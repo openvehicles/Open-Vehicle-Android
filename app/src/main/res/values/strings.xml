@@ -715,7 +715,9 @@
     <string name="stop_charging_label">Stop charging</string>
     <string name="loading">Loading data</string>
     <string name="connected">Connected</string>
+
     <string name="controls_tab_label">Controls</string>
+    <string name="charging_tab_label">Charging</string>
 
     <!-- Car types -->
 

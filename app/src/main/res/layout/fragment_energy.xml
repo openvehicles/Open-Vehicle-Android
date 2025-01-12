@@ -139,7 +139,14 @@
                 android:nestedScrollingEnabled="true" />
 
             <include
-                android:id="@+id/energy_history"
+                android:id="@+id/power_history"
+                layout="@layout/home_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+
+            <include
+                android:id="@+id/battery_history"
                 layout="@layout/home_tab_item"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

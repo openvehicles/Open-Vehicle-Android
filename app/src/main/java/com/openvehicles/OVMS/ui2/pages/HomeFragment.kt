@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -1080,7 +1079,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             chargingNote += String.format("~%s: 100%%", String.format("%02d:%02d", etrFull / 60, etrFull % 60))
         }
 
-        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.state_charging_label), chargingNote.joinToString(separator = ", "))
+        tabsAdapter.mData += HomeTab(TAB_CHARGING, R.drawable.ic_charging, getString(R.string.charging_tab_label), chargingNote.joinToString(separator = ", "))
         tabsAdapter.mData += HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), st)
 
         tabsAdapter.mData += HomeTab(TAB_SETTINGS, R.drawable.ic_settings, getString(R.string.Settings), null)
@@ -1160,7 +1159,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             TAB_LOCATION -> findNavController().navigate(R.id.action_navigation_home_to_mapFragment)
             TAB_CHARGING -> findNavController().navigate(R.id.action_navigation_home_to_chargingFragment)
             TAB_SETTINGS -> findNavController().navigate(R.id.action_navigation_home_to_settingsFragment)
-            TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_powerFragment)
+            TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_energyFragment)
         }
     }
 
