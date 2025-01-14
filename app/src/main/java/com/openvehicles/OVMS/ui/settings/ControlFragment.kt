@@ -112,7 +112,7 @@ class ControlFragment
                             }
                             sendCommand(R.string.lb_mmi_ussd_code, "41,$data", this@ControlFragment)
                         }
-                    })
+                    }, baseActivity == null)
             }
             R.id.btn_features -> {
                 args = Bundle()
