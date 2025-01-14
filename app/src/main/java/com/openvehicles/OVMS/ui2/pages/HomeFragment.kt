@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -117,10 +118,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private var lastQuickActionConfig: String? = null
     private var socState = 0
     private var showEditAction = false
-
         set(value) {
             quickActionsAdapter.editMode = value
             findViewById(R.id.modifyQuickActions).visibility = if (value) View.VISIBLE else View.GONE
+            field = value
         }
 
     companion object {
@@ -1151,6 +1152,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     override fun onItemClick(view: View?, position: Int) {
+        Log.e("HF", "ISEDIT:"+showEditAction)
+        if (showEditAction) {
+            return
+        }
         val tabItem = tabsAdapter.getItem(position)
 
         when (tabItem.tabId) {
