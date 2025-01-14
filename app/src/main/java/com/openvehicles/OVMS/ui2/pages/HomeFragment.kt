@@ -11,7 +11,6 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -1152,7 +1151,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     override fun onItemClick(view: View?, position: Int) {
-        Log.e("HF", "ISEDIT:"+showEditAction)
         if (showEditAction) {
             return
         }

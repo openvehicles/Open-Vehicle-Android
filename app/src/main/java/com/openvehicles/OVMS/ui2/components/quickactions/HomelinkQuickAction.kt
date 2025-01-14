@@ -1,7 +1,6 @@
 package com.openvehicles.OVMS.ui2.components.quickactions
 
 import android.content.Context
-import android.util.Log
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 

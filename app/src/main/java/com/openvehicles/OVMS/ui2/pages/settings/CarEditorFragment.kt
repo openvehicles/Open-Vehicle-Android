@@ -1,6 +1,5 @@
 package com.openvehicles.OVMS.ui2.pages.settings
 
-import android.R.attr.type
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.AutoCompleteTextView
 import android.widget.BaseAdapter
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -20,7 +18,6 @@ import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
-import com.google.android.material.textfield.TextInputLayout
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment

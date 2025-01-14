@@ -11,7 +11,7 @@ class CustomCommandQuickAction(actionId: String, val drawable: Drawable, val com
     QuickAction(actionId, -1, apiServiceGetter, label = label) {
 
     override fun onAction() {
-        sendCommand(command)
+        sendCommand(ApiService.makeMsgCommand(command))
     }
 
     override fun getStateFromCarData(): Boolean {

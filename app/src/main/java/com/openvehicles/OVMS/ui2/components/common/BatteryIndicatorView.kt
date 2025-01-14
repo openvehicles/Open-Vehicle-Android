@@ -1,17 +1,13 @@
 package com.openvehicles.OVMS.ui2.components.common
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
-import androidx.annotation.ColorRes
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.ContextCompat
 import com.openvehicles.OVMS.R
-import com.openvehicles.OVMS.ui2.components.common.limit
 
 class BatteryIndicatorView @JvmOverloads constructor(
     context: Context,

@@ -2,14 +2,10 @@ package com.openvehicles.OVMS.ui2.components.settings
 
 import android.content.Context
 import android.text.Html
-import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewParent
-import android.widget.RelativeLayout
 import android.widget.TextView
-import androidx.core.view.marginBottom
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.openvehicles.OVMS.R

@@ -2,7 +2,6 @@ package com.openvehicles.OVMS.ui2.rendering
 
 import android.content.Context
 import android.graphics.drawable.Drawable
-import android.util.Log
 import androidx.core.content.ContextCompat
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
@@ -44,8 +43,6 @@ object CarRenderingUtils {
 
         if (carData.car_type.startsWith("VA"))
             otherResName = "voltampera"
-
-        Log.e("CRU", overlayResource)
 
         layers = layers.plus(
             ContextCompat.getDrawable(context, Ui.getDrawableIdentifier(

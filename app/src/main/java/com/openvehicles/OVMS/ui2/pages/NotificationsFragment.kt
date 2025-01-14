@@ -32,7 +32,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService.Companion.makeMsgCommand
@@ -433,7 +432,6 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
             var v = convertView
             val it = getItem(position)
             if (it != null) {
-                Log.e("NF", "TYP"+it.Type+"_"+it.Title+"_"+it.Message)
                 v = inflater.inflate(if (it.msgType == 1) R.layout.item_notifications_received else (if(it.msgType == 0) R.layout.item_notifications_sent else R.layout.item_notifications_v2) , null)
                 // set icon according to notification type:
                 if (it.msgType == -1) {

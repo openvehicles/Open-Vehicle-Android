@@ -22,7 +22,6 @@ import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui2.components.quickactions.ChargingQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.CustomCommandQuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.Homelink1QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.Homelink2QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.Homelink3QuickAction
@@ -31,9 +30,9 @@ import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode1QuickAct
 import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode2QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveMode3QuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.TwizyDriveModeDefaultQuickAction
-import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAdapter
 import com.openvehicles.OVMS.ui2.components.quickactions.ValetQuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.WakeupQuickAction
+import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAdapter
 import com.openvehicles.OVMS.ui2.rendering.CarRenderingUtils
 import com.openvehicles.OVMS.utils.CarsStorage
 
