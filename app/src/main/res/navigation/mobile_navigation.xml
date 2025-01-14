@@ -132,7 +132,7 @@
     <fragment
         android:id="@+id/chargingFragment"
         android:name="com.openvehicles.OVMS.ui2.pages.ChargingFragment"
-        android:label="@string/ChargingOverlay" />
+        android:label="@string/charging_tab_label" />
     <fragment
         android:id="@+id/auxBatteryFragment"
         android:name="com.openvehicles.OVMS.ui.AuxBatteryFragment"

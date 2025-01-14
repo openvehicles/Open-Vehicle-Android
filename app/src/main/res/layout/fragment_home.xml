@@ -112,10 +112,29 @@
                 app:layout_constraintTop_toBottomOf="@+id/carStatusRenderFrame"
                 tools:visibility="visible">
 
-                <include
-                    layout="@layout/charging_card"
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <com.google.android.material.progressindicator.LinearProgressIndicator
+                        android:id="@+id/charging_animation_progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="-8dp"
+                        android:indeterminate="true"
+                        app:indicatorColor="@color/chargeOngoingColor"
+                        app:indicatorDirectionLinear="endToStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.937"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <include
+                        layout="@layout/charging_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
             <androidx.recyclerview.widget.RecyclerView
