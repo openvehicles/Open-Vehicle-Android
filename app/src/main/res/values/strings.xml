@@ -801,6 +801,8 @@
     <string name="unknown">Unknown</string>
     <string name="temp">Temperature</string>
     <string name="lb_communications">Communications</string>
+    <string name="ideal_range_abbreviation">I: %s</string>
+    <string name="estimated_range_abbreviation">E: %s</string>
     <string-array name="home_range_display_mode_labels" translatable="false">
         <item>@string/IdealShort</item>
         <item>@string/EstimatedShort</item>

@@ -632,4 +632,6 @@
     <string name="unknown">Tuntematon</string>
     <string name="temp">Lämpötila</string>
     <string name="lb_communications">Kommunikaatio</string>
+    <string name="ideal_range_abbreviation">Ihant. %s</string>
+    <string name="estimated_range_abbreviation">Arv. %s</string>
 </resources>

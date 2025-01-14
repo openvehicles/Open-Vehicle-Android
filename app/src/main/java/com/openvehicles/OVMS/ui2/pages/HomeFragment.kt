@@ -422,8 +422,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
         socBattIcon.setImageDrawable(socBattLayer)
         socText.text = when (socState) {
-            1 -> "I: ${carData?.car_range_ideal}"
-            2 -> "E: ${carData?.car_range_estimated}"
+            1 -> getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)
+            2 -> getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)
             else -> carData?.car_soc
         }
 
@@ -432,7 +432,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val estimatedRange = rangeDisplay?.contains("estimated") == true
 
         if (idealRange && estimatedRange) {
-            rangeText.text = "I: ${carData?.car_range_ideal}, E: ${carData?.car_range_estimated}"
+            rangeText.text = "${getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)}, ${getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)}"
         } else if (idealRange || estimatedRange) {
             rangeText.text = if (idealRange) carData?.car_range_ideal else carData?.car_range_estimated
         } else {
@@ -441,8 +441,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 if (socState > 2)
                     socState = 0
                 socText.text = when (socState) {
-                    1 -> "I: ${carData?.car_range_ideal}"
-                    2 -> "E: ${carData?.car_range_estimated}"
+                    1 -> getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)
+                    2 -> getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)
                     else -> carData?.car_soc
                 }
             }
