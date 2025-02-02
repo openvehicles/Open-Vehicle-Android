@@ -4,8 +4,8 @@
     <item
         android:id="@+id/mi_add"
         android:icon="@drawable/ic_action_new"
-        app:showAsAction="always|withText"
-        android:title="@string/Add"/>
+        android:title="@string/Add"
+        app:showAsAction="always|withText" />
 
     <item
         android:id="@+id/mi_globaloptions"

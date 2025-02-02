@@ -31,12 +31,16 @@ class MapSettingsFragment : Fragment(), ConnectionsListener {
         view = inflater.inflate(R.layout.map_settings, null)
         appPrefs = AppPrefs(requireActivity(), "ovms")
         connectionList = ConnectionList(requireActivity(), this, false)
-        setUpClusteringViews()
         return view
     }
 
     override fun onConnectionChanged(conId: String?, conName: String?) {
         MapFragment.updateMap.updateFilter(conId)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setUpClusteringViews()
     }
 
     private fun setUpClusteringViews() {

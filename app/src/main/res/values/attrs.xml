@@ -12,5 +12,9 @@
         <attr name="min" format="integer" />
         <attr name="max" format="integer" />
     </declare-styleable>
+
+    <integer-array name="soc_value">
+        <item>1</item>
+    </integer-array>
 		
 </resources>

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -33,11 +34,10 @@ open class BaseFragment : Fragment(), ApiObserver {
     // create progress overlay: (call this from onCreateView):
     // ATT: if you enable showOnStart you need to take care about resumes etc.
     fun createProgressOverlay(
-        inflater: LayoutInflater?,
-        container: ViewGroup?,
+        container: View?,
         showOnStart: Boolean
     ): ProgressOverlay {
-        progressOverlay = ProgressOverlay(inflater!!, container!!)
+        progressOverlay = ProgressOverlay(container!!)
         progressShowOnStart = showOnStart
         return progressOverlay!!
     }

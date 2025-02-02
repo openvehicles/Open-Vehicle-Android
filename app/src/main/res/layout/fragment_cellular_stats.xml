@@ -49,4 +49,6 @@
         </com.github.mikephil.charting.charts.BarChart>
     </LinearLayout>
 
+    <include layout="@layout/progress_layer"/>
+
 </RelativeLayout>

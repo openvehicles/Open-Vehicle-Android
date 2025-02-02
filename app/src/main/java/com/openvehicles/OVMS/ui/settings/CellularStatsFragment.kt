@@ -46,8 +46,8 @@ class CellularStatsFragment : BaseFragment(), OnResultCommandListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        createProgressOverlay(inflater, container, true)
         val rootView = inflater.inflate(R.layout.fragment_cellular_stats, null)
+        createProgressOverlay(rootView, true)
 
         //
         // setup car chart:

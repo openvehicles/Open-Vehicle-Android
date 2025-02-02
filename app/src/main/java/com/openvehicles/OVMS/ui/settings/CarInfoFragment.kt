@@ -30,7 +30,6 @@ class CarInfoFragment : BaseFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_about)
         compatActivity?.setTitle(R.string.lb_vehicle_info)
         val editPosition = requireArguments().getInt("position", -1)
         carData = if (editPosition >= 0) {

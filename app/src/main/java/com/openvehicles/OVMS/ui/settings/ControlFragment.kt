@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
@@ -42,7 +43,6 @@ class ControlFragment
             carData = getStoredCars()[editPosition]
         }
         connectionList = ConnectionList(requireActivity(), this, false)
-        compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_control)
         compatActivity?.setTitle(R.string.Control)
         val rootView = view
         setOnClick(rootView!!, R.id.btn_features, this)
@@ -75,7 +75,10 @@ class ControlFragment
     }
 
     override fun onClick(view: View) {
-        val activity = activity as BaseFragmentActivity?
+        var baseActivity: BaseFragmentActivity? = null
+        try {
+            baseActivity = activity as BaseFragmentActivity?
+        } catch (ignored: Exception) {}
         val args: Bundle
         val id = view.id
         when (id) {
@@ -109,17 +112,25 @@ class ControlFragment
                             }
                             sendCommand(R.string.lb_mmi_ussd_code, "41,$data", this@ControlFragment)
                         }
-                    })
+                    }, baseActivity == null)
             }
             R.id.btn_features -> {
                 args = Bundle()
                 args.putInt("position", editPosition)
-                activity!!.setNextFragment(FeaturesFragment::class.java, args)
+                if (baseActivity == null) {
+                    findNavController().navigate(R.id.action_controlFragment_to_featuresFragment, args)
+                } else {
+                    baseActivity.setNextFragment(FeaturesFragment::class.java, args)
+                }
             }
             R.id.btn_parameters -> {
                 args = Bundle()
                 args.putInt("position", editPosition)
-                activity!!.setNextFragment(ControlParametersFragment::class.java, args)
+                if (baseActivity == null) {
+                    findNavController().navigate(R.id.action_controlFragment_to_controlParametersFragment, args)
+                } else {
+                    baseActivity.setNextFragment(ControlParametersFragment::class.java, args)
+                }
             }
             R.id.btn_reset_ovms_module -> {
                 sendCommand(R.string.msg_rebooting_car_module, "5", this)
@@ -128,12 +139,20 @@ class ControlFragment
                 connectionList!!.sublist()
             }
             R.id.btn_cellular_usage -> {
-                activity!!.setNextFragment(CellularStatsFragment::class.java)
+                if (baseActivity == null) {
+                    findNavController().navigate(R.id.action_controlFragment_to_cellularStatsFragment)
+                } else {
+                    baseActivity.setNextFragment(CellularStatsFragment::class.java)
+                }
             }
             R.id.btn_diag_logs -> {
                 args = Bundle()
                 args.putInt("position", editPosition)
-                activity!!.setNextFragment(LogsFragment::class.java, args)
+                if (baseActivity == null) {
+                    findNavController().navigate(R.id.action_controlFragment_to_logsFragment, args)
+                } else {
+                    baseActivity.setNextFragment(LogsFragment::class.java, args)
+                }
             }
         }
     }

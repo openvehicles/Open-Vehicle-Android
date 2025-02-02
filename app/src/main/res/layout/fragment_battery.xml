@@ -1,31 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <view
-        class="com.github.mikephil.charting.charts.CandleStickChart"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/chart_cells"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <view
-        class="com.github.mikephil.charting.charts.LineChart"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/chart_pack"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="1"
-        />
 
-    <SeekBar
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/seek_pack"
-        android:layout_gravity="center_horizontal"
-        />
+        <view
+            android:id="@+id/chart_cells"
+            class="com.github.mikephil.charting.charts.CandleStickChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
 
-</LinearLayout>
+        <view
+            android:id="@+id/chart_pack"
+            class="com.github.mikephil.charting.charts.LineChart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="1" />
+
+        <SeekBar
+            android:id="@+id/seek_pack"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <include layout="@layout/progress_layer"/>
+
+</FrameLayout>

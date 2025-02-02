@@ -104,6 +104,7 @@
     <string name="lb_charger_confirm_start">Really start charging?</string>
     <string name="lb_charger_confirm_stop">Really stop charging?</string>
     <string name="lb_communications_problem">Communications Problem</string>
+    <string name="lb_charger_confirm_amp_change">Really change amp settings?</string>
     <string name="lb_vehicle_id">Vehicle ID</string>
     <string name="lb_vehicle_label">Vehicle Label (arbitrary)</string>
     <string name="lb_server_passwd">Vehicle Server Password</string>
@@ -125,6 +126,7 @@
         <item translatable="false">1043773844049</item>
         <item translatable="false"></item>
     </string-array>
+
 
     <string name="lb_ft_digital_speedo">#%d: Digital Speedo</string>
     <string name="lb_ft_gps_stream">#%d: GPS Stream</string>
@@ -253,6 +255,7 @@
     <string name="nmins">%d mins</string>
     <string name="min1">1 min</string>
     <string name="justnow">just now</string>
+    <string name="last_seen">Last seen %s ago</string>
     <string name="mph">mph</string>
     <string name="kph">kph</string>
     <string name="slidetocharge">SLIDE TO\nCHARGE</string>
@@ -446,6 +449,7 @@
     <string name="battery_pack_description">Pack history</string>
     <string name="battery_cell_description">Cell status</string>
     <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_soh">SOH (%)</string>
     <string name="battery_data_volt">Volt (V)</string>
     <string name="battery_data_volt_min">Volt min (V)</string>
     <string name="battery_data_temp">Temp (°C)</string>
@@ -685,6 +689,7 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
         <p>&nbsp;</p>
         <p><b><u>Main changes since last release</u></b>:</p>
+          <p>· Redesigned user interface</p>
           <p>· Add VW e-Up charger settings (firmware 3.3.004)</p>
           <p>· General fixes &amp; optimizations</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
@@ -694,5 +699,112 @@
     ]]></string>
     <string name="channel_description">Open Vehicle Monitoring System</string>
     <string name="mi_app_about">About OVMS</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="parked">Parked</string>
+    <string name="connecting">Connecting</string>
+    <string name="state_charging_label">Charging</string>
+    <string name="state_topping_off_label">Topping off</string>
+    <string name="state_done_label">Done charging</string>
+    <string name="state_stopped_label">Charging stopped</string>
+    <string name="start_charging_label">Start charging</string>
+    <string name="stop_charging_label">Stop charging</string>
+    <string name="loading">Loading data</string>
+    <string name="connected">Connected</string>
 
+    <string name="controls_tab_label">Controls</string>
+    <string name="charging_tab_label">Charging</string>
+
+    <!-- Car types -->
+
+    <string name="cartype_BMWI3" translatable="false">BMW i3, i3s</string>
+    <string name="cartype_C2CTS" translatable="false">Cadillac 2nd gen CTS</string>
+    <string name="cartype_C6CORVETTE" translatable="false">Chevrolet C6 Corvette</string>
+    <string name="cartype_CBOLT" translatable="false">Chevrolet Bolt EV</string>
+    <string name="cartype_DBC" translatable="false">DBC-based Vehicle</string>
+    <string name="cartype_DEMO" translatable="false">Demonstration Vehicle</string>
+    <string name="cartype_FT5E" translatable="false">Fiat 500e</string>
+    <string name="cartype_HIONVFL" translatable="false">Hyundai Ioniq vFL</string>
+    <string name="cartype_I5" translatable="false">Hyundai Ioniq 5</string>
+    <string name="cartype_JLRI" translatable="false">Jaguar i-Pace</string>
+    <string name="cartype_KN" translatable="false">Kia Niro / Hyundai Kona EV</string>
+    <string name="cartype_KS" translatable="false">Kia Soul EV</string>
+    <string name="cartype_MB">Mercedes-Benz B250E, W242</string>
+    <string name="cartype_MED3" translatable="false">Maxus eDeliver3</string>
+    <string name="cartype_MGA" translatable="false">MG EV (EU)</string>
+    <string name="cartype_MGB" translatable="false">MG EV (Thailand)</string>
+    <string name="cartype_MI" translatable="false">Trio</string>
+    <string name="cartype_NL" translatable="false">Nissan Leaf</string>
+    <string name="cartype_O2" translatable="false">OBD-II</string>
+    <string name="cartype_RT" translatable="false">Renault Twizy</string>
+    <string name="cartype_RZ" translatable="false">Renault Zoe/Kangoo</string>
+    <string name="cartype_SE" translatable="false">Smart ED 3.Gen</string>
+    <string name="cartype_SQ" translatable="false">Smart ED/EQ 4.Gen</string>
+    <string name="cartype_T3" translatable="false">Tesla Model 3</string>
+    <string name="cartype_TGTC" translatable="false">Think City</string>
+    <string name="cartype_TR" translatable="false">Tesla Roadster</string>
+    <string name="cartype_TS" translatable="false">Tesla Model S</string>
+    <string name="cartype_TYR4" translatable="false">Toyota RAV4 EV</string>
+    <string name="cartype_VA" translatable="false">Chevrolet Volt/Ampera</string>
+    <string name="cartype_VWUP" translatable="false">VW e-Up</string>
+    <string name="cartype_XX" translatable="false">TRACK</string>
+    <string name="cartype_ZEVA" translatable="false">ZEVA BMS</string>
+    <string name="cartype_TRDM" translatable="false">Tesla Roadster (DEMO)</string>
+    <string name="cartype_unknown">Unknown vehicle model</string>
+    <string name="pilot_signal_present">Pilot signal present</string>
+    <string name="charging_estimation_soc">~%s until charge limit</string>
+    <string name="charging_estimation_range">~%s until sufficient range</string>
+    <string name="charging_estimation_full">~%s until full charge</string>
+    <string name="tpms">TPMS</string>
+    <string name="nopower">No power</string>
+    <string name="charge_limit_action">Charge limit action</string>
+    <string name="charge_limit_action_notify">Notify</string>
+    <string name="charge_limit_action_stop">Stop</string>
+    <string name="regen_amount_label">Regenerated energy</string>
+    <string name="consumed_amount_label">Consumed energy</string>
+    <string name="last_trip">Last trip</string>
+    <string name="edit_car">Edit car</string>
+    <string name="lb_options_old_ui">Old UI</string>
+    <string name="lb_options_old_ui_cb">Use old UI instead of new (requires restart)</string>
+    <string name="app_ui_prefs_home_show_range">Show range information with SoC</string>
+    <string name="app_ui_prefs_charging_always_show_time_est">Always show charging time estimations</string>
+    <string name="app_ui_prefs_charging_always_show_time_est_i">Always show time estimations on charging screen, even when car is not charging</string>
+    <string name="app_ui_prefs_home_range_display_mode">Car range display mode</string>
+    <string name="other_settings">Other settings</string>
+    <string name="legacy_settings_title">OVMS Legacy Settings</string>
+    <string name="app_settings">App settings</string>
+    <string name="quick_actions">Quick actions</string>
+    <string name="app_ui_prefs_home_quick_actions_i">Customise and re-arrange Quick Actions</string>
+    <string name="consumption">Consumption</string>
+    <string name="modify_quick_actions">Modify quick actions</string>
+    <string name="quick_actions_modify_hint">Hint: drag to re-arrange, click to remove</string>
+    <string name="climate_control_short">Climate</string>
+    <string name="central_locking_action_label">Lock</string>
+    <string name="Garage">Garage</string>
+    <string name="custom_command">Custom</string>
+    <string name="max_quick_actions_reached">No more space, remove a quick action and try again</string>
+    <string name="dlg_choose_icon_action_title">Choose action icon</string>
+    <string name="invalid_command">Invalid command! Please enter a valid command</string>
+    <string name="no_data">No data</string>
+    <string name="latest_data">Latest</string>
+    <string name="stale_data">Stale</string>
+    <string name="none">None</string>
+    <string name="home_soc_hint">Hint: You can click on battery icon or SoC text to temporarily show range</string>
+    <string name="lb_motor_power">Motor Power</string>
+    <string name="drive_mode">Drive Mode</string>
+    <string name="normal">Normal</string>
+    <string name="drive_mode_eco">ECO/B Mode</string>
+    <string name="unknown">Unknown</string>
+    <string name="temp">Temperature</string>
+    <string name="lb_communications">Communications</string>
+    <string name="ideal_range_abbreviation">I: %s</string>
+    <string name="estimated_range_abbreviation">E: %s</string>
+    <string-array name="home_range_display_mode_labels" translatable="false">
+        <item>@string/IdealShort</item>
+        <item>@string/EstimatedShort</item>
+    </string-array>
 </resources>

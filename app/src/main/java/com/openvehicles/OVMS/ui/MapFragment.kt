@@ -21,6 +21,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.navigation.fragment.findNavController
 import com.androidmapsextensions.CircleOptions
 import com.androidmapsextensions.ClusterGroup
 import com.androidmapsextensions.ClusteringSettings
@@ -42,6 +43,7 @@ import com.openvehicles.OVMS.ui.utils.Database
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator.addMarkers
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
+import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.utils.AppPrefs
 import java.util.Arrays
 import kotlin.math.asin
@@ -107,11 +109,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
-        val mainActivity = activity as MainActivity?
-        if (mainActivity == null) {
-            Log.e(TAG, "getMap/onMapReady: MainActivity unavailable")
-            return
-        }
+
         map = googleMap
         Log.i(TAG, "getMap/onMapReady: map=$map")
         var clusterEnabled = true
@@ -131,7 +129,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
         map!!.uiSettings.isZoomControlsEnabled = true // enable zoom +/- buttons
         map!!.uiSettings.isMapToolbarEnabled = true // enable Google Maps shortcuts
         if (ContextCompat.checkSelfPermission(
-                mainActivity,
+                requireContext(),
                 Manifest.permission.ACCESS_FINE_LOCATION
             )
             == PackageManager.PERMISSION_GRANTED
@@ -206,7 +204,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             // fetch chargepoints for view:
             val cameraPosition = map!!.cameraPosition
             Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target)
-            mainActivity.startGetMapDetails(cameraPosition.target)
+            //mainActivity.startGetMapDetails(cameraPosition.target)
         })
         update()
     }
@@ -278,6 +276,14 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             item.setChecked(newState)
             updateMapDetails(false)
         } else if (menuId == R.id.mi_map_settings) {
+            var baseActivity: MainActivity? = null
+            try {
+                baseActivity = activity as MainActivity?
+            } catch (ignored: Exception) {}
+            if (baseActivity == null) {
+                findNavController().navigate(R.id.action_mapFragment_to_mapSettingsFragment)
+                return false
+            }
             show(
                 requireActivity(),
                 MapSettingsFragment::class.java,
@@ -501,7 +507,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
         // start chargepoint data update:
         appPrefs.saveData("lat_main", "" + carData!!.car_latitude)
         appPrefs.saveData("lng_main", "" + carData!!.car_longitude)
-        MainActivity.updateLocation!!.updateLocation()
+        //MainActivity.updateLocation!!.updateLocation()
     }
 
     // draw circle in a map
@@ -571,7 +577,6 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
 
     override fun clearCache() {
         database.clearMapDetails()
-        MainActivity.updateLocation!!.updateLocation()
     }
 
     override fun updateFilter(connectionList: String?) {

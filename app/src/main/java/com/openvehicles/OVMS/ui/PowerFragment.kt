@@ -82,8 +82,8 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         }
 
         // Setup UI:
-        val progressOverlay = createProgressOverlay(inflater, container, false)
-        progressOverlay.setOnCancelListener(this)
+        //val progressOverlay = createProgressOverlay(inflater, container, false)
+        //progressOverlay.setOnCancelListener(this)
         val rootView = inflater.inflate(R.layout.fragment_power, null)
         var xAxis: XAxis
         val xFormatter = XAxisValueFormatter()
@@ -202,7 +202,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         compatActivity!!.setTitle(R.string.power_title)
-        compatActivity!!.supportActionBar!!.setIcon(R.drawable.ic_action_chart)
+       // compatActivity!!.supportActionBar!!.setIcon(R.drawable.ic_action_chart)
 
         // get data of current car:
         carData = getSelectedCarData()

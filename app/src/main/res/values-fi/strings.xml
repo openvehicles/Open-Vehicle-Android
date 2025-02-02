@@ -1,0 +1,637 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Odota hetki</string>
+    <string name="Settings">Asetukset</string>
+    <string name="Range">Ajokantama: %s (%s arvioitu)</string>
+    <string name="LastUpdated">Viimeksi päivitetty: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Peruuta</string>
+    <string name="Delete">Poista</string>
+    <string name="Save">Tallenna</string>
+    <string name="DatabaseError">Tietokantavirhe</string>
+    <string name="PinShortcut">PIN</string>
+    <string name="PinRequestSuccess">PIN-koodi pyydetty</string>
+    <string name="PinRequestFailure">PIN-koodin pyyntö epäonnistui</string>
+    <string name="Send">Lähetä</string>
+    <string name="Error">Virhe</string>
+    <string name="Set">Aseta</string>
+    <string name="Control">Ohjaus</string>
+    <string name="ServerNameOrIP">Palvelimen osoite (verkkotunnus tai IP)</string>
+    <string name="GcmSenderID">GSM Lähetyksen ID (oletuksena tyhjä)</string>
+    <string name="NetPass">Palvelimen salasana</string>
+    <string name="UserPass">Käyttäjän salasana (Paranoid-tila)</string>
+    <string name="Quit">Poistu sovelluksesta</string>
+    <string name="Edit">Muokkaa</string>
+    <string name="Yes">Kyllä</string>
+    <string name="No">Ei</string>
+    <string name="ClearNotifications">Tyhjennä ilmoitukset</string>
+    <string name="VehicleImage">Auton kuva</string>
+    <string name="btnAddCar">Lisää auto</string>
+    <string name="btnCenterMap">Keskitä kartta</string>
+    <string name="ImageParking">Auton pysäköinti</string>
+    <string name="SysWarning">Järjestelmävaroitus</string>
+    <string name="LockIdle">Keskuslukitus</string>
+    <string name="SignalStrength">Signaalin vahvuus</string>
+    <string name="ChargerPlug">Latausliitin</string>
+    <string name="DefaultCharging">00A/000V</string>
+    <string name="DefaultChargingPower">000.0kW</string>
+    <string name="DefaultChargingPowerLoss">➘ 0.0kW</string>
+    <string name="DefaultSlidetoCharge">ALOITA LATAUS \\nPYYHKÄISEMÄLLÄ</string>
+    <string name="DefaultMode">OLETUSTILA</string>
+    <string name="ChargingOverlay">Ladataan</string>
+    <string name="BatteryOverlay">Akku</string>
+    <string name="EstimatedShort">ARVIOITU KANTAMA</string>
+    <string name="IdealShort">IHANTEELLINEN KANTAMA</string>
+    <string name="BatteryText">Akku</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Profile">Profiili</string>
+    <string name="Default">Oletus</string>
+    <string name="Wakeup">Herätys</string>
+    <string name="Add">Lisää</string>
+    <string name="Battery">Akku</string>
+    <string name="Car">Auto</string>
+    <string name="Bike">Moottoripyörä</string>
+    <string name="Hardware">Laitteisto</string>
+    <string name="Location">Sijainti</string>
+    <string name="Messages">Viestit</string>
+    <string name="Amps">Virta</string>
+    <string name="Close">Sulje</string>
+    <string name="Features">Ominaisuudet</string>
+    <string name="Parameters">Parametrit</string>
+    <string name="CellularStats">Mobiilidatan käyttö</string>
+    <string name="Vehicle">Ajoneuvo</string>
+    <string name="WIN">VIN-numero</string>
+    <string name="Type">Tyyppi</string>
+    <string name="GMC">GSM</string>
+    <string name="CAC">Ajoakun kapasiteetti</string>
+    <string name="Info12V">12V</string>
+    <string name="Charged">Ladattu</string>
+    <string name="Service">Yhteys</string>
+    <string name="Server">Palvelin</string>
+    <string name="App">Sovellus</string>
+    <string name="Options">Lisäasetukset</string>
+    <string name="lb_wakeup_car">Herätä auto</string>
+    <string name="lb_lock_car">Lukitse auto</string>
+    <string name="lb_unlock_car">Avaa auton lukitus</string>
+    <string name="lb_valet_mode">Valet-tila</string>
+    <string name="lb_valet_mode_on">Valet päällä</string>
+    <string name="lb_valet_mode_off">Valet pois päältä</string>
+    <string name="lb_valet_mode_smart">Sytytysvirran tila</string>
+    <string name="lb_valet_mode_smart_on">Sytytysvirta päälle</string>
+    <string name="lb_valet_mode_smart_off">Sytytysvirta pois</string>
+    <string name="lb_lock_mode_twizy">Rajoita maksiminopeus (kmh):</string>
+    <string name="lb_lock_car_twizy">Aseta nopeusrajoitus</string>
+    <string name="lb_unlock_car_twizy">Poista nopeusrajoitus</string>
+    <string name="lb_valet_mode_twizy">Rajoita matkan pituus (km):</string>
+    <string name="lb_valet_mode_on_twizy">Aseta matkarajoitus</string>
+    <string name="lb_valet_mode_off_twizy">Poista matkarajoitus</string>
+    <string name="lb_valet_mode_extend_twizy">Lisää +1km</string>
+    <string name="lb_unvalet_unlock_twizy">Poista matka- sekä nopeusrajoitukset</string>
+    <string name="lb_enter_pin">Syötä PIN</string>
+    <string name="lb_enter_passwd">Syötä salasana</string>
+    <string name="lb_enter_value">Syötä arvo</string>
+    <string name="lb_wrning_charger">VAROITUS Väärät latausasetukset voivat aiheuttaa vahinkoja sähköisiin järjestelmiin!</string>
+    <string name="lb_charge_current">Latauksen virta (A)</string>
+    <string name="lb_charger_setting">Laturin asetukset</string>
+    <string name="lb_charger_confirm_start">Haluatko aloittaa latauksen?</string>
+    <string name="lb_charger_confirm_stop">Haluatko pysäyttää latauksen?</string>
+    <string name="lb_communications_problem">Kommunikointivirhe</string>
+    <string name="lb_charger_confirm_amp_change">Haluatko todella vaihtaa laturin asetuksia?</string>
+    <string name="lb_vehicle_id">Ajoneuvon tunnus</string>
+    <string name="lb_vehicle_label">Ajoneuvon lempinimi (vapaavalinta)</string>
+    <string name="lb_server_passwd">Ajoneuvon palvelimsalasana</string>
+    <string name="lb_module_passwd">Moduuli/SMS salasana</string>
+    <string name="lb_slide_choice_vehicle">Pyyhkäise valitaaksesi auton</string>
+    <string name="lb_mmi_ussd_code">MMI/USSD-koodi</string>
+    <string name="lb_cellular_usage">Mobiilidatan käyttö</string>
+    <string name="lb_reset_ovms_module">Käynnistä OVMS-moduuli uudelleen</string>
+    <string name="lb_center_map">Keskitä kartta</string>
+    <string name="lb_select_server">Valitse palvelin:</string>
+    <string name="lb_ft_digital_speedo">#%d: Digitaalinen nopeusmittari</string>
+    <string name="lb_ft_gps_stream">#%d: GPS-tietolähde</string>
+    <string name="lb_ft_minimum_soc">#%d: Akun latauksen vähimmäismäärä</string>
+    <string name="lb_ft_car_bits">#%d: Auton bitit</string>
+    <string name="lb_ft_can_write">#%d: CAN-kirjoitusoikeus</string>
+    <string name="lb_ft_modelyear">#%d: Vuosimalli</string>
+    <string name="lb_ft_remote_ac_temp">#%d: Etäohjattavan ilmastoinnin lämpötila</string>
+    <string name="lb_ft_remote_ac_on_bat">#%d: Etäohjattava ilmastointi ajoakulla</string>
+    <string name="lb_ft_stop_suffsoc">#%d: Lopeta lataus tietyn latausprosentin jälkeen</string>
+    <string name="lb_ft_rt_gpslogint">#%d: GPS-tietojen lokitietoaika [s]</string>
+    <string name="lb_ft_rt_kickdown_threshold">#%d: Kickdownin kynnys</string>
+    <string name="lb_ft_rt_kickdown_compzero">#%d: Kickdownin kompensaatio</string>
+    <string name="lb_ft_rt_chargemode">#%d: Latausrajan pysäytystila</string>
+    <string name="lb_ft_rt_chargepower">#%d: Latausrajan taso (%)</string>
+    <string name="lb_ft_rt_suffsoc">#%d: Riittävä lataustaso</string>
+    <string name="lb_ft_rt_suffrange">#%d: Riittävä ajokantama</string>
+    <string name="lb_ft_rt_maxrange">#%d: Maksimi ihanteellinen kantama</string>
+    <string name="lb_ft_rt_capacity">#%d: Akun mittaama kapasiteetti (CAP%%)</string>
+    <string name="lb_ft_rt_capacity_nom_ah">#%d: Akun nimellinen kapasiteetti (Ah)</string>
+    <string name="lb_cp_registered_telephone">#%d: Rekisteröity puhelinnumero</string>
+    <string name="lb_cp_module_password">#%d: Moduulin salasana</string>
+    <string name="lb_cp_miles_km">#%d: Yksikkö (Mailit/Kilometrit)</string>
+    <string name="lb_cp_notifications">#%d: Ilmoitukset</string>
+    <string name="lb_cp_ovms_server_ip">#%d: OVMS-palvelimen IP</string>
+    <string name="lb_cp_cellular_network_apn">#%d: Mobiiliverkon APN</string>
+    <string name="lb_cp_cellular_network_user">#%d: Mobiiliverkon Käyttäjänimi</string>
+    <string name="lb_cp_cellular_network_password">#%d: Mobiiliverkon Salasana</string>
+    <string name="lb_cp_vehicle_id">#%d: Ajoneuvon tunnus</string>
+    <string name="lb_cp_server_password">#%d: Palvelimen salasana</string>
+    <string name="lb_cp_paranoid_mode">#%d: Paranoid-tila</string>
+    <string name="lb_cp_social_group_1">#%d: Sosiaaliryhmä #1</string>
+    <string name="lb_cp_social_group_2">#%d: Sosiaaliryhmä #2</string>
+    <string name="lb_cp_gsmlock">#%d: GSM-lukitus</string>
+    <string name="lb_cp_vehicle_type">#%d: Ajoneuvon tyyppi</string>
+    <string name="lb_cp_cooldown">#%d: Jäähtyminen</string>
+    <string name="lb_cp_gprsdns">#%d: GPRS DNS IP-osoite</string>
+    <string name="lb_cp_timezone">#%d: Aikavyöhyke</string>
+    <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
+    <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
+    <string name="lb_cp_acc3">#%d: ACC #3 (base64)</string>
+    <string name="lb_cp_acc4">#%d: ACC #4 (base64)</string>
+    <string name="lb_cp_rt_profile">#%d: Aktiivinen profiili</string>
+    <string name="lb_cp_rt_profile1">#%d: Profiili #1 (binääri)</string>
+    <string name="lb_cp_rt_profile2">#%d: Profiili #2 (binääri)</string>
+    <string name="lb_cp_rt_profile3">#%d: Profiili #3 (binääri)</string>
+    <string name="lb_ovms_firmware">OVMS-versio:</string>
+    <string name="lb_vehicle_info">Ajoneuvon tiedot</string>
+    <string name="lb_charger_setting_twizy">Muokkaa asetuksia</string>
+    <string name="lb_charger_setting_twizy_hint">Vinkki: rajoituksen saa kytkettyä pois asettamalla sen nollaksi</string>
+    <string name="lb_charger_setting_eup_climit">Huomio: arvo on rajoitettu 16A:n saakka kaksivaiheisilla latureilla tai ennen vuosimallia 2020.</string>
+    <string name="lb_sufficient_soc">Riittävä akun varaus (%)</string>
+    <string name="lb_sufficient_range">Riittävä kantama (%s)</string>
+    <string name="msg_getting_charge_alerts">Latausilmoituksien saaminen moduulilta&#8230;</string>
+    <string name="msg_setting_charge_alerts">Asetetaan latausasetukset&#8230;</string>
+    <string name="lb_charge_power_limit">Latauksen tehorajoitus</string>
+    <string name="lb_charge_mode">Latauksen tila</string>
+    <string name="msg_ok">OK</string>
+    <string name="msg_charger_range">Kantamatila rajoittaa tehoa Toistuva käyttö lyhentää akun pitkäkestoista käyttöikää</string>
+    <string name="msg_charger_perform">Tehotilan toistuva käyttö lyhentää akun pitkäaikaista elinikää</string>
+    <string name="msg_connecting_service">Yhdistetään palveluun&#8230;</string>
+    <string name="msg_connecting_vehicle">Yhdistetään autoon&#8230;</string>
+    <string name="msg_wakeup_car">Herätetään auto&#8230;</string>
+    <string name="msg_issuing_homelink">Lähetetään Homelink-komento&#8230;</string>
+    <string name="msg_setting_charge_mc">Asetetaan lataustila ja virtarajoitus&#8230;</string>
+    <string name="msg_setting_charge_m">Asetetaan lataustila&#8230;</string>
+    <string name="msg_setting_charge_c">asetetaan latauksen virtarajoitus&#8230;</string>
+    <string name="msg_starting_charge">Käynnistetään lataus&#8230;</string>
+    <string name="msg_stopping_charge">Pysäytetään lataus&#8230;</string>
+    <string name="msg_rebooting_car_module">Käynnistetään uudelleen auton moduuli&#8230;</string>
+    <string name="msg_please_enter_value">Ole hyvä ja syötä oikea arvo</string>
+    <string name="msg_invalid_name">Käyttäjänimen on oltava enemmän kuin kolme merkkiä ja ei voi sisältää erikoismerkkejä</string>
+    <string name="msg_invalid_passwd">Salasanan on oltava pituudeltaan %1$d-%2$d merkkiä.</string>
+    <string name="msg_invalid_id_already_registered">Ajoneuvon tunnus %s on jo rekisteröity. Syötä jokin tinen tunnus.</string>
+    <string name="msg_delete_this_car">Haluatko poistaa ajoneuvon?</string>
+    <string name="msg_mmi_ssd_code">Syötä MMI/USSD-koodi, sitten paina LÄHETÄ lähettääksesi koodin autosi mobiiliyhteystarjoajalle.</string>
+    <string name="err_connection_lost">OVMS-palvelimen yhteys katkesi</string>
+    <string name="err_check_following">Tarkista seuraava(t): 1. OVMS-palvelimen osoite 2. Ajoneuvosi tunnus ja salasanat</string>
+    <string name="err_failed">Epäonnistui: %s</string>
+    <string name="err_command_failed">Komento palautti virheen</string>
+    <string name="err_command_cancelled">Komento peruutettiin</string>
+    <string name="err_unsupported_operation">Komentoa ei tueta</string>
+    <string name="err_unimplemented_operation">Komentoa ei ole sisäänrakennettu</string>
+    <string name="err_param_not_editable">Anteeksi, tämä asetus ei ole muokattavissa!</string>
+    <string name="err_command_auth_failed">Komennon tunnistautuminen epäonnistui</string>
+    <string name="err_offline">Verkkoyhteys ei ole käytössä tai estetty</string>
+    <string name="err_vehicle_unknown">Ajoneuvon tunnus %1$s on tuntematon</string>
+    <string name="msg_retrieving_data">Haetaan tietoa&#8230;</string>
+    <string name="msg_processing_data">Käsitellään tietoa&#8230;</string>
+    <string name="msg_more_rows_omitted">(%1$d lisäriviä jätetty pois)</string>
+    <string name="cellular_usage_info_car">Ajoneuvo: %.1f Mt/kuukausi (%d päivää)</string>
+    <string name="cellular_usage_info_app">Sovellus: %.1f Mt/kuukausi (%d päivää)</string>
+    <string name="chart_axis_date">Päivämäärä</string>
+    <string name="chart_axis_datavolume">Koko (Kt)</string>
+    <string name="lb_chargepoint_conn_level">Lataustaso #%d</string>
+    <string name="lb_chargepoint_conn_type">Liitintyyppi #%d</string>
+    <string name="live">live</string>
+    <string name="ndays">%d päivää</string>
+    <string name="nhours">%d tuntia</string>
+    <string name="nmins">%d minuuttia</string>
+    <string name="min1">1 min</string>
+    <string name="justnow">juuri äsken</string>
+    <string name="last_seen">Viimeksi nähty %s sitten</string>
+    <string name="mph">mph</string>
+    <string name="kph">kph</string>
+    <string name="slidetocharge">ALOITA LATAUS \\nPYYHKÄISEMÄLLÄ</string>
+    <string name="timedcharge">AJOITETTU LATAUS</string>
+    <string name="pushnotifications">Push-ilmoitukset</string>
+    <string name="pushnotifications_welcome">Ajoneuvoista saamat push-ilmoitukset näkyvät täällä</string>
+    <string name="state_charging">LADATAAN %s %s</string>
+    <string name="state_topping_off">TÄYDENNETÄÄN %s %s</string>
+    <string name="state_done">VALMIS %s %s</string>
+    <string name="state_stopped">PYSÄYTETTY %s %s</string>
+    <string name="info_etr_full">100%%: ~%s</string>
+    <string name="info_etr_suffsoc">%d%%: ~%s</string>
+    <string name="info_etr_suffrange">%d%s: ~%s</string>
+    <string name="textMOTOR">MOOTTORI</string>
+    <string name="textPEM">PEM</string>
+    <string name="textCAB">SISÄTILAT</string>
+    <string name="textBATTERY">AKKU</string>
+    <string name="textCHARGER">LATURI</string>
+    <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">PROFIILI</string>
+    <string name="textAMBIENT">ULKO</string>
+    <string name="textCABIN">SISÄTILAT</string>
+    <string name="text12VBATT">12V AKKU</string>
+    <string name="textHVBATT">AJOAKKU (HV)</string>
+    <string name="textAC">ILMASTOINTI</string>
+    <string name="mi_ac_on">ILMASTOINTI PÄÄLLE</string>
+    <string name="mi_ac_off">ILMASTOINTI POIS</string>
+    <string name="msg_issuing_climatecontrol">Lähetetään ilmastointikomento…</string>
+    <string name="ocm_read_failed">OpenChargeMap luku epäonnistui: %s</string>
+    <string name="ocm_toast_autotrack_off">Automaattinen seuranta pois Klikkaa koti [⌖] aktivoidaksesi toiminnon</string>
+    <string name="ocm_toast_autotrack_on">Automaattinen seuranta päällä</string>
+    <string name="mi_map_options">Asetukset</string>
+    <string name="mi_map_autotrack">Automaattinen seuranta</string>
+    <string name="mi_map_filter_connections">Auton liitännät</string>
+    <string name="mi_map_filter_range">Auton kantama</string>
+    <string name="mi_map_settings">Asetukset</string>
+    <string name="mi_car_details_temp">Fahrenheit</string>
+    <string name="mi_car_details_tpms">TPMS yksikössä BAR</string>
+    <string name="cargroup_title">Auton ryhmät</string>
+    <string name="cargroup_name_hint">Ryhmän nimi</string>
+    <string name="ocm_title_charge_points">LATAUSASEMAT</string>
+    <string name="ocm_subtitle_charge_points">LÄHDE: https://openchargemap.org/</string>
+    <string name="ocm_lb_enable">Ota käyttöön OCM</string>
+    <string name="ocm_lb_cluster_enable">Enable clustering</string>
+    <string name="ocm_lb_cluster_size">Klusterin koko</string>
+    <string name="ocm_lb_max_results">Enimmäismäärä latausasemia yhdessä laatassa</string>
+    <string name="connections">Liittimet</string>
+    <string name="clearcache">Tyhjennä välimuisti</string>
+    <string name="msg_cache_cleared">Latausasemien välimuisti tyhjennetty!</string>
+    <string name="logs_title">Diagnostiikkalokitiedot</string>
+    <string name="logs_btn_get">Hae lokitiedot</string>
+    <string name="logs_btn_reset">Nollaa lokitiedot</string>
+    <string name="logs_lb_alerts">Hälytykset</string>
+    <string name="logs_lb_faults">Viat</string>
+    <string name="logs_lb_events">Tapahtumat</string>
+    <string name="logs_lb_counter">Lukumäärä</string>
+    <string name="logs_lb_minmax">MinMaks</string>
+    <string name="logs_th_code">Koodi</string>
+    <string name="logs_th_description">Kuvaus</string>
+    <string name="logs_th_keytime">KeyTime</string>
+    <string name="logs_th_lasttime">LastTime</string>
+    <string name="logs_th_firsttime">FirstTime</string>
+    <string name="logs_th_count">Määrä</string>
+    <string name="logs_th_data">Data%d</string>
+    <string name="logs_th_sensor">Anturi</string>
+    <string name="logs_th_user">Käyttäjä</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+    <string name="logs_fmt_keytime">%d. %02d:%02d:%02d</string>
+    <string name="logs_fmt_listinfo">Viimeksi haettu %s // key time %s</string>
+    <string name="logs_msg_query_alerts">Hae hälytykset&#8230;</string>
+    <string name="logs_msg_query_faults">Hae vikailmoitukset&#8230;</string>
+    <string name="logs_msg_query_events">Hae tapahtumat&#8230;</string>
+    <string name="logs_msg_query_counter">Hae määrät&#8230;</string>
+    <string name="logs_msg_query_minmax">Hae min/max&#8230;</string>
+    <string name="logs_msg_fetch_keytime">Hae key time&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Lataa hälytykset&#8230;</string>
+    <string name="logs_msg_fetch_faults">Lataa vikailmoitukset&#8230;</string>
+    <string name="logs_msg_fetch_events">Lataa tapahtumat&#8230;</string>
+    <string name="logs_msg_fetch_counter">Lataa määrät&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Lataa min/max&#8230;</string>
+    <string name="logs_msg_reset_faults">Nollaa vikailmoitukset&#8230;</string>
+    <string name="logs_msg_reset_events">Nollaa tapahtumat&#8230;</string>
+    <string name="logs_msg_reset_counter">Nollaa määrät&#8230;</string>
+    <string name="logs_msg_reset_minmax">Nollaa min/max&#8230;</string>
+    <string name="hint_sevcon_offline">" (Vinkki: &#8230;B = SEVCON on offline)"</string>
+    <string name="notifications_hint_cmdinput">SMS-/MMI-/MSG-komento</string>
+    <string name="err_failed_smscmd">Virhe: tuntematon komento / tunnistautumisvirhe</string>
+    <string name="notifications_toast_copied">Viesti on kopioitu leikepöydälle</string>
+    <string name="notifications_menu">Valikko</string>
+    <string name="notifications_stored_commands">Tallennetut komennot</string>
+    <string name="notifications_chk_filter_list">Suodata vain valittu auto</string>
+    <string name="notifications_chk_filter_info">Suodata vain infoilmoitukset</string>
+    <string name="notifications_chk_filter_alert">Suodata vain hälytysilmoitukset</string>
+    <string name="notifications_chk_monospace">Monospace</string>
+    <string name="notifications_set_fontsize">Fonttikoko</string>
+    <string name="notifications_btn_help">Tietoa</string>
+    <string name="notifications_help"><![CDATA[
+ 		<h1>Ilmoitukset &amp; komennot</h1>
+
+		<p>Tällä näytöllä näkyy viimeiset 200 ilmoitusta, hälytystä, komentopyyntöjä ja sen vastauksia.</p>
+
+		<p>Voit suodattaa listaa näyttämään vain valitun auton ilmoitukset</p>
+
+        <p>Klikkaa ilmoitusta, jolloin näet sen ikkunassa. Sieltä sen voi kopioida leikepöydälle painamalla pohjaan pitkään.
+         Painamalla komentoa listalta kopioi sen komentokenttään, josta voit suorittaa aiemman komennon uudestaan tai muokata sitä haluamasi tavala. </p>
+
+        <p>Voit myös lähettää tekstikomentoja (SMS-komennot), MMI (USSD)-komentoja, MSG komentoja sekä modeemin komentoja (AT).
+        Kaikki komennot, jotka on lähetetty tästä näkymästä ovat lähetettynä netin ylitse (TCP/IP-yhteys), eli SMS-komennot eivät kulje maksullisten tekstiviestien kautta.</p>
+
+        <p><u>Esimerkkejä</u>:</p>
+
+		<p>
+		&nbsp;&bull; SMS: <tt><b>STAT</b></tt> &mdash; <i>ajoneuvon tilan komento</i><br>
+		&nbsp;&bull; MMI: <tt><b>*100#</b></tt> &mdash; <i>USSD-koodi, jolla voi yleensä hakea SIM-kortin saldon</i><br>
+		&nbsp;&bull; MSG: <tt><b>#31</b></tt> &mdash; <i>historiallisen datan yhteenveto</i><br>
+		&nbsp;&bull; Modem: <tt><b>@AT…</b></tt> &mdash; <i>tutustu modeemin käyttöohjeeseen</i>
+		</p>
+
+		<p>Huomioita: MMI-komennot riippuvat sinun GSM-operaattorista / SIM-tarjoajasta, tarkistathan operaattorisi
+		ohjeet tai tiedot jos sellaiset on saatavilla. Modeemille lähetetyt komennit eivät palauta tuloksiaan. Tutustu lisää OVMS:n protokollan dokumentaatioon saadaksesi lisää tietoja MSG-komennoista.</p>
+
+    ]]></string>
+    <string name="battery_title">Akun historia</string>
+    <string name="battery_menu">Asetukset</string>
+    <string name="battery_btn_get_data">Lataa tiedot</string>
+    <string name="battery_btn_reset_view">Nollaa zoomi</string>
+    <string name="battery_btn_help">Tiedot</string>
+    <string name="battery_chk_volt">Näytä jännite</string>
+    <string name="battery_chk_temp">Näytä lämpötila</string>
+    <string name="battery_msg_loading_data">Ladataan tietoja&#8230;</string>
+    <string name="battery_msg_get_status">Pyydetään akun tila&#8230;</string>
+    <string name="battery_msg_get_battpack">Ladataan akkupaketin tidot&#8230;</string>
+    <string name="battery_msg_get_battcell">Ladataan mobiiliyhteyden tiedot&#8230;</string>
+    <string name="battery_pack_description">Akkupaketin historia</string>
+    <string name="battery_cell_description">Mobiiliyhteyden tila</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_soh">SOH (%)</string>
+    <string name="battery_data_volt">Jännite (V)</string>
+    <string name="battery_data_volt_min">Pienin jännite (V)</string>
+    <string name="battery_data_temp">Lämpötila (°C)</string>
+    <string name="battery_help"><![CDATA[
+ 		<h1>Akun historia</h1>
+
+		<h2>Perusasiat</h2>
+		<p><b>Ohjelmiston version</b> täytyy tukea <b>akun seuratatoimintoa</b>.
+		Kaavat perustuvat seuraaviin tietoihin: <tt>RT-BAT-P</tt> sekä <tt>RT-BAT-C</tt>
+		(katso Ohjekirja). Palvelin pitää näitä tallessa <b>24h</b>.</p>
+		<p><b>Mittauksen tarkkuus</b> on 5 mV jännitteelle ja 1 °C lämpötilalle.
+		Twizyn akkupaketti koostuu 42 akkukennosta 14S3P-asetelmasta, jaoteltu seitsemään moduuliin.
+		Järjestelmä tukee vain erillisiä mittauksia 14S3P-nipun jännitteistä ja
+         7 moduulin lämpötilaa.</p>
+
+		<h2>Dataliikenteen historia</h2>
+		<p>Dataliikenteen kaavio näyttää vain ajat, jolloin on tapahtunut tiedonsiirto. Tämä poislukee pysäköidyt ajat.</p>
+		<p>Moduuli lähettää päivityksiä palvelimelle joka <b>~60 sekuntia</b> ajon tai latauksen aikana
+		(kun verkko-/palvelinyhteys on saatavilla). Äärimmäiset ja maksimi standardipoikkeamat
+        kerätään jatkuvasti, nykyiset arvot ovat päivityksen lähetyshetkellä.</p>
+		<p>Twizyn <b>virran käynnistäessä</b> tai <b>latauksen alkaessa</b>, kerätyt arvot nollataan.
+		Joten käyttöosion lopussa nämä osoittavat yleiset äärimmäisyydet, jotka tapahtuivat
+        käyttöosion aikana.</p>
+		<p><u><b>Vinkki</b></u>:seurataksesi minimijännitelinjaa, napsauta sitä korostaaksesi merkinnän,
+        siirrä sitten merkkiä hakupalkin avulla.</p>
+
+		<h2>Kennon tila</h2>
+		<p>
+		&nbsp;&bull; alapää = minimiarvo<br>
+		&nbsp;&bull; yläpää = nykyinen arvo (+teksti)<br>
+		&nbsp;&bull; täytetty laatikko = huono<br>
+		&nbsp;&bull; isompi laatikko = enemmän poikkeamaa
+		</p>
+		<p>Tämä on kynttilänjalkakaavio. <b>Korkein arvo</b> on (<tt>volt_act</tt> / <tt>temp_act</tt>), <b>vähimmäisarvo</b> on
+		pienin mitattu arvo (<tt>volt_min</tt> / <tt>temp_min</tt>) tämänhetkisessä historiallisessa tiedossa.</p>
+		<p>Kynttilän korkeus heijastaa mitattua <b>maksimipoikkeamaa</b>.
+		Täytettyä kynttilää käytetään näyttämään "huonoa" poikkeamaa, eli suurempi
+        <b>jännitekatkos</b> tai korkeampi <b>lämpötilan nousu</b>.</p>
+		<p><u><b>Vinkki</b></u>: jos haluat vertailla jännitetietoja, valitse kenno ja zoomaa pystysuunnassa
+        kunnes voit selvästi lukea muiden solujen poikkeamat valintamerkistä.</p>
+    ]]></string>
+    <string name="aux_battery_menulabel">12V historia</string>
+    <string name="aux_battery_title">12V-akun historia</string>
+    <string name="aux_battery_msg_get_battpack">Haetaan 12V tietoja&#8230;</string>
+    <string name="aux_battery_data_volt">Jännite (V)</string>
+    <string name="aux_battery_data_volt_ref">Viitearvo (V)</string>
+    <string name="aux_battery_data_current">Virta (A)</string>
+    <string name="aux_battery_data_temp_ambient">Ulkolämpötila (°C)</string>
+    <string name="aux_battery_data_temp_charger">Laturin lämpötila (°C)</string>
+    <string name="aux_battery_help"><![CDATA[
+ 		<h1>12V akun historia</h1>
+
+        <p>Koska lyijyakut yleensä kuolevat ilman varoituksia (etenkin talvella)
+         ja OVMS käyttää akun virtaa jatkuvasti, moduulissa
+         on sisäänrakennettu 12V:n jänniteseuranta ja varoitusjärjestelmä.</p>
+
+		<p><u>Vinkki</u>: 12V:n jännitettä mitataan OVMS-moduulin tulojännitteestä, jolla koko moduuli saa sähköä.
+		 Koska anturi voi heittää hieman kalibroinnissa tehtaalta, on suositeltavaa, että suoritat
+		 alkukalibroinnin jännitteelle. Katso ohjekirjasta lisää.</p>
+
+		<h2>Historiallinen tieto</h2>
+		<p>12V-akun tiedot pidetään palvelimella 24 tunnin ajan. Paikallista kopiota sovelluksessa
+		 ei päivitetä automaattisesti, käytä päivityspainiketta ladataksesi viimeiset tiedot 24 tunnin ajalta.</p>
+		<p>Kaavio näyttää akun todellisen jännitteen, referenssijännitteen (katso
+		 alempaa), 12V-akun virran, ulko- sekä laturilämpötilan. Kaikki autot eivät kykene antamaan kaikkia tietoja.
+		 Valikosta pystyy rajoittamaan näkyville vain jännitteen tai lämötilan
+		 virta on aina näkyvissä.</p>
+		<p>Osuudet 12 V:n latauksesta ja ajoneuvojen käytöstä on esitetty pystysuorilla katkoviivoilla.
+		Napsauta mitä tahansa tietopistettä asettaaksesi kohdistuksen ja näyttääksesi hiusristikon vertailua varten.
+		 Zoomaa ja siirrä kaaviota nipistämällä ja nollaa näkymä valikkovaihtoehdon avulla.</p>
+		<p>Useimmat ajoneuvot lataavat 12 V akun pääakusta tyhjäkäynnillä
+              sisäisen DC/DC-muuntimella, joka on yleensä sisäänrakennettu laturiin. Jos et näe ajoittain
+		      latauksen merkkejä, ajoneuvosi DC-muuntaja voi olla viallinen.</p>
+
+		<h2>Referenssi &amp; Ilmoitukset</h2>
+		<p>Referenssijännite päivittyy 15 minuuttia 12V latauksen lopettamisen jälkeen. Sitä
+         käytetään hälytysviitteenä, jos se on suurempi kuin määritetty oletusviite
+         terveestä akusta.</p>
+		<p>Jos todellinen jännite putoaa ohjearvon alle määritetyn kynnyksen verran,
+        OVMS lähettää automaattisesti hälytyksen. Tämän hoitaa moduuli, sovelluksen ei tarvitse olla päällä tätä varten</p>
+		<p>Korkeampi latausjännite talvella on normaalia ja odotettavissa, sillä lyijyakut tarvitsevat korkeamman latausjännitteen alhaisemmissa lämpötiloissa.</p>
+
+        <h2>Vinkkejä</h2>
+        <p>Hyväkuntoinen lyijyakku ei putoa alle 11,8 V ilman kuormitusta.</p>
+		<p>Jos näet jatkuvaa tai nopeaa jännitteiden heikkenemistä tai epätavallisen korkeaa
+         virtaa ja/tai laturin lämpötiloja, se on merkki akun kuolemasta.</p>
+		<p>Tarkista säännöllisesti, ettei akussa ole merkkejä kaasutuksesta (esim. turvotuksesta), jos niitä on
+          irrota akku ASAP. Etsi myös korroosiota liittimistä.</p>
+		<p>Pidentääksesi lyijyakun käyttöikää, tee säännöllisesti a
+  täyteen lataukseen (eli pidä 12 V laturia käynnissä, kunnes se on valmis). Tämä normaalisti
+  kestää 3-4 tuntia ja on erityisen tärkeä kylmässä ilmastossa tai talvella.</p>
+		<p>Jos aiot pysäköidä autosi pidemmäksi aikaa, irrota OVMS.</p>
+
+    ]]></string>
+    <string name="power_title">Virran käytön historia</string>
+    <string name="power_menu">Asetukset</string>
+    <string name="power_btn_get_data">Lataa tiedot</string>
+    <string name="power_btn_reset_view">Nollaa zoomaus</string>
+    <string name="power_btn_zoom5">Edelliset 5 %1$s</string>
+    <string name="power_btn_zoom10">Edelliset 10 %1$s</string>
+    <string name="power_btn_help">Tietoja</string>
+    <string name="power_chk_energy">Näytä energia</string>
+    <string name="power_chk_power">Näytä teho</string>
+    <string name="power_msg_loading_data">Ladataan&#8230;</string>
+    <string name="power_msg_getting_gpslog">Haetaan GPS loki&#8230;</string>
+    <string name="power_trip_description">Matka</string>
+    <string name="power_data_altitude">Korkeus (m)</string>
+    <string name="power_data_speed">Nopeus (%1$s)</string>
+    <string name="power_power_description">Teho (W)</string>
+    <string name="power_data_pwr_min">Min</string>
+    <string name="power_data_pwr_max">Maks</string>
+    <string name="power_data_pwr_avg">Keskiarvo (W)</string>
+    <string name="power_data_pwr_recuplimit">Regen rajoitus</string>
+    <string name="power_data_pwr_drivelimit">Tehorajoitus</string>
+    <string name="power_energy_description">Energia</string>
+    <string name="power_data_energy_used">Käytetty (Wh)</string>
+    <string name="power_data_energy_recd">Regeneroitu (Wh)</string>
+    <string name="power_data_energy_avg">Keskiarvo (Wh/%1$s)</string>
+    <string name="power_help"><![CDATA[
+ <h1>Virtahistoria</h1>
+
+ <h2>Perusasiat</h2>
+ <p>Kartat perustuvat <tt>RT-GPS-Log</tt>-tietueisiin (katso käsikirja). The
+ palvelin säilyttää nämä <b>24 tuntia</b>.</p>
+ <p>GPS-loki päivitetään oletuksena <b>kerran minuutissa</b>. Tätä voidaan nostaa
+ <b>5 sekunnin välein</b>
+ asettamalla suoratoistotilaksi (ominaisuus #8) arvoon 2.</p>
+ <p><b>Korkeuden</b> mittaus riippuu <b>GPS-signaalista</b>. Toinen
+ mittaukset eivät riipu GPS:stä.</p>
+ <p><u>Huomaa</u>: teho- ja energiamittaukset ovat tulkinta
+ dokumentoimattomia CAN-väylätietoja, jotka voivat olla virheellisiä ja/tai puutteellisia (katso
+ manuaalinen).</p>
+
+ <h2>Matka</h2>
+ <p>Kartta näyttää <b>korkeuden</b> (GPS) ja <b>keskinopeuden</b>
+ matkaa. Kallistukset ja suuret nopeudet johtavat korkeaan energiankulutukseen.</p>
+ <p>Pystysuuntaiset merkkiviivat näyttävät <b>käyttöosien</b> alun
+ (ajo / lataus) ja niiden vastaavat matkamittarin arvot.</p>
+
+ <h2>Virta</h2>
+ <p>Täytetyllä alueella näkyy suurin ja pienin <b>sähköteho</b> (at
+ akku) <b>aikajaksoa kohden</b>, negatiivinen teho = palautuminen/lataus.
+ Ylempi &amp; alemmat vaaleanpunaiset viivat osoittavat <b>akun rajat</b>.</p>
+ <p>Punainen viiva näyttää <b>keskimääräisen tehon</b>, joka on saatu energiankäytöstä
+ <b>aikaosiossa</b>.</p>
+ <p><u>Tiedot</u>: <b>moottorin mekaaninen teho</b> lasketaan <i>sähköiseksi
+ teho x hyötysuhde (ohjain+moottori)</i>.
+ Yhdistetty hyötysuhde on noin ~75 % - 95 % nykyisestä kuormituksesta riippuen
+ tilanne, keskimäärin ~90 %.</p>
+
+ <h2>Energiankulutus</h2>
+ <p>Täytetyllä alueella näkyy suurin ja pienin <b>energiankulutus/hyöty</b> (at
+ akku) / <b>aikajakso</b>, negatiivinen käyttö =
+ palautuminen/lataus.</p>
+ <p>Keltainen viiva näyttää tehokkaan <b>energiankulutuksen kilometriä kohden</b>
+ johdettu kokonaisenergiankäytöstä ja ajetusta matkasta. Tämä on korkeampi,
+ sitä enemmän energiaa käytetään ja sitä vähemmän matkaa on ajettu kerralla
+ -osio.</p>
+ <p><u>Tiedot</u>: akun <b>käyttökapasiteetti</b> on noin <b>6100
+ Wh</b>. Ladattaessa varastoitu energia lasketaan muodossa <i>toimitettu energia x
+ tehokkuus (laturi+akku)</i>. Yhdistetty lataustehokkuus on normaalisti
+ ~92 %.</p>
+ ]]></string>
+    <string name="lb_options_service">Palvelu:</string>
+    <string name="lb_options_service_cb">Ota taustayhteys käyttöön</string>
+    <string name="lb_options_service_info">Antaa palvelinyhteyden pysyä elossa, kun sovellus ei ole käynnissä.</string>
+    <string name="lb_options_broadcast">Lähetys:</string>
+    <string name="lb_options_broadcast_cb">Ota datalähetykset käyttöön muihin sovelluksiin</string>
+    <string name="lb_options_broadcast_codes">Syötä koodikirjaimet</string>
+    <string name="lb_options_commands">Komennot:</string>
+    <string name="lb_options_commands_cb">Enable vehicle command service</string>
+    <string name="lb_options_apikey">API-avain:</string>
+    <string name="lb_options_apikey_renew">Poista &amp; Uusi</string>
+    <string name="lb_options_apikey_renew_confirm">Haluatko poistaa ja uusia API-avaimen, ja samalla poistaa kaikki tallennetut komennot?</string>
+    <string name="lb_options_broadcast_info"><![CDATA[
+ <p>Päivityslähetys mahdollistaa autotietojen päivitysten lähettämisen muihin sovelluksiin, kuten Automagic- tai Tasker-sovelluksiin
+ annetuille viestikoodeille.</p>
+ <p>Komentopalvelun avulla sovellukset voivat antaa ajoneuvon komentoja ja vastaanottaa komentotuloksia. Vastaanottaja
+ antaa komentoja, lähettävän sovelluksen on tiedettävä ajoneuvon tunnus ja salasana tai API-avain.
+ Huomautus: kaikki sovellukset saavat kaikki komentotulokset.</p>
+ <p>API-avain on paikallinen komentovaltuutus, joka sallii nykyisestä riippumattomat komennot
+ valittu ajoneuvo. API-avaimen uusiminen mitätöi kaikki asennetut tai kiinnitetyt komentopikakuvakkeet.
+ Käytä tätä peruuttaaksesi kaikki tallennetut komentovaltuudet muissa sovelluksissa kerralla.</p>
+ <p>Katso <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">OVMS Android Wiki</a>
+ ja <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">OVMS-protokolla (PDF)</a>
+ saadaksesi viestin tiedot.</p>
+ ]]></string>
+    <string name="stored_commands_title">Tallennetut komennot</string>
+    <string name="stored_commands_add">Lisää komento</string>
+    <string name="stored_commands_edit">Muokkaa komento</string>
+    <string name="stored_commands_pin">Haluatko lisätä kuvakkeen kotinäytölle tästä komennosta?</string>
+    <string name="lb_enter_title">Otsikko/nimi</string>
+    <string name="lb_enter_command">Komento</string>
+    <string name="service_notification_title">OVMS</string>
+    <string name="service_notification_text">Palvelu on päällä</string>
+    <string name="service_notification_ticker">OVMS-palvelu käynnistetty</string>
+    <string name="info_widget_description">SOC ja kantama, akun lämpötila ja latausaika</string>
+    <string name="play_services_recommended">Tämä sovellus käyttää Google Play Palveluita push-ilmoituksiin  ja karttojen integrointi. Se toimii ilman, mutta sinun kannattaa harkita Play-palvelujen asentamista  paketti.</string>
+    <string name="remind">Muistuta</string>
+    <string name="dontremind">Älä muistuta</string>
+    <string name="needed_permissions_title">Permissions required</string>
+    <string name="needed_permissions_message">\\\n · Ilmoitusten lähettäminen edellyttää lupaa push-ilmoitusten ja -tietojen mahdollistamiseksi,\n esim. latauksen keskeytyksen tai varkauden havaitsemisen yhteydessä.\n\\\n · Android tarvitsee luvan käyttää hienoa sijaintia salliakseen kartan \"kodin\"\n -painiketta (joka itse asiassa palauttaa kartan ajoneuvon sijaintiin).</string>
+    <string name="later">Myöhemmin</string>
+    <string name="about_title">Versio %1$s (%2$d)</string>
+    <string name="about_message"><![CDATA[
+ <p><b><u>Tietoja OVMS:stä</u></b>:</p>
+ <p>Open Vehicles Monitoring System on yhteisöprojekti, joka mahdollistaa ajoneuvojen etävalvonnan ja -hallinnan
+ avoimen lähdekoodin ohjelmistoilla ja laitteistoilla.</p>
+ <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
+ <p>· <a href="https://docs.openvehicles.com/en/latest/">Käyttöopas (OVMS v3)</a></p>
+ <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
+ <p>· <a href="https://www.openvehicles.com/privacypolicy">Tietosuojakäytäntö</a></p>
+ <p>&nbsp;</p>
+ <p><b><u>Tärkeimmät muutokset edellisen julkaisun jälkeen</u></b>:</p>
+ <p>· Uudelleensuunniteltu käyttöliittymä</p>
+ <p>· Lisätty VW e-Up -laturiasetukset (laiteohjelmisto 3.3.004)</p>
+ <p>· Yleiset korjaukset &amp; optimoinnit</p>
+ <p>Lue <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">versiohistoria</a>
+ saadaksesi lisätietoja kaikista muutoksista.</p>
+ <p>Vihje: <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wikissä</a> on myös hyödyllistä tietoa.</p>
+ <p>Pidä hauskaa!</p>
+ ]]></string>
+    <string name="channel_description">Open Vehicle Monitoring System</string>
+    <string name="mi_app_about">Tietoja OVMS:stä</string>
+    <string name="title_home">Koti</string>
+    <string name="parked">Pysäköity</string>
+    <string name="connecting">Yhdistetään</string>
+    <string name="state_charging_label">Ladataan</string>
+    <string name="state_topping_off_label">Täydennetään</string>
+    <string name="state_done_label">Lataus valmis</string>
+    <string name="state_stopped_label">Lataus keskeytetty</string>
+    <string name="start_charging_label">Aloita lataus</string>
+    <string name="stop_charging_label">Pysäytä lataus</string>
+    <string name="loading">Ladataan tietoja</string>
+    <string name="connected">Yhdistetty</string>
+    <string name="controls_tab_label">Ohjaus</string>
+    <string name="charging_tab_label">Lataus</string>
+    <string name="cartype_unknown">Tuntematon automalli</string>
+    <string name="pilot_signal_present">Pilottisignaali havaittu</string>
+    <string name="charging_estimation_soc">~%s latausrajoitukseen</string>
+    <string name="charging_estimation_range">~%s riittävään kantamaan</string>
+    <string name="charging_estimation_full">~%s täyteen lataukseen</string>
+    <string name="tpms">TPMS</string>
+    <string name="nopower">Ei virtaa</string>
+    <string name="charge_limit_action">Latausrajoituksen toiminto</string>
+    <string name="charge_limit_action_notify">Ilmoita</string>
+    <string name="charge_limit_action_stop">Pysäytä</string>
+    <string name="regen_amount_label">Regeneroitu energia</string>
+    <string name="consumed_amount_label">Käytetty energia</string>
+    <string name="last_trip">Edellinen matka</string>
+    <string name="edit_car">Muokkaa auto</string>
+    <string name="lb_options_old_ui">Vanha käyttöliittymä</string>
+    <string name="lb_options_old_ui_cb">Käytä vanhaa käyttöliittymää uuden sijaan (vaatii sovelluksen uudelleenkäynnistyksen)</string>
+    <string name="app_ui_prefs_home_show_range">Näytä kantamatiedot akun varauksen vieressä</string>
+    <string name="app_ui_prefs_charging_always_show_time_est">Näytä aina latausaikoijen arviot</string>
+    <string name="app_ui_prefs_charging_always_show_time_est_i">Näytä latausajat aina lataus-sivulla, vaikka auto ei ole laturissa</string>
+    <string name="app_ui_prefs_home_range_display_mode">Auton näkyvissä olevat kantamalukemat</string>
+    <string name="other_settings">Muut asetukset</string>
+    <string name="legacy_settings_title">OVMS vanhat asetukset</string>
+    <string name="app_settings">Sovellusasetukset</string>
+    <string name="quick_actions">Pikakomennot</string>
+    <string name="app_ui_prefs_home_quick_actions_i">Muokkaa ja uudelleenjärjestä pikakomennot</string>
+    <string name="consumption">Kulutus</string>
+    <string name="modify_quick_actions">Muokkaa pikakomentoja</string>
+    <string name="quick_actions_modify_hint">"Vinkki: "</string>
+    <string name="climate_control_short">Ilmastointi</string>
+    <string name="central_locking_action_label">Lukitus</string>
+    <string name="Garage">Autotalli</string>
+    <string name="custom_command">Oma</string>
+    <string name="max_quick_actions_reached">Ei tarpeeksi tilaa, poista jokin pikakomento ja yritä uudelleen</string>
+    <string name="dlg_choose_icon_action_title">Valitse pikakomennon kuvake</string>
+    <string name="invalid_command">Virheellinen komento! Syötä toimiva komento</string>
+    <string name="no_data">Ei tietoja</string>
+    <string name="latest_data">Viimeisin tieto</string>
+    <string name="stale_data">Vanha tieto</string>
+    <string name="none">Ei mitään</string>
+    <string name="home_soc_hint">Vinkki: Voit klikata akun kuvaketta tai lataustason lukemaa, jolla saat kantaman näkyville väliaikaisesti</string>
+    <string name="lb_motor_power">Moottorin teho</string>
+    <string name="drive_mode">Ajotila</string>
+    <string name="normal">Normaali</string>
+    <string name="drive_mode_eco">ECO/B-tila</string>
+    <string name="unknown">Tuntematon</string>
+    <string name="temp">Lämpötila</string>
+    <string name="lb_communications">Kommunikaatio</string>
+    <string name="ideal_range_abbreviation">Ihant. %s</string>
+    <string name="estimated_range_abbreviation">Arv. %s</string>
+</resources>

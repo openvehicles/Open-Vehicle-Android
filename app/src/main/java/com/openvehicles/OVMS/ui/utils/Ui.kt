@@ -16,6 +16,8 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputEditText
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.ui.validators.ValidationException
 import com.openvehicles.OVMS.ui.validators.Validator
@@ -24,17 +26,18 @@ object Ui {
 
     private const val TAG = "Ui"
 
-    fun showPinDialog(context: Context, msgResId: Int, listener: OnChangeListener<String?>?) {
-        showPinDialog(context, msgResId, msgResId, listener)
+    fun showPinDialog(context: Context, msgResId: Int, listener: OnChangeListener<String?>?, newUi: Boolean = false) {
+        showPinDialog(context, msgResId, msgResId, listener, newUi)
     }
 
     fun showPinDialog(
         context: Context,
         titleResId: Int,
         buttonResId: Int,
-        listener: OnChangeListener<String?>?
+        listener: OnChangeListener<String?>?,
+        newUi: Boolean = false
     ) {
-        showPinDialog(context, titleResId, buttonResId, true, listener)
+        showPinDialog(context, titleResId, buttonResId, true, listener, newUi)
     }
 
     @JvmStatic
@@ -43,7 +46,8 @@ object Ui {
         titleResId: Int,
         buttonResId: Int,
         isPin: Boolean,
-        listener: OnChangeListener<String?>?
+        listener: OnChangeListener<String?>?,
+        newUi: Boolean = false
     ) {
         showPinDialog(
             context,
@@ -51,7 +55,8 @@ object Ui {
             null,
             buttonResId,
             isPin,
-            listener
+            listener,
+            newUi
         )
     }
 
@@ -62,9 +67,10 @@ object Ui {
         value: String?,
         buttonResId: Int,
         isPin: Boolean,
-        listener: OnChangeListener<String?>?
+        listener: OnChangeListener<String?>?,
+        newUi: Boolean = false
     ) {
-        val view = LayoutInflater.from(context).inflate(R.layout.dlg_pin, null)
+        val view = LayoutInflater.from(context).inflate(if (newUi) R.layout.dlg_pin_v2 else R.layout.dlg_pin, null)
         val et = view.findViewById<View>(R.id.etxt_input_value) as EditText
         et.setText(value)
         if (isPin) {
@@ -72,7 +78,7 @@ object Ui {
         } else {
             et.setTransformationMethod(null)
         }
-        val dialog = AlertDialog.Builder(context)
+        val dialog = (if (newUi) MaterialAlertDialogBuilder(context) else AlertDialog.Builder(context))
             .setMessage(title)
             .setView(view)
             .setNegativeButton(R.string.Cancel, null)
@@ -86,6 +92,7 @@ object Ui {
             val imm = etxtPin!!.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.showSoftInput(etxtPin, InputMethodManager.SHOW_IMPLICIT)
             etxtPin.selectAll()
+            etxtPin.requestFocus()
         }
         dialog.show()
     }
@@ -97,17 +104,18 @@ object Ui {
         value: String?,
         buttonResId: Int,
         isPassword: Boolean,
-        listener: OnChangeListener<String?>?
+        listener: OnChangeListener<String?>?,
+        newUi: Boolean = false
     ) {
-        val view = LayoutInflater.from(context).inflate(R.layout.dlg_edit, null)
-        val et = view.findViewById<View>(R.id.etxt_input_value) as EditText
+        val view = LayoutInflater.from(context).inflate(if (newUi) R.layout.dlg_edit_v2 else R.layout.dlg_edit, null)
+        val et = view.findViewById<View>(R.id.etxt_input_value) as TextInputEditText
         et.setText(value)
         if (isPassword) {
             et.setHint(R.string.lb_enter_passwd)
             et.setRawInputType(InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD)
             et.setTransformationMethod(PasswordTransformationMethod.getInstance())
         }
-        val dialog = AlertDialog.Builder(context)
+        val dialog = (if (newUi) MaterialAlertDialogBuilder(context) else AlertDialog.Builder(context))
             .setMessage(title)
             .setView(view)
             .setNegativeButton(R.string.Cancel, null)
@@ -133,6 +141,19 @@ object Ui {
             context.resources.getIdentifier(
                 name,
                 "drawable",
+                context.packageName
+            )
+        }
+    }
+
+    @JvmStatic
+    fun getStringIdentifier(context: Context?, name: String?): Int {
+        return if (name == null || context == null) {
+            0
+        } else {
+            context.resources.getIdentifier(
+                name,
+                "string",
                 context.packageName
             )
         }

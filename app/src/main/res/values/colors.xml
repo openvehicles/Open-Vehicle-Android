@@ -9,4 +9,10 @@
     <color name="black">#000000</color>
     <color name="colorBackground">#000000</color>
     <color name="colorForeground">#fffef6</color>
+    <color name="chargePendingColor">#0067B0</color>
+    <color name="chargePendingColor2">#BFE6FF</color>
+    <color name="chargeOngoingColor">#059B00</color>
+    <color name="chargeErrorColor">#A20101</color>
+    <color name="chargeOtherColor">#BC8600</color>
+    <color name="chargeOtherColor2">#FFD97A</color>
 </resources>

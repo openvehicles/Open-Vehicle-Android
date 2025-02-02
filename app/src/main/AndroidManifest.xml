@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:versionCode="2024091401"
-    android:versionName="4.7.1">
+    android:versionCode="2024123101"
+    android:versionName="5.0.0">
     <!-- Only this application can receive the messages and registration result -->
     <permission
         android:name="com.openvehicles.OVMS.permission.C2D_MESSAGE"
@@ -30,17 +30,23 @@
         android:largeHeap="true"
         android:theme="@style/Theme.App"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui2.MainActivityUI2"
+            android:theme="@style/Theme.App2"
             android:configChanges="orientation|keyboardHidden"
             android:exported="true"
             android:hardwareAccelerated="true"
             android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".ui.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:exported="false">
         </activity>
 
         <meta-data
@@ -49,12 +55,14 @@
         <meta-data
             android:name="org.openchargemap.api.v2.API_KEY"
             android:value="59284e43-14f7-4d0a-8fec-f2a255611974" />
-
-        <!-- Fix GoogleMaps component issue, see:
-            https://learn.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/map/setup -->
+        <!--
+ Fix GoogleMaps component issue, see:
+            https://learn.microsoft.com/en-us/xamarin/xamarin-forms/user-interface/map/setup
+        -->
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
@@ -63,36 +71,34 @@
             android:name=".ui.BaseFragmentActivity"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="stateAlwaysHidden" />
-
         <activity
             android:name=".api.CommandActivity"
+            android:excludeFromRecents="true"
             android:exported="true"
             android:launchMode="singleTop"
-            android:excludeFromRecents="true"
             android:theme="@style/Theme.AppDialog">
             <intent-filter>
                 <action android:name="com.openvehicles.OVMS.action.COMMAND" />
-                <category android:name="android.intent.category.DEFAULT"/>
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.CreateShortcutActivity"
             android:exported="true">
             <intent-filter>
-                <action android:name="android.intent.action.CREATE_SHORTCUT"/>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".ui.DialogActivity"
             android:excludeFromRecents="true"
+            android:exported="false"
             android:launchMode="singleTop"
-            android:windowSoftInputMode="stateAlwaysHidden"
             android:theme="@style/Theme.AppDialog"
-            android:exported="false">
-        </activity>
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <service
             android:name=".api.ApiService"
@@ -120,6 +126,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="default" />
@@ -131,6 +138,7 @@
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
                 <action android:name="com.openvehicles.OVMS.ApiEvent" />
             </intent-filter>
+
             <meta-data
                 android:name="android.appwidget.provider"
                 android:resource="@xml/info_widget_info" />

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <ListView
+        android:id="@+id/listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/cmdInputLayout"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
+        android:clickable="true"
+        android:divider="@null"
+        android:dividerHeight="0dp"
+        android:longClickable="true"
+        android:stackFromBottom="true"
+        android:transcriptMode="alwaysScroll" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/cmdInputLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="18dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/cmdInput"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:capitalize="none"
+            android:editable="true"
+            android:ems="10"
+            android:fontFamily="monospace"
+            android:hint="@string/notifications_hint_cmdinput"
+            android:imeOptions="actionSend"
+            android:inputType="textNoSuggestions|text"
+            android:maxLength="160"
+            android:minLines="2"
+            android:textAllCaps="false"
+            android:typeface="monospace" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+
+</RelativeLayout>

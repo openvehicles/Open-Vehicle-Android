@@ -16,6 +16,7 @@ import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Ui
+import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.Sys
 import java.text.SimpleDateFormat
@@ -54,7 +55,8 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         val views = RemoteViews(context.packageName, R.layout.info_widget)
 
         // Register click intent:
-        val configIntent = Intent(context, MainActivity::class.java)
+        val configIntent = Intent(context, if (appPrefs?.getData("option_oldui_enabled", "0") == "1") MainActivity::class.java
+        else MainActivityUI2::class.java)
         val configPendingIntent = PendingIntent.getActivity(
             context, 0,
             configIntent, Sys.getMutableFlags(0, false)

@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui2.pages.ControlsFragment">
+
+
+    <ImageView
+        android:id="@+id/imageView5"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/battTemp"
+        app:layout_constraintEnd_toStartOf="@+id/battTemp"
+        app:layout_constraintTop_toTopOf="@+id/battTemp"
+        app:srcCompat="@drawable/ic_temp" />
+
+    <ImageView
+        android:id="@+id/battIndicatorImg"
+        android:layout_width="0dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:rotation="90"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/ic_batt_l0" />
+
+    <TextView
+        android:id="@+id/textView19"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/battery_data_soh"
+        app:layout_constraintBottom_toTopOf="@+id/battSoh"
+        app:layout_constraintEnd_toEndOf="@+id/battSoh"
+        app:layout_constraintStart_toStartOf="@+id/battSoh" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="4dp"
+        android:text="@string/battery_data_soc"
+        app:layout_constraintBottom_toTopOf="@+id/battSoc"
+        app:layout_constraintEnd_toEndOf="@+id/battSoc"
+        app:layout_constraintStart_toStartOf="@+id/battSoc" />
+
+    <TextView
+        android:id="@+id/battSoc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+        tools:text="50%" />
+
+    <TextView
+        android:id="@+id/battSoh"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+        app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+        tools:text="30%" />
+
+    <TextView
+        android:id="@+id/battTemp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/battSoc"
+        app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="10C" />
+
+    <TextView
+        android:id="@+id/battVolt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toStartOf="@+id/battAmp"
+        app:layout_constraintTop_toTopOf="@+id/battAmp"
+        tools:text="370V" />
+
+    <TextView
+        android:id="@+id/battAmp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+        app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
+        app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
+        tools:text="30A" />
+
+    <TextView
+        android:id="@+id/battkW"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/battVolt"
+        app:layout_constraintStart_toEndOf="@+id/battAmp"
+        app:layout_constraintTop_toTopOf="@+id/battVolt"
+        tools:text="0.3kW" />
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/battIndicatorImg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/metricsRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true" />
+
+            <include
+                android:id="@+id/power_history"
+                layout="@layout/home_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+
+            <include
+                android:id="@+id/battery_history"
+                layout="@layout/home_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp" />
+
+            <include
+                android:id="@+id/history_12v"
+                layout="@layout/home_tab_item"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,8 +15,7 @@ import com.openvehicles.OVMS.R
  * ProgressOverlay: create and manage a progress_layer view
  */
 class ProgressOverlay(
-    inflater: LayoutInflater,
-    rootView: ViewGroup
+    rootView: View
 ) : View.OnClickListener {
 
     private val progressLayer: LinearLayout
@@ -32,7 +31,7 @@ class ProgressOverlay(
         get() = progressLayer.visibility == VISIBLE
 
     init {
-        progressLayer = inflater.inflate(R.layout.progress_layer, rootView, false) as LinearLayout
+        progressLayer = rootView.findViewById(R.id.progress_layer) as LinearLayout
         progressLabel = progressLayer.findViewById<View>(R.id.progress_label) as TextView
         progressBarStep =
             progressLayer.findViewById<View>(R.id.progress_bar_determinate) as ProgressBar
@@ -43,7 +42,6 @@ class ProgressOverlay(
         progressCancel = progressLayer.findViewById<View>(R.id.progress_cancel) as Button
         progressCancel.setOnClickListener(this)
         hide()
-        rootView.addView(progressLayer)
     }
 
     // set label from resource:

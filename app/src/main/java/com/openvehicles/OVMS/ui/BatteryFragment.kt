@@ -102,14 +102,17 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         }
 
         // Setup UI:
-        val progressOverlay = createProgressOverlay(inflater, container, false)
-        progressOverlay.setOnCancelListener(this)
+
+
         val rootView = inflater.inflate(R.layout.fragment_battery, null)
+        val progressOverlay = createProgressOverlay(rootView, false)
+        progressOverlay.setOnCancelListener(this)
 
         //
         // Setup Cell status chart:
         //
-        cellChart = (rootView.findViewById<View>(R.id.chart_cells) as CandleStickChart).apply {
+        cellChart = (rootView.findViewById<View>(R.id.chart_cells) as CandleStickChart)
+        cellChart.apply {
             description = cellChart.description.apply {
                 text = getString(R.string.battery_cell_description)
                 textColor = Color.LTGRAY
@@ -229,7 +232,6 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         compatActivity!!.setTitle(R.string.battery_title)
-        compatActivity!!.supportActionBar!!.setIcon(R.drawable.ic_action_chart)
 
         // get data of current car:
         carData = getSelectedCarData()

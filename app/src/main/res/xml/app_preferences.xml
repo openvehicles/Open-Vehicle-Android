@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/title_home">
+
+        <MultiSelectListPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/app_ui_prefs_home_range_display_mode"
+            app:defaultValue="@array/home_range_display_mode_default"
+            app:entries="@array/home_range_display_mode_labels"
+            app:entryValues="@array/home_range_display_mode"
+            app:key="home_range_display_mode" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/state_charging_label">
+
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="true"
+            android:title="@string/app_ui_prefs_charging_always_show_time_est"
+            app:key="charging_always_show_time_est"
+            app:summary="@string/app_ui_prefs_charging_always_show_time_est_i" />
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:title="@string/lb_communications"
+        app:allowDividerBelow="true">
+
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_service_cb"
+            app:key="communication_bg_connection"
+            app:summary="@string/lb_options_service_info" />
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_broadcast_cb"
+            app:key="communication_broadcast" />
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_commands_cb"
+            app:key="communication_commands" />
+        <Preference
+            android:title="@string/lb_options_apikey"
+            app:summary=""
+            app:key="api_key" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/other_settings">
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/lb_options_old_ui"
+            app:summary="@string/lb_options_old_ui_cb"
+            app:key="other_oldui" />
+    </PreferenceCategory>
+    <com.openvehicles.OVMS.ui2.components.settings.CommunicationsNoticePreference />
+</PreferenceScreen>

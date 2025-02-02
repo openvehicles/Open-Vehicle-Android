@@ -90,10 +90,9 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
         }
 
         // Setup UI:
-        val progressOverlay = createProgressOverlay(inflater, container, false)
-        progressOverlay.setOnCancelListener(this)
         val rootView = inflater.inflate(R.layout.fragment_auxbattery, null)
-
+        val progressOverlay = createProgressOverlay(rootView, false)
+        progressOverlay.setOnCancelListener(this)
         //
         // Setup Pack history chart:
         //
@@ -149,7 +148,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         compatActivity?.setTitle(R.string.aux_battery_title)
-        compatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_chart)
+        //ZcompatActivity?.supportActionBar!!.setIcon(R.drawable.ic_action_chart)
 
         // get data of current car:
         carData = getSelectedCarData()
