@@ -37,5 +37,6 @@ class ClimateQuickAction(apiServiceGetter: () -> ApiService?, context: Context? 
                 || getCarData()?.car_type == "SQ"
                 || getCarData()?.car_type == "VWUP"
                 || getCarData()?.car_type == "VWUP.T26"
+                || getCarData()?.car_type == "RZ2"
     }
 }
