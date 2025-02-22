@@ -81,11 +81,6 @@ class ValetQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = 
             }, true)
     }
 
-    override fun onCommandFinish(command: String) {
-        super.onCommandFinish(command)
-
-    }
-
     override fun getStateFromCarData(): Boolean {
         return when (getCarData()?.car_type) {
             "SQ" -> {

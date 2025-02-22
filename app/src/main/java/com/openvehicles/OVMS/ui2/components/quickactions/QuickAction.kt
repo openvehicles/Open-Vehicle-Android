@@ -82,13 +82,12 @@ open class QuickAction {
         renderAction(false)
         if (context != null) {
             when (result) {
-                0 -> onCommandFinish(command)
+                0 -> onCommandSuccess(command, details)
                 1 -> onCommandFailed(command, details)
                 2 -> onCommandUnsupported(command)
                 3 -> onCommandUnimplemented(command)
             }
         }
-        onCommandFinish(command)
     }
 
     open fun getLiveCarIcon(state: Boolean, context: Context): Drawable? {
@@ -99,8 +98,10 @@ open class QuickAction {
         return icon
     }
 
-    open fun onCommandFinish(command: String) {
+    open fun onCommandSuccess(command: String, details: String?) {
         actionIsRunningCommand = false
+        if (context != null)
+            Toast.makeText(context, details ?: context!!.getString(R.string.msg_ok), Toast.LENGTH_SHORT).show()
     }
 
     open fun getStateFromCarData(): Boolean {
@@ -157,7 +158,7 @@ open class QuickAction {
             override fun onResultCommand(result: Array<String>) {
                 if (result.isEmpty()) return
                 val resCode = result[1].toInt()
-                val resText = if (result.size > 2) result[2] else null
+                val resText = if (result.size > 2 && result[2] != "") result[2] else null
                 commandCallback(command, resCode, resText)
             }
         })

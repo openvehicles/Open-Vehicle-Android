@@ -71,11 +71,6 @@ class LockQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = n
         return if (state) R.drawable.ic_lock_closed else R.drawable.ic_lock_open
     }
 
-    override fun onCommandFinish(command: String) {
-        super.onCommandFinish(command)
-
-    }
-
     override fun getStateFromCarData(): Boolean {
         return when (getCarData()?.car_type) {
             "SQ" -> {
