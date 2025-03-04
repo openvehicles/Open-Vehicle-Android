@@ -21,8 +21,6 @@ object CarRenderingUtils {
 
         if (carData.sel_vehicle_image.startsWith("car_imiev_")
             || carData.sel_vehicle_image.startsWith("car_i3_")
-            || carData.sel_vehicle_image.startsWith("car_smart_")
-            || carData.sel_vehicle_image.startsWith("car_smart_")
             || carData.sel_vehicle_image.startsWith("car_ampera_")
             || carData.sel_vehicle_image.startsWith("car_twizy_")
             || carData.sel_vehicle_image.startsWith("car_kangoo_")
@@ -35,6 +33,9 @@ object CarRenderingUtils {
             overlayResource = "car_ampera"
         } else if (carData.sel_vehicle_image.startsWith("car_kianiro_")) {
             overlayResource = "car_kianiro_grey"
+        } else if (carData.sel_vehicle_image.startsWith("car_smart_")) {
+            // Smart ED & EQ share a single image
+            overlayResource = "car_smart"
         }
 
         var otherResName = overlayResource.split("_").minus(name_splitted.last())
