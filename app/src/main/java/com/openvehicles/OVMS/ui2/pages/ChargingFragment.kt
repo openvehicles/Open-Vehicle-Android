@@ -8,6 +8,8 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
+import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_DIP
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -31,6 +33,7 @@ import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import kotlin.math.max
+import kotlin.math.roundToInt
 
 
 class ChargingFragment : BaseFragment(), OnResultCommandListener {
@@ -191,18 +194,24 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         val socText: TextView = findViewById(R.id.battSoc) as TextView
         val socBattIcon = findViewById(R.id.battIndicatorImg) as ImageView
 
-        var socBattLayers = emptyList<Drawable>()
+        val socBattLayers = emptyList<Drawable>().toMutableList()
 
-        socBattLayers += ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)!!
+        val socBackground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)
+        socBackground!!.setTint(Color.GRAY)
+        socBattLayers += socBackground
+
+        // Get icon scaling offsets in display density:
+        val iconBorders = TypedValue.applyDimension(COMPLEX_UNIT_DIP,6.0f, resources.displayMetrics)
+        val iconOffset = TypedValue.applyDimension(COMPLEX_UNIT_DIP,2.1f, resources.displayMetrics)
 
         val limitIcon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_chargelimit)!!.toBitmap()
         val socLimit = carData?.car_chargelimit_soclimit ?: 0
-        val limitIconWidth = limitIcon.height.minus(22).times(((socLimit / 100.0))).plus(7.5)
+        val limitIconWidth = limitIcon.height.minus(iconBorders).times(((socLimit / 100.0))).plus(iconOffset)
         if (limitIconWidth > 0) {
             val matrix = Matrix()
             matrix.postRotate(180f)
             val mBitmap =
-                Bitmap.createBitmap(limitIcon, 0, 0, limitIcon.width, limitIconWidth.toInt(), matrix, true)
+                Bitmap.createBitmap(limitIcon, 0, 0, limitIcon.width, limitIconWidth.roundToInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 
@@ -212,12 +221,12 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
         val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l1)!!.toBitmap()
 
         val soc = carData?.car_soc_raw ?: 0f
-        val iconWidth = icon.height.minus(22).times(((soc / 100.0))).plus(7.5)
+        val iconWidth = icon.height.minus(iconBorders).times(((soc / 100.0))).plus(iconOffset)
         if (iconWidth > 0) {
             val matrix = Matrix()
             matrix.postRotate(180f)
             val mBitmap =
-                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.toInt(), matrix, true)
+                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.roundToInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 

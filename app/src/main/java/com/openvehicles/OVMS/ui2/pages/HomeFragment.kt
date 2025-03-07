@@ -12,6 +12,7 @@ import android.graphics.drawable.LayerDrawable
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.TypedValue
+import android.util.TypedValue.COMPLEX_UNIT_DIP
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.Menu
@@ -89,6 +90,7 @@ import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 import java.io.IOException
 import java.util.Locale
 import kotlin.math.floor
+import kotlin.math.roundToInt
 import kotlin.properties.Delegates
 
 
@@ -390,19 +392,25 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val rangeText: TextView = findViewById(R.id.battRange) as TextView
         val socBattIcon = findViewById(R.id.batteryIndicatorView) as ImageView
 
-        var socBattLayers = emptyList<Drawable>()
+        var socBattLayers = emptyList<Drawable>().toMutableList()
 
-        socBattLayers += ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)!!
+        val socBackground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)
+        socBackground!!.setTint(Color.GRAY)
+        socBattLayers += socBackground
+
+        // Get icon scaling offsets in display density:
+        val iconBorders = TypedValue.applyDimension(COMPLEX_UNIT_DIP,6.0f, resources.displayMetrics)
+        val iconOffset = TypedValue.applyDimension(COMPLEX_UNIT_DIP,2.1f, resources.displayMetrics)
 
         val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l1)!!.toBitmap()
 
         val soc = carData?.car_soc_raw ?: 0f
-        val iconWidth = icon.height.minus(22).times(((soc / 100.0))).plus(7.5)
+        val iconWidth = icon.height.minus(iconBorders).times(((soc / 100.0))).plus(iconOffset)
         if (iconWidth > 0) {
             val matrix = Matrix()
             matrix.postRotate(180f)
             val mBitmap =
-                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.toInt(), matrix, true)
+                Bitmap.createBitmap(icon, 0, 0, icon.width, iconWidth.roundToInt(), matrix, true)
             val layer1Drawable = BitmapDrawable(resources, mBitmap)
             layer1Drawable.gravity = Gravity.BOTTOM
 
