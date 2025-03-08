@@ -18,23 +18,28 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:gravity="end"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textNotificationsListTimestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingBottom="2dp"
                 android:text="Time"
                 android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textSize="10sp" />
+                android:textColor="@color/abc_secondary_text_material_dark"
+                android:textSize="11sp" />
 
             <TextView
                 android:id="@+id/textNotificationsListTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingLeft="8dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="0dp"
                 android:text="Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/abc_primary_text_material_dark"
                 android:textSize="14sp" />
 
         </LinearLayout>

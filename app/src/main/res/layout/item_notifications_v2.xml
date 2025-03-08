@@ -7,6 +7,7 @@
         android:orientation="horizontal" >
 
     <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Material3.CardView.Filled"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:contentPadding="8dp">
@@ -20,7 +21,7 @@
                 android:id="@+id/textNotificationsIcon"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
-                android:layout_marginRight="6dp"
+                android:layout_marginEnd="6dp"
                 app:srcCompat="@drawable/ic_action_about" />
 
             <LinearLayout
@@ -28,34 +29,28 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <RelativeLayout
-                    android:id="@+id/relativeLayout1"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/textNotificationsListTimestamp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="bottom|center_horizontal">
+                    android:paddingBottom="2dp"
+                    android:text="Time"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/abc_secondary_text_material_dark"
+                    android:textSize="11sp" />
 
-                    <TextView
-                        android:id="@+id/textNotificationsListTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentTop="true"
-                        android:layout_toLeftOf="@+id/textNotificationsListTimestamp"
-                        android:paddingRight="4dp"
-                        android:text="Title"
-                        android:textAppearance="?android:attr/textAppearanceMedium"
-                        android:textSize="14sp" />
-
-                    <TextView
-                        android:id="@+id/textNotificationsListTimestamp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentRight="true"
-                        android:text="Time"
-                        android:textAppearance="?android:attr/textAppearanceSmall" />
-
-                </RelativeLayout>
+                <TextView
+                    android:id="@+id/textNotificationsListTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="4dp"
+                    android:paddingBottom="2dp"
+                    android:text="Title"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textNotificationsListMessage"
@@ -64,6 +59,7 @@
                     android:autoLink="none"
                     android:text="Message"
                     android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@color/abc_primary_text_material_dark"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>

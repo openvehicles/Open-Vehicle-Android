@@ -46,6 +46,9 @@ import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getLastSelectedCarId
 import com.openvehicles.OVMS.utils.NotificationData
 import com.openvehicles.OVMS.utils.OVMSNotifications
+import java.text.DateFormat
+import java.text.DateFormat.MEDIUM
+import java.text.DateFormat.SHORT
 import java.text.SimpleDateFormat
 
 class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongClickListener,
@@ -422,7 +425,7 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
     ) : ArrayAdapter<NotificationData?>(context!!, R.layout.item_notifications, items!!) {
 
         private val inflater: LayoutInflater
-        private val dateFormat = SimpleDateFormat("MMM d, HH:mm")
+        private val dateFormat = DateFormat.getDateTimeInstance(MEDIUM, SHORT) // SimpleDateFormat("MMM d, HH:mm")
 
         init {
             inflater = LayoutInflater.from(context)
