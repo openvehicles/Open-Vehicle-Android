@@ -772,6 +772,9 @@
     <string name="lb_booster_day_sel">Klima von/bis Tag Auswahl</string>
     <string name="lb_booster_day_start">erster Tag</string>
     <string name="lb_booster_day_end">letzter Tag</string>
+    <string name="mi_car_alert_tpms">Per App TPMS-Alarm</string>
+    <string name="lb_enter_front_value">Alarmwert vorne</string>
+    <string name="lb_enter_rear_value">Alarmwert hinten</string>
     <string-array name="lb_booster_mode" translatable="false">
         <item>@string/lb_5min</item>
         <item>@string/lb_10min</item>

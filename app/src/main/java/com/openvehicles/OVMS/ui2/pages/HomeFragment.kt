@@ -2,6 +2,7 @@ package com.openvehicles.OVMS.ui2.pages
 
 import android.content.Context
 import android.content.DialogInterface
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Matrix
@@ -67,6 +68,7 @@ import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui.MapFragment
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
+import com.openvehicles.OVMS.ui.utils.Ui.setValue
 import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.ui2.components.hometabs.HomeTab
 import com.openvehicles.OVMS.ui2.components.hometabs.HomeTabsAdapter
@@ -1223,6 +1225,12 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             carInfo += "\nGSM: ${carData.car_gsmlock} ${carData.car_mdm_mode}\n"
         }
 
+        try {
+            val pi = context?.packageManager?.getPackageInfo(context?.packageName ?: "", 0)
+            carInfo += "\n${getString(R.string.App)}: ${pi?.versionName} (${pi?.versionCode})"
+        } catch (e: PackageManager.NameNotFoundException) {
+        }
+
         if (carData?.car_firmware?.isNotEmpty() == true) {
             carInfo += "\n${getString(R.string.lb_ovms_firmware)} ${carData.car_firmware}"
         }
@@ -1238,7 +1246,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if ((carData?.car_soh ?: 0f) > 0) {
             carInfo += "\nSOH: ${carData?.car_soh ?: 0f}%"
         }
-
 
         carDetails.text = carInfo
 

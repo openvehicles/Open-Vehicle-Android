@@ -4,6 +4,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import androidx.preference.EditTextPreference
 import androidx.preference.MultiSelectListPreference
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceChangeListener
@@ -138,6 +139,37 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
                 appPrefs.saveData("tpms_rr_$vehicleId", "3")
                 true
             }
+        val tpmsAlertPreference = findPreference<SwitchPreferenceCompat>("alert_tpms_by_app")
+        tpmsAlertPreference?.isChecked = appPrefs.getData("alert_tpms_by_app_$vehicleId", "off") == "on"
+        tpmsAlertPreference?.onPreferenceChangeListener =
+            OnPreferenceChangeListener { preference, newValue ->
+                appPrefs.saveData("alert_tpms_by_app_$vehicleId",if (newValue as Boolean) "on" else "off")
+                // reload this settings
+                requireActivity().recreate()
+                true
+            }
+       val tpmsFrontPreference = findPreference<EditTextPreference>("tpms_front_value")
+        tpmsFrontPreference?.isVisible = appPrefs.getData("alert_tpms_by_app_$vehicleId", "off") == "on"
+        tpmsFrontPreference?.summary = appPrefs.getData("tpms_alert_front_$vehicleId", "0.0")
+        tpmsFrontPreference?.onPreferenceChangeListener =
+            OnPreferenceChangeListener { preference, newValue ->
+                // only numbers and dot, skip other symbols
+                if (!newValue.toString().matches(Regex("[\\d.]+"))) return@OnPreferenceChangeListener false
+                appPrefs.saveData("tpms_alert_front_$vehicleId", newValue.toString())
+                requireActivity().recreate()
+                true
+            }
+        val tpmsRearPreference = findPreference<EditTextPreference>("tpms_rear_value")
+        tpmsRearPreference?.isVisible = appPrefs.getData("alert_tpms_by_app_$vehicleId", "off") == "on"
+        tpmsRearPreference?.summary = appPrefs.getData("tpms_alert_rear_$vehicleId", "0.0")
+        tpmsRearPreference?.onPreferenceChangeListener =
+            OnPreferenceChangeListener { preference, newValue ->
+                if (!newValue.toString().matches(Regex("[\\d.]+"))) return@OnPreferenceChangeListener false
+                appPrefs.saveData("tpms_alert_rear_$vehicleId", newValue.toString())
+                requireActivity().recreate()
+                true
+            }
+
 
         // Other Setting
 

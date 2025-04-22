@@ -5,6 +5,9 @@ import android.graphics.Color
 import android.graphics.drawable.LayerDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
@@ -13,6 +16,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.GridLayoutManager.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +44,9 @@ import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAd
 import com.openvehicles.OVMS.ui2.rendering.CarRenderingUtils
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getLastSelectedCarId
+import kotlin.collections.get
+import kotlin.compareTo
+import kotlin.math.floor
 
 
 class ControlsFragment : BaseFragment(), OnResultCommandListener {
@@ -146,6 +153,14 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             staleTPMS.visibility =
                 if (staleTPMS.visibility == View.VISIBLE) View.INVISIBLE else View.VISIBLE
         }
+        // Determine primary and (if available) secondary TPMS values:
+        var stale1 = DataStale.NoValue
+        var stale2 = DataStale.NoValue
+        var val1 = carData?.car_tpms_wheelname
+        var val2: Array<String?>? = null
+        var alert: IntArray? = intArrayOf(0, 0, 0, 0)
+        val vehicleId = getLastSelectedCarId()
+        val isTpmsAlertsEnabled = appPrefs.getData("alert_tpms_by_app_$vehicleId", "off") == "on"  // check if TPMS by App alerts are enabled
 
         // check TPMS size and fill up with "---" if needed to 4 values
         fun checkTPMSsize(result: Array<String?>?, value: String = "pressure"): Array<String?> {
@@ -165,13 +180,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 }
             }
         }
-
-        // Determine primary and (if available) secondary TPMS values:
-        var stale1 = DataStale.NoValue
-        var stale2 = DataStale.NoValue
-        var val1 = carData?.car_tpms_wheelname
-        var val2: Array<String?>? = null
-        var alert: IntArray? = intArrayOf(0, 0, 0, 0)
 
         if (carData?.car_tpms_wheelname != null && carData.car_tpms_wheelname!!.isNotEmpty()) {
             // New data (msg code 'Y'):
@@ -228,7 +236,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             alert = intArrayOf(0, 0, 0, 0)
         }
 
-        val vehicleId = getLastSelectedCarId()
         val appwheelname = if (appPrefs.getData("tpms_wheelname_app", "off") == "on") {
             arrayOf(getString(R.string.fl_tpms),getString(R.string.fr_tpms),getString(R.string.rl_tpms),getString(R.string.rr_tpms))
         } else {
@@ -258,7 +265,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 }
                 .setNegativeButton(R.string.Close, null)
                 .setPositiveButton(R.string.fl_set_tpms) { _, _ ->
-                    val vehicleId = getLastSelectedCarId()
                     if (appPrefs.getData("tmps_firmware_$vehicleId", "off") == "on") {
                         sendCommand(R.string.fl_set_tpms, "7,config set x$carType TPMS_FL $checkedItem", this@ControlsFragment)
                     } else {
@@ -278,7 +284,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 }
                 .setNegativeButton(R.string.Close, null)
                 .setPositiveButton(R.string.fr_set_tpms) { _, _ ->
-                    val vehicleId = getLastSelectedCarId()
                     if (appPrefs.getData("tmps_firmware_$vehicleId", "off") == "on") {
                         sendCommand(R.string.fr_set_tpms, "7,config set x$carType TPMS_FR $checkedItem", this@ControlsFragment)
                     } else {
@@ -298,7 +303,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 }
                 .setNegativeButton(R.string.Close, null)
                 .setPositiveButton(R.string.rl_set_tpms) { _, _ ->
-                    val vehicleId = getLastSelectedCarId()
                     if (appPrefs.getData("tmps_firmware_$vehicleId", "off") == "on") {
                         sendCommand(R.string.rl_set_tpms, "7,config set x$carType TPMS_RL $checkedItem", this@ControlsFragment)
                     } else {
@@ -318,7 +322,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 }
                 .setNegativeButton(R.string.Close, null)
                 .setPositiveButton(R.string.rr_set_tpms) { _, _ ->
-                    val vehicleId = getLastSelectedCarId()
                     if (appPrefs.getData("tmps_firmware_$vehicleId", "off") == "on") {
                         sendCommand(R.string.rr_set_tpms, "7,config set x$carType TPMS_RR $checkedItem", this@ControlsFragment)
                     } else {
@@ -386,11 +389,48 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             )
         }
 
-        val alertcol = intArrayOf(0xFFFFFF, Color.YELLOW, Color.RED)
+        // set alert state for each TPMS by App pressure value
+        fun setTpmsAlert(alertindex: Int) {
+            if (!isTpmsAlertsEnabled) {
+                return
+            }
+            val TirePos = arrayOf("tpms_fl_","tpms_fr_","tpms_rl_","tpms_rr_")
+            val tpms_pos = TirePos[alertindex]
+
+            val TirePressureIndex = appPrefs.getData("${tpms_pos}$vehicleId", "0")!!.toInt()
+            val TirePressure = if (appPrefs.getData("showtpmsbar") == "on") {
+                floor(
+                    carData!!.car_tpms_pressure_raw?.get(TirePressureIndex)
+                        ?.div(10)!!
+                ) / 10
+            } else {
+                floor(
+                    carData!!.car_tpms_pressure_raw?.get(TirePressureIndex)?.times(1.450377)!!
+                ) / 10
+            }
+
+            val TirePressureThreshold = if("$tpms_pos" in listOf("tpms_fl_","tpms_fr_")) {
+                appPrefs.getData("tpms_alert_front_$vehicleId", "0")!!.toFloat()
+            } else {
+                appPrefs.getData("tpms_alert_rear_$vehicleId", "0")!!.toFloat()
+            }
+            var alertState = if (TirePressure < TirePressureThreshold) 1 else 0
+            alertState = if (TirePressure < (TirePressureThreshold.minus(TirePressureThreshold.times(0.10)))) 2 else alertState
+
+            alert?.set(alertindex,alertState)
+        }
+
+        if (isTpmsAlertsEnabled) {
+            for (i in alert?.indices!!) {
+                setTpmsAlert(i)
+            }
+        }
+
+        val alertcol = intArrayOf(Color.WHITE, Color.YELLOW, Color.RED)
         if ((alert?.get(0) ?: 0) != 0)
             flTPMS.setTextColor(alertcol[alert!![(appPrefs.getData("tpms_fl_$vehicleId", "0")!!.toInt())]])
         if ((alert?.get(1) ?: 0) != 0)
-            frTPMS.setTextColor(alertcol[(appPrefs.getData("tpms_fr_$vehicleId", "1")!!.toInt())])
+            frTPMS.setTextColor(alertcol[alert!![(appPrefs.getData("tpms_fr_$vehicleId", "1")!!.toInt())]])
         if ((alert?.get(2) ?: 0) != 0)
             rlTPMS.setTextColor(alertcol[alert!![(appPrefs.getData("tpms_rl_$vehicleId", "2")!!.toInt())]])
         if ((alert?.get(3) ?: 0) != 0)

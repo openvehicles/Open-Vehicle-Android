@@ -85,6 +85,22 @@
             android:defaultValue="false"
             android:title="@string/mi_car_sort_tpms"
             app:key="sort_tpms_by_firmware" />
+        <SwitchPreferenceCompat
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:defaultValue="false"
+            android:title="@string/mi_car_alert_tpms"
+            app:key="alert_tpms_by_app" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="tpms_front_value"
+            android:summary="0.0"
+            android:title="@string/lb_enter_front_value" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="tpms_rear_value"
+            android:title="@string/lb_enter_rear_value"
+            android:summary="0.0" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/other_settings">
         <SwitchPreferenceCompat
