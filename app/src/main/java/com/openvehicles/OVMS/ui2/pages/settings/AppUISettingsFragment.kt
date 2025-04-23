@@ -170,6 +170,16 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
                 true
             }
 
+        val tpmsRedPreference = findPreference<EditTextPreference>("tpms_red_value")
+        tpmsRedPreference?.isVisible = appPrefs.getData("alert_tpms_by_app_$vehicleId", "off") == "on"
+        tpmsRedPreference?.summary = appPrefs.getData("tpms_alert_red_$vehicleId", "10")
+        tpmsRedPreference?.onPreferenceChangeListener =
+            OnPreferenceChangeListener { preference, newValue ->
+                if (!newValue.toString().matches(Regex("[\\d.]+"))) return@OnPreferenceChangeListener false
+                appPrefs.saveData("tpms_alert_red_$vehicleId", newValue.toString())
+                requireActivity().recreate()
+                true
+            }
 
         // Other Setting
 

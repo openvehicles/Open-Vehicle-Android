@@ -101,6 +101,11 @@
             android:key="tpms_rear_value"
             android:title="@string/lb_enter_rear_value"
             android:summary="0.0" />
+        <EditTextPreference
+            android:inputType="numberDecimal"
+            android:key="tpms_red_value"
+            android:title="@string/lb_enter_red_value"
+            android:summary="10" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/other_settings">
         <SwitchPreferenceCompat

@@ -396,6 +396,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             }
             val TirePos = arrayOf("tpms_fl_","tpms_fr_","tpms_rl_","tpms_rr_")
             val tpms_pos = TirePos[alertindex]
+            val redvalue = appPrefs.getData("tpms_alert_red_$vehicleId", "10")!!.toInt().times(0.01)
 
             val TirePressureIndex = appPrefs.getData("${tpms_pos}$vehicleId", "0")!!.toInt()
             val TirePressure = if (appPrefs.getData("showtpmsbar") == "on") {
@@ -415,13 +416,13 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                 appPrefs.getData("tpms_alert_rear_$vehicleId", "0")!!.toFloat()
             }
             var alertState = if (TirePressure < TirePressureThreshold) 1 else 0
-            alertState = if (TirePressure < (TirePressureThreshold.minus(TirePressureThreshold.times(0.10)))) 2 else alertState
+            alertState = if (TirePressure < (TirePressureThreshold.minus(TirePressureThreshold.times(redvalue)))) 2 else alertState
 
             alert?.set(alertindex,alertState)
         }
 
         if (isTpmsAlertsEnabled) {
-            for (i in alert?.indices!!) {
+            for (i in val1?.indices!!) {
                 setTpmsAlert(i)
             }
         }

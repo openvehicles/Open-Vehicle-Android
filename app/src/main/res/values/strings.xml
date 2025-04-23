@@ -864,8 +864,9 @@
     <string name="lb_booster_day_start">first Day</string>
     <string name="lb_booster_day_end">last Day</string>
     <string name="mi_car_alert_tpms">Alert low pressure by App</string>
-    <string name="lb_enter_front_value">front alert value</string>
-    <string name="lb_enter_rear_value">rear alert value</string>
+    <string name="lb_enter_front_value">front yellow alert value</string>
+    <string name="lb_enter_rear_value">rear yellow alert value</string>
+    <string name="lb_enter_red_value">red alert value in % less of yellow value</string>
     <string-array name="lb_booster_mode" translatable="false">
         <item>@string/lb_5min</item>
         <item>@string/lb_10min</item>
