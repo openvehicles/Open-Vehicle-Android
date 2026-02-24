@@ -164,7 +164,11 @@ class ClimateFragment : BaseFragment(), OnResultCommandListener {
         climateActionsAdapter.mData.clear()
         climateActionsAdapter.setCarData(carData)
         climateActionsAdapter.mData += ClimateQuickAction({getService()})
-        if (carData?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ","RZ2")) climateActionsAdapter.mData += ClimateScheduleQuickAction({getService()})
+        if (carData?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ","RZ2")
+            || carData?.car_type.orEmpty().startsWith("VA")
+            || carData?.car_type.orEmpty().startsWith("VB")
+            || carData?.car_type.orEmpty().startsWith("OAE"))
+            climateActionsAdapter.mData += ClimateScheduleQuickAction({getService()})
         climateActionsAdapter.notifyDataSetChanged()
     }
 
