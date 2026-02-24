@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="0dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:padding="0dp"
+        android:background="#CC000000">
+
+        <!-- Main area: tap to edit configuration -->
+        <LinearLayout
+            android:id="@+id/widget_container"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:padding="2dp"
+            android:gravity="center">
+
+            <TextView
+                android:id="@+id/widget_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="CMD"
+                android:textSize="8sp"
+                android:textColor="#AAAAAA"
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/widget_time"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="--:--"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF"
+                android:gravity="center" />
+
+            <TextView
+                android:id="@+id/widget_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="..."
+                android:textSize="8sp"
+                android:textColor="#AAAAAA"
+                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+        <!-- Execute button: tap to run command now -->
+        <FrameLayout
+            android:id="@+id/widget_execute_btn"
+            android:layout_width="12dp"
+            android:layout_height="match_parent"
+            android:background="#88FF6600"
+            android:padding="0dp">
+            
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="▶"
+                android:textSize="8sp"
+                android:textColor="#FFFFFF"
+                android:gravity="center"
+                android:rotation="0" />
+        </FrameLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

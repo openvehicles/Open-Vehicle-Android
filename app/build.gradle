@@ -1,0 +1,84 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+repositories {
+    google()
+    maven { url 'https://jitpack.io' }
+}
+
+android {
+    namespace 'com.openvehicles.OVMS'
+    compileSdk 36
+    defaultConfig {
+        applicationId "com.openvehicles.OVMS"
+        minSdk 21
+        targetSdk 36
+    }
+    buildTypes {
+        release {
+            debuggable false
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+            lintOptions { disable 'MissingTranslation' }
+            multiDexEnabled true
+        }
+        debug {
+            debuggable true
+            minifyEnabled false
+            multiDexEnabled true
+        }
+    }
+    productFlavors {
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
+    }
+    buildFeatures {
+        viewBinding true
+    }
+}
+
+if(project.hasProperty("OVMS.signing")
+        && new File(project.property("OVMS.signing") + ".gradle").exists()) {
+    apply from: project.property("OVMS.signing") + ".gradle"
+}
+
+dependencies {
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.22'
+
+    implementation 'androidx.multidex:multidex:2.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.core:core:1.16.0'
+    implementation 'androidx.core:core-google-shortcuts:1.1.0'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+
+    implementation 'com.google.android.gms:play-services-maps:19.2.0'
+    implementation 'com.google.android.gms:play-services-gcm:17.0.0'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'com.google.firebase:firebase-messaging:24.1.2'
+
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.vectordrawable:vectordrawable:1.2.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.2'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2'
+    implementation 'androidx.navigation:navigation-fragment:2.9.2'
+    implementation 'androidx.navigation:navigation-ui:2.9.2'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.2'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.9.2'
+    implementation 'androidx.preference:preference-ktx:1.2.1'
+    implementation 'com.google.android.flexbox:flexbox:3.0.0'
+    implementation "com.maltaisn:icondialog:3.3.0"
+    implementation "com.maltaisn:iconpack-default:1.1.0"
+}
+
+apply plugin: 'com.google.gms.google-services'

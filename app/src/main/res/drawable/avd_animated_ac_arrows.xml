@@ -1,0 +1,46 @@
+<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:drawable="@drawable/topview_ac_arrows">
+
+  <target android:name="arrow_1_group">
+    <aapt:attr name="android:animation">
+      <objectAnimator
+          android:propertyName="translateY"
+      android:duration="1000"
+      android:valueFrom="0"
+      android:valueTo="-25"
+      android:valueType="floatType"
+      android:repeatCount="infinite"
+      android:repeatMode="reverse" />
+    </aapt:attr>
+  </target>
+
+  <target android:name="arrow_2_group">
+    <aapt:attr name="android:animation">
+      <objectAnimator
+          android:propertyName="translateY"
+          android:duration="1000"
+          android:valueFrom="0"
+          android:valueTo="-25"
+          android:valueType="floatType"
+          android:startOffset="200"
+      android:repeatCount="infinite"
+      android:repeatMode="reverse" />
+    </aapt:attr>
+  </target>
+
+  <target android:name="arrow_3_group">
+    <aapt:attr name="android:animation">
+      <objectAnimator
+          android:propertyName="translateY"
+          android:duration="1000"
+          android:valueFrom="0"
+          android:valueTo="-25"
+          android:valueType="floatType"
+          android:startOffset="400"
+      android:repeatCount="infinite"
+      android:repeatMode="reverse" />
+    </aapt:attr>
+  </target>
+
+</animated-vector>

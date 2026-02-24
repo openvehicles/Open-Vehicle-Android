@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/progress_layer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#aa000000"
+    android:clickable="true"
+    android:visibility="visible"
+    android:layout_gravity="center"
+    android:gravity="center"
+    android:minHeight="300dp">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp">
+
+        <LinearLayout
+            android:id="@+id/progress_layer_box"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="20dip"
+            android:orientation="vertical"
+            android:paddingLeft="20dip"
+            android:paddingTop="10dip"
+            android:paddingRight="20dip"
+            android:paddingBottom="10dip">
+
+            <TextView
+                android:id="@+id/progress_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="10dp"
+                android:text="@string/msg_retrieving_data"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_indeterminate"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:indeterminate="true"
+                android:indeterminateOnly="true"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_determinate"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:indeterminate="false"
+                android:minHeight="20dip"
+                android:visibility="visible" />
+
+            <ProgressBar
+                android:id="@+id/progress_bar_substep"
+                style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:clickable="true"
+                android:indeterminate="false"
+                android:minHeight="20dip"
+                android:visibility="visible" />
+
+            <Button
+                android:id="@+id/progress_cancel"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/Cancel" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

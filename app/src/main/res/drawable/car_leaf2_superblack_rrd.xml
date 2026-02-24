@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:oneshot="false">
+    <item android:drawable="@drawable/car_leaf_superblack_rrd" android:bottom="45px" android:left="35px"  android:width="634px" android:height="335px" />
+</layer-list>

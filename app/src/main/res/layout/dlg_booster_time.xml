@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:ovms="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="800dp" >
+
+    <TextView
+        android:id="@+id/climate_control"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="@string/climate_control" />
+
+    <Button
+        android:id="@+id/climate_control_hour"
+        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginVertical="20dp"
+        android:layout_marginHorizontal="55dp"
+        android:clickable="false"
+        android:ellipsize="start"
+        android:gravity="center_horizontal|center_vertical"
+        android:padding="9dp"
+        android:src="@android:drawable/ic_input_add"
+        android:text="@string/lb_booster_hour"
+        app:collapsedSize="20dp"
+        app:iconSize="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/climate_control" />
+
+    <com.openvehicles.OVMS.ui.witdet.SlideNumericView
+        android:id="@+id/booster_time_hour"
+        android:layout_width="220dp"
+        android:layout_height="45dp"
+        ovms:min="0"
+        ovms:max="23"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="45dp"
+        app:layout_constraintStart_toEndOf="@+id/climate_control"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/climate_control_hour" />
+
+    <Button
+        android:id="@+id/climate_control_minutes"
+        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="55dp"
+        android:clickable="false"
+        android:ellipsize="start"
+        android:padding="9dp"
+        android:src="@android:drawable/ic_input_add"
+        app:collapsedSize="20dp"
+        app:iconSize="0dp"
+        android:text="@string/lb_booster_min"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/booster_time_hour" />
+
+    <com.openvehicles.OVMS.ui.witdet.SlideNumericView
+        android:id="@+id/booster_time_min"
+        android:layout_width="220dp"
+        android:layout_height="45dp"
+        ovms:min="0"
+        ovms:max="59"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="45dp"
+        app:layout_constraintStart_toEndOf="@+id/climate_control"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/climate_control_minutes" />
+
+    <Button
+        android:id="@+id/climate_action_1"
+        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="55dp"
+        android:clickable="false"
+        android:ellipsize="start"
+        android:padding="9dp"
+        android:src="@android:drawable/ic_input_add"
+        app:collapsedSize="20dp"
+        app:iconSize="0dp"
+        android:text="@string/lb_booster_doubler"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/booster_time_min" />
+
+    <com.openvehicles.OVMS.ui.witdet.SwitcherView
+        android:id="@+id/booster_SwitcherView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="25dp"
+        android:layout_marginHorizontal="40dp"
+        android:entries="@array/lb_booster_mode"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/climate_action_1" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

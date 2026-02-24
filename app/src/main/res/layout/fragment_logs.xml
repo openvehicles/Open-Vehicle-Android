@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/fragment_logs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_get_logs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:text="@string/logs_btn_get" />
+
+            <Button
+                android:id="@+id/btn_reset_logs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="50"
+                android:text="@string/logs_btn_reset" />
+        </LinearLayout>
+
+
+        <TabHost
+            android:id="@+id/tabHost"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TabWidget
+                    android:id="@android:id/tabs"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"></TabWidget>
+
+                <FrameLayout
+                    android:id="@android:id/tabcontent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <LinearLayout
+                        android:id="@+id/tab1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/listInfo1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="Last fetched: ..." />
+
+                        <LinearLayout
+                            android:id="@+id/listContainer1"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical">
+
+                            <ListView
+                                android:id="@+id/listView1"
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:divider="@drawable/bg_bar_toast"
+                                android:dividerHeight="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/listInfo2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="Last fetched: ---" />
+
+                        <LinearLayout
+                            android:id="@+id/listContainer2"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical">
+
+                            <ListView
+                                android:id="@+id/listView2"
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:divider="@drawable/bg_bar_toast"
+                                android:dividerHeight="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab3"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/listInfo3"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="Last fetched: ---" />
+
+                        <LinearLayout
+                            android:id="@+id/listContainer3"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical">
+
+                            <ListView
+                                android:id="@+id/listView3"
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:divider="@drawable/bg_bar_toast"
+                                android:dividerHeight="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab4"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/listInfo4"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="Last fetched: ---" />
+
+                        <LinearLayout
+                            android:id="@+id/listContainer4"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical">
+
+                            <ListView
+                                android:id="@+id/listView4"
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:divider="@drawable/bg_bar_toast"
+                                android:dividerHeight="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/tab5"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/listInfo5"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:padding="2dp"
+                            android:text="Last fetched: ---" />
+
+                        <LinearLayout
+                            android:id="@+id/listContainer5"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
+                            android:orientation="vertical">
+
+                            <ListView
+                                android:id="@+id/listView5"
+                                android:layout_width="match_parent"
+                                android:layout_height="fill_parent"
+                                android:divider="@drawable/bg_bar_toast"
+                                android:dividerHeight="1dp" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </FrameLayout>
+            </LinearLayout>
+        </TabHost>
+    </LinearLayout>
+
+    <include layout="@layout/progress_layer" />
+</FrameLayout>
