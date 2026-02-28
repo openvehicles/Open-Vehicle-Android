@@ -309,9 +309,9 @@ object CarRenderingUtils {
             } else {
                 Log.e("DrawableError", "Could not load R.drawable.avd_animated_ac_arrows")
                 val staticArrows = ContextCompat.getDrawable(context, R.drawable.topview_ac_arrows)
-                val vectorDrawable = staticArrows.mutate() as VectorDrawable
-                vectorDrawable.setTint(tintColor)
                 if (staticArrows != null) {
+                    val vectorDrawable = staticArrows.mutate() as VectorDrawable
+                    vectorDrawable.setTint(tintColor)
                     layers = layers.plus(vectorDrawable)
                 }
             }
