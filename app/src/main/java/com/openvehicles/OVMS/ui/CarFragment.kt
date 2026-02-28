@@ -136,7 +136,10 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
             || carData.car_type == "SQ"
             || carData.car_type == "VWUP"
             || carData.car_type == "VWUP.T26"
-            || carData.car_type == "RZ2") {
+            || carData.car_type == "RZ2"
+            || carData.car_type.startsWith("VA")
+            || carData.car_type.startsWith("VB")
+            || carData.car_type.startsWith("OAE")){
             // enable
             tabCarImageCarACBoxes.setVisibility(View.VISIBLE)
             tabCarImageAC.setVisibility(View.VISIBLE)
