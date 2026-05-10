@@ -967,5 +967,6 @@
     <string name="Clear">Clear</string>
     <string name="Copy">Copy</string>
     <string name="more">More</string>
+    <string name="lb_restart_time_off">stop restart</string>
 
 </resources>
