@@ -1,0 +1,818 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="app_name">Open Vehicle</string>
+    <string name="Loading">Пожалуйста, подождите</string>
+    <string name="Settings">Настройки</string>
+    <string name="Range" formatted="false">Запас хода: %s (%s расчётный)</string>
+    <string name="LastUpdated" formatted="false">Обновлено: %1$tD %1$tT</string>
+    <string name="SOC">%s%%</string>
+    <string name="AddCar">+</string>
+    <string name="Cancel">Отмена</string>
+    <string name="Delete">Удалить</string>
+    <string name="Save">Сохранить</string>
+    <string name="DatabaseError">Ошибка базы данных</string>
+    <string name="PinShortcut">Закрепить</string>
+    <string name="PinRequestSuccess">Закрепление запрошено, проверьте рабочий стол</string>
+    <string name="PinRequestFailure">Не удалось закрепить</string>
+    <string name="Send">Отправить</string>
+    <string name="Error">Ошибка</string>
+    <string name="Set">Установить</string>
+    <string name="Control">Управление</string>
+    <string name="ServerNameOrIP">Адрес сервера (домен или IP)</string>
+    <string name="GcmSenderID">GCM Sender ID (пусто=по умолчанию)</string>
+    <string name="NetPass">Пароль сервера</string>
+    <string name="UserPass">Пароль пользователя (Параноидальный режим)</string>
+    <string name="Quit">Выход из приложения</string>
+    <string name="Edit">Редактировать</string>
+    <string name="Yes">Да</string>
+    <string name="No">Нет</string>
+    <string name="ClearNotifications">Очистить уведомления</string>
+    <string name="VehicleImage">Изображение автомобиля</string>
+    <string name="btnAddCar">Добавить авто</string>
+    <string name="btnCenterMap">Центрировать карту</string>
+    <string name="ImageParking">Парковка автомобиля</string>
+    <string name="SysWarning">Системное предупреждение</string>
+    <string name="LockIdle">Блокировка автомобиля</string>
+    <string name="SignalStrength">Уровень сигнала</string>
+    <string name="ChargerPlug">Разъём зарядки</string>
+    <string name="DefaultCharging">00A/000V</string>
+    <string name="DefaultChargingPower">000.0кВт</string>
+    <string name="DefaultChargingPowerLoss">➘ 0.0кВт</string>
+    <string name="DefaultSlidetoCharge">ПРОСВЕСТИТЕ\nДЛЯ ЗАРЯДКИ</string>
+    <string name="DefaultMode">СТАНДАРТ</string>
+    <string name="ChargingOverlay">Зарядка</string>
+    <string name="BatteryOverlay">Батарея</string>
+    <string name="EstimatedShort">РАСЧЁТНЫЙ ЗАПАС ХОДА</string>
+    <string name="IdealShort">ИДЕАЛЬНЫЙ ЗАПАС ХОДА</string>
+    <string name="BatteryText">Батарея</string>
+    <string name="Homelink">Homelink</string>
+    <string name="Profile">Профиль</string>
+    <string name="Default">По умолчанию</string>
+    <string name="Wakeup">Пробуждение</string>
+    <string name="Add">Добавить</string>
+    <string name="Battery">Батарея</string>
+    <string name="Car">Автомобиль</string>
+    <string name="Bike">Мотоцикл</string>
+    <string name="Hardware">Оборудование</string>
+    <string name="Location">Местоположение</string>
+    <string name="Messages">Сообщения</string>
+    <string name="Amps">Амперы</string>
+    <string name="Close">Закрыть</string>
+    <string name="Features">Функции</string>
+    <string name="Parameters">Параметры</string>
+    <string name="CellularStats">Статистика использования сотовой связи</string>
+    <string name="Vehicle">Транспортное средство</string>
+    <string name="WIN">VIN</string>
+    <string name="Type">Тип</string>
+    <string name="GMC">GSM</string>
+    <string name="CAC">CAC</string>
+    <string name="SOH">SOH</string>
+    <string name="Info12V">12В</string>
+    <string name="Charged">Заряжено</string>
+    <string name="Service">Сервис</string>
+    <string name="Server">Сервер</string>
+    <string name="App">Приложение</string>
+    <string name="Options">Параметры</string>
+
+    <string name="lb_wakeup_car">Пробудить автомобиль</string>
+
+    <string name="lb_lock_car">Заблокировать</string>
+    <string name="lb_unlock_car">Разблокировать</string>
+    <string name="lb_valet_mode">Режим шофёра</string>
+    <string name="lb_valet_mode_on">Шофёр ВКЛ</string>
+    <string name="lb_valet_mode_off">Шофёр ВЫКЛ</string>
+
+    <string name="lb_valet_mode_smart">Режим зажигания</string>
+    <string name="lb_valet_mode_smart_on">Зажигание ВКЛ</string>
+    <string name="lb_valet_mode_smart_off">Зажигание ВЫКЛ</string>
+
+    <string name="lb_lock_mode_twizy">Ограничение макс. скорости (км/ч):</string>
+    <string name="lb_lock_car_twizy">Установить ограничение скорости</string>
+    <string name="lb_unlock_car_twizy">Снять ограничение скорости</string>
+    <string name="lb_valet_mode_twizy">Ограничение длины поездки (км):</string>
+    <string name="lb_valet_mode_on_twizy">Установить лимит поездки</string>
+    <string name="lb_valet_mode_off_twizy">Снять лимит поездки</string>
+    <string name="lb_valet_mode_extend_twizy">Разрешить +1км</string>
+    <string name="lb_unvalet_unlock_twizy">Снять лимит поездки+скорости</string>
+
+    <string name="lb_enter_pin">Введите PIN</string>
+    <string name="lb_enter_passwd">Введите пароль</string>
+    <string name="lb_enter_value">Введите значение</string>
+    <string name="lb_wrning_charger">ВНИМАНИЕ\nНеправильные настройки зарядки могут повредить электрические системы!</string>
+    <string name="lb_charge_current">Ток зарядки (А)</string>
+    <string name="lb_charger_setting">Настройка зарядки</string>
+    <string name="lb_charger_confirm_start">Действительно начать зарядку?</string>
+    <string name="lb_charger_confirm_stop">Действительно остановить зарядку?</string>
+    <string name="lb_communications_problem">Проблема связи</string>
+    <string name="lb_charger_confirm_amp_change">Действительно изменить настройки тока?</string>
+    <string name="lb_vehicle_id">ID автомобиля</string>
+    <string name="lb_vehicle_label">Метка автомобиля (произвольная)</string>
+    <string name="lb_server_passwd">Пароль сервера</string>
+    <string name="lb_module_passwd">Пароль модуля/SMS</string>
+    <string name="lb_slide_choice_vehicle">Проведите для выбора автомобиля</string>
+    <string name="lb_mmi_ussd_code">Код MMI/USSD</string>
+    <string name="lb_cellular_usage">Использование сотовой связи</string>
+    <string name="lb_reset_ovms_module">Перезагрузить модуль OVMS</string>
+    <string name="lb_center_map">Центрировать карту</string>
+
+    <string name="lb_select_server">Выберите сервер:</string>
+    <string-array name="select_server_options">
+        <item translatable="false">api.openvehicles.com</item>
+        <item translatable="false">ovms.dexters-web.de</item>
+        <item>Свой сервер</item>
+    </string-array>
+    <string-array name="select_server_gcm_senders">
+        <item translatable="false">497749188588</item>
+        <item translatable="false">1043773844049</item>
+        <item translatable="false"></item>
+    </string-array>
+
+    <string name="lb_tls_enabled">Использовать TLS для подключения к серверу</string>
+    <string name="lb_tls_trust_all">Игнорировать ошибки сертификатов TLS</string>
+
+    <string name="lb_ft_digital_speedo">#%d: Цифровой спидометр</string>
+    <string name="lb_ft_gps_stream">#%d: Поток GPS</string>
+    <string name="lb_ft_minimum_soc">#%d: Минимальный SOC</string>
+    <string name="lb_ft_car_bits">#%d: Биты автомобиля</string>
+    <string name="lb_ft_can_write">#%d: Запись CAN</string>
+    <string name="lb_ft_modelyear">#%d: Год модели</string>
+    <string name="lb_ft_remote_ac_temp">#%d: Температура удалённого кондиционера</string>
+    <string name="lb_ft_remote_ac_on_bat">#%d: Уд. кондиционер от батареи</string>
+    <string name="lb_ft_stop_suffsoc">#%d: Остановка зарядки при достаточном SOC</string>
+
+    <string name="lb_ft_rt_gpslogint">#%d: Интервал лога GPS [с]</string>
+    <string name="lb_ft_rt_kickdown_threshold">#%d: Порог кикдауна</string>
+    <string name="lb_ft_rt_kickdown_compzero">#%d: Компенсация кикдауна</string>
+    <string name="lb_ft_rt_chargemode">#%d: Режим остановки зарядки</string>
+    <string name="lb_ft_rt_chargepower">#%d: Уровень мощности зарядки</string>
+    <string name="lb_ft_rt_suffsoc">#%d: Достаточный SOC</string>
+    <string name="lb_ft_rt_suffrange">#%d: Достаточный запас хода</string>
+    <string name="lb_ft_rt_maxrange">#%d: Макс. идеальный запас хода</string>
+    <string name="lb_ft_rt_capacity">#%d: Измерённая ёмкость батареи (CAP%%)</string>
+    <string name="lb_ft_rt_capacity_nom_ah">#%d: Номинальная ёмкость батареи (Ач)</string>
+
+    <string name="lb_ft_sq_led_state">#%d: Состояние LED</string>
+    <string name="lb_ft_sq_ios_tpms_fix">#%d: Исправление TPMS iOS</string>
+    <string name="lb_ft_sq_tpms_temp">#%d: Температуры TPMS</string>
+    <string name="lb_ft_sq_reset_trip_charge">#%d: Сброс поездки при зарядке = 1, при старте = 0</string>
+    <string name="lb_ft_sq_reset_kwh100">#%d: Сброс кВтч/100км при старте = 1</string>
+    <string name="lb_ft_sq_boost_timer_on">#%d: Таймер климата вкл. = 1, выкл. = 2</string>
+    <string name="lb_ft_sq_boost_time">#%d: Время климата 05:15 = 515, 11:35 = 1135</string>
+    <string name="lb_ft_sq_boost_double">#%d: Климат 0 = 5 мин., 1 = 10 мин., 2 = 15 мин.</string>
+    <string name="lb_ft_sq_bc_kwh100">#%d: Значение OCS кВтч/100км = 1</string>
+    <string name="lb_ft_sq_full_km">#%d: заряженный идеальный полный запас хода (км)</string>
+    <string name="lb_ft_sq_doorlock">#%d: Предупреждение о незакрытой двери</string>
+    <string name="lb_ft_sq_dooropen">#%d: Предупреждение об открытой двери</string>
+    <string name="lb_ft_sq_calcadc">#%d: Расчёт adc при зарядке</string>
+    <string name="lb_ft_sq_charge12v">#%d: Зарядка 12В</string>
+
+    <string name="lb_cp_registered_telephone">#%d: Зарегистрированный телефон</string>
+    <string name="lb_cp_module_password">#%d: Пароль модуля</string>
+    <string name="lb_cp_miles_km">#%d: Мили/Км</string>
+    <string name="lb_cp_notifications">#%d: Уведомления</string>
+    <string name="lb_cp_ovms_server_ip">#%d: IP сервера OVMS</string>
+    <string name="lb_cp_cellular_network_apn">#%d: APN сотовой сети</string>
+    <string name="lb_cp_cellular_network_user">#%d: Пользователь сотовой сети</string>
+    <string name="lb_cp_cellular_network_password">#%d: Пароль сотовой сети</string>
+    <string name="lb_cp_vehicle_id">#%d: ID автомобиля</string>
+    <string name="lb_cp_server_password">#%d: Пароль сервера</string>
+    <string name="lb_cp_paranoid_mode">#%d: Параноидальный режим</string>
+    <string name="lb_cp_social_group_1">#%d: Социальная группа #1</string>
+    <string name="lb_cp_social_group_2">#%d: Социальная группа #2</string>
+    <string name="lb_cp_gsmlock">#%d: Блокировка GSM</string>
+    <string name="lb_cp_vehicle_type">#%d: Тип автомобиля</string>
+    <string name="lb_cp_cooldown">#%d: Охлаждение</string>
+    <string name="lb_cp_gprsdns">#%d: DNS IP GPRS</string>
+    <string name="lb_cp_timezone">#%d: Часовой пояс</string>
+    <string name="lb_cp_acc1">#%d: ACC #1 (base64)</string>
+    <string name="lb_cp_acc2">#%d: ACC #2 (base64)</string>
+    <string name="lb_cp_acc3">#%d: ACC #3 (base64)</string>
+    <string name="lb_cp_acc4">#%d: ACC #4 (base64)</string>
+
+    <string name="lb_cp_rt_profile">#%d: Активный профиль</string>
+    <string name="lb_cp_rt_profile1">#%d: Профиль #1 (бинарный)</string>
+    <string name="lb_cp_rt_profile2">#%d: Профиль #2 (бинарный)</string>
+    <string name="lb_cp_rt_profile3">#%d: Профиль #3 (бинарный)</string>
+
+    <string name="lb_ovms_firmware">Версия OVMS:</string>
+    <string name="lb_vehicle_info">Информация об авто</string>
+
+    <string name="lb_charger_setting_twizy">Настройка зарядки</string>
+    <string name="lb_charger_setting_twizy_hint">Подсказка: установите ноль для отключения лимита.</string>
+    <string name="lb_charger_setting_eup_climit">Примечание: значение ограничено 16А при двухфазной зарядке или моделях до 2020 г.</string>
+    <string name="lb_sufficient_soc">Достаточный SOC (%)</string>
+    <string name="lb_sufficient_range">Достаточный запас хода (%s)</string>
+    <string name="msg_getting_charge_alerts">Получение оповещений о зарядке от модуля&#8230;</string>
+    <string name="msg_setting_charge_alerts">Установка конфигурации зарядки&#8230;</string>
+
+    <string name="lb_charge_power_limit">Лимит мощности зарядки</string>
+    <string-array name="twizy_charge_power_limits">
+        <item>без ограничений</item>
+        <item>1.6А / 350Вт</item>
+        <item>3.1А / 700Вт</item>
+        <item>4.7А / 1 050Вт</item>
+        <item>6.3А / 1 400Вт</item>
+        <item>7.8А / 1 750Вт</item>
+        <item>9.4А / 2 100Вт</item>
+        <item>10А / 2 230Вт</item>
+    </string-array>
+    <string name="lb_charge_mode">Режим зарядки</string>
+    <string-array name="twizy_charge_modes">
+        <item>Уведомить</item>
+        <item>Остановить</item>
+    </string-array>
+
+    <string name="msg_ok">ОК</string>
+    <string name="msg_charger_range">Режим хода ограничивает мощность\nЧастое использование сократит срок службы батареи</string>
+    <string name="msg_charger_perform">Частое использование режима производительности\nсократит срок службы батареи</string>
+    <string name="msg_connecting_service">Подключение к сервису&#8230;</string>
+    <string name="msg_connecting_vehicle">Подключение к автомобилю&#8230;</string>
+    <string name="msg_wakeup_car">Пробуждение автомобиля&#8230;</string>
+    <string name="msg_issuing_homelink">Выполнение команды Homelink&#8230;</string>
+    <string name="msg_setting_charge_mc">Установка режима и тока зарядки&#8230;</string>
+    <string name="msg_setting_charge_m">Установка режима зарядки&#8230;</string>
+    <string name="msg_setting_charge_c">Установка тока зарядки&#8230;</string>
+    <string name="msg_starting_charge">Начало зарядки&#8230;</string>
+    <string name="msg_stopping_charge">Остановка зарядки&#8230;</string>
+    <string name="msg_rebooting_car_module">Перезагрузка модуля автомобиля&#8230;</string>
+    <string name="msg_please_enter_value">Пожалуйста, введите корректное значение</string>
+    <string name="msg_invalid_name">Имя пользователя должно быть длиннее 3 символов и не содержать специальные символы.</string>
+    <string name="msg_invalid_passwd">Пароль должен содержать от %1$d до %2$d символов.</string>
+    <string name="msg_invalid_id_already_registered">ID автомобиля %s уже зарегистрирован. Пожалуйста, введите другой ID.</string>
+    <string name="msg_delete_this_car">Удалить этот автомобиль?</string>
+    <string name="msg_mmi_ssd_code">Введите код MMI/USSD, затем нажмите ОТПРАВИТЬ для передачи кода оператору связи автомобиля</string>
+
+    <string name="err_connection_lost">Потеряно соединение с сервером OVMS</string>
+    <string name="err_check_following">Пожалуйста, проверьте:\n1. Адрес сервера OVMS\n2. ID автомобиля и пароли</string>
+    <string name="err_failed">Ошибка: %s</string>
+    <string name="err_command_failed">Команда вернула ошибку</string>
+    <string name="err_command_cancelled">Команда отменена</string>
+    <string name="err_unsupported_operation">Неподдерживаемая операция</string>
+    <string name="err_unimplemented_operation">Нереализованная операция</string>
+    <string name="err_param_not_editable">Извините, этот параметр нельзя изменить!</string>
+    <string name="err_command_auth_failed">Ошибка авторизации команды</string>
+    <string name="err_offline">Сеть недоступна или заблокирована</string>
+    <string name="err_vehicle_unknown">ID автомобиля «%1$s» неизвестен</string>
+
+    <string name="msg_retrieving_data">Получение данных&#8230;</string>
+    <string name="msg_processing_data">Обработка данных&#8230;</string>
+    <string name="msg_more_rows_omitted">(%1$d строк пропущено)</string>
+
+    <string name="cellular_usage_info_car" formatted="false">Авто: %.1f МБ/мес (%d дн.)</string>
+    <string name="cellular_usage_info_app" formatted="false">Приложение: %.1f МБ/мес (%d дн.)</string>
+    <string name="chart_axis_date">Дата</string>
+    <string name="chart_axis_datavolume">Объём (КБ)</string>
+
+    <string name="lb_chargepoint_conn_level" formatted="false">Уровень #%d</string>
+    <string name="lb_chargepoint_conn_type" formatted="false">Тип подключения #%d</string>
+
+    <string name="live">в реальном времени</string>
+    <string name="ndays">%d дн.</string>
+    <string name="nhours">%d ч.</string>
+    <string name="nmins">%d мин.</string>
+    <string name="min1">1 мин</string>
+    <plurals name="duration_minutes">
+        <item quantity="one">%d мин</item>
+        <item quantity="few">%d мин</item>
+        <item quantity="many">%d мин</item>
+        <item quantity="other">%d мин</item>
+    </plurals>
+    <plurals name="duration_hours">
+        <item quantity="one">%d ч</item>
+        <item quantity="few">%d ч</item>
+        <item quantity="many">%d ч</item>
+        <item quantity="other">%d ч</item>
+    </plurals>
+    <plurals name="duration_days">
+        <item quantity="one">%d д</item>
+        <item quantity="few">%d д</item>
+        <item quantity="many">%d д</item>
+        <item quantity="other">%d д</item>
+    </plurals>
+    <string name="duration_separator"> • </string>
+    <string name="justnow">только что</string>
+    <string name="last_seen">Последнее появление %s назад</string>
+    <string name="mph">миль/ч</string>
+    <string name="kph">км/ч</string>
+    <string name="slidetocharge">ПРОСВЕСТИТЕ\nДЛЯ ЗАРЯДКИ</string>
+    <string name="timedcharge">ТАЙМЕРНАЯ ЗАРЯДКА</string>
+    <string name="pushnotifications">Push-уведомления</string>
+    <string name="pushnotifications_welcome">Push-уведомления от ваших зарегистрированных автомобилей хранятся здесь.</string>
+
+    <string name="state_charging" formatted="false">ЗАРЯДКА\n%s %s</string>
+    <string name="state_topping_off" formatted="false">ДОЗАРЯДКА\n%s %s</string>
+    <string name="state_done" formatted="false">ЗАВЕРШЕНО\n%s %s</string>
+    <string name="state_stopped" formatted="false">ОСТАНОВЛЕНО\n%s %s</string>
+
+    <string name="info_etr_full" formatted="false">100%%: ~%s</string>
+    <string name="info_etr_suffsoc" formatted="false">%d%%: ~%s</string>
+    <string name="info_etr_suffrange" formatted="false">%d%s: ~%s</string>
+
+    <string name="textMOTOR">ДВИГАТЕЛЬ</string>
+    <string name="textPEM">PEM</string>
+    <string name="textCAB">САЛОН</string>
+    <string name="textBATTERY">БАТАРЕЯ</string>
+    <string name="textCHARGER">ЗАРЯДКА</string>
+    <string name="textHOMELINK">HOMELINK</string>
+    <string name="textPROFILE">ПРОФИЛЬ</string>
+    <string name="textAMBIENT">ОКРУЖЕНИЕ</string>
+    <string name="textCABIN">САЛОН</string>
+    <string name="text12VBATT">12В БАТ.</string>
+    <string name="textHVBATT">ВВ БАТ.</string>
+
+    <string name="textAC">КЛИМАТИЧЕСКАЯ СИСТЕМА</string>
+    <string name="mi_ac_on">КOND. ВКЛ</string>
+    <string name="mi_ac_off">КOND. ВЫКЛ</string>
+    <string name="msg_issuing_climatecontrol">Выполнение команды климата…</string>
+
+    <string-array name="en_charger">
+        <item>Стандарт</item>
+        <item>Хранение</item>
+        <item>Запас хода</item>
+        <item>Производительность</item>
+    </string-array>
+
+    <string-array name="ocm_options_maxresults">
+        <item>500</item>
+        <item>1000</item>
+        <item>1500</item>
+        <item>2000</item>
+        <item>3000</item>
+        <item>5000</item>
+    </string-array>
+
+    <string name="ocm_read_failed" formatted="false">Ошибка чтения OpenChargeMap: %s</string>
+    <string name="ocm_toast_autotrack_off">Автослежение отключено\nНажмите Домой [⌖] для включения</string>
+    <string name="ocm_toast_autotrack_on">Автослежение включено</string>
+
+    <string name="mi_map_options">Параметры</string>
+    <string name="mi_map_autotrack">Автослежение</string>
+    <string name="mi_map_filter_connections">Мои разъёмы</string>
+    <string name="mi_map_filter_range">Мой запас хода</string>
+    <string name="mi_map_settings">Настройки</string>
+
+    <string name="mi_car_details_temp">Фаренгейт</string>
+    <string name="mi_car_details_tpms">TPMS в барах</string>
+
+    <string name="cargroup_title">Группы автомобилей</string>
+    <string name="cargroup_name_hint">Название группы</string>
+
+    <string name="ocm_title_charge_points">СТАНЦИИ ЗАРЯДКИ</string>
+    <string name="ocm_subtitle_charge_points">Источник: https://openchargemap.org/</string>
+
+    <string name="ocm_lb_enable">Включить OCM</string>
+    <string name="ocm_lb_cluster_enable">Включить кластеризацию</string>
+    <string name="ocm_lb_cluster_size">Размер кластера</string>
+
+    <string name="ocm_lb_max_results">Макс. точек зарядки на тайл</string>
+
+    <string name="connections">Подключения</string>
+
+    <string name="clearcache">Очистить кэш</string>
+    <string name="msg_cache_cleared">Кэш точек зарядки очищен!</string>
+
+    <string name="logs_title">Диагностические логи</string>
+    <string name="logs_btn_get">Получить логи</string>
+    <string name="logs_btn_reset">Сбросить логи</string>
+    <string name="hidden_tabs">Скрытые вкладки</string>
+    <string name="hidden_items_count">%1$d скрыто</string>
+    <string name="reset">Сброс</string>
+    <string name="hint_long_press_hide">Долгое нажатие для скрытия/показа вкладки</string>
+    <string name="action_hide_tab">Скрыть вкладку</string>
+    <string name="action_unhide_tab">Показать вкладку</string>
+    <string name="action_reset_tabs">Сбросить вкладки</string>
+    <string name="drag_handle_description">Перетащите для перемещения</string>
+    <string name="home_tab_settings">Вкладки</string>
+    <string name="home_tab_manage_hidden">Управление скрытыми вкладками</string>
+    <string name="home_tab_none_hidden">Нет скрытых вкладок</string>
+    <string name="pref_show_footer">Показывать информацию внизу</string>
+    <string name="pref_show_footer_desc">Отображать блок информации об авто и приложении внизу</string>
+    <string name="footer_hidden">Подвал скрыт</string>
+    <string name="footer_show">Показать</string>
+
+    <string name="logs_lb_alerts">Оповещения</string>
+    <string name="logs_lb_faults">Неисправности</string>
+    <string name="logs_lb_events">События</string>
+    <string name="logs_lb_counter">Счётчик</string>
+    <string name="logs_lb_minmax">Мин/Макс</string>
+
+    <string name="logs_th_code">Код</string>
+    <string name="logs_th_description">Описание</string>
+    <string name="logs_th_keytime">КлючВремя</string>
+    <string name="logs_th_lasttime">ПослВремя</string>
+    <string name="logs_th_firsttime">ПервВремя</string>
+    <string name="logs_th_count">Кол-во</string>
+    <string name="logs_th_data" formatted="false">Данные%d</string>
+    <string name="logs_th_sensor">Датчик</string>
+    <string name="logs_th_user">Пользователь</string>
+    <string name="logs_th_sevcon">SEVCON</string>
+
+    <string-array name="logs_th_sensornames">
+        <item>Мин. напряжение батареи (В)</item>
+        <item>Макс. напряжение батареи (В)</item>
+        <item>Мин. напряжение конденсатора (В)</item>
+        <item>Макс. напряжение конденсатора (В)</item>
+        <item>Мин. ток двигателя (А)</item>
+        <item>Макс. ток двигателя (А)</item>
+        <item>Мин. обороты двигателя (об/мин)</item>
+        <item>Макс. обороты двигателя (об/мин)</item>
+        <item>Мин. температура SEVCON (°C)</item>
+        <item>Макс. температура SEVCON (°C)</item>
+    </string-array>
+
+    <string name="logs_fmt_keytime" formatted="false">%d. %02d:%02d:%02d</string>
+    <string name="logs_fmt_listinfo" formatted="false">Последнее получение %s // ключевое время %s</string>
+
+    <string name="logs_msg_query_alerts">Запрос оповещений&#8230;</string>
+    <string name="logs_msg_query_faults">Запрос неисправностей&#8230;</string>
+    <string name="logs_msg_query_events">Запрос событий&#8230;</string>
+    <string name="logs_msg_query_counter">Запрос счётчика&#8230;</string>
+    <string name="logs_msg_query_minmax">Запрос мин/макс&#8230;</string>
+
+    <string name="logs_msg_fetch_keytime">Получение ключевого времени&#8230;</string>
+    <string name="logs_msg_fetch_alerts">Получение оповещений&#8230;</string>
+    <string name="logs_msg_fetch_faults">Получение неисправностей&#8230;</string>
+    <string name="logs_msg_fetch_events">Получение событий&#8230;</string>
+    <string name="logs_msg_fetch_counter">Получение счётчика&#8230;</string>
+    <string name="logs_msg_fetch_minmax">Получение мин/макс&#8230;</string>
+
+    <string name="logs_msg_reset_faults">Сброс неисправностей&#8230;</string>
+    <string name="logs_msg_reset_events">Сброс событий&#8230;</string>
+    <string name="logs_msg_reset_counter">Сброс счётчика&#8230;</string>
+    <string name="logs_msg_reset_minmax">Сброс мин/макс&#8230;</string>
+
+    <string name="hint_sevcon_offline">\n(Подсказка: &#8230;B = SEVCON офлайн)</string>
+
+    <string name="notifications_hint_cmdinput">Команда SMS/MMI/MSG</string>
+    <string name="err_failed_smscmd">Ошибка: неизвестная команда / ошибка авторизации</string>
+    <string name="notifications_toast_copied">Сообщение скопировано в буфер обмена</string>
+    <string name="notifications_menu">Параметры</string>
+    <string name="notifications_stored_commands">Сохранённые команды</string>
+    <string name="notifications_chk_filter_list">Фильтр по автомобилю</string>
+    <string name="notifications_chk_filter_info">Фильтр информационных уведомлений</string>
+    <string name="notifications_chk_filter_alert">Фильтр оповещений</string>
+    <string name="notifications_chk_monospace">Моноширинный</string>
+    <string name="notifications_set_fontsize">Размер шрифта</string>
+    <string name="notifications_btn_help">Информация</string>
+    <string name="notifications_help"><![CDATA[
+ 		<h1>Уведомления и команды</h1>
+
+		<p>Этот экран хранит последние 200 уведомлений, оповещений, команд и результатов команд.</p>
+
+		<p>Вы можете фильтровать список и по желанию показывать информационные и системные оповещения
+		 только для текущего выбранного автомобиля.</p>
+
+        <p>Коснитесь уведомления для отображения в диалоге, долгое касание для копирования в буфер обмена.
+         Касание записи команды загружает её в поле ввода для изменения и/или повторной отправки.</p>
+
+        <p>Вы можете отправлять текстовые (SMS) команды, MMI (USSD) команды, MSG команды и команды модема (AT).
+         Все команды отправляются через TCP/IP, поэтому SMS команды и их
+		результаты не будут тарифицироваться как SMS сообщения.</p>
+
+        <p><u>Примеры</u>:</p>
+
+		<p>
+		&nbsp;&bull; SMS: <tt><b>STAT</b></tt> &mdash; <i>получить статус автомобиля</i><br>
+		&nbsp;&bull; MMI: <tt><b>*100#</b></tt> &mdash; <i>обычно баланс SIM</i><br>
+		&nbsp;&bull; MSG: <tt><b>#31</b></tt> &mdash; <i>сводка исторических данных</i><br>
+		&nbsp;&bull; Modem: <tt><b>@AT…</b></tt> &mdash; <i>см. руководство по командам модема</i>
+		</p>
+
+		<p>Примечания: MMI команды зависят от оператора связи, проверьте документацию оператора.
+		Команды модема не возвращают результаты. См. документацию OVMS для стандартных MSG команд.</p>
+
+    ]]></string>
+
+
+    <string name="battery_title">История батареи</string>
+    <string name="battery_menu">Параметры</string>
+    <string name="battery_btn_get_data">Получить данные</string>
+    <string name="battery_btn_reset_view">Сбросить масштаб</string>
+    <string name="battery_btn_help">Информация</string>
+    <string name="battery_chk_volt">Показать напряжение</string>
+    <string name="battery_chk_temp">Показать температуру</string>
+    <string name="battery_msg_loading_data">Загрузка данных&#8230;</string>
+    <string name="battery_msg_get_status">Запрос статуса батареи&#8230;</string>
+    <string name="battery_msg_get_battpack">Получение данных блока&#8230;</string>
+    <string name="battery_msg_get_battcell">Получение данных ячеек&#8230;</string>
+    <string name="battery_pack_description">История блока</string>
+    <string name="battery_cell_description">Статус ячеек</string>
+    <string name="battery_data_soc">SOC (%)</string>
+    <string name="battery_data_soh">SOH (%)</string>
+    <string name="battery_data_soc_2">SOC</string>
+    <string name="battery_data_soh_2">SOH</string>
+    <string name="battery_data_volt">Напряжение (В)</string>
+    <string name="battery_data_volt_min">Мин. напряжение (В)</string>
+    <string name="battery_data_temp">Температура (°C)</string>
+    <string name="battery_help"><![CDATA[
+ 		<h1>История батареи</h1>
+
+		<h2>Основы</h2>
+		<p><b>Прошивка</b> должна поддерживать функцию <b>мониторинга батареи</b>.
+		Графики основаны на записях <tt>RT-BAT-P</tt> и <tt>RT-BAT-C</tt>
+		(см. Руководство). Сервер хранит их <b>24 часа</b>.</p>
+		<p><b>Разрешение измерений</b>: 5 мВ для напряжения и 1 °C для температуры.</p>
+
+		<h2>История блока</h2>
+		<p>График блока отображает только времена с данными, исключая неактивное время парковки.</p>
+		<p>Модуль отправляет обновления на сервер каждые <b>~60 секунд</b> при движении или
+		зарядке. Экстремумы и максимальные стандартные отклонения
+		собираются непрерывно.</p>
+
+		<h2>Статус ячеек</h2>
+		<p>
+		&nbsp;&bull; нижний край = минимальное значение<br>
+		&nbsp;&bull; верхний край = текущее значение (+текст)<br>
+		&nbsp;&bull; заполненный блок = плохо<br>
+		&nbsp;&bull; большой блок = большое отклонение
+		</p>
+    ]]></string>
+
+    <string name="aux_battery_menulabel">История 12В</string>
+    <string name="aux_battery_title">История аккумулятора 12В</string>
+    <string name="aux_battery_msg_get_battpack">Получение данных 12В&#8230;</string>
+    <string name="aux_battery_data_volt">Напряжение (В)</string>
+    <string name="aux_battery_data_volt_ref">Эталон (В)</string>
+    <string name="aux_battery_data_current">Ток (А)</string>
+    <string name="aux_battery_data_temp_ambient">Темп. окружающей среды (°C)</string>
+    <string name="aux_battery_data_temp_charger">Темп. зарядного устройства (°C)</string>
+    <string name="aux_battery_help"><![CDATA[
+ 		<h1>История аккумулятора 12В</h1>
+
+        <p>Кислотные автомобильные аккумуляторы могут выйти из строя без предупреждения (особенно зимой)
+         и должны выдерживать дополнительную нагрузку от OVMS, поэтому модуль
+         включает систему мониторинга и оповещений 12В.</p>
+
+		<p><u>Примечание</u>: Напряжение 12В измеряется по входному напряжению питания OVMS.</p>
+
+		<h2>Исторические данные</h2>
+		<p>Данные 12В хранятся на сервере 24 часа.</p>
+
+        <h2>Советы</h2>
+        <p>Здоровый кислотный аккумулятор не опускается ниже 11.8В без нагрузки.</p>
+		<p>Регулярно проверяйте аккумулятор на наличие вздутия. Также ищите коррозию на клеммах.</p>
+		<p>Для продления срока службы кислотного аккумулятора регулярно делайте
+		 полную зарядку. Это особенно важно в холодном климате или зимой.</p>
+		<p>Если вы планируете оставить автомобиль надолго, отключите OVMS.</p>
+    ]]></string>
+
+
+    <string name="power_title">История энергопотребления</string>
+    <string name="power_menu">Параметры</string>
+    <string name="power_btn_get_data">Получить данные</string>
+    <string name="power_btn_reset_view">Сбросить масштаб</string>
+    <string name="power_btn_zoom5">Последние 5 %1$s</string>
+    <string name="power_btn_zoom10">Последние 10 %1$s</string>
+    <string name="power_btn_help">Информация</string>
+    <string name="power_chk_energy">Показать энергию</string>
+    <string name="power_chk_power">Показать мощность</string>
+    <string name="power_msg_loading_data">Загрузка&#8230;</string>
+    <string name="power_msg_getting_gpslog">Получение лога GPS&#8230;</string>
+
+    <string name="power_trip_description">Поездка</string>
+    <string name="power_data_altitude">Высота (м)</string>
+    <string name="power_data_speed">Скорость (%1$s)</string>
+
+    <string name="power_power_description">Мощность (Вт)</string>
+    <string name="power_data_pwr_min">Мин</string>
+    <string name="power_data_pwr_max">Макс</string>
+    <string name="power_data_pwr_avg">Средн (Вт)</string>
+    <string name="power_data_pwr_recuplimit">Лимит рекуперации</string>
+    <string name="power_data_pwr_drivelimit">Лимит движения</string>
+
+    <string name="power_energy_description">Энергия</string>
+    <string name="power_data_energy_used">Потреблено (Втч)</string>
+    <string name="power_data_energy_recd">Восстановлено (Втч)</string>
+    <string name="power_data_energy_avg">Средн (Втч/%1$s)</string>
+
+    <string name="power_help" formatted="false"><![CDATA[
+        <h1>История энергопотребления</h1>
+
+        <h2>Основы</h2>
+        <p>Графики основаны на записях <tt>RT-GPS-Log</tt> (см. руководство). Сервер хранит их <b>24 часа</b>.</p>
+        <p>Лог GPS обновляется <b>раз в минуту</b> по умолчанию.</p>
+        <p><u>Примечание</u>: измерения мощности и энергии являются интерпретацией
+        недокументированных данных шины CAN.</p>
+    ]]></string>
+
+    <string name="lb_options_service">Сервис:</string>
+    <string name="lb_options_service_cb">Включить фоновое подключение</string>
+    <string name="lb_options_service_info">Позволяет подключение к серверу работать когда приложение не запущено.</string>
+    <string name="lb_options_broadcast">Широковещание:</string>
+    <string name="lb_options_broadcast_cb">Включить широковещание данных другим приложениям</string>
+    <string name="lb_options_broadcast_codes">Введите коды букв</string>
+    <string name="lb_options_commands">Команды:</string>
+    <string name="lb_options_commands_cb">Включить сервис команд автомобиля</string>
+    <string name="lb_options_apikey">API ключ:</string>
+    <string name="lb_options_apikey_renew">Отозвать и обновить</string>
+    <string name="lb_options_apikey_renew_confirm">Действительно отозвать и обновить API ключ, сделав недействительными все закреплённые команды?</string>
+    <string name="lb_options_broadcast_info" formatted="false"><![CDATA[
+        <p>Широковещание обновлений позволяет отправлять данные автомобиля другим приложениям.</p>
+        <p>Сервис команд позволяет приложениям отправлять команды автомобилю и получать результаты.</p>
+        <p>API ключ — это ваша локальная авторизация команд. Обновление API ключа сделает недействительными все установленные или закреплённые команды.</p>
+        <p>См. <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki OVMS Android</a>
+         и <a href="https://github.com/openvehicles/Open-Vehicle-Monitoring-System/raw/master/docs/OVMS_Protocol.pdf">Протокол OVMS (PDF)</a>
+         для подробностей.</p>
+    ]]></string>
+
+    <string name="stored_commands_title">Сохранённые команды</string>
+    <string name="stored_commands_add">Добавить команду</string>
+    <string name="stored_commands_edit">Редактировать команду</string>
+    <string name="stored_commands_pin">Вы хотите добавить иконку этой команды на рабочий стол?</string>
+    <string name="confirm_delete_stored_command">Удалить «%s»?</string>
+    <string name="lb_enter_title">Название/имя</string>
+    <string name="lb_enter_command">Команда</string>
+
+    <string name="channel_status_name">Статус приложения</string>
+    <string name="channel_status_description">Статус OVMS приложения/сервиса</string>
+    <string name="channel_info_name">Сообщения автомобиля</string>
+    <string name="channel_info_description">Общие уведомления от модуля</string>
+    <string name="channel_alert_name">Оповещения автомобиля</string>
+    <string name="channel_alert_description">Оповещения и ошибки от модуля</string>
+
+    <string name="service_notification_title">OVMS</string>
+    <string name="service_notification_text">Сервис запущен</string>
+    <string name="service_notification_ticker">Сервис OVMS запущен</string>
+
+    <string name="info_widget_description">SOC и запас хода, температура батареи и время зарядки</string>
+
+    <string name="play_services_recommended">Это приложение использует Google Play Services для push-уведомлений
+        и интеграции с картами.</string>
+    <string name="remind">Напомнить</string>
+    <string name="dontremind">Не напоминать</string>
+
+    <string name="needed_permissions_title">Требуемые разрешения</string>
+    <string name="needed_permissions_message">\
+        · Разрешение на публикацию уведомлений необходимо для push-уведомлений.\n\
+        · Разрешение на точное местоположение необходимо для кнопки «Домой» на карте.
+    </string>
+    <string name="later">Позже</string>
+
+    <string name="about_title">Версия %1$s (%2$d)</string>
+    <string name="about_message"><![CDATA[
+        <p><b><u>О OVMS</u></b>:</p>
+        <p>Open Vehicles Monitoring System — это проект сообщества для удалённого мониторинга и управления автомобилями
+         с использованием открытого программного и аппаратного обеспечения.</p>
+        <p>· <a href="https://www.openvehicles.com/">OpenVehicles.com</a></p>
+        <p>· <a href="https://docs.openvehicles.com/en/latest/">Руководство пользователя (OVMS v3)</a></p>
+        <p>· <a href="https://github.com/openvehicles">GitHub</a></p>
+        <p>· <a href="https://www.openvehicles.com/privacypolicy">Политика конфиденциальности</a></p>
+    ]]></string>
+
+    <string name="mi_app_about">О OVMS</string>
+    <string name="title_activity_main">Главное действие</string>
+    <string name="title_home">Главная</string>
+    <string name="title_dashboard">Панель</string>
+    <string name="title_notifications">Уведомления</string>
+    <string name="hello_blank_fragment">Привет</string>
+    <string name="parked">На парковке</string>
+    <string name="connecting">Подключение</string>
+    <string name="state_charging_label">Зарядка</string>
+    <string name="state_topping_off_label">Дозарядка</string>
+    <string name="state_done_label">Зарядка завершена</string>
+    <string name="state_stopped_label">Зарядка остановлена</string>
+    <string name="start_charging_label">Начать зарядку</string>
+    <string name="stop_charging_label">Остановить зарядку</string>
+    <string name="loading">Загрузка данных</string>
+    <string name="connected">Подключено</string>
+
+    <string name="controls_tab_label">Управление</string>
+    <string name="charging_tab_label">Зарядка</string>
+
+    <string name="cartype_unknown">Код типа автомобиля %s</string>
+    <string name="pilot_signal_present">Сигнал пилота присутствует</string>
+    <string name="charging_estimation_soc">~%s до лимита зарядки</string>
+    <string name="charging_estimation_range">~%s до достаточного запаса хода</string>
+    <string name="charging_estimation_full">~%s до полной зарядки</string>
+    <string name="charging_estimation_soc_2">прошло %s, лимит зарядки через ~%s</string>
+    <string name="charging_estimation_range_2">прошло %s, достаточный запас хода через ~%s</string>
+    <string name="charging_estimation_full_2">прошло %s, полная зарядка через ~%s</string>
+    <string name="charging_estimation_full_3">полностью заряжено с %s</string>
+    <string name="tpms">TPMS</string>
+    <string name="nopower">Нет питания</string>
+    <string name="charge_limit_action">Действие при лимите зарядки</string>
+    <string name="charge_limit_action_notify">Уведомить</string>
+    <string name="charge_limit_action_stop">Остановить</string>
+    <string name="regen_amount_label">Восстановленная энергия</string>
+    <string name="consumed_amount_label">Потреблённая энергия</string>
+    <string name="last_trip">Последняя поездка</string>
+    <string name="edit_car">Редактировать авто</string>
+    <string name="lb_options_old_ui">Старый интерфейс</string>
+    <string name="lb_options_old_ui_cb">Использовать старый интерфейс вместо нового (требует перезапуска)</string>
+    <string name="app_ui_prefs_home_show_range">Показывать запас хода с SOC</string>
+    <string name="app_ui_prefs_charging_always_show_time_est">Всегда показывать время зарядки</string>
+    <string name="app_ui_prefs_charging_always_show_time_est_i">Всегда показывать оценку времени на экране зарядки, даже когда авто не заряжается</string>
+    <string name="app_ui_prefs_home_range_display_mode">Режим отображения запаса хода</string>
+    <string name="other_settings">Другие настройки</string>
+    <string name="legacy_settings_title">Настройки OVMS Legacy</string>
+    <string name="app_settings">Настройки приложения</string>
+    <string name="quick_actions">Быстрые действия</string>
+    <string name="app_ui_prefs_home_quick_actions_i">Настройка и перемещение быстрых действий</string>
+    <string name="consumption">Потребление</string>
+    <string name="modify_quick_actions">Изменить быстрые действия</string>
+    <string name="quick_actions_modify_hint">Подсказка: перетащите для перемещения, нажмите для удаления</string>
+    <string name="climate_control_short">Климат</string>
+    <string name="central_locking_action_label">Замок</string>
+    <string name="Garage">Гараж</string>
+    <string name="custom_command">Своя</string>
+    <string name="max_quick_actions_reached">Больше нет места, удалите действие и попробуйте снова</string>
+    <string name="dlg_choose_icon_action_title">Выберите иконку действия</string>
+    <string name="invalid_command">Неверная команда! Введите корректную команду</string>
+    <string name="no_data">Нет данных</string>
+    <string name="latest_data">Последние</string>
+    <string name="stale_data">Устаревшие</string>
+    <string name="none">Нет</string>
+    <string name="home_soc_hint">Подсказка: нажмите на иконку батареи или текст SOC для временного отображения запаса хода</string>
+    <string name="lb_motor_power">Мощность двигателя</string>
+    <string name="drive_mode">Режим движения</string>
+    <string name="normal">Обычный</string>
+    <string name="drive_mode_eco">ECO/Режим B</string>
+    <string name="unknown">Неизвестно</string>
+    <string name="temp">Температура</string>
+    <string name="lb_communications">Связь</string>
+    <string name="ideal_range_abbreviation">И: %s</string>
+    <string name="estimated_range_abbreviation">Р: %s</string>
+    <string name="select_an_action">Опция smart EQ</string>
+    <string name="lb_indicator_on">Указатель включён</string>
+    <string name="lb_open_trunk">открыть багажник</string>
+    <string name="execute">выполнить</string>
+    <string name="lb_5min">5 минут</string>
+    <string name="lb_10min">10 минут</string>
+    <string name="lb_15min">15 минут</string>
+    <string name="mi_car_show_tpms">TPMS в главном меню</string>
+    <string name="fl_tpms">ПЛ</string>
+    <string name="fr_tpms">ПП</string>
+    <string name="rl_tpms">ЗЛ</string>
+    <string name="rr_tpms">ЗП</string>
+    <string name="front_tpms">Передние</string>
+    <string name="rear_tpms">Задние</string>
+    <string name="fl_get_tpms">установить ПЛ из значения TPMS:</string>
+    <string name="fr_get_tpms">установить ПП из значения TPMS:</string>
+    <string name="rl_get_tpms">установить ЗЛ из значения TPMS:</string>
+    <string name="rr_get_tpms">установить ЗП из значения TPMS:</string>
+    <string name="fl_set_tpms">установить значение ПЛ</string>
+    <string name="fr_set_tpms">установить значение ПП</string>
+    <string name="rl_set_tpms">установить значение ЗЛ</string>
+    <string name="rr_set_tpms">установить значение ЗП</string>
+    <string name="tpms_fl">передняя левая</string>
+    <string name="tpms_fr">передняя правая</string>
+    <string name="tpms_rl">задняя левая</string>
+    <string name="tpms_rr">задняя правая</string>
+    <string name="tpms_mapping">Сопоставление TPMS</string>
+    <string name="mi_car_sort_tpms">сортировать TPMS по прошивке</string>
+    <string name="tpms_settings">Настройки TPMS</string>
+    <string name="mi_car_tpms_wheelname">Имя колеса TPMS в приложении</string>
+    <string name="textLASTCHARGING">Последняя зарядка</string>
+    <string name="GSM_icon">показать иконку GSM</string>
+    <string name="GPS_icon">показать иконку GPS</string>
+    <string name="lb_booster_hour">Час</string>
+    <string name="lb_booster_min">Минуты</string>
+    <string name="lb_booster_doubler">на сколько активировать?</string>
+    <string name="lb_booster_time">Таймер климата</string>
+    <string name="lb_booster_time_weekly">Недельный таймер</string>
+    <string name="lb_booster_time_off">Таймер климата выкл</string>
+    <string name="climate_control">Таймерный контроль климата</string>
+    <string name="lb_booster_activate">активировать</string>
+    <string name="lb_booster_weekly">Климат еженедельно вкл/выкл</string>
+    <string name="lb_booster_weekly_on">Климат еженедельно вкл</string>
+    <string name="lb_booster_weekly_off">Климат еженедельно выкл</string>
+    <string name="lb_booster_day_sel">Выбор дня для климата</string>
+    <string name="lb_booster_day_start">Первый день</string>
+    <string name="lb_booster_day_end">Последний день</string>
+
+    <string name="lb_autowiper_off">Авто-дворники выкл</string>
+    <string name="lb_autowiper_on">Авто-дворники вкл</string>
+    <string name="lb_wifi">Перезапуск Wifi</string>
+    <string name="lb_modem">Перезапуск модема</string>
+    <string name="lb_bipbip_off">Бипбип выкл (только с сигнализацией)</string>
+    <string name="lb_bipbip_on">Бипбип вкл (только с сигнализацией)</string>
+    <string name="lb_rearwiper_off">Задний дворник выкл</string>
+    <string name="lb_rearwiper_on">Задний дворник вкл</string>
+    <string name="select_ddt4all_action">Опция DDT4all</string>
+    <string name="chargingpower">Мощность зарядки</string>
+    <string name="chargingeff">КПД</string>
+    <string name="lb_charger_confirm_soc_change">Действительно изменить лимит SOC?</string>
+    <string name="action_set_tab_color">Установить цвет вкладки</string>
+    <string name="action_reset_tab_color">Сбросить цвет вкладки</string>
+    <string name="dialog_choose_color">Выберите цвет</string>
+    <string-array name="lb_booster_mode" translatable="false">
+        <item>@string/lb_5min</item>
+        <item>@string/lb_10min</item>
+        <item>@string/lb_15min</item>
+    </string-array>
+    <string-array name="lb_booster_days">
+        <item>&#160;Вс&#160;</item>
+        <item>&#160;Пн&#160;</item>
+        <item>&#160;Вт&#160;</item>
+        <item>&#160;Ср&#160;</item>
+        <item>&#160;Чт&#160;</item>
+        <item>&#160;Пт&#160;</item>
+        <item>&#160;Сб&#160;</item>
+    </string-array>
+    <string-array name="home_range_display_mode_labels" translatable="false">
+        <item>@string/IdealShort</item>
+        <item>@string/EstimatedShort</item>
+    </string-array>
+
+    <string name="scheduled_command">Запланированная команда</string>
+</resources>
