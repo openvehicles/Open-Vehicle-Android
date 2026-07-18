@@ -746,11 +746,16 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Privacy policy</a></p>
         <p>&nbsp;</p>
         <p><b><u>Main changes since last release</u></b>:</p>
-          <p>· Redesigned user interface (Author: <a href="https://developerfromjokela.com/">Developer From Jokela</a>)</p>
-          <p>· Customizable quick action buttons incl. custom command support</p>
-          <p>· Add VW e-Up charger settings (firmware 3.3.004)</p>
-          <p>· TLS support for server connection</p>
-          <p>· General fixes &amp; optimizations</p>
+        <p>· Home screen per vehicle button reordering & colorizing</p>
+        <p>· Extended charge & park time info</p>
+        <p>· Add NIU MQi GT vehicle images</p>
+        <p>· New "Scheduled Command" widget</p>
+        <p>· Climate Schedule Quick Action (replacing "Timer" and "Days" quick actions, needs firmware 3.3.006)</p>
+        <p>· smart EQ: features cleanup, new DDT4all quick action, "stop restart" from climate menu</p>
+        <p>· TPMS mapping & display rework (needs firmware 3.3.006)</p>
+        <p>· Enable ClimateControl for Volt/Ampera, BoltEv/AmperaE</p>
+        <p>· Russian localization</p>
+        <p>· General fixes &amp; optimizations</p>
         <p>Please read the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">version history</a>
          for details on all changes.</p>
         <p>Hint: there is also some useful info in the <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki">Wiki</a>.</p>
