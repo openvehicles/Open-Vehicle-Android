@@ -4,12 +4,12 @@
 
     <item
         android:id="@+id/mi_get_data"
-        android:icon="@android:drawable/ic_popup_sync"
+        android:icon="@drawable/ic_refresh"
         android:title="@string/battery_btn_get_data"
         app:showAsAction="always|withText"/>
     <item
         android:id="@+id/battery_menu"
-        android:icon="@android:drawable/ic_menu_more"
+        android:icon="@drawable/ic_more_vert"
         android:title="@string/battery_menu"
         app:showAsAction="always|withText">
 
@@ -17,7 +17,7 @@
 
             <item
                 android:id="@+id/mi_reset_view"
-                android:icon="@android:drawable/ic_menu_mylocation"
+                android:icon="@drawable/ic_my_location"
                 android:title="@string/battery_btn_reset_view"
                 app:showAsAction="ifRoom"/>
 
@@ -37,7 +37,7 @@
 
             <item
                 android:id="@+id/mi_help"
-                android:icon="@android:drawable/ic_menu_help"
+                android:icon="@drawable/ic_help"
                 android:title="@string/battery_btn_help"
                 app:showAsAction="never"/>
 

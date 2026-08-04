@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.button.MaterialButton
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.ui2.components.quickactions.QuickAction
 
@@ -30,9 +30,9 @@ class QuickActionsEditorAdapter internal constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val action = mData[position]
-        val button = holder.itemView.findViewById(R.id.action_button) as FloatingActionButton
+        val button = holder.itemView.findViewById(R.id.action_button) as MaterialButton
         val label = holder.itemView.findViewById<TextView>(R.id.quick_action_label) as TextView
-        button.setImageDrawable(action.getLiveCarIcon(false, holder.itemView.context))
+        button.icon = action.getLiveCarIcon(false, holder.itemView.context)
         button.setOnClickListener {
             actionClickListener(action.id)
         }

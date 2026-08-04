@@ -11,7 +11,11 @@ import com.openvehicles.OVMS.api.ApiService
 class ChargingQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_charging, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.color.cardview_dark_background, label = context?.getString(R.string.state_charging_label)) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.state_charging_label)
+    ) {
 
     companion object {
         const val ACTION_ID = "charging"

@@ -33,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/battery_data_soh"
+        android:textColor="@color/colorText"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/battSoh"
         app:layout_constraintEnd_toEndOf="@+id/battSoh"
@@ -44,6 +45,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="4dp"
         android:text="@string/battery_data_soc"
+        android:textColor="@color/colorText"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/battSoc"
         app:layout_constraintEnd_toEndOf="@+id/battSoc"
@@ -56,6 +58,7 @@
         android:layout_marginStart="16dp"
         android:gravity="center"
         android:textSize="24sp"
+        android:textColor="@color/colorText"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
         app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
@@ -69,6 +72,7 @@
         android:layout_marginEnd="16dp"
         android:gravity="center"
         android:textSize="24sp"
+        android:textColor="@color/colorText"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
         app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
@@ -80,6 +84,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="16sp"
+        android:textColor="@color/colorText"
         app:layout_constraintBottom_toTopOf="@+id/battSoc"
         app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
         app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
@@ -92,6 +97,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="24dp"
         android:textSize="16sp"
+        android:textColor="@color/colorText"
         app:layout_constraintEnd_toStartOf="@+id/battAmp"
         app:layout_constraintTop_toTopOf="@+id/battAmp"
         tools:text="370V" />
@@ -102,6 +108,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textSize="16sp"
+        android:textColor="@color/colorText"
         app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
         app:layout_constraintEnd_toEndOf="@+id/battIndicatorImg"
         app:layout_constraintStart_toStartOf="@+id/battIndicatorImg"
@@ -113,6 +120,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:textSize="16sp"
+        android:textColor="@color/colorText"
         app:layout_constraintBottom_toBottomOf="@+id/battVolt"
         app:layout_constraintStart_toEndOf="@+id/battAmp"
         app:layout_constraintTop_toTopOf="@+id/battVolt"
@@ -134,11 +142,21 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/metricsRecyclerView"
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="true" />
+                android:layout_marginTop="12dp"
+                app:cardCornerRadius="16dp"
+                app:strokeWidth="1dp"
+                app:strokeColor="@color/colorGreyBlue"
+                app:cardBackgroundColor="?attr/colorSurfaceContainer">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/metricsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="true" />
+            </com.google.android.material.card.MaterialCardView>
 
             <include
                 android:id="@+id/power_history"

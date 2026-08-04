@@ -12,7 +12,9 @@ import com.openvehicles.OVMS.api.ApiService
 class ClimateQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_ac, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.color.cardview_dark_background,
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
         label = context?.getString(R.string.climate_control_short)) {
     companion object {
         const val ACTION_ID = "climate"

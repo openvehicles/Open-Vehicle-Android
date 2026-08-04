@@ -12,8 +12,11 @@ import com.openvehicles.OVMS.ui.utils.Ui
 class ValetQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_valet, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.color.cardview_dark_background,
-        label = context?.getString(R.string.lb_valet_mode)) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.lb_valet_mode)
+    ) {
 
     companion object {
         const val ACTION_ID = "valet"

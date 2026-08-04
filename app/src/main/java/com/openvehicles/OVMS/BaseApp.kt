@@ -5,6 +5,7 @@ import android.content.Context
 import com.maltaisn.icondialog.pack.IconPack
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
 
 class BaseApp : Application() {
 
@@ -15,6 +16,8 @@ class BaseApp : Application() {
 
         app = this
         context = applicationContext
+
+        ThemeMode.apply(this)
 
         loadIconPack()
     }

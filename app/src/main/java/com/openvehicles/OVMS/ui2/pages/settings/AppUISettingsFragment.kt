@@ -1,5 +1,7 @@
 package com.openvehicles.OVMS.ui2.pages.settings
 
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
+import androidx.preference.ListPreference
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
@@ -15,6 +17,7 @@ import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.entities.CarData
+import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.Sys
 import com.openvehicles.OVMS.utils.CarsStorage.getLastSelectedCarId
@@ -42,6 +45,18 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
 
         carData = CarsStorage.getSelectedCarData()
         val appPrefs = AppPrefs(requireContext(), "ovms")
+
+        // Light / dark / follow system. Stored in the "ovms" prefs by ThemeMode, so the
+        // ListPreference (which writes to the default prefs) is mirrored across and the
+        // new mode is applied right away - the Activity recreates itself.
+        findPreference<ListPreference>(ThemeMode.PREF_KEY)?.let { pref ->
+            pref.value = ThemeMode.read(requireContext())
+            pref.onPreferenceChangeListener =
+                OnPreferenceChangeListener { _, newValue ->
+                    ThemeMode.applyAndStore(requireContext(), newValue as String)
+                    true
+                }
+        }
 
         val home_range_display_mode_preference = findPreference<MultiSelectListPreference>("home_range_display_mode")
         home_range_display_mode_preference?.setSummaryFromValues(home_range_display_mode_preference.values.toTypedArray())
@@ -171,7 +186,14 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
         oldUIPreference?.isChecked = appPrefs.getData("option_oldui_enabled", "0") == "1"
         oldUIPreference?.onPreferenceChangeListener =
             OnPreferenceChangeListener { preference, newValue ->
-                appPrefs.saveData("option_oldui_enabled", if (newValue as Boolean) "1" else "0")
+                val enabled = newValue as Boolean
+                appPrefs.saveData("option_oldui_enabled", if (enabled) "1" else "0")
+                if (enabled) {
+                    // Switch to old UI immediately:
+                    val intent = Intent(requireContext(), MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
                 true
             }
 

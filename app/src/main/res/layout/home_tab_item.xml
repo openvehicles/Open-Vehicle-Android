@@ -3,12 +3,14 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/Widget.Material3.CardView.Elevated"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     android:minHeight="65dp"
-    app:cardBackgroundColor="?attr/colorSecondaryContainer">
+    app:cardCornerRadius="16dp"
+    app:strokeWidth="1dp"
+    app:strokeColor="@color/colorGreyBlue"
+    app:cardBackgroundColor="?attr/colorSurfaceContainer">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -24,7 +26,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="?attr/colorOnSecondaryContainer"
+            app:tint="?attr/colorOnSurface"
             tools:srcCompat="@drawable/ic_ac" />
 
         <LinearLayout
@@ -45,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:text="TextView"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="?attr/colorOnSecondaryContainer"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="17sp" />
 
             <TextView
@@ -54,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.8"
                 android:text="TextView"
-                android:textColor="?attr/colorOnSecondaryContainer"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="12sp"
                 android:visibility="gone"
                 tools:visibility="visible" />
@@ -82,7 +84,7 @@
             app:layout_constraintEnd_toStartOf="@+id/hideIndicator"
             app:layout_constraintTop_toTopOf="@+id/linearLayout"
             app:srcCompat="@drawable/ic_tab_chevron"
-            app:tint="?attr/colorOnSecondaryContainer" />
+            app:tint="?attr/colorOnSurface" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </com.google.android.material.card.MaterialCardView>

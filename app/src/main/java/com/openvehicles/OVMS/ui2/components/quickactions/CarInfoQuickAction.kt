@@ -13,8 +13,11 @@ import com.openvehicles.OVMS.ui.settings.CarInfoFragment
 class CarInfoQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_homelink, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.color.cardview_dark_background,
-        label = context?.getString(R.string.service_notification_title)) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.service_notification_title)
+    ) {
     companion object {
         const val ACTION_ID = "carinfo"
     }

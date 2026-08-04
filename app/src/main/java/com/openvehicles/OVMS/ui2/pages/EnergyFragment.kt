@@ -76,7 +76,8 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
         var socBattLayers = emptyList<Drawable>().toMutableList()
 
         val socBackground = ContextCompat.getDrawable(requireContext(), R.drawable.ic_batt_l0)
-        socBackground!!.setTint(Color.GRAY)
+        val greyBlue = ContextCompat.getColor(requireContext(), R.color.colorGreyBlue)
+        socBackground!!.setTint(greyBlue)
         socBattLayers += socBackground
 
         // Get icon scaling offsets in display density:
@@ -104,7 +105,7 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
             } else if (soc <= 20) {
                 layer1Drawable.setTint(Color.YELLOW)
             } else {
-                layer1Drawable.setTint(Color.WHITE)
+                layer1Drawable.setTint(ContextCompat.getColor(requireContext(), R.color.colorDarkgreen))
             }
             socBattLayers += layer1Drawable
         }
@@ -112,6 +113,7 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
         socBattIcon.setImageDrawable(socBattLayer)
         socTextTitle.text = getString(R.string.battery_data_soc_2)
+        socTextTitle.setTextColor(greyBlue)
         socText.text = carData?.car_soc
         var showSoc = true
         socText.setOnClickListener {
@@ -119,6 +121,9 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
             socText.text = if (!showSoc) carData?.car_range_estimated else carData?.car_soc
             socTextTitle.text = if (!showSoc) getString(R.string.EstimatedShort) else getString(R.string.battery_data_soc_2)
         }
+
+        // Battery SOH
+        battSohTitle.setTextColor(greyBlue)
 
         // Battery temp
 

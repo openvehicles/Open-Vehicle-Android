@@ -14,8 +14,11 @@ import com.openvehicles.OVMS.ui.utils.Ui
 class LockQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_lock_open, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.attr.colorTertiaryContainer,
-        label = context?.getString(R.string.central_locking_action_label)) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.central_locking_action_label)
+    ) {
 
     companion object {
         const val ACTION_ID = "lock"

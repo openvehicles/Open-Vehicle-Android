@@ -62,7 +62,7 @@
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_action_edit" />
+                app:srcCompat="@drawable/ic_action_edit" />
 
             <ImageButton
                 android:id="@+id/btn_control"
@@ -71,7 +71,7 @@
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_action_control" />
+                app:srcCompat="@drawable/ic_action_control" />
 
             <ImageButton
                 android:id="@+id/btn_info"
@@ -80,7 +80,7 @@
                 android:background="@drawable/bg_img_button"
                 android:padding="8dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_action_about" />
+                app:srcCompat="@drawable/ic_action_about" />
 
         </LinearLayout>
     </RelativeLayout>

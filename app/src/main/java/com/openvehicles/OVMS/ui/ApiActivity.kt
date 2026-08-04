@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.openvehicles.OVMS.api.ApiObservable.addObserver
 import com.openvehicles.OVMS.api.ApiObservable.deleteObserver
 import com.openvehicles.OVMS.api.ApiObservable.notifyOnBind
@@ -47,6 +48,11 @@ open class ApiActivity : AppCompatActivity(), ApiObserver {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        val appPrefs = AppPrefs(this, "ovms")
+        if (appPrefs.getData("option_oldui_enabled", "0") == "1") {
+            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
+        }
+
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate: binding service")

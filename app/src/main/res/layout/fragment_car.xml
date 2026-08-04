@@ -26,37 +26,37 @@
 			android:id="@+id/tabCarImageCarTrunkOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_tr"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRightDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_rd"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRearRightDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/zoe_outline_rrd"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarHoodOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_hd"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarLeftDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/roadster_outline_ld"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarRearLeftDoorOpen"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/zoe_outline_rld"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarLocked"
@@ -72,7 +72,7 @@
 			android:id="@+id/tabCarImageCarHeadlightsON"
 			style="@style/TabCarImgCar"
 			android:src="@drawable/carlights"
-			android:visibility="invisible" />
+			android:visibility="gone" />
 
 		<ImageView
 			android:id="@+id/tabCarImageCarTempsBoxes"
@@ -291,7 +291,7 @@
 			android:gravity="center"
 			android:singleLine="false"
 			android:text="123456.7km"
-			android:textColor="@color/colorForeground"
+			android:textColor="@color/colorText"
 			android:textSize="25px"
 			android:typeface="monospace" />
 
@@ -306,7 +306,7 @@
 			android:gravity="center"
 			android:singleLine="false"
 			android:text="▴999.9 ▾99.9 kWh"
-			android:textColor="@color/colorForeground"
+			android:textColor="@color/colorText"
 			android:textSize="22px"
 			android:typeface="monospace" />
 
@@ -321,7 +321,7 @@
 			android:gravity="center"
 			android:singleLine="false"
 			android:text="➟1234.5km"
-			android:textColor="@color/colorForeground"
+			android:textColor="@color/colorText"
 			android:textSize="22px"
 			android:typeface="monospace" />
 
@@ -338,7 +338,7 @@
 			android:phoneNumber="true"
 			android:singleLine="false"
 			android:text="123.4kph"
-			android:textColor="@color/colorForeground"
+			android:textColor="@color/colorText"
 			android:textSize="32px"
 			android:textStyle="bold"
 			android:typeface="monospace" />

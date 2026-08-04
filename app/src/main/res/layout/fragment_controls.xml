@@ -1,175 +1,289 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fillViewport="true"
     tools:context=".ui2.pages.ControlsFragment">
 
-
-    <ImageView
-        android:id="@+id/battIndicatorImg"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="90dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="90dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@drawable/map_car_leaf_superblack" />
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/tpmsToggle"
-        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginEnd="30dp"
-        android:clickable="true"
-        android:ellipsize="start"
-        android:padding="8dp"
-        android:src="@android:drawable/ic_input_add"
-        android:text="@string/tpms"
-        app:collapsedSize="30dp"
-        app:iconSize="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
-
-    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-        android:id="@+id/serviceToggle"
-        style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginStart="30dp"
-        android:clickable="true"
-        android:ellipsize="start"
-        android:padding="8dp"
-        android:src="@android:drawable/ic_input_add"
-        android:text="@string/Service"
-        app:collapsedSize="30dp"
-        app:iconSize="0dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/sideActions"
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-100dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpmsFR" />
+        android:paddingBottom="32dp">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/mainActions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
-        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/battIndicatorImg" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/tpmsToggle"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:ellipsize="start"
+            android:padding="8dp"
+            android:text="@string/tpms"
+            android:textColor="?attr/colorOnSurface"
+            app:backgroundTint="?attr/colorSurfaceContainer"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:elevation="0dp"
+            app:collapsedSize="30dp"
+            app:iconSize="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:visibility="visible" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/bottomActions"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/battIndicatorImg" />
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/serviceToggle"
+            style="@style/Widget.Material3.ExtendedFloatingActionButton.Icon.Secondary"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="16dp"
+            android:clickable="true"
+            android:ellipsize="start"
+            android:padding="8dp"
+            android:text="@string/Service"
+            android:textColor="?attr/colorOnSurface"
+            app:backgroundTint="?attr/colorSurfaceContainer"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:elevation="0dp"
+            app:collapsedSize="30dp"
+            app:iconSize="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/serviceinfo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="40dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintTop_toTopOf="@+id/serviceToggle"
-        app:layout_constraintStart_toStartOf="@+id/mainActions"
-        tools:visibility="invisible" />
+        <TextView
+            android:id="@+id/tpmsStale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textStyle="bold"
+            android:textColor="@color/colorText"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="@+id/tpmsToggle"
+            app:layout_constraintTop_toBottomOf="@+id/tpmsToggle"
+            tools:text="44 min"
+            tools:visibility="visible" />
 
-    <TextView
-        android:id="@+id/tpmsFL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/mainActions"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="visible" />
+        <ImageView
+            android:id="@+id/battIndicatorImg"
+            android:layout_width="0dp"
+            android:layout_height="320dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="40dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tpmsStale"
+            tools:srcCompat="@drawable/map_car_leaf_superblack" />
 
-    <TextView
-        android:id="@+id/tpmsFR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/tpmsFL"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpmsFL"
-        tools:visibility="visible" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/mainActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/battIndicatorImg" />
 
-    <TextView
-        android:id="@+id/tpmsRR"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sideActions"
-        tools:visibility="visible" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTPMS_FL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
 
-    <TextView
-        android:id="@+id/tpmsRL"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:gravity="center"
-        android:text="TextView"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="@+id/tpmsRR"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpmsRR"
-        tools:visibility="visible" />
+            <TextView
+                android:id="@+id/tpmsFL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
 
-    <TextView
-        android:id="@+id/tpmsStale"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:textStyle="bold"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="@+id/tpmsToggle"
-        app:layout_constraintStart_toStartOf="@+id/tpmsToggle"
-        app:layout_constraintTop_toBottomOf="@+id/tpmsToggle"
-        tools:text="44 min"
-        tools:visibility="visible" />
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTPMS_FR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/tpmsFR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/sideActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTPMS_FR"
+            app:layout_constraintBottom_toTopOf="@+id/cardTPMS_RR"/>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTPMS_RR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tpmsRR"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTPMS_RL"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:visibility="gone"
+            app:cardCornerRadius="8dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/tpmsRL"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="6dp"
+                android:gravity="center"
+                android:text="TextView"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardServiceInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="24dp"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintTop_toBottomOf="@+id/battIndicatorImg"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <TextView
+                android:id="@+id/serviceinfo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="12dp"
+                android:text="TextView"
+                android:textColor="@color/colorText"
+                android:textStyle="bold" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardTPMSConfig"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            app:cardCornerRadius="16dp"
+            app:strokeWidth="1dp"
+            app:strokeColor="@color/colorGreyBlue"
+            app:cardBackgroundColor="?attr/colorSurfaceContainer"
+            app:layout_constraintTop_toBottomOf="@+id/cardServiceInfo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="visible">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="TPMS Configuration"
+                    android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
+                    android:textColor="@color/colorGreyBlue"
+                    android:layout_marginBottom="4dp"/>
+
+                <TextView
+                    android:id="@+id/tpmsConfigSummary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/colorText"
+                    android:textSize="13sp"
+                    tools:text="Alert: yes • Front: 225 • Rear: 255\nTemp: yes • Warn: 40 • Alert: 75" />
+
+                <Button
+                    android:id="@+id/btnEditTPMSConfig"
+                    style="@style/Widget.Material3.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:text="@string/Edit"
+                    android:padding="0dp"
+                    android:minHeight="0dp"
+                    android:minWidth="0dp"/>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/bottomActions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cardTPMSConfig" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

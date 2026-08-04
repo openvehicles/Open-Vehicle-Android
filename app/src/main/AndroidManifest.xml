@@ -48,6 +48,7 @@
         </activity>
         <activity
             android:name=".ui.MainActivity"
+            android:theme="@style/Theme.App.WithActionBar"
             android:configChanges="orientation|keyboardHidden"
             android:exported="false">
         </activity>
@@ -72,6 +73,7 @@
 
         <activity
             android:name=".ui.BaseFragmentActivity"
+            android:theme="@style/Theme.App.WithActionBar"
             android:configChanges="orientation|keyboardHidden"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity

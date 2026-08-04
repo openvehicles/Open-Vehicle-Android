@@ -892,4 +892,11 @@
     <string name="Copy">Kopieren</string>
     <string name="more">Mehr</string>
 
+    <!-- UI Settings -->
+    <string name="ui_theme_category">Darstellung</string>
+    <string name="ui_theme_title">Design</string>
+    <string name="ui_theme_light">Hell</string>
+    <string name="ui_theme_dark">Dunkel</string>
+    <string name="ui_theme_system">Automatisch (System)</string>
+
 </resources>

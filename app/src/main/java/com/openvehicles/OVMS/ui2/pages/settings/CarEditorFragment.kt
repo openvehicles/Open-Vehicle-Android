@@ -16,6 +16,9 @@ import android.widget.FrameLayout
 import android.widget.Gallery
 import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.MaterialAutoCompleteTextView
@@ -57,8 +60,8 @@ class CarEditorFragment : BaseFragment() {
         return inflater.inflate(R.layout.fragment_careditor_v2, null)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         editPosition = requireArguments().getInt("position", -1)
         if (editPosition >= 0) {
@@ -91,33 +94,35 @@ class CarEditorFragment : BaseFragment() {
             AdapterView.OnItemClickListener { parent, view, position, id -> setSelectedServer(position, true) }
         galleryCar = requireView().findViewById<View>(R.id.ga_car) as Gallery
         galleryCar!!.setAdapter(CarImgAdapter())
-        setHasOptionsMenu(true)
+
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.control_save_delete, menu)
+            }
+
+            override fun onPrepareMenu(menu: Menu) {
+                Log.d("CarEditorFragment", "onPrepareMenu edit car: " + (getStoredCars().size > 1))
+                menu.findItem(R.id.mi_delete).setVisible(carData != null && getStoredCars().size > 1)
+                menu.findItem(R.id.mi_control).setVisible(false)
+            }
+
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.mi_save -> {
+                        save()
+                        true
+                    }
+                    R.id.mi_delete -> {
+                        delete()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+
         load()
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.control_save_delete, menu)
-    }
-
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        Log.d("CarEditorFragment", "onPrepareOptionsMenu edit car: " + (getStoredCars().size > 1))
-        menu.findItem(R.id.mi_delete).setVisible(carData != null && getStoredCars().size > 1)
-        // hide control, not necessary
-        menu.findItem(R.id.mi_control).setVisible(false)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.mi_save -> {
-                save()
-                true
-            }
-            R.id.mi_delete -> {
-                delete()
-                true
-            }
-            else -> false
-        }
     }
 
     private fun delete() {

@@ -33,7 +33,7 @@
             <!-- android:layout_centerVertical="true" -->
             <!-- android:layout_toRightOf="@+id/back_image" -->
             <!-- android:text="Back" -->
-            <!-- android:textColor="@android:color/white" -->
+            <!-- android:textColor="@color/colorText" -->
             <!-- android:textSize="18dp" /> -->
         </RelativeLayout>
 
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Information"
-            android:textColor="@android:color/white"
+            android:textColor="@color/colorText"
             android:textSize="20sp"
             android:textStyle="bold" />
     </RelativeLayout>

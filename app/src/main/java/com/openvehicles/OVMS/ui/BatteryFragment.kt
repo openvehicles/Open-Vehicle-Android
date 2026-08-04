@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -16,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.ColorUtils
 import com.github.mikephil.charting.charts.CandleStickChart
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
@@ -33,6 +35,7 @@ import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ICandleDataSet
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.material.color.MaterialColors
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.BatteryData
 import com.openvehicles.OVMS.entities.BatteryData.CellStatus
@@ -78,6 +81,16 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
     private var carData: CarData? = null
     private var cmdSeries: CmdSeries? = null
     private lateinit var appPrefs: AppPrefs
+    
+    private var colorText = Color.WHITE
+    private var colorGrid = Color.GRAY
+    private var colorSocLine = COLOR_SOC_LINE
+    private var colorSocText = COLOR_SOC_TEXT
+    private var colorSocGrid = COLOR_SOC_GRID
+    private var colorVolt = COLOR_VOLT
+    private var colorVoltGrid = COLOR_VOLT_GRID
+    private var colorTemp = COLOR_TEMP
+    private var colorTempGrid = COLOR_TEMP_GRID
 
     private val isPackValid: Boolean
         // Check data model validity
@@ -101,6 +114,22 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             showVolt = true
         }
 
+        // Init theme colors:
+        val ctx = requireContext()
+        colorText = MaterialColors.getColor(ctx, android.R.attr.textColorPrimary, Color.WHITE)
+        colorGrid = ColorUtils.setAlphaComponent(colorText, 40)
+        
+        val isNight = (ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        if (!isNight) {
+            colorSocLine = Color.parseColor("#A03344CC")
+            colorSocText = Color.parseColor("#8888CC")
+            colorSocGrid = ColorUtils.setAlphaComponent(colorSocText, 100)
+            colorVolt = Color.parseColor("#669900")
+            colorVoltGrid = ColorUtils.setAlphaComponent(colorVolt, 100)
+            colorTemp = Color.parseColor("#998800")
+            colorTempGrid = ColorUtils.setAlphaComponent(colorTemp, 100)
+        }
+
         // Setup UI:
 
 
@@ -121,7 +150,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             setDrawBorders(true)
         }
         var xAxis: XAxis = cellChart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.valueFormatter = object : ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
                 return "#" + (value.toInt() + 1)
@@ -130,13 +159,13 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         xAxis.isGranularityEnabled = true
         xAxis.setGranularity(1f)
         var yAxis: YAxis = cellChart.axisLeft
-        yAxis.textColor = COLOR_VOLT
-        yAxis.gridColor = COLOR_VOLT_GRID
+        yAxis.textColor = colorVolt
+        yAxis.gridColor = colorVoltGrid
         yAxis.valueFormatter = DefaultAxisValueFormatter(2)
         yAxis.setGranularity(0.01f)
         yAxis = cellChart.axisRight
-        yAxis.textColor = COLOR_TEMP
-        yAxis.gridColor = COLOR_TEMP_GRID
+        yAxis.textColor = colorTemp
+        yAxis.gridColor = colorTempGrid
         yAxis.valueFormatter = DefaultAxisValueFormatter(0)
 
         //
@@ -165,15 +194,15 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             }
         })
         xAxis = packChart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.valueFormatter = PackTimeValueFormatter()
         xAxis.isGranularityEnabled = true
         xAxis.setGranularity(1f)
         yAxis = packChart.axisLeft
         yAxis.spaceTop = 5f
         yAxis.spaceBottom = 5f
-        yAxis.textColor = COLOR_SOC_TEXT
-        yAxis.gridColor = COLOR_SOC_GRID
+        yAxis.textColor = colorSocText
+        yAxis.gridColor = colorSocGrid
         yAxis.valueFormatter = object : DefaultAxisValueFormatter(0) {
             override fun getFormattedValue(value: Float): String {
                 return super.getFormattedValue(value) + "%"
@@ -182,8 +211,8 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         yAxis = packChart.axisRight
         yAxis.spaceTop = 15f
         yAxis.spaceBottom = 15f
-        yAxis.textColor = COLOR_VOLT
-        yAxis.gridColor = COLOR_VOLT_GRID
+        yAxis.textColor = colorVolt
+        yAxis.gridColor = colorVoltGrid
         yAxis.valueFormatter = object : DefaultAxisValueFormatter(1) {
             override fun getFormattedValue(value: Float): String {
                 return super.getFormattedValue(value) + "%"
@@ -446,7 +475,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             if (packStatus.isNewSection(lastStatus)) {
                 val limitLine = LimitLine(xPos)
                 limitLine.label = timeFmt.format(packStatus.timeStamp)
-                limitLine.textColor = Color.WHITE
+                limitLine.textColor = colorText
                 limitLine.textStyle = Paint.Style.FILL
                 limitLine.setTextSize(6f)
                 limitLine.enableDashedLine(3f, 2f, 0f)
@@ -464,7 +493,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             dataSet = LineDataSet(tempValues, getString(R.string.battery_data_temp))
             packTempSet = dataSet
             dataSet.axisDependency = YAxis.AxisDependency.RIGHT
-            dataSet.setColor(COLOR_TEMP)
+            dataSet.setColor(colorTemp)
             dataSet.setLineWidth(3f)
             dataSet.setDrawCircles(false)
             dataSet.setDrawValues(false)
@@ -482,7 +511,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             dataSet = LineDataSet(voltValues, getString(R.string.battery_data_volt))
             packVoltSet = dataSet
             dataSet.axisDependency = YAxis.AxisDependency.RIGHT
-            dataSet.setColor(COLOR_VOLT)
+            dataSet.setColor(colorVolt)
             dataSet.setLineWidth(3f)
             dataSet.setDrawCircles(false)
             dataSet.setDrawValues(false)
@@ -490,7 +519,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         }
         dataSet = LineDataSet(socValues, getString(R.string.battery_data_soc))
         dataSet.axisDependency = YAxis.AxisDependency.LEFT
-        dataSet.setColor(COLOR_SOC_LINE)
+        dataSet.setColor(colorSocLine)
         dataSet.setLineWidth(4f)
         dataSet.setDrawCircles(false)
         dataSet.setDrawValues(false)
@@ -499,7 +528,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         // display data sets:
         val data: LineData = LineData(dataSets)
         packData = data
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(colorText)
         data.setValueTextSize(9f)
         packChart.setData(data)
         val xAxis = packChart.xAxis
@@ -513,7 +542,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
             }
             xAxis.addLimitLine(l)
         }
-        packChart.legend.textColor = Color.WHITE
+        packChart.legend.textColor = colorText
         packChart.invalidate()
     }
 
@@ -626,10 +655,10 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         if (showTemp) {
             dataSet = CandleDataSet(tempValues, getString(R.string.battery_data_temp))
             dataSet.axisDependency = YAxis.AxisDependency.RIGHT
-            dataSet.neutralColor = COLOR_TEMP
-            dataSet.increasingColor = COLOR_TEMP
-            dataSet.decreasingColor = COLOR_TEMP
-            dataSet.shadowColor = COLOR_TEMP
+            dataSet.neutralColor = colorTemp
+            dataSet.increasingColor = colorTemp
+            dataSet.decreasingColor = colorTemp
+            dataSet.shadowColor = colorTemp
             dataSet.setDrawValues(true)
             dataSet.shadowWidth = 4f
             dataSet.valueFormatter = object : ValueFormatter() {
@@ -642,10 +671,10 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         if (showVolt) {
             dataSet = CandleDataSet(voltValues, getString(R.string.battery_data_volt))
             dataSet.axisDependency = YAxis.AxisDependency.LEFT
-            dataSet.neutralColor = COLOR_VOLT
-            dataSet.increasingColor = COLOR_VOLT
-            dataSet.decreasingColor = COLOR_VOLT
-            dataSet.shadowColor = COLOR_VOLT
+            dataSet.neutralColor = colorVolt
+            dataSet.increasingColor = colorVolt
+            dataSet.decreasingColor = colorVolt
+            dataSet.shadowColor = colorVolt
             dataSet.setDrawValues(true)
             dataSet.shadowWidth = 4f
             dataSet.valueFormatter = object : ValueFormatter() {
@@ -688,10 +717,10 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
 
         // display data sets:
         val data = CandleData(dataSets)
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(colorText)
         data.setValueTextSize(9f)
         cellChart.setData(data)
-        cellChart.legend.textColor = Color.WHITE
+        cellChart.legend.textColor = colorText
         cellChart.invalidate()
     }
 

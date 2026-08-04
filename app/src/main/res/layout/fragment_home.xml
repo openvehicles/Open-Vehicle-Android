@@ -2,300 +2,346 @@
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipeRefreshHome"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/swipeRefreshHome"
     tools:context=".ui2.pages.HomeFragment">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/homeScroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="12sp"
-            android:layout_marginEnd="12sp"
-            android:layout_marginRight="12sp"
-            android:layout_marginBottom="12sp">
-
-
-            <com.google.android.material.progressindicator.CircularProgressIndicator
-                android:id="@+id/carUpdatingProgress"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:indeterminate="true"
-                android:scaleY="1"
-                android:visibility="gone"
-                app:indicatorSize="14sp"
-                app:layout_constraintBottom_toBottomOf="@+id/carStatus"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/batteryIndicatorView"
-                tools:visibility="visible" />
-
-            <TextView
-                android:id="@+id/carStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="TextView"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toEndOf="@+id/carUpdatingProgress"
-                app:layout_constraintTop_toBottomOf="@+id/batteryIndicatorView" />
-
-            <FrameLayout
-                android:id="@+id/carStatusRenderFrame"
-                android:layout_width="0dp"
-                android:layout_height="140dp"
-                android:layout_marginTop="16dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carStatus">
-
-                <ImageView
-                    android:id="@+id/carStatusImage"
-                    android:layout_width="match_parent"
-                    android:layout_height="140dp"
-                    android:layout_gravity="left"
-                    android:visibility="visible"
-                    tools:src="@tools:sample/avatars" />
-            </FrameLayout>
-
-
-            <TextView
-                android:id="@+id/battPercent"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:textColor="@color/abc_primary_text_material_dark"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/batteryIndicatorView"
-                app:layout_constraintStart_toEndOf="@+id/batteryIndicatorView"
-                app:layout_constraintTop_toTopOf="@+id/batteryIndicatorView"
-                tools:text="80%" />
-
-            <TextView
-                android:id="@+id/battRange"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/battPercent"
-                app:layout_constraintStart_toEndOf="@+id/battPercent"
-                app:layout_constraintTop_toTopOf="@+id/battPercent" />
-
-            <ImageView
-                android:id="@+id/batteryIndicatorView"
-                android:layout_width="88dp"
-                android:layout_height="44dp"
-                android:cropToPadding="false"
-                android:rotation="90"
-                android:scaleType="fitCenter"
-                android:scaleX="1.8"
-                android:scaleY="2.3"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_batt_l0">
-
-            </ImageView>
-
-            <ImageView
-                android:id="@+id/gsmView"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:cropToPadding="false"
-                android:scaleType="fitCenter"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/signal_strength_0"
-                android:visibility="invisible" >
-            </ImageView>
-
-            <ImageView
-                android:id="@+id/gpsView"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:cropToPadding="false"
-                android:scaleType="fitCenter"
-                android:scaleX="0.8"
-                android:scaleY="0.8"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="@+id/gsmView"
-                app:layout_constraintEnd_toStartOf="@+id/gsmView"
-                app:layout_constraintTop_toTopOf="@+id/gsmView"
-                app:srcCompat="@drawable/ic_satellite"></ImageView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/chargingCard"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:padding="4dp"
-                android:visibility="gone"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/carStatusRenderFrame"
-                tools:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <com.google.android.material.progressindicator.LinearProgressIndicator
-                        android:id="@+id/charging_animation_progress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="-8dp"
-                        android:indeterminate="true"
-                        app:indicatorColor="@color/chargeOngoingColor"
-                        app:indicatorDirectionLinear="endToStart"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.937"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <include
-                        layout="@layout/charging_card"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/quickActonBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center"
-                app:layout_constraintBottom_toTopOf="@+id/modifyQuickActions"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chargingCard" />
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/modifyQuickActions"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/quickActonBar"
-                tools:visibility="visible">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp">
-
-                    <TextView
-                        android:id="@+id/textView22"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:text="@string/quick_actions_modify_hint"
-                        android:textSize="12sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/modifyQuickActionsRecyclerView" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/modifyQuickActionsRecyclerView"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        app:layout_constraintBottom_toTopOf="@+id/textView22"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-            </com.google.android.material.card.MaterialCardView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/menuItems"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_marginStart="12sp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="12sp" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_margin="14dp"
-            android:background="?android:attr/listDivider" />
-
         <LinearLayout
-            android:id="@+id/footerContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12sp"
-            android:layout_marginLeft="12sp"
-            android:layout_marginEnd="12sp"
-            android:layout_marginRight="12sp"
-            android:layout_marginBottom="24sp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/carModel"
+            <FrameLayout
+                android:id="@+id/heroBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:alpha="0.8"
-                android:text="TextView"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold|italic"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="Nissan Leaf 2013" />
+                >
 
-            <TextView
-                android:id="@+id/carInformation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:alpha="0.6"
-                tools:text="VIN" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/heroContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="16dp">
 
-            <!-- Arrow hint placed directly below the upper text (car model + info) -->
-            <TextView
-                android:id="@+id/footerRestoreHint"
-                android:layout_width="35dp"
-                android:layout_height="35dp"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center_horizontal"
-                android:text="↕"
-                android:alpha="0.6"
-                android:visibility="gone"
-                android:textSize="30sp"
-                tools:visibility="visible"/>
+                    <com.google.android.material.progressindicator.CircularProgressIndicator
+                        android:id="@+id/carUpdatingProgress"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="188dp"
+                        android:layout_marginTop="8dp"
+                        android:indeterminate="true"
+                        android:visibility="gone"
+                        app:indicatorSize="20dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:visibility="invisible" />
+
+                    <ImageView
+                        android:id="@+id/gsmView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="16dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/signal_strength_0" />
+
+                    <ImageView
+                        android:id="@+id/gpsView"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"
+                        app:layout_constraintEnd_toStartOf="@+id/gsmView"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:srcCompat="@drawable/ic_satellite" />
+
+                    <LinearLayout
+                        android:id="@+id/carStatusContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginStart="16dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <ImageView
+                            android:id="@+id/parkIcon"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginEnd="6dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_p_framed"
+                            app:tint="@color/colorText" />
+
+                        <TextView
+                            android:id="@+id/carStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
+                            android:textColor="@color/colorText"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            tools:text="Parked" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/odoContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:alpha="0.7"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/carStatusContainer">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_marginEnd="4dp"
+                            app:srcCompat="@drawable/ic_odometer"
+                            app:tint="@color/colorText" />
+
+                        <TextView
+                            android:id="@+id/carOdometer"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorText"
+                            android:textSize="12sp"
+                            tools:text="123.456 km" />
+                    </LinearLayout>
+
+                    <FrameLayout
+                        android:id="@+id/carStatusRenderFrame"
+                        android:layout_width="match_parent"
+                        android:layout_height="180dp"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toBottomOf="@+id/odoContainer">
+
+                        <ImageView
+                            android:id="@+id/carStatusImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="156dp"
+                            android:padding="16dp"
+                            android:scaleType="fitCenter" />
+                    </FrameLayout>
+
+
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </FrameLayout>
 
             <LinearLayout
-                android:id="@+id/footerAppBlock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical" />
+                android:layout_marginTop="-24dp"
+                android:orientation="vertical">
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/batteryStatusCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="1dp"
+                    app:strokeColor="@color/colorGreyBlue"
+                    app:cardBackgroundColor="?attr/colorSurfaceContainer">
+
+                    <LinearLayout
+                        android:id="@+id/heroStatusRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal"
+                        android:padding="12dp">
+
+                        <ImageView
+                            android:id="@+id/batteryIndicatorView"
+                            android:layout_width="48dp"
+                            android:layout_height="52dp"
+                            android:rotation="90"
+                            android:scaleType="fitCenter"
+                            app:srcCompat="@drawable/ic_batt_l0" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="12dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/battPercentValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorText"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:text="80" />
+
+                            <TextView
+                                android:id="@+id/battPercentUnit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="1dp"
+                                android:layout_marginBottom="0dp"
+                                android:textColor="@color/colorText"
+                                android:textSize="14sp"
+                                android:text="%" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="16dp"
+                            android:gravity="bottom"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/battRangeValue"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:textColor="@color/colorText"
+                                android:textSize="22sp"
+                                android:textStyle="bold"
+                                tools:text="120" />
+
+                            <TextView
+                                android:id="@+id/battRangeUnit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="2dp"
+                                android:layout_marginBottom="0dp"
+                                android:textColor="@color/colorText"
+                                android:textSize="14sp"
+                                tools:text="km" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/chargingCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="16dp"
+                    app:strokeWidth="0dp"
+                    app:strokeColor="@color/colorAccent"
+                    tools:visibility="visible">
+
+                    <include layout="@layout/charging_card" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/quickActonBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:paddingStart="8dp"
+                    android:paddingEnd="8dp" />
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/modifyQuickActions"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="14dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="16dp"
+                    tools:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/modifyQuickActionsRecyclerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/quick_actions_modify_hint"
+                            android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/menuItems"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="16dp" />
+
+                <View
+                    android:id="@+id/divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_margin="16dp"
+                    android:background="?android:attr/listDivider" />
+
+                <LinearLayout
+                    android:id="@+id/footerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="32dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/carModel"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:alpha="0.8"
+                        android:textAppearance="@style/TextAppearance.Material3.BodyLarge"
+                        android:textStyle="bold"
+                        tools:text="Tesla Roadster" />
+
+                    <TextView
+                        android:id="@+id/carInformation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:alpha="0.6"
+                        tools:text="VIN: 12345\nOdometer: 1000km" />
+
+                    <TextView
+                        android:id="@+id/footerRestoreHint"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:alpha="0.6"
+                        android:text="↕"
+                        android:textSize="24sp"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/footerAppBlock"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

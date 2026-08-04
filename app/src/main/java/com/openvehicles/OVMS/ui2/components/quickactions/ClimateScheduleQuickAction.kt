@@ -26,7 +26,9 @@ class ClimateScheduleQuickAction(
     R.drawable.heat_cool_w,
     apiServiceGetter,
     actionOnTint = R.attr.colorSecondaryContainer,
-    actionOffTint = R.color.cardview_dark_background,
+    actionOffTint = R.color.cardview_off_background,
+    actionOnIconTint = R.attr.colorOnSecondaryContainer,
+    actionOffIconTint = R.color.colorText,
     label = context?.getString(R.string.lb_climate_schedule)
 ) {
     companion object {

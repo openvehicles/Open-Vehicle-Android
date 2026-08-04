@@ -12,6 +12,7 @@ import android.view.animation.AnimationUtils
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.openvehicles.OVMS.R
@@ -118,14 +119,17 @@ class ClimateFragment : BaseFragment(), OnResultCommandListener {
             insideTempText.alpha = 0.6f
         }
 
+        val errorColor = ContextCompat.getColor(requireContext(), R.color.colorTextError)
+        val warningColor = ContextCompat.getColor(requireContext(), R.color.chargeOtherColor)
+
         if (dataStale == CarData.DataStale.NoValue) {
-            staleLabel.setTextColor(Color.RED)
+            staleLabel.setTextColor(errorColor)
             staleLabel.text = getString(R.string.no_data).lowercase()
             staleLabel.visibility = View.VISIBLE
         }
 
         if (dataStale == CarData.DataStale.Stale) {
-            staleLabel.setTextColor(Color.YELLOW)
+            staleLabel.setTextColor(warningColor)
             staleLabel.text = getString(R.string.stale_data).lowercase()
             staleLabel.visibility = View.VISIBLE
         }
@@ -139,7 +143,7 @@ class ClimateFragment : BaseFragment(), OnResultCommandListener {
 
         if (minutes > 0L) {
             staleLabel.visibility = View.VISIBLE
-            staleLabel.setTextColor(Color.YELLOW)
+            staleLabel.setTextColor(warningColor)
             val periodText: String
             if (minutes == 1L) {
                 periodText = getText(R.string.min1).toString()

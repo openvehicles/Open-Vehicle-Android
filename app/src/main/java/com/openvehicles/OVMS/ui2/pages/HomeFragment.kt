@@ -1,6 +1,9 @@
 package com.openvehicles.OVMS.ui2.pages
 
+import android.animation.ObjectAnimator
+import android.animation.ValueAnimator
 import android.content.Context
+import android.content.res.ColorStateList
 import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -105,6 +108,7 @@ import kotlinx.coroutines.withContext
 import kotlinx.coroutines.launch
 import android.location.Address
 import androidx.appcompat.view.ActionMode
+import com.google.android.material.color.MaterialColors
 import com.openvehicles.OVMS.utils.Base64
 
 /**
@@ -123,6 +127,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private lateinit var quickActionsEditorAdapter: QuickActionsEditorAdapter
     private lateinit var tabsAdapter: HomeTabsAdapter
     private var textColor by Delegates.notNull<Int>()
+    private var batteryAnimator: ObjectAnimator? = null
+    private var chargingCardAnimator: ValueAnimator? = null
 
     private lateinit var appPrefs: AppPrefs
 
@@ -206,6 +212,10 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     override fun onDestroyView() {
+        batteryAnimator?.cancel()
+        batteryAnimator = null
+        chargingCardAnimator?.cancel()
+        chargingCardAnimator = null
         // Ensure we remove any pending callbacks to avoid leaks when view is destroyed
         view?.findViewById<TextView>(R.id.carStatus)?.let { statusView ->
             parkTimeRunnable?.let { statusView.removeCallbacks(it) }
@@ -541,6 +551,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 View.inflate(context, android.R.layout.simple_spinner_item, null) as TextView
             textView.setText(getItem(position)?.carName)
             textView.textSize = 20F
+            // Use theme-aware text color
+            val color = MaterialColors.getColor(textView, android.R.attr.textColorPrimary)
+            textView.setTextColor(color)
             return textView
         }
 
@@ -580,8 +593,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         (activity as MainActivityUI2?)?.supportActionBar?.title = carData?.sel_vehicle_label
 
         // SOC icon and label
-        val socText: TextView = findViewById(R.id.battPercent) as TextView
-        val rangeText: TextView = findViewById(R.id.battRange) as TextView
+        val socValueText: TextView = findViewById(R.id.battPercentValue) as TextView
+        val rangeValueText: TextView = findViewById(R.id.battRangeValue) as TextView
+        val rangeUnitText: TextView = findViewById(R.id.battRangeUnit) as TextView
         val socBattIcon = findViewById(R.id.batteryIndicatorView) as ImageView
 
         var socBattLayers = emptyList<Drawable>().toMutableList()
@@ -615,40 +629,81 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             } else if (soc <= 20) {
                 layer1Drawable.setTint(Color.YELLOW)
             } else {
-                layer1Drawable.setTint(Color.WHITE)
+                layer1Drawable.setTint(ContextCompat.getColor(requireContext(), R.color.colorDarkgreen))
             }
             socBattLayers += layer1Drawable
         }
         val socBattLayer = LayerDrawable(socBattLayers.toTypedArray())
         socBattIcon.setImageDrawable(socBattLayer)
-        socText.text = when (socState) {
-            1 -> getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)
-            2 -> getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)
-            else -> carData?.car_soc
-        }
 
-        val rangeDisplay = appPrefs.appUIPrefs.getStringSet("home_range_display_mode", HashSet<String>())
-        val idealRange = rangeDisplay?.contains("ideal") == true
-        val estimatedRange = rangeDisplay?.contains("estimated") == true
-
-        if (idealRange && estimatedRange) {
-            rangeText.text = "${getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)}, ${getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)}"
-        } else if (idealRange || estimatedRange) {
-            rangeText.text = if (idealRange) carData?.car_range_ideal else carData?.car_range_estimated
-        } else {
-            val socToggleListener = {
-                socState += 1
-                if (socState > 2)
-                    socState = 0
-                socText.text = when (socState) {
-                    1 -> getString(R.string.ideal_range_abbreviation, carData?.car_range_ideal)
-                    2 -> getString(R.string.estimated_range_abbreviation, carData?.car_range_estimated)
-                    else -> carData?.car_soc
+        // Pulsating animation when charging
+        if (carData?.car_charging == true) {
+            if (batteryAnimator == null) {
+                batteryAnimator = ObjectAnimator.ofFloat(socBattIcon, "alpha", 1.0f, 0.4f).apply {
+                    duration = 1500
+                    repeatCount = ValueAnimator.INFINITE
+                    repeatMode = ValueAnimator.REVERSE
+                    start()
                 }
             }
-            socText.setOnClickListener { socToggleListener() }
-            socBattIcon.setOnClickListener { socToggleListener() }
+        } else {
+            batteryAnimator?.cancel()
+            batteryAnimator = null
+            socBattIcon.alpha = 1.0f
         }
+
+        socValueText.text = carData?.car_soc?.replace("%", "")
+
+        val socToggleListener = {
+            socState += 1
+            if (socState > 1)
+                socState = 0
+            appPrefs.saveData("home_batt_display_mode", socState.toString())
+            update(carData)
+        }
+
+        // Load persisted mode
+        socState = appPrefs.getData("home_batt_display_mode", "0")?.toIntOrNull() ?: 0
+
+        val unit = carData?.car_distance_units ?: "km"
+        rangeValueText.text = when (socState) {
+            0 -> {
+                // Show Range(s) based on app settings
+                val rangeDisplay = appPrefs.appUIPrefs.getStringSet("home_range_display_mode", setOf("ideal", "estimated"))
+                val showIdeal = rangeDisplay?.contains("ideal") == true
+                val showEstimated = rangeDisplay?.contains("estimated") == true
+
+                when {
+                    showIdeal && showEstimated -> String.format("%.0f / %.0f", carData?.car_range_ideal_raw ?: 0f, carData?.car_range_estimated_raw ?: 0f)
+                    showIdeal -> String.format("%.0f", carData?.car_range_ideal_raw ?: 0f)
+                    showEstimated -> String.format("%.0f", carData?.car_range_estimated_raw ?: 0f)
+                    else -> String.format("%.0f", carData?.car_range_estimated_raw ?: 0f)
+                }
+            }
+            1 -> {
+                // Show Consumption
+                val used = carData?.car_energyused ?: 0f
+                val recd = carData?.car_energyrecd ?: 0f
+                val trip = carData?.car_tripmeter_raw ?: 0f
+                var consumption = (used - recd) * 1000f / (trip / 10f)
+                if (!consumption.isFinite()) consumption = 0f
+                String.format("%.1f", consumption / 10f)
+            }
+            else -> ""
+        }
+
+        rangeUnitText.text = when (socState) {
+            0 -> unit
+            1 -> "kWh/100$unit"
+            else -> ""
+        }
+
+        // Apply click listener to the entire row for easy toggling
+        findViewById(R.id.heroStatusRow).setOnClickListener { socToggleListener() }
+        socValueText.setOnClickListener { socToggleListener() }
+        socBattIcon.setOnClickListener { socToggleListener() }
+        rangeValueText.setOnClickListener { socToggleListener() }
+        rangeUnitText.setOnClickListener { socToggleListener() }
 
         // Status label
 
@@ -666,23 +721,28 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             // ONLINE state: differentiate Driving / Charging / Parked
             val isDriving = carData?.car_started == true
             val isCharging = carData?.car_charging == true || carData?.car_charge_state_i_raw == 14
+            val parkIcon = view?.findViewById<ImageView>(R.id.parkIcon)
 
             if (isDriving) {
                 // Ensure any pending parking runnable is removed
                 parkTimeRunnable?.let { statusText.removeCallbacks(it) }
                 parkTimeRunnable = null
                 statusText.text = carData?.car_speed
-                statusText.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+                parkIcon?.visibility = View.GONE
                 statusText.setOnClickListener(null)
             } else if (isCharging) {
                 parkTimeRunnable?.let { statusText.removeCallbacks(it) }
                 parkTimeRunnable = null
-                statusText.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
+                parkIcon?.visibility = View.GONE
                 // Charging Text is set below
             } else {
                 // Parked -> apply display mode (immediate toggle on click)
                 applyParkedStatus(statusText, carData)
             }
+
+            // Odometer display
+            val odoText = view?.findViewById<TextView>(R.id.carOdometer)
+            odoText?.text = carData?.car_odometer
 
             if (isCharging) {
                 statusText.setText(R.string.state_charging_label)
@@ -805,28 +865,24 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         )
         )!!)
 
-        val speedShownInUI = car_tire_image1 > 0 && (carData?.car_started == true||CAR_RENDER_TEST_MODE_D)
+        val speedShownInUI = car_tire_image1 > 0 && (carData?.car_started == true || CAR_RENDER_TEST_MODE_D)
 
         if (speedShownInUI) {
-            val animationDrawable = context?.getDrawable(car_tire_image1) as AnimationDrawable
+            val animationDrawable = AppCompatResources.getDrawable(requireContext(), car_tire_image1) as AnimationDrawable
             val carAnim = CarAnimationDrawable()
             var drawables = emptyList<Drawable>()
-            for (i in 0..<animationDrawable.numberOfFrames) {
+            for (i in 0 until animationDrawable.numberOfFrames) {
                 drawables = drawables.plus(animationDrawable.getFrame(i))
             }
             drawables.forEach { carAnim.addFrame(it, 35) }
             carAnim.isOneShot = false
             layers = layers.plus(carAnim)
 
-
-
-
             if ((carData?.car_speed_raw ?: 0f) > 0) {
-                // Adjust animaion speed
+                // Adjust animation speed
                 carAnim.start()
-                carAnim.setDuration((320 / (carData?.car_speed_raw!!/3.5)).toInt())
+                carAnim.setDuration((320 / (carData?.car_speed_raw!! / 3.5)).toInt())
             }
-
         }
 
         if (carData?.car_headlights_on == true || CAR_RENDER_TEST_MODE_HD) {
@@ -928,6 +984,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         }
 
 
+        /* Deactivated for artifact diagnosis
         if (carData?.car_charge_state_i_raw == 0x01 || carData?.car_charge_state_i_raw == 0x02 || carData?.car_charge_state_i_raw == 0x0f || carData?.car_charging == true || CAR_RENDER_TEST_MODE_CHG) {
             val modeResource = getDrawableIdentifier(
                 context,
@@ -936,6 +993,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             if (modeResource > 0)
                 layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
         }
+        */
 
 
         val newDrawable = LayerDrawable(layers.toTypedArray())
@@ -949,39 +1007,32 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 override fun onAnimationRepeat(animation: Animation) {}
                 override fun onAnimationEnd(animation: Animation) {}
             })
-            image.startAnimation(anim_in)
-            lastPresentCarId = carData?.sel_vehicleid
-        } else if (speedShownInUI) {
-            image.setImageDrawable(
-                newDrawable
-            )
-        }
+        // image.startAnimation(anim_in)
+        lastPresentCarId = carData?.sel_vehicleid
+    } else {
+        image.setImageDrawable(
+            newDrawable
+        )
     }
+}
+
 
     // Helper to show parked status & toggle on click between simple label and duration display
     private fun applyParkedStatus(statusText: TextView, carData: CarData?) {
         val showDuration = appPrefs.getData("pref_show_parktime", "0") == "1"
+        val parkIcon = view?.findViewById<ImageView>(R.id.parkIcon)
 
-    // Remove any previous runnable if present
-    parkTimeRunnable?.let { statusText.removeCallbacks(it) }
+        // Remove any previous runnable if present
+        parkTimeRunnable?.let { statusText.removeCallbacks(it) }
 
         if (!showDuration) {
             // Show plain "parked" label only
             statusText.setText(R.string.parked)
-            statusText.setCompoundDrawablesWithIntrinsicBounds(0,0,0,0)
-            statusText.compoundDrawablePadding = 0
+            parkIcon?.visibility = View.GONE
             parkTimeRunnable = null
         } else {
             // Show icon + duration
-            val icon = ContextCompat.getDrawable(requireContext(), R.drawable.ic_p_framed)
-            statusText.setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
-            // Space between icon and text = width of two spaces
-            try {
-                val twoSpacesWidth = statusText.paint.measureText("  ") // two spaces
-                statusText.compoundDrawablePadding = twoSpacesWidth.toInt()
-            } catch (_: Exception) {
-                statusText.compoundDrawablePadding = (statusText.resources.displayMetrics.density * 8).toInt() // Fallback ~8dp
-            }
+            parkIcon?.visibility = VISIBLE
 
             // Server-provided elapsed parking time in seconds (authoritative) -> convert to ms
             val baseElapsedMs = (carData?.car_parking_timer_raw ?: 0L)
@@ -1034,6 +1085,33 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         // Nissan Leaf shows charging port as always open when parked
         val chargePortOpen = if (carData?.car_type == "NL") (carData.car_charging || carData.car_charge_timer) else carData?.car_chargeport_open == true
         chargingCard.visibility = if (chargePortOpen == true) VISIBLE else View.GONE
+
+        val flowIndicator = findViewById(R.id.chargingFlowIndicator) as View?
+        flowIndicator?.visibility = if (carData?.car_charging == true) VISIBLE else View.GONE
+
+        // Glow effect for charging card
+        if (carData?.car_charging == true) {
+            chargingCard.strokeColor = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+            if (chargingCardAnimator == null) {
+                chargingCardAnimator = ValueAnimator.ofFloat(0.5f, 4f).apply {
+                    duration = 1200
+                    repeatCount = ValueAnimator.INFINITE
+                    repeatMode = ValueAnimator.REVERSE
+                    addUpdateListener { animator ->
+                        chargingCard.strokeWidth = TypedValue.applyDimension(
+                            COMPLEX_UNIT_DIP,
+                            animator.animatedValue as Float,
+                            resources.displayMetrics
+                        ).toInt()
+                    }
+                    start()
+                }
+            }
+        } else {
+            chargingCardAnimator?.cancel()
+            chargingCardAnimator = null
+            chargingCard.strokeWidth = 0
+        }
 
         val ampLimitSlider = findViewById(R.id.seekBar) as RangeSlider
 
@@ -1714,6 +1792,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     "signal_strength_" + carData?.car_gsm_bars
                 )
             )
+            gsmimg.imageTintList = ColorStateList.valueOf(textColor)
         }
     }
 
@@ -1722,6 +1801,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if (appPrefs.getData("gps_icon", "off") == "on") {
             val gpsimg = findViewById(R.id.gpsView) as ImageView
             gpsimg.visibility = if(carData?.car_gpslock == true) VISIBLE else View.INVISIBLE
+            gpsimg.imageTintList = ColorStateList.valueOf(textColor)
         }
     }
 

@@ -20,6 +20,7 @@ import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.ui.BaseFragment
 import com.openvehicles.OVMS.ui.utils.Ui.setOnClick
 import com.openvehicles.OVMS.ui.utils.Ui.setValue
+import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.Sys.getRandomString
 
@@ -88,6 +89,12 @@ class GlobalOptionsFragment : BaseFragment(), View.OnClickListener, OnFocusChang
             R.id.cb_options_oldui -> {
                 oldUiEnabled = (v as CheckBox).isChecked
                 appPrefs!!.saveData("option_oldui_enabled", if (oldUiEnabled) "1" else "0")
+                if (!oldUiEnabled) {
+                    // Switch to new UI immediately:
+                    val intent = Intent(context, MainActivityUI2::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                    startActivity(intent)
+                }
             }
             R.id.cb_options_service -> {
                 serviceEnabled = (v as CheckBox).isChecked

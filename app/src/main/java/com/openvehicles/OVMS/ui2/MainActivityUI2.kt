@@ -7,6 +7,8 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Configuration
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -20,7 +22,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -28,6 +35,7 @@ import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
@@ -37,6 +45,7 @@ import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.ui.ApiActivity
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.MapFragment
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.Sys.getRandomString
 import java.util.UUID
@@ -50,6 +59,7 @@ class MainActivityUI2 : ApiActivity() {
     }
 
     private lateinit var navController: NavController
+
     /**
      * ApiService / OVMS server communication:
      *
@@ -78,12 +88,47 @@ class MainActivityUI2 : ApiActivity() {
         }
 
     private val listener = NavController.OnDestinationChangedListener { controller, destination, arguments ->
-        findViewById<Spinner>(R.id.spinner_toolbar).visibility = if (destination.id == R.id.navigation_home) View.VISIBLE else View.GONE
+        val onHome = destination.id == R.id.navigation_home
+        val spinner = findViewById<Spinner>(R.id.spinner_toolbar)
+        spinner?.visibility = if (onHome) View.VISIBLE else View.GONE
+        
+        supportActionBar?.setDisplayShowTitleEnabled(!onHome)
+        
+        updateStatusBarIcons(onHome)
     }
+
+    /**
+     * Applies edge-to-edge rendering.
+     */
+    private fun applyEdgeToEdge() {
+        WindowCompat.setDecorFitsSystemWindows(window, true)
+    }
+
+    /** True when the dark theme is currently in effect. */
+    private fun isDarkTheme(): Boolean {
+        val mode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return mode == Configuration.UI_MODE_NIGHT_YES
+    }
+
+    /**
+     * Updates the status bar icon colour.
+     */
+    private fun updateStatusBarIcons(onHome: Boolean) {
+        val isDark = isDarkTheme()
+        val controller = WindowInsetsControllerCompat(window, window.decorView)
+        // Dark icons (isAppearanceLightStatusBars = true) on light background.
+        controller.isAppearanceLightStatusBars = !isDark
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeMode.apply(this)
         super.onCreate(savedInstanceState)
         appPrefs = AppPrefs(this, "ovms")
-        if (appPrefs.getData("option_oldui_enabled", "0") == "1") {
+        
+        val isOldUI = appPrefs.getData("option_oldui_enabled", "0") == "1"
+        Log.d(TAG, "onCreate: option_oldui_enabled = $isOldUI")
+        if (isOldUI) {
+            Log.i(TAG, "onCreate: starting Old UI (MainActivity)")
             startActivity(Intent(this, MainActivity::class.java))
             finish()
             return
@@ -159,6 +204,8 @@ class MainActivityUI2 : ApiActivity() {
         val toolbar: MaterialToolbar = findViewById(R.id.materialToolbar);
         setSupportActionBar(toolbar)
 
+        applyEdgeToEdge()
+
         // Start background ApiService:
         Log.i(TAG, "onCreate: starting ApiService")
         try {
@@ -178,7 +225,7 @@ class MainActivityUI2 : ApiActivity() {
         checkVersion()
 
         val abc = AppBarConfiguration.Builder(R.id.navigation_home).build();
-        val navHostFragment = supportFragmentManager.fragments.first() as NavHostFragment
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_activity_main2) as NavHostFragment
         navController = navHostFragment.navController
         NavigationUI.setupActionBarWithNavController(this, navHostFragment.navController, abc)
 
@@ -492,8 +539,12 @@ class MainActivityUI2 : ApiActivity() {
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
 
-        if (apiEventReceiver != null)
-            unregisterReceiver(apiEventReceiver)
+        try {
+            if (apiEventReceiver != null)
+                unregisterReceiver(apiEventReceiver)
+        } catch (e: Exception) {
+            // ignore
+        }
 
         // Stop background ApiService?
         val serviceEnabled = appPrefs.getData("option_service_enabled", "0") == "1"

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="50dp"
+    android:background="@color/black"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -20,13 +22,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="0dp"
+            android:layout_marginBottom="2dp"
             android:text="Title"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/abc_primary_text_material_dark"
+            android:textSize="22sp"
+            android:textColor="#FFFFFF"
             android:textStyle="bold" />
 
         <TextView
@@ -35,13 +37,14 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
             android:layout_marginLeft="4dp"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="2dp"
             android:layout_marginEnd="4dp"
             android:layout_marginRight="4dp"
-            android:layout_marginBottom="4dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="monospace"
             android:text="command"
-            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textSize="18sp"
+            android:textColor="#CCCCCC"
             android:typeface="monospace" />
 
     </LinearLayout>
@@ -57,7 +60,7 @@
         android:contentDescription="@string/Delete"
         android:focusable="true"
         android:padding="16dp"
-        android:src="@drawable/ic_action_discard" />
+        app:srcCompat="@drawable/ic_action_discard" />
 
     <ImageButton
         android:id="@+id/btn_pin"
@@ -70,7 +73,7 @@
         android:contentDescription="@string/PinShortcut"
         android:focusable="true"
         android:padding="16dp"
-        android:src="@drawable/ic_action_pin" />
+        app:srcCompat="@drawable/ic_action_pin" />
 
     <ImageButton
         android:id="@+id/btn_select"
@@ -83,6 +86,6 @@
         android:contentDescription="@string/Send"
         android:focusable="true"
         android:padding="16dp"
-        android:src="@drawable/ic_action_send" />
+        app:srcCompat="@drawable/ic_action_send" />
 
 </LinearLayout>

@@ -12,8 +12,11 @@ import com.openvehicles.OVMS.api.ApiService
 class DDT4allQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
     QuickAction(ACTION_ID, R.drawable.ic_controls_tab, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.attr.colorTertiaryContainer,
-        label = context?.getString(R.string.select_ddt4all_action)) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.select_ddt4all_action)
+    ) {
 
     companion object {
         const val ACTION_ID = "ddt4all"

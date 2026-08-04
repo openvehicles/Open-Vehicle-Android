@@ -974,4 +974,11 @@
     <string name="more">More</string>
     <string name="lb_restart_time_off">Stop restart</string>
 
+    <!-- UI Settings -->
+    <string name="ui_theme_category">Appearance</string>
+    <string name="ui_theme_title">Theme</string>
+    <string name="ui_theme_light">Light</string>
+    <string name="ui_theme_dark">Dark</string>
+    <string name="ui_theme_system">Follow system</string>
+
 </resources>
