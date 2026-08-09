@@ -108,6 +108,22 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         findViewById(R.id.btnEditTPMSConfig).setOnClickListener {
             showEditTPMSConfigDialog()
         }
+
+        // Setup collapsible TPMS Config header
+        val tpmsConfigHeader = findViewById(R.id.tpmsConfigHeader)
+        val tpmsConfigBody = findViewById(R.id.tpmsConfigBody)
+        val tpmsConfigChevron = findViewById(R.id.tpmsConfigChevron)
+
+        tpmsConfigHeader.setOnClickListener {
+            val vehicleId = carData?.sel_vehicleid
+            val isExpanded = tpmsConfigBody.visibility == View.VISIBLE
+            val nextVis = if (isExpanded) View.GONE else View.VISIBLE
+            
+            tpmsConfigBody.visibility = nextVis
+            tpmsConfigChevron.rotation = if (isExpanded) 0f else 90f
+            
+            appPrefs.saveData("pref_controls_tpms_config_expanded_$vehicleId", if (nextVis == View.VISIBLE) "1" else "0")
+        }
     }
 
     override fun update(carData: CarData?) {
@@ -174,6 +190,8 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         if (view == null) return
         val summaryView = findViewById(R.id.tpmsConfigSummary) as TextView
         val card = findViewById(R.id.cardTPMSConfig)
+        val body = findViewById(R.id.tpmsConfigBody)
+        val chevron = findViewById(R.id.tpmsConfigChevron) as ImageView
         
         if (tpmsConfig.isEmpty()) {
             card.visibility = View.GONE
@@ -183,6 +201,11 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         val vehicleId = getLastSelectedCarId()
         val showTPMS = appPrefs.getData("pref_controls_show_tpms_$vehicleId", "0") == "1"
         card.visibility = if (showTPMS) View.VISIBLE else View.GONE
+        
+        // Restore expanded state
+        val isExpanded = appPrefs.getData("pref_controls_tpms_config_expanded_$vehicleId", "0") == "1"
+        body.visibility = if (isExpanded) View.VISIBLE else View.GONE
+        chevron.rotation = if (isExpanded) 90f else 0f
         
         val alert = tpmsConfig["tpms.alert.enable"] ?: "no"
         val front = tpmsConfig["tpms.front.pressure"] ?: "0"
