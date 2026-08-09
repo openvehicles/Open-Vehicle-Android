@@ -10,36 +10,38 @@
 
     <style name="Theme.App.WithActionBar" parent="Theme.Material3.DayNight">
         <item name="colorSurfaceContainer">@color/colorSurfaceContainer</item>
-        <item name="android:windowBackground">@color/black</item>
+        <item name="android:windowBackground">@color/colorBackground</item>
         <item name="android:windowIsTranslucent">false</item>
         <item name="android:windowTranslucentStatus">false</item>
         <item name="android:windowTranslucentNavigation">false</item>
-        <item name="android:textColorPrimary">#FFFFFF</item>
-        <item name="android:textColorSecondary">#CCCCCC</item>
-        <item name="android:textColorPrimaryInverse">@color/black</item>
-        <item name="colorControlNormal">#FFFFFF</item>
-        <item name="colorOnSecondaryContainer">#FFFFFF</item>
-        <item name="colorSurface">#222222</item>
-        <item name="colorOnSurface">#FFFFFF</item>
+        <item name="android:textColorPrimary">@color/colorText</item>
+        <item name="android:textColorSecondary">@color/colorGreyBlue</item>
+        <item name="android:textColorPrimaryInverse">@color/colorBackground</item>
+        <item name="colorControlNormal">@color/colorText</item>
+        <item name="colorOnSecondaryContainer">@color/colorText</item>
         <item name="colorPrimary">#33B5E5</item>
         <item name="colorOnPrimary">#FFFFFF</item>
         <item name="android:actionBarStyle">@style/Theme.App.WithActionBar.ActionBar</item>
+        <item name="android:actionBarTheme">@style/Theme.App.WithActionBar.ActionBarTheme</item>
         <item name="windowActionBarOverlay">false</item>
         <item name="android:windowActionBarOverlay">false</item>
         <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
     </style>
 
-
-
     <style name="Theme.App.WithActionBar.ActionBar" parent="Widget.AppCompat.ActionBar">
-        <item name="background">@color/black</item>
-        <item name="android:background">@color/black</item>
+        <item name="background">@color/colorSurfaceContainer</item>
+        <item name="android:background">@color/colorSurfaceContainer</item>
         <item name="titleTextStyle">@style/Theme.App.WithActionBar.ActionBar.Title</item>
     </style>
 
+    <style name="Theme.App.WithActionBar.ActionBarTheme" parent="ThemeOverlay.AppCompat.ActionBar">
+        <item name="android:textColorPrimary">@color/colorText</item>
+        <item name="android:textColorSecondary">@color/colorGreyBlue</item>
+        <item name="colorControlNormal">@color/colorText</item>
+    </style>
 
     <style name="Theme.App.WithActionBar.ActionBar.Title" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
-        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textColor">@color/colorText</item>
     </style>
 
     <style name="PopupMenuListView" parent="@style/Widget.AppCompat.ListView.DropDown">

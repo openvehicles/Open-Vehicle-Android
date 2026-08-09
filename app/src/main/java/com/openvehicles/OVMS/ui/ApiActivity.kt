@@ -48,11 +48,6 @@ open class ApiActivity : AppCompatActivity(), ApiObserver {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val appPrefs = AppPrefs(this, "ovms")
-        if (appPrefs.getData("option_oldui_enabled", "0") == "1") {
-            delegate.localNightMode = AppCompatDelegate.MODE_NIGHT_YES
-        }
-
         super.onCreate(savedInstanceState)
 
         Log.d(TAG, "onCreate: binding service")

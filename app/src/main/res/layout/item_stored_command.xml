@@ -4,7 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:minHeight="50dp"
-    android:background="@color/black"
     android:orientation="horizontal">
 
     <LinearLayout
@@ -14,6 +13,7 @@
         android:layout_weight="9"
         android:clickable="true"
         android:focusable="true"
+        android:background="?attr/selectableItemBackground"
         android:orientation="vertical">
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_marginBottom="2dp"
             android:text="Title"
             android:textSize="22sp"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/colorText"
             android:textStyle="bold" />
 
         <TextView
@@ -44,7 +44,7 @@
             android:fontFamily="monospace"
             android:text="command"
             android:textSize="18sp"
-            android:textColor="#CCCCCC"
+            android:textColor="@color/colorGreyBlue"
             android:typeface="monospace" />
 
     </LinearLayout>

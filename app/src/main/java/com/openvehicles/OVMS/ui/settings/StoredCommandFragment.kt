@@ -71,11 +71,13 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
         // Create user interface:
         activity?.setTitle(R.string.stored_commands_title)
         setHasOptionsMenu(true)
-        listView = ListView(context)
+        
+        val rootView = inflater.inflate(R.layout.fragment_stored_commands, container, false)
+        listView = rootView.findViewById(R.id.listView)
         listView.onItemClickListener = this
         adapter = StoredCommandAdapter(context, R.layout.item_stored_command, storedCommands, inflater)
         listView.setAdapter(adapter)
-        return listView
+        return rootView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

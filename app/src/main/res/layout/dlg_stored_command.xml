@@ -15,8 +15,8 @@
 		android:autofillHints=""
 		android:hint="@string/lb_enter_title"
 		android:inputType="text"
-		android:textColor="#FFFFFF"
-		android:textColorHint="#AAAAAA"
+		android:textColor="@color/colorText"
+		android:textColorHint="@color/colorGreyBlue"
 		android:textAppearance="?android:attr/textAppearanceMedium"
 		android:textStyle="bold" />
 
@@ -28,8 +28,8 @@
 		android:fontFamily="monospace"
 		android:hint="@string/lb_enter_command"
 		android:inputType="text|textNoSuggestions"
-		android:textColor="#FFFFFF"
-		android:textColorHint="#AAAAAA"
+		android:textColor="@color/colorText"
+		android:textColorHint="@color/colorGreyBlue"
 		android:maxLines="1"
 		android:minLines="1"
 		android:textAppearance="?android:attr/textAppearanceSmall"
