@@ -656,7 +656,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         val socToggleListener = {
             socState += 1
-            if (socState > 1)
+            val maxState = if (carData?.car_charging == true) 2 else 1
+            if (socState > maxState)
                 socState = 0
             appPrefs.saveData("home_batt_display_mode", socState.toString())
             update(carData)
@@ -664,6 +665,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         // Load persisted mode
         socState = appPrefs.getData("home_batt_display_mode", "0")?.toIntOrNull() ?: 0
+        if (socState == 2 && carData?.car_charging == false) {
+            socState = 0
+        }
 
         val unit = carData?.car_distance_units ?: "km"
         rangeValueText.text = when (socState) {
@@ -689,12 +693,14 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 if (!consumption.isFinite()) consumption = 0f
                 String.format("%.1f", consumption / 10f)
             }
+            2 -> String.format("%.1f", carData?.car_charge_power_input_kw_raw ?: 0f)
             else -> ""
         }
 
         rangeUnitText.text = when (socState) {
             0 -> unit
             1 -> "kWh/100$unit"
+            2 -> "kW"
             else -> ""
         }
 
