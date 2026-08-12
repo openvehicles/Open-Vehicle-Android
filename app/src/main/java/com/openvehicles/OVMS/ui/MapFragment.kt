@@ -112,6 +112,12 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
 
         map = googleMap
         Log.i(TAG, "getMap/onMapReady: map=$map")
+
+        // Set map type from prefs
+        val mapTypeStr = appPrefs.getData("map_type", GoogleMap.MAP_TYPE_NORMAL.toString())
+        val mapType = mapTypeStr?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+        map!!.mapType = mapType
+
         var clusterEnabled = true
         var clusterSizeIndex = 0
         try {
@@ -204,7 +210,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             // fetch chargepoints for view:
             val cameraPosition = map!!.cameraPosition
             Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target)
-            //mainActivity.startGetMapDetails(cameraPosition.target)
+            (activity as? MainActivityUI2)?.startGetMapDetails(cameraPosition.target)
         })
         update()
     }
@@ -251,6 +257,16 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             optionsMenu.findItem(R.id.mi_map_filter_range)
                 .setVisible(false)
         }
+
+        // Set checked map type
+        val mapTypeStr = appPrefs.getData("map_type", GoogleMap.MAP_TYPE_NORMAL.toString())
+        val mapType = mapTypeStr?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+        when (mapType) {
+            GoogleMap.MAP_TYPE_NORMAL -> optionsMenu.findItem(R.id.mi_map_type_normal)?.setChecked(true)
+            GoogleMap.MAP_TYPE_SATELLITE -> optionsMenu.findItem(R.id.mi_map_type_satellite)?.setChecked(true)
+            GoogleMap.MAP_TYPE_HYBRID -> optionsMenu.findItem(R.id.mi_map_type_hybrid)?.setChecked(true)
+            GoogleMap.MAP_TYPE_TERRAIN -> optionsMenu.findItem(R.id.mi_map_type_terrain)?.setChecked(true)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -275,6 +291,29 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             appPrefs.saveData("inrange", if (newState) "on" else "off")
             item.setChecked(newState)
             updateMapDetails(false)
+        } else if (menuId == R.id.mi_map_type_normal || menuId == R.id.mi_map_type_satellite ||
+            menuId == R.id.mi_map_type_hybrid || menuId == R.id.mi_map_type_terrain
+        ) {
+            val type = when (menuId) {
+                R.id.mi_map_type_satellite -> GoogleMap.MAP_TYPE_SATELLITE
+                R.id.mi_map_type_hybrid -> GoogleMap.MAP_TYPE_HYBRID
+                R.id.mi_map_type_terrain -> GoogleMap.MAP_TYPE_TERRAIN
+                else -> GoogleMap.MAP_TYPE_NORMAL
+            }
+            map?.mapType = type
+            appPrefs.saveData("map_type", type.toString())
+            item.setChecked(true)
+        } else if (menuId == R.id.mi_map_search) {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("geo:${carPosition.latitude},${carPosition.longitude}?q=charging+station")
+            )
+            intent.setPackage("com.google.android.apps.maps")
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(intent)
+            } else {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=charging+station")))
+            }
         } else if (menuId == R.id.mi_map_settings) {
             var baseActivity: MainActivity? = null
             try {
