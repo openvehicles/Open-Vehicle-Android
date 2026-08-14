@@ -154,7 +154,7 @@
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
-			android:text="@string/lb_control_page_view"
+			android:text="@string/lb_control_page_view_car"
 			android:textAppearance="?attr/textAppearanceTitleMedium" />
 
 		<TextView
