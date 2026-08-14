@@ -987,4 +987,17 @@
     <string name="ui_theme_dark">Dark</string>
     <string name="ui_theme_system">Follow system</string>
 
+    <!-- Car Editor Custom Images -->
+    <string name="lb_control_page_view_car">Homescreen View</string>
+    <string name="lb_control_page_view">Control Page View (Top-Down)</string>
+    <string name="lb_control_page_view_desc">Choice for the top-view on the control page</string>
+    <string name="btn_custom_image">Custom Image</string>
+    <string name="btn_clear_custom_image">Clear Custom Image</string>
+    <string name="btn_custom_top_view">Custom Top-View Image</string>
+    <string name="btn_clear_custom_top_view">Clear Custom Top-View</string>
+    <string name="lb_map_icon_view">Map Icon View</string>
+    <string name="lb_map_icon_view_desc">Choice for the icon on the map</string>
+    <string name="btn_custom_map_icon">Custom Map Image</string>
+    <string name="btn_clear_custom_map_icon">Clear Custom Map Image</string>
+
 </resources>

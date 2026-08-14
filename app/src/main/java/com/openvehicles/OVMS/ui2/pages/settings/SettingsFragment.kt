@@ -25,6 +25,7 @@ import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
+import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 
@@ -182,12 +183,17 @@ class SettingsFragment : BaseFragment(), OnItemClickListener {
             btnInfo.tag = position
             val it = items!![position]
             var iv = view.findViewById<View>(R.id.img_car) as ImageView
-            iv.setImageResource(
-                getDrawableIdentifier(
-                    parent.context,
-                    it.sel_vehicle_image
+            val customDrawable = Ui.getCarDrawable(parent.context, it.sel_vehicle_image)
+            if (customDrawable != null) {
+                iv.setImageDrawable(customDrawable)
+            } else {
+                iv.setImageResource(
+                    getDrawableIdentifier(
+                        parent.context,
+                        it.sel_vehicle_image
+                    )
                 )
-            )
+            }
             (view.findViewById<View>(R.id.txt_title) as TextView).text =
                 it.sel_vehicle_label
             if (listView == null && parent is ListView) {

@@ -78,7 +78,12 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
 
         // set the car background image:
         val iv = findViewById(R.id.tabCarImageCarOutline) as ImageView
-        iv.setImageResource(getDrawableIdentifier(activity, "ol_" + this.carData!!.sel_vehicle_image))
+        val customDrawable = Ui.getCarDrawable(activity, this.carData!!.sel_vehicle_image)
+        if (customDrawable != null) {
+            iv.setImageDrawable(customDrawable)
+        } else {
+            iv.setImageResource(getDrawableIdentifier(activity, "ol_" + this.carData!!.sel_vehicle_image))
+        }
         val tabCarImageHomeLink: ImageView = findViewById(R.id.tabCarImageHomelink) as ImageView
         when (carData.car_type) {
             "RT" -> {

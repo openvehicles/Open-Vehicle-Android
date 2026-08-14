@@ -933,12 +933,17 @@ class InfoFragment : BaseFragment(), View.OnClickListener, OnResultCommandListen
                 )
                 iv.setScaleType(ImageView.ScaleType.FIT_START)
                 iv.setAdjustViewBounds(true)
-                iv.setImageResource(
-                    getDrawableIdentifier(
-                        parent.context,
-                        carData.sel_vehicle_image
+                val customDrawable = Ui.getCarDrawable(parent.context, carData.sel_vehicle_image)
+                if (customDrawable != null) {
+                    iv.setImageDrawable(customDrawable)
+                } else {
+                    iv.setImageResource(
+                        getDrawableIdentifier(
+                            parent.context,
+                            carData.sel_vehicle_image
+                        )
                     )
-                )
+                }
                 iv
             } catch (e: Exception) {
                 null

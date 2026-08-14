@@ -40,6 +40,8 @@ import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragmentActivity.Companion.show
 import com.openvehicles.OVMS.ui.MapSettingsFragment.UpdateMap
 import com.openvehicles.OVMS.ui.utils.Database
+import com.openvehicles.OVMS.ui.utils.Ui
+import android.graphics.Bitmap
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator.addMarkers
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
@@ -508,23 +510,52 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
         // update car position marker:
 
         // determine icon for this car:
-        val icon: Int = if (carData!!.sel_vehicle_image.startsWith("car_imiev_")) R.drawable.map_car_imiev // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_i3_")) R.drawable.map_car_i3 // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_smart_")) R.drawable.map_car_smart // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_kianiro_")) R.drawable.map_car_kianiro_grey // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_kangoo_")) R.drawable.map_car_kangoo // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_nrjk")) R.drawable.map_car_nrjk
-        else if (carData!!.sel_vehicle_image.startsWith("car_niu_mqi_gt_")) R.drawable.map_car_nrjk
-        else getDrawableIdentifier(activity, "map_" + carData!!.sel_vehicle_image)
-        val drawable = ResourcesCompat.getDrawable(
-            resources,
-            if (icon != 0) icon else R.drawable.map_car_default, null
-        )
-        val myLogo = (drawable as BitmapDrawable?)!!.bitmap
+        var myLogo: Bitmap? = null
+        if (carData!!.sel_vehicle_image_map.startsWith("file://")) {
+            val customDrawable = Ui.getCarDrawable(requireContext(), carData!!.sel_vehicle_image_map)
+            if (customDrawable is BitmapDrawable) {
+                myLogo = customDrawable.bitmap
+                // Scale down if too large?
+                if (myLogo.width > 128 || myLogo.height > 128) {
+                    myLogo = Bitmap.createScaledBitmap(myLogo, 128, 128, true)
+                }
+            }
+        }
+
+        if (myLogo == null) {
+            val icon: Int =
+                if (carData!!.sel_vehicle_image_map.isNotEmpty() && !carData!!.sel_vehicle_image_map.startsWith("file://")) {
+                    getDrawableIdentifier(activity, carData!!.sel_vehicle_image_map)
+                } else if (carData!!.sel_vehicle_image.startsWith("car_imiev_")) {
+                    R.drawable.map_car_imiev // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_i3_")) {
+                    R.drawable.map_car_i3 // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_smart_")) {
+                    R.drawable.map_car_smart // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_kianiro_")) {
+                    R.drawable.map_car_kianiro_grey // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_kangoo_")) {
+                    R.drawable.map_car_kangoo // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_nrjk")) {
+                    R.drawable.map_car_nrjk
+                } else if (carData!!.sel_vehicle_image.startsWith("car_niu_mqi_gt_")) {
+                    R.drawable.map_car_nrjk
+                } else {
+                    getDrawableIdentifier(activity, "map_" + carData!!.sel_vehicle_image)
+                }
+
+            val drawable = ResourcesCompat.getDrawable(
+                resources,
+                if (icon != 0) icon else R.drawable.map_car_default, null
+            )
+            myLogo = (drawable as BitmapDrawable?)!!.bitmap
+            myLogo = Bitmap.createScaledBitmap(myLogo, 128, 128, true)
+        }
+        
         val marker = MarkerOptions().position(carPosition)
             .title(carData!!.sel_vehicle_label)
             .rotation(carData!!.car_direction.toFloat())
-            .icon(BitmapDescriptorFactory.fromBitmap(myLogo))
+            .icon(BitmapDescriptorFactory.fromBitmap(myLogo!!))
         val carMarker = map!!.addMarker(marker)
         carMarker.clusterGroup = ClusterGroup.NOT_CLUSTERED
 

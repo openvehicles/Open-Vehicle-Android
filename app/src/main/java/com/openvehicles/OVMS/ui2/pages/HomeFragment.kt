@@ -569,7 +569,14 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 row = convertView
             }
             row?.findViewById<TextView>(R.id.txt_title)?.text = getItem(position)?.carName
-            row?.findViewById<ImageView>(R.id.img_car)?.setImageResource(getDrawableIdentifier(context, getItem(position)?.carData?.sel_vehicle_image))
+            val carData = getItem(position)?.carData
+            val imgCar = row?.findViewById<ImageView>(R.id.img_car)
+            val customDrawable = Ui.getCarDrawable(context, carData?.sel_vehicle_image)
+            if (customDrawable != null) {
+                imgCar?.setImageDrawable(customDrawable)
+            } else {
+                imgCar?.setImageResource(getDrawableIdentifier(context, carData?.sel_vehicle_image))
+            }
             row?.findViewById<TextView>(R.id.menuRange)?.text = String.format("%s, %s: %s, %s: %s",  getItem(position)?.carData?.car_soc, context.getString(R.string.IdealShort).split(" ").first(), getItem(position)?.carData?.car_range_ideal, context.getString(R.string.EstimatedShort).split(" ").first(), getItem(position)?.carData?.car_range_estimated)
             return row!!
         }
@@ -839,121 +846,128 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         // Car image
         val image: ImageView = findViewById(R.id.carStatusImage) as ImageView
 
-        val name_splitted = carData?.sel_vehicle_image?.split("_")
-        val car_tire_image1 = getDrawableIdentifier(
-            context,
-            name_splitted?.minus(name_splitted.last())?.joinToString("_") +"_tireanim"
-        )
-
         var layers = emptyList<Drawable>()
+        val customDrawable = Ui.getCarDrawable(requireContext(), carData?.sel_vehicle_image)
 
-        if (carData?.car_rearleftdoor_open == true || CAR_RENDER_TEST_MODE_D) {
-            val modeResource = getDrawableIdentifier(
+        if (carData?.sel_vehicle_image?.startsWith("file://") == true && customDrawable != null) {
+            layers = layers.plus(customDrawable)
+        } else {
+            val name_splitted = carData?.sel_vehicle_image?.split("_")
+            val car_tire_image1 = getDrawableIdentifier(
                 context,
-                carData?.sel_vehicle_image+"_rld"
+                name_splitted?.minus(name_splitted.last())?.joinToString("_") + "_tireanim"
             )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-        }
 
-        if (carData?.car_frontleftdoor_open == true || CAR_RENDER_TEST_MODE_D) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                carData?.sel_vehicle_image+"_fld"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-        }
-
-        layers = layers.plus(ContextCompat.getDrawable(requireContext(), getDrawableIdentifier(
-            context,
-            carData?.sel_vehicle_image
-        )
-        )!!)
-
-        val speedShownInUI = car_tire_image1 > 0 && (carData?.car_started == true || CAR_RENDER_TEST_MODE_D)
-
-        if (speedShownInUI) {
-            val animationDrawable = AppCompatResources.getDrawable(requireContext(), car_tire_image1) as AnimationDrawable
-            val carAnim = CarAnimationDrawable()
-            var drawables = emptyList<Drawable>()
-            for (i in 0 until animationDrawable.numberOfFrames) {
-                drawables = drawables.plus(animationDrawable.getFrame(i))
-            }
-            drawables.forEach { carAnim.addFrame(it, 35) }
-            carAnim.isOneShot = false
-            layers = layers.plus(carAnim)
-
-            if ((carData?.car_speed_raw ?: 0f) > 0) {
-                // Adjust animation speed
-                carAnim.start()
-                carAnim.setDuration((320 / (carData?.car_speed_raw!! / 3.5)).toInt())
-            }
-        }
-
-        if (carData?.car_headlights_on == true || CAR_RENDER_TEST_MODE_HD) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                name_splitted?.minus(name_splitted.last())?.joinToString("_") +"_hd"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-        }
-
-        if (carData?.car_rearrightdoor_open == true || CAR_RENDER_TEST_MODE_D) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                carData?.sel_vehicle_image+"_rrd"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-        }
-
-        if (carData?.car_frontrightdoor_open == true || CAR_RENDER_TEST_MODE_D) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                carData?.sel_vehicle_image+"_frd"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-        }
-
-
-        if (carData?.car_trunk_open == true || CAR_RENDER_TEST_MODE_T) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                carData?.sel_vehicle_image+"_t"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-            else {
+            if (carData?.car_rearleftdoor_open == true || CAR_RENDER_TEST_MODE_D) {
                 val modeResource = getDrawableIdentifier(
                     context,
-                    name_splitted?.minus(name_splitted.last())?.joinToString("_")+"_t"
+                    carData?.sel_vehicle_image + "_rld"
                 )
                 if (modeResource > 0)
                     layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
             }
-        }
 
-        if (carData?.car_bonnet_open == true || CAR_RENDER_TEST_MODE_T) {
-            val modeResource = getDrawableIdentifier(
-                context,
-                carData?.sel_vehicle_image+"_b"
-            )
-            if (modeResource > 0)
-                layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
-            else {
+            if (carData?.car_frontleftdoor_open == true || CAR_RENDER_TEST_MODE_D) {
                 val modeResource = getDrawableIdentifier(
                     context,
-                    name_splitted?.minus(name_splitted.last())?.joinToString("_")+"_b"
+                    carData?.sel_vehicle_image + "_fld"
                 )
                 if (modeResource > 0)
                     layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
             }
+
+            val carResId = getDrawableIdentifier(context, carData?.sel_vehicle_image)
+            if (carResId > 0) {
+                layers = layers.plus(ContextCompat.getDrawable(requireContext(), carResId)!!)
+            }
+
+            val speedShownInUI =
+                car_tire_image1 > 0 && (carData?.car_started == true || CAR_RENDER_TEST_MODE_D)
+
+            if (speedShownInUI) {
+                val animationDrawable =
+                    AppCompatResources.getDrawable(requireContext(), car_tire_image1) as AnimationDrawable
+                val carAnim = CarAnimationDrawable()
+                var drawables = emptyList<Drawable>()
+                for (i in 0 until animationDrawable.numberOfFrames) {
+                    drawables = drawables.plus(animationDrawable.getFrame(i))
+                }
+                drawables.forEach { carAnim.addFrame(it, 35) }
+                carAnim.isOneShot = false
+                layers = layers.plus(carAnim)
+
+                if ((carData?.car_speed_raw ?: 0f) > 0) {
+                    // Adjust animation speed
+                    carAnim.start()
+                    carAnim.setDuration((320 / (carData?.car_speed_raw!! / 3.5)).toInt())
+                }
+            }
+
+            if (carData?.car_headlights_on == true || CAR_RENDER_TEST_MODE_HD) {
+                val modeResource = getDrawableIdentifier(
+                    context,
+                    name_splitted?.minus(name_splitted.last())?.joinToString("_") + "_hd"
+                )
+                if (modeResource > 0)
+                    layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
+            }
+
+            if (carData?.car_rearrightdoor_open == true || CAR_RENDER_TEST_MODE_D) {
+                val modeResource = getDrawableIdentifier(
+                    context,
+                    carData?.sel_vehicle_image + "_rrd"
+                )
+                if (modeResource > 0)
+                    layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
+            }
+
+            if (carData?.car_frontrightdoor_open == true || CAR_RENDER_TEST_MODE_D) {
+                val modeResource = getDrawableIdentifier(
+                    context,
+                    carData?.sel_vehicle_image + "_frd"
+                )
+                if (modeResource > 0)
+                    layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
+            }
+
+
+            if (carData?.car_trunk_open == true || CAR_RENDER_TEST_MODE_T) {
+                val modeResource = getDrawableIdentifier(
+                    context,
+                    carData?.sel_vehicle_image + "_t"
+                )
+                if (modeResource > 0)
+                    layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
+                else {
+                    val modeRes = getDrawableIdentifier(
+                        context,
+                        name_splitted?.minus(name_splitted.last())?.joinToString("_") + "_t"
+                    )
+                    if (modeRes > 0)
+                        layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeRes)!!)
+                }
+            }
+
+            if (carData?.car_bonnet_open == true || CAR_RENDER_TEST_MODE_T) {
+                val modeResource = getDrawableIdentifier(
+                    context,
+                    carData?.sel_vehicle_image + "_b"
+                )
+                if (modeResource > 0)
+                    layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeResource)!!)
+                else {
+                    val modeRes = getDrawableIdentifier(
+                        context,
+                        name_splitted?.minus(name_splitted.last())?.joinToString("_") + "_b"
+                    )
+                    if (modeRes > 0)
+                        layers = layers.plus(ContextCompat.getDrawable(requireContext(), modeRes)!!)
+                }
+            }
         }
 
-        var chargingResName = name_splitted?.minus(name_splitted.last())?.joinToString("_")
+        val name_splitted = carData?.sel_vehicle_image?.split("_")
+        var chargingResName = name_splitted?.minus(name_splitted?.last() ?: "")?.joinToString("_")
 
         if (carData?.car_charge_mode == "performance" || (carData?.car_charge_current_raw ?: 0f) > 48) {
             chargingResName += "_q"

@@ -37,7 +37,11 @@ import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 import com.openvehicles.OVMS.utils.CarsStorage.saveStoredCars
-
+import androidx.activity.result.contract.ActivityResultContracts
+import com.google.android.material.button.MaterialButton
+import java.io.File
+import java.io.FileOutputStream
+import com.openvehicles.OVMS.ui.utils.Ui.getCarDrawable
 
 class CarEditorFragment : BaseFragment() {
 
@@ -51,6 +55,128 @@ class CarEditorFragment : BaseFragment() {
     private lateinit var gcmSenders: Array<String>
     private var server: EditText? = null
     private var gcmSender: EditText? = null
+    
+    private var customImagePath: String? = null
+    private var btnCustomImage: MaterialButton? = null
+    private var btnClearCustomImage: MaterialButton? = null
+    private var imgCustomPreview: ImageView? = null
+    
+    private var customImagePathOl: String? = null
+    private var btnCustomImageOl: MaterialButton? = null
+    private var btnClearCustomImageOl: MaterialButton? = null
+    private var imgCustomPreviewOl: ImageView? = null
+    private var galleryCarOl: Gallery? = null
+
+    private var customImagePathMap: String? = null
+    private var btnCustomImageMap: MaterialButton? = null
+    private var btnClearCustomImageMap: MaterialButton? = null
+    private var imgCustomPreviewMap: ImageView? = null
+    private var galleryCarMap: Gallery? = null
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            try {
+                val inputStream = requireContext().contentResolver.openInputStream(it)
+                val fileName = "car_custom_${System.currentTimeMillis()}.png"
+                val file = File(requireContext().filesDir, fileName)
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+                
+                customImagePath = "file://" + file.absolutePath
+                updateCustomImageUI()
+                Log.d(TAG, "PickImage: saved to $customImagePath")
+            } catch (e: Exception) {
+                Log.e(TAG, "PickImage failed", e)
+            }
+        }
+    }
+
+    private val pickOlImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            try {
+                val inputStream = requireContext().contentResolver.openInputStream(it)
+                val fileName = "car_custom_ol_${System.currentTimeMillis()}.png"
+                val file = File(requireContext().filesDir, fileName)
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+
+                customImagePathOl = "file://" + file.absolutePath
+                updateCustomOlImageUI()
+                Log.d(TAG, "PickOlImage: saved to $customImagePathOl")
+            } catch (e: Exception) {
+                Log.e(TAG, "PickOlImage failed", e)
+            }
+        }
+    }
+
+    private val pickMapImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        uri?.let {
+            try {
+                val inputStream = requireContext().contentResolver.openInputStream(it)
+                val fileName = "car_custom_map_${System.currentTimeMillis()}.png"
+                val file = File(requireContext().filesDir, fileName)
+                val outputStream = FileOutputStream(file)
+                inputStream?.copyTo(outputStream)
+                inputStream?.close()
+                outputStream.close()
+
+                customImagePathMap = "file://" + file.absolutePath
+                updateCustomMapImageUI()
+                Log.d(TAG, "PickMapImage: saved to $customImagePathMap")
+            } catch (e: Exception) {
+                Log.e(TAG, "PickMapImage failed", e)
+            }
+        }
+    }
+
+    private fun updateCustomImageUI() {
+        if (customImagePath != null) {
+            btnClearCustomImage?.visibility = View.VISIBLE
+            imgCustomPreview?.visibility = View.VISIBLE
+            imgCustomPreview?.setImageDrawable(getCarDrawable(requireContext(), customImagePath))
+            galleryCar?.alpha = 0.3f
+            galleryCar?.isEnabled = false
+        } else {
+            btnClearCustomImage?.visibility = View.GONE
+            imgCustomPreview?.visibility = View.GONE
+            galleryCar?.alpha = 1.0f
+            galleryCar?.isEnabled = true
+        }
+    }
+
+    private fun updateCustomOlImageUI() {
+        if (customImagePathOl != null) {
+            btnClearCustomImageOl?.visibility = View.VISIBLE
+            imgCustomPreviewOl?.visibility = View.VISIBLE
+            imgCustomPreviewOl?.setImageDrawable(getCarDrawable(requireContext(), customImagePathOl))
+            galleryCarOl?.alpha = 0.3f
+            galleryCarOl?.isEnabled = false
+        } else {
+            btnClearCustomImageOl?.visibility = View.GONE
+            imgCustomPreviewOl?.visibility = View.GONE
+            galleryCarOl?.alpha = 1.0f
+            galleryCarOl?.isEnabled = true
+        }
+    }
+
+    private fun updateCustomMapImageUI() {
+        if (customImagePathMap != null) {
+            btnClearCustomImageMap?.visibility = View.VISIBLE
+            imgCustomPreviewMap?.visibility = View.VISIBLE
+            imgCustomPreviewMap?.setImageDrawable(getCarDrawable(requireContext(), customImagePathMap))
+            galleryCarMap?.alpha = 0.3f
+            galleryCarMap?.isEnabled = false
+        } else {
+            btnClearCustomImageMap?.visibility = View.GONE
+            imgCustomPreviewMap?.visibility = View.GONE
+            galleryCarMap?.alpha = 1.0f
+            galleryCarMap?.isEnabled = true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +219,52 @@ class CarEditorFragment : BaseFragment() {
         selectServer!!.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id -> setSelectedServer(position, true) }
         galleryCar = requireView().findViewById<View>(R.id.ga_car) as Gallery
-        galleryCar!!.setAdapter(CarImgAdapter())
+        galleryCar!!.setAdapter(CarImgAdapter(availableColors))
+
+        btnCustomImage = requireView().findViewById(R.id.btn_custom_image)
+        btnClearCustomImage = requireView().findViewById(R.id.btn_clear_custom_image)
+        imgCustomPreview = requireView().findViewById(R.id.img_custom_preview)
+
+        btnCustomImage?.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        btnClearCustomImage?.setOnClickListener {
+            customImagePath = null
+            updateCustomImageUI()
+        }
+
+        galleryCarOl = requireView().findViewById<View>(R.id.ga_car_ol) as Gallery
+        galleryCarOl!!.setAdapter(CarImgAdapter(availableOlImages, true))
+
+        btnCustomImageOl = requireView().findViewById(R.id.btn_custom_image_ol)
+        btnClearCustomImageOl = requireView().findViewById(R.id.btn_clear_custom_image_ol)
+        imgCustomPreviewOl = requireView().findViewById(R.id.img_custom_preview_ol)
+
+        btnCustomImageOl?.setOnClickListener {
+            pickOlImageLauncher.launch("image/*")
+        }
+
+        btnClearCustomImageOl?.setOnClickListener {
+            customImagePathOl = null
+            updateCustomOlImageUI()
+        }
+
+        galleryCarMap = requireView().findViewById<View>(R.id.ga_car_map) as Gallery
+        galleryCarMap!!.setAdapter(CarImgAdapter(availableMapIcons, false))
+
+        btnCustomImageMap = requireView().findViewById(R.id.btn_custom_image_map)
+        btnClearCustomImageMap = requireView().findViewById(R.id.btn_clear_custom_image_map)
+        imgCustomPreviewMap = requireView().findViewById(R.id.img_custom_preview_map)
+
+        btnCustomImageMap?.setOnClickListener {
+            pickMapImageLauncher.launch("image/*")
+        }
+
+        btnClearCustomImageMap?.setOnClickListener {
+            customImagePathMap = null
+            updateCustomMapImageUI()
+        }
 
         val menuHost: MenuHost = requireActivity()
         menuHost.addMenuProvider(object : MenuProvider {
@@ -192,7 +363,24 @@ class CarEditorFragment : BaseFragment() {
             carData!!.sel_gcm_senderid = getValue(rootView, R.id.txt_gcm_senderid)
             carData!!.sel_tls = (rootView.findViewById<View>(R.id.chk_tls_enabled) as SwitchMaterial).isChecked
             carData!!.sel_tls_trust_all = (rootView.findViewById<View>(R.id.chk_tls_trust_all) as SwitchMaterial).isChecked
-            carData!!.sel_vehicle_image = availableColors[galleryCar!!.selectedItemPosition]
+            
+            if (customImagePath != null) {
+                carData!!.sel_vehicle_image = customImagePath!!
+            } else {
+                carData!!.sel_vehicle_image = availableColors[galleryCar!!.selectedItemPosition]
+            }
+
+            if (customImagePathOl != null) {
+                carData!!.sel_vehicle_image_ol = customImagePathOl!!
+            } else {
+                carData!!.sel_vehicle_image_ol = availableOlImages[galleryCarOl!!.selectedItemPosition]
+            }
+
+            if (customImagePathMap != null) {
+                carData!!.sel_vehicle_image_map = customImagePathMap!!
+            } else {
+                carData!!.sel_vehicle_image_map = availableMapIcons[galleryCarMap!!.selectedItemPosition]
+            }
         } catch (e: ValidationException) {
             Log.e("Validation", e.message, e)
             return
@@ -245,15 +433,62 @@ class CarEditorFragment : BaseFragment() {
             }
 
             // set car image:
-            var index = -1
-            for (imgRes in availableColors) {
-                index++
-                if (imgRes == carData!!.sel_vehicle_image) {
-                    break
+            if (carData!!.sel_vehicle_image.startsWith("file://")) {
+                customImagePath = carData!!.sel_vehicle_image
+                updateCustomImageUI()
+            } else {
+                customImagePath = null
+                updateCustomImageUI()
+                var index = -1
+                for (imgRes in availableColors) {
+                    index++
+                    if (imgRes == carData!!.sel_vehicle_image) {
+                        break
+                    }
+                }
+                if (index >= 0) {
+                    galleryCar!!.setSelection(index)
                 }
             }
-            if (index >= 0) {
-                galleryCar!!.setSelection(index)
+
+            // set top-down image:
+            if (carData!!.sel_vehicle_image_ol.isNotEmpty() && carData!!.sel_vehicle_image_ol.startsWith("file://")) {
+                customImagePathOl = carData!!.sel_vehicle_image_ol
+                updateCustomOlImageUI()
+            } else {
+                customImagePathOl = null
+                updateCustomOlImageUI()
+                var index = -1
+                val targetImg = if (carData!!.sel_vehicle_image_ol.isEmpty()) carData!!.sel_vehicle_image else carData!!.sel_vehicle_image_ol
+                for (imgRes in availableOlImages) {
+                    index++
+                    if (imgRes == targetImg) {
+                        break
+                    }
+                }
+                if (index >= 0) {
+                    galleryCarOl!!.setSelection(index)
+                }
+            }
+
+            // set map image:
+            if (!carData!!.sel_vehicle_image_map.isNullOrEmpty() && carData!!.sel_vehicle_image_map.startsWith("file://")) {
+                customImagePathMap = carData!!.sel_vehicle_image_map
+                updateCustomMapImageUI()
+            } else {
+                customImagePathMap = null
+                updateCustomMapImageUI()
+                var index = -1
+                val targetImg = if (carData!!.sel_vehicle_image_map.isNullOrEmpty()) "map_car_default" else carData!!.sel_vehicle_image_map
+                for (imgRes in availableMapIcons) {
+                    index++
+                    if (imgRes == targetImg) {
+                        break
+                    }
+                }
+                if (index >= 0) {
+                    galleryCarMap!!.setSelection(index)
+                }
             }
 
             // save selected vehicle label:
@@ -300,6 +535,64 @@ class CarEditorFragment : BaseFragment() {
     private companion object {
 
         private const val TAG = "CarEditorFragment"
+
+        private val availableMapIcons = arrayOf(
+            "map_car_default",
+            "map_car_ampera_black",
+            "map_car_i3",
+            "map_car_imiev",
+            "map_car_ioniq5_cybergray",
+            "map_car_ioniq_polarwhite",
+            "map_car_kangoo",
+            "map_car_kiaev6_white",
+            "map_car_kianiro_grey",
+            "map_car_leaf2_gunmetallic",
+            "map_car_leaf_pearlwhite",
+            "map_car_mgzs_white",
+            "map_car_niu_mqi_gt_white",
+            "map_car_nrjk",
+            "map_car_smart",
+            "map_car_thinkcity_classicblack",
+            "map_car_twizy_snowwhitewithblack",
+            "map_car_vwup_white",
+            "map_car_zoe_white"
+        )
+
+        private val availableOlImages = arrayOf(
+            "car_roadster_arcticwhite",
+            "car_roadster_brilliantyellow",
+            "car_roadster_electricblue",
+            "car_roadster_fushionred",
+            "car_roadster_glacierblue",
+            "car_roadster_jetblack",
+            "car_roadster_lightninggreen",
+            "car_roadster_obsidianblack",
+            "car_roadster_racinggreen",
+            "car_roadster_radiantred",
+            "car_roadster_sterlingsilver",
+            "car_roadster_thundergray",
+            "car_roadster_twilightblue",
+            "car_roadster_veryorange",
+            "car_ampera",
+            "car_i3",
+            "car_imiev",
+            "car_ioniq5_cybergray",
+            "car_ioniq_polarwhite",
+            "car_kangoo",
+            "car_kiaev6_white",
+            "car_kianiro_grey",
+            "car_leaf2_pearlwhite",
+            "car_leaf_pearlwhite",
+            "car_mgzs_white",
+            "car_niu_mqi_gt",
+            "car_nrjk",
+            "car_nrjkexperia",
+            "car_smart",
+            "car_thinkcity_classicblack",
+            "car_twizy",
+            "car_vwup_white",
+            "car_zoe_white"
+        )
 
         private val availableColors = arrayOf(
             "car_roadster_arcticwhite",
@@ -432,14 +725,14 @@ class CarEditorFragment : BaseFragment() {
         )
     }
 
-    private class CarImgAdapter : BaseAdapter() {
+    private class CarImgAdapter(private val images: Array<String>, private val isOl: Boolean = false) : BaseAdapter() {
 
         override fun getCount(): Int {
-            return availableColors.size
+            return images.size
         }
 
         override fun getItem(position: Int): Any {
-            return availableColors[position]
+            return images[position]
         }
 
         override fun getItemId(position: Int): Long {
@@ -448,9 +741,15 @@ class CarEditorFragment : BaseFragment() {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             val iv = convertView as? ImageView ?: ImageView(parent.context)
-            iv.setScaleType(ImageView.ScaleType.FIT_START)
+            val density = parent.context.resources.displayMetrics.density
+            iv.layoutParams = Gallery.LayoutParams((200 * density).toInt(), (120 * density).toInt())
+            iv.setScaleType(ImageView.ScaleType.CENTER_INSIDE)
             iv.setAdjustViewBounds(true)
-            iv.setImageResource(getDrawableIdentifier(parent.context, availableColors[position]))
+            val p = (8 * density).toInt()
+            iv.setPadding(p, p, p, p)
+            iv.setBackgroundResource(R.drawable.gallery_item_selector)
+            val resName = if (isOl) "ol_" + images[position] else images[position]
+            iv.setImageResource(getDrawableIdentifier(parent.context, resName))
             return iv
         }
     }

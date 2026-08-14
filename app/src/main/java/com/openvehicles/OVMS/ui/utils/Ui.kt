@@ -21,6 +21,11 @@ import com.google.android.material.textfield.TextInputEditText
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.ui.validators.ValidationException
 import com.openvehicles.OVMS.ui.validators.Validator
+import androidx.core.content.ContextCompat
+
+import android.graphics.BitmapFactory
+import android.graphics.drawable.BitmapDrawable
+import java.io.File
 
 object Ui {
 
@@ -143,6 +148,29 @@ object Ui {
                 "drawable",
                 context.packageName
             )
+        }
+    }
+
+    @JvmStatic
+    fun getCarDrawable(context: Context?, name: String?): Drawable? {
+        if (name == null || context == null) return null
+        
+        if (name.startsWith("file://")) {
+            val path = name.substring(7)
+            val file = File(path)
+            if (file.exists()) {
+                val bitmap = BitmapFactory.decodeFile(path)
+                if (bitmap != null) {
+                    return BitmapDrawable(context.resources, bitmap)
+                }
+            }
+        }
+        
+        val resId = getDrawableIdentifier(context, name)
+        return if (resId > 0) {
+            ContextCompat.getDrawable(context, resId)
+        } else {
+            null
         }
     }
 
