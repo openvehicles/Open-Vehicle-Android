@@ -516,8 +516,8 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             if (customDrawable is BitmapDrawable) {
                 myLogo = customDrawable.bitmap
                 // Scale down if too large?
-                if (myLogo.width > 128 || myLogo.height > 128) {
-                    myLogo = Bitmap.createScaledBitmap(myLogo, 128, 128, true)
+                if (myLogo.width > 116 || myLogo.height > 116) {
+                    myLogo = Bitmap.createScaledBitmap(myLogo, 116, 116, true)
                 }
             }
         }
@@ -549,7 +549,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
                 if (icon != 0) icon else R.drawable.map_car_default, null
             )
             myLogo = (drawable as BitmapDrawable?)!!.bitmap
-            myLogo = Bitmap.createScaledBitmap(myLogo, 128, 128, true)
+            myLogo = Bitmap.createScaledBitmap(myLogo, 116, 116, true)
         }
         
         val marker = MarkerOptions().position(carPosition)
