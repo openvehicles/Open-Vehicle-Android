@@ -33,6 +33,8 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
+import java.nio.charset.StandardCharsets
+
 class ApiTask(
 
     private var context: Context,
@@ -120,8 +122,8 @@ class ApiTask(
                     // Read & decrypt message:
                     line = inputstream!!.readLine()
                     if (line == null) throw IOException("Connection lost")
-                    rx = line.trim { it <= ' ' }
-                    msg = String(rxCipher.update(Base64.decode(rx, 0))).trim { it <= ' ' }
+                    rx = line!!.trim { it <= ' ' }
+                    msg = String(rxCipher.update(Base64.decode(rx, 0)), StandardCharsets.UTF_8).trim { it <= ' ' }
                     Log.d(TAG, String.format("RX: %s (%s)", msg, rx))
 
                     // Process message:
@@ -219,7 +221,7 @@ class ApiTask(
                 Log.i(TAG, "TX: $message")
                 outputstream!!.println(
                     Base64.encodeToString(
-                        txCipher.update(message.toByteArray()),
+                        txCipher.update(message.toByteArray(StandardCharsets.UTF_8)),
                         Base64.NO_WRAP
                     )
                 )
@@ -302,11 +304,12 @@ class ApiTask(
             outputstream = PrintWriter(
                 BufferedWriter(
                     OutputStreamWriter(
-                        socket!!.getOutputStream()
+                        socket!!.getOutputStream(),
+                        StandardCharsets.UTF_8
                     )
                 ), true
             )
-            inputstream = BufferedReader(InputStreamReader(socket!!.getInputStream()))
+            inputstream = BufferedReader(InputStreamReader(socket!!.getInputStream(), StandardCharsets.UTF_8))
             outputLock = Semaphore(1)
 
             // Encrypt password:

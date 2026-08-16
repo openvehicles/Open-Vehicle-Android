@@ -9,9 +9,11 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 /**
@@ -71,7 +73,7 @@ class LogsData {
         val json = gson.toJson(this)
         return try {
             outputStream = context!!.openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(json.toByteArray())
+            outputStream.write(json.toByteArray(StandardCharsets.UTF_8))
             outputStream.close()
             true
         } catch (e: Exception) {
@@ -84,9 +86,8 @@ class LogsData {
         var recNr: Int
         var recCnt: Int
         var recType: String
-        var timeStamp: String
         var entryNr: Int
-        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
         serverTime.timeZone = TimeZone.getTimeZone("UTC")
         for (i in 0 until cmdSeries.size()) {
             val cmd = cmdSeries[i]
@@ -98,28 +99,40 @@ class LogsData {
                     recNr = result[2].toInt()
                     recCnt = result[3].toInt()
                     recType = result[4]
-                    timeStamp = result[5]
-                    entryNr = result[6].toInt()
+
+                    // Robust timestamp parsing:
+                    var shift = 0
+                    var ts: Date? = null
+                    try {
+                        ts = serverTime.parse(result[5])!!
+                    } catch (e: Exception) {
+                        // try combined with next part if next part looks like time:
+                        try {
+                            ts = serverTime.parse(result[5].trim() + " " + result[6].trim())!!
+                            shift = 1
+                        } catch (e2: Exception) {
+                            Log.w(TAG, "failed to parse timestamp: " + result[5])
+                            continue
+                        }
+                    }
+
+                    entryNr = result[6 + shift].toInt()
 
                     // [7++] = Payload
                     Log.v(TAG, "processing recType $recType entryNr $entryNr")
                     if (recType == "RT-ENG-LogKeyTime") {
                         keyTime = KeyTime()
-                        keyTime.keyHour = result[7].toInt()
-                        keyTime.keyMinSec = result[8].toInt()
-                        try {
-                            keyTime.timeStamp = serverTime.parse(timeStamp)
-                        } catch (e: Exception) {
-                            keyTime.timeStamp = Date()
-                        }
+                        keyTime.keyHour = result[7 + shift].toInt()
+                        keyTime.keyMinSec = result[8 + shift].toInt()
+                        keyTime.timeStamp = ts
                     } else if (recType == "RT-ENG-LogAlerts") {
                         if (entryNr == 0) {
                             alerts = ArrayList(20)
                             alertsTime = keyTime
                         }
                         val alert = Alert()
-                        alert.code = result[7]
-                        alert.description = result[8]
+                        alert.code = result[7 + shift]
+                        alert.description = result[8 + shift]
                         alerts.add(alert)
                     } else if (recType == "RT-ENG-LogFaults") {
                         if (entryNr == 0) {
@@ -127,15 +140,15 @@ class LogsData {
                             faultEventsTime = keyTime
                         }
                         val event = Event()
-                        event.code = result[7]
-                        event.description = result[8]
+                        event.code = result[7 + shift]
+                        event.description = result[8 + shift]
                         event.time = KeyTime()
-                        event.time!!.keyHour = result[9].toInt()
-                        event.time!!.keyMinSec = result[10].toInt()
+                        event.time!!.keyHour = result[9 + shift].toInt()
+                        event.time!!.keyMinSec = result[10 + shift].toInt()
                         event.data = arrayOfNulls(3)
-                        event.data[0] = result[11]
-                        event.data[1] = result[12]
-                        event.data[2] = result[13]
+                        event.data[0] = result[11 + shift]
+                        event.data[1] = result[12 + shift]
+                        event.data[2] = result[13 + shift]
                         faultEvents.add(event)
                     } else if (recType == "RT-ENG-LogSystem") {
                         if (entryNr == 0) {
@@ -143,15 +156,15 @@ class LogsData {
                             systemEventsTime = keyTime
                         }
                         val event = Event()
-                        event.code = result[7]
-                        event.description = result[8]
+                        event.code = result[7 + shift]
+                        event.description = result[8 + shift]
                         event.time = KeyTime()
-                        event.time!!.keyHour = result[9].toInt()
-                        event.time!!.keyMinSec = result[10].toInt()
+                        event.time!!.keyHour = result[9 + shift].toInt()
+                        event.time!!.keyMinSec = result[10 + shift].toInt()
                         event.data = arrayOfNulls(3)
-                        event.data[0] = result[11]
-                        event.data[1] = result[12]
-                        event.data[2] = result[13]
+                        event.data[0] = result[11 + shift]
+                        event.data[1] = result[12 + shift]
+                        event.data[2] = result[13 + shift]
                         systemEvents.add(event)
                     } else if (recType == "RT-ENG-LogCounts") {
                         if (entryNr == 0) {
@@ -159,15 +172,15 @@ class LogsData {
                             countersTime = keyTime
                         }
                         val counter = Counter()
-                        counter.code = result[7]
-                        counter.description = result[8]
+                        counter.code = result[7 + shift]
+                        counter.description = result[8 + shift]
                         counter.lastTime = KeyTime()
-                        counter.lastTime!!.keyHour = result[9].toInt()
-                        counter.lastTime!!.keyMinSec = result[10].toInt()
+                        counter.lastTime!!.keyHour = result[9 + shift].toInt()
+                        counter.lastTime!!.keyMinSec = result[10 + shift].toInt()
                         counter.firstTime = KeyTime()
-                        counter.firstTime!!.keyHour = result[11].toInt()
-                        counter.firstTime!!.keyMinSec = result[12].toInt()
-                        counter.count = result[13].toInt()
+                        counter.firstTime!!.keyHour = result[11 + shift].toInt()
+                        counter.firstTime!!.keyMinSec = result[12 + shift].toInt()
+                        counter.count = result[13 + shift].toInt()
                         counters.add(counter)
                     } else if (recType == "RT-ENG-LogMinMax") {
                         if (entryNr == 0) {
@@ -175,16 +188,16 @@ class LogsData {
                             minMaxesTime = keyTime
                         }
                         val minMax = MinMax()
-                        minMax.batteryVoltageMin = result[7].toDouble() / 16
-                        minMax.batteryVoltageMax = result[8].toDouble() / 16
-                        minMax.capacitorVoltageMin = result[9].toDouble() / 16
-                        minMax.capacitorVoltageMax = result[10].toDouble() / 16
-                        minMax.motorCurrentMin = result[11].toInt()
-                        minMax.motorCurrentMax = result[12].toInt()
-                        minMax.motorSpeedMin = result[13].toInt()
-                        minMax.motorSpeedMax = result[14].toInt()
-                        minMax.deviceTempMin = result[15].toInt()
-                        minMax.deviceTempMax = result[16].toInt()
+                        minMax.batteryVoltageMin = result[7 + shift].toDouble() / 16
+                        minMax.batteryVoltageMax = result[8 + shift].toDouble() / 16
+                        minMax.capacitorVoltageMin = result[9 + shift].toDouble() / 16
+                        minMax.capacitorVoltageMax = result[10 + shift].toDouble() / 16
+                        minMax.motorCurrentMin = result[11 + shift].toInt()
+                        minMax.motorCurrentMax = result[12 + shift].toInt()
+                        minMax.motorSpeedMin = result[13 + shift].toInt()
+                        minMax.motorSpeedMax = result[14 + shift].toInt()
+                        minMax.deviceTempMin = result[15 + shift].toInt()
+                        minMax.deviceTempMax = result[16 + shift].toInt()
                         minMaxes.add(minMax)
                     }
                 } catch (e: Exception) {
@@ -220,7 +233,7 @@ class LogsData {
             Log.v(TAG, "loading from file: $filename")
             return try {
                 inputStream = context!!.openFileInput(filename)
-                val isr = InputStreamReader(inputStream)
+                val isr = InputStreamReader(inputStream, StandardCharsets.UTF_8)
                 val bufferedReader = BufferedReader(isr)
                 val sb = StringBuilder()
                 var line: String?
