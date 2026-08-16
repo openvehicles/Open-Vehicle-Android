@@ -9,9 +9,11 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 /**
@@ -71,7 +73,7 @@ class LogsData {
         val json = gson.toJson(this)
         return try {
             outputStream = context!!.openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(json.toByteArray())
+            outputStream.write(json.toByteArray(StandardCharsets.UTF_8))
             outputStream.close()
             true
         } catch (e: Exception) {
@@ -86,7 +88,7 @@ class LogsData {
         var recType: String
         var timeStamp: String
         var entryNr: Int
-        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
         serverTime.timeZone = TimeZone.getTimeZone("UTC")
         for (i in 0 until cmdSeries.size()) {
             val cmd = cmdSeries[i]
@@ -220,7 +222,7 @@ class LogsData {
             Log.v(TAG, "loading from file: $filename")
             return try {
                 inputStream = context!!.openFileInput(filename)
-                val isr = InputStreamReader(inputStream)
+                val isr = InputStreamReader(inputStream, StandardCharsets.UTF_8)
                 val bufferedReader = BufferedReader(isr)
                 val sb = StringBuilder()
                 var line: String?

@@ -8,8 +8,10 @@ import java.io.BufferedReader
 import java.io.FileInputStream
 import java.io.FileOutputStream
 import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.Locale
 import java.util.TimeZone
 
 /**
@@ -32,7 +34,7 @@ class AuxBatteryData {
         val json = gson.toJson(this)
         return try {
             outputStream = context!!.openFileOutput(filename, Context.MODE_PRIVATE)
-            outputStream.write(json.toByteArray())
+            outputStream.write(json.toByteArray(StandardCharsets.UTF_8))
             outputStream.close()
             true
         } catch (e: Exception) {
@@ -46,7 +48,7 @@ class AuxBatteryData {
         var recCnt: Int
         var recType: String
         var timeStamp: Date
-        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val serverTime = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US)
         serverTime.timeZone = TimeZone.getTimeZone("UTC")
         var packStatus: PackStatus? = null
         var doors: Int
@@ -65,22 +67,37 @@ class AuxBatteryData {
                     recNr = result[2].toInt()
                     recCnt = result[3].toInt()
                     recType = result[4]
-                    timeStamp = serverTime.parse(result[5])
+
+                    // Robust timestamp parsing:
+                    var shift = 0
+                    try {
+                        timeStamp = serverTime.parse(result[5])!!
+                    } catch (e: Exception) {
+                        // try combined with next part if next part looks like time:
+                        try {
+                            timeStamp = serverTime.parse(result[5].trim() + " " + result[6].trim())!!
+                            shift = 1
+                        } catch (e2: Exception) {
+                            Log.w(TAG, "failed to parse timestamp: " + result[5])
+                            continue
+                        }
+                    }
+
                     Log.v(TAG, "processing recType $recType entryNr $recNr/$recCnt")
                     if (recType == "D") {
                         try {
                             // create record:
                             packStatus = PackStatus()
                             packStatus.timeStamp = timeStamp
-                            packStatus.volt = result[21].toFloat()
-                            if (result.size > 23) packStatus.voltRef = result[23].toFloat()
-                            if (result.size > 26) packStatus.current = result[26].toFloat()
-                            packStatus.tempAmbient = result[17].toFloat()
-                            if (result.size > 25) packStatus.tempCharger = result[25].toFloat()
-                            doors = result[18].toInt() // doors3
+                            packStatus.volt = result[21 + shift].toFloat()
+                            if (result.size > 23 + shift) packStatus.voltRef = result[23 + shift].toFloat()
+                            if (result.size > 26 + shift) packStatus.current = result[26 + shift].toFloat()
+                            packStatus.tempAmbient = result[17 + shift].toFloat()
+                            if (result.size > 25 + shift) packStatus.tempCharger = result[25 + shift].toFloat()
+                            doors = result[18 + shift].toInt() // doors3
                             packStatus.isCarAwake = doors and 0x01 != 0
-                            if (result.size > 24) {
-                                doors = result[24].toInt() // doors5
+                            if (result.size > 24 + shift) {
+                                doors = result[24 + shift].toInt() // doors5
                                 packStatus.isCharging12V = doors and 0x10 != 0
                             }
 
@@ -125,7 +142,7 @@ class AuxBatteryData {
             Log.v(TAG, "loading from file: $filename")
             return try {
                 inputStream = context!!.openFileInput(filename)
-                val isr = InputStreamReader(inputStream)
+                val isr = InputStreamReader(inputStream, StandardCharsets.UTF_8)
                 val bufferedReader = BufferedReader(isr)
                 val sb = StringBuilder()
                 var line: String?
