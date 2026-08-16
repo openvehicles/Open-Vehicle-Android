@@ -29,49 +29,27 @@
                     android:layout_height="wrap_content"
                     android:paddingTop="16dp">
 
-                    <com.google.android.material.progressindicator.CircularProgressIndicator
-                        android:id="@+id/carUpdatingProgress"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginStart="188dp"
-                        android:layout_marginTop="8dp"
-                        android:indeterminate="true"
-                        android:visibility="gone"
-                        app:indicatorSize="20dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:visibility="invisible" />
-
-                    <ImageView
-                        android:id="@+id/gsmView"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="16dp"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/signal_strength_0" />
-
-                    <ImageView
-                        android:id="@+id/gpsView"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_marginEnd="8dp"
-                        android:visibility="gone"
-                        app:layout_constraintEnd_toStartOf="@+id/gsmView"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:srcCompat="@drawable/ic_satellite" />
-
                     <LinearLayout
                         android:id="@+id/carStatusContainer"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="16dp"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.progressindicator.CircularProgressIndicator
+                            android:id="@+id/carUpdatingProgress"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:layout_marginEnd="8dp"
+                            android:indeterminate="true"
+                            android:visibility="gone"
+                            app:indicatorSize="16dp"
+                            tools:visibility="visible" />
 
                         <ImageView
                             android:id="@+id/parkIcon"
@@ -84,13 +62,32 @@
 
                         <TextView
                             android:id="@+id/carStatus"
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:textAppearance="@style/TextAppearance.Material3.BodyMedium"
                             android:textColor="@color/colorText"
-                            android:textSize="16sp"
-                            android:textStyle="bold"
+                            android:textSize="14sp"
                             tools:text="Parked" />
+
+                        <ImageView
+                            android:id="@+id/gsmView"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="8dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/signal_strength_0"
+                            app:tint="@color/colorText" />
+
+                        <ImageView
+                            android:id="@+id/gpsView"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="4dp"
+                            android:visibility="gone"
+                            app:srcCompat="@drawable/ic_satellite"
+                            app:tint="@color/colorText" />
+
                     </LinearLayout>
 
                     <LinearLayout
@@ -98,9 +95,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:alpha="0.7"
                         android:gravity="center_vertical"
                         android:orientation="horizontal"
-                        android:alpha="0.7"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/carStatusContainer">
@@ -117,7 +114,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textColor="@color/colorText"
-                            android:textSize="12sp"
+                            android:textSize="14sp"
                             tools:text="123.456 km" />
                     </LinearLayout>
 
@@ -134,8 +131,8 @@
                             android:layout_height="156dp"
                             android:padding="16dp"
                             android:scaleType="fitCenter" />
-                    </FrameLayout>
 
+                    </FrameLayout>
 
 
                 </androidx.constraintlayout.widget.ConstraintLayout>

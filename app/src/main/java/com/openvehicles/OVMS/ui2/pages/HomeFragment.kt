@@ -412,6 +412,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseTabs(carData)
         initialiseBottomInfo(carData)
         initialiseCarDropDown()
+        gsmicon(carData)
+        gpsicon(carData)
 
         // Provide color provider to tabs adapter
         tabsAdapter.setColorProvider { tab ->
@@ -1783,7 +1785,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         if (carData?.car_gsmlock?.isNotEmpty() == true) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
-            baseInfoBuilder.append("GSM: ${carData.car_gsmlock} ${carData.car_mdm_mode}")
+            baseInfoBuilder.append("Network: ${carData.car_gsmlock} \nMode: ${carData.car_mdm_mode} ${carData.car_gsm_signal}")
         }
 
         if (carData?.car_vin?.isNotEmpty() == true) {
@@ -1803,25 +1805,34 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     private fun gsmicon(carData: CarData?) {
         // GSM Bar
+        val gsmimg = findViewById(R.id.gsmView) as ImageView
         if (appPrefs.getData("gsm_icon", "off") == "on") {
-            val gsmimg = findViewById(R.id.gsmView) as ImageView
             gsmimg.visibility = VISIBLE
-            gsmimg.setImageResource(
-                getDrawableIdentifier(
-                    activity,
-                    "signal_strength_" + carData?.car_gsm_bars
-                )
+            val resId = getDrawableIdentifier(
+                requireContext(),
+                "signal_strength_" + (carData?.car_gsm_bars ?: 0)
             )
-            gsmimg.imageTintList = ColorStateList.valueOf(textColor)
+            if (resId > 0) {
+                gsmimg.setImageResource(resId)
+            } else {
+                gsmimg.setImageResource(R.drawable.signal_strength_0)
+            }
+            // Use static tint from resources to be safe
+            gsmimg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorText))
+        } else {
+            gsmimg.visibility = View.GONE
         }
     }
 
     private fun gpsicon(carData: CarData?) {
         // GPS Bar
+        val gpsimg = findViewById(R.id.gpsView) as ImageView
         if (appPrefs.getData("gps_icon", "off") == "on") {
-            val gpsimg = findViewById(R.id.gpsView) as ImageView
-            gpsimg.visibility = if(carData?.car_gpslock == true) VISIBLE else View.INVISIBLE
-            gpsimg.imageTintList = ColorStateList.valueOf(textColor)
+            gpsimg.visibility = VISIBLE
+            gpsimg.alpha = if(carData?.car_gpslock == true) 1.0f else 0.3f
+            gpsimg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorText))
+        } else {
+            gpsimg.visibility = View.GONE
         }
     }
 
