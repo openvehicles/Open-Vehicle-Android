@@ -83,44 +83,28 @@ class BatteryData {
                     recNr = result[2].toInt()
                     recCnt = result[3].toInt()
                     recType = result[4]
-
-                    // Robust timestamp parsing:
-                    var shift = 0
-                    try {
-                        timeStamp = serverTime.parse(result[5])!!
-                    } catch (e: Exception) {
-                        // try combined with next part if next part looks like time:
-                        try {
-                            timeStamp = serverTime.parse(result[5].trim() + " " + result[6].trim())!!
-                            shift = 1
-                            Log.d(TAG, "detected split timestamp in historical record")
-                        } catch (e2: Exception) {
-                            Log.w(TAG, "failed to parse timestamp: " + result[5])
-                            continue
-                        }
-                    }
-
+                    timeStamp = serverTime.parse(result[5])
                     Log.v(TAG, "processing recType $recType entryNr $recNr/$recCnt")
                     if (recType == "RT-BAT-P") {
                         try {
                             // create record:
                             packStatus = PackStatus()
                             packStatus.timeStamp = timeStamp
-                            packStatus.voltAlert = result[7 + shift].toInt()
-                            packStatus.tempAlert = result[8 + shift].toInt()
-                            packStatus.soc = result[9 + shift].toInt().toFloat() / 100
-                            packStatus.socMin = result[10 + shift].toInt().toFloat() / 100
-                            packStatus.socMax = result[11 + shift].toInt().toFloat() / 100
-                            packStatus.volt = result[12 + shift].toInt().toFloat() / 10
-                            packStatus.voltMin = result[13 + shift].toInt().toFloat() / 10
-                            packStatus.voltMax = result[14 + shift].toInt().toFloat() / 10
-                            packStatus.temp = result[15 + shift].toFloat()
-                            packStatus.tempMin = result[16 + shift].toFloat()
-                            packStatus.tempMax = result[17 + shift].toFloat()
-                            packStatus.voltDevMax = result[18 + shift].toInt().toFloat() / 100
-                            packStatus.tempDevMax = result[19 + shift].toFloat()
-                            packStatus.maxDrivePwr = (result[20 + shift].toInt() * 100).toLong()
-                            packStatus.maxRecupPwr = (result[21 + shift].toInt() * 100).toLong()
+                            packStatus.voltAlert = result[7].toInt()
+                            packStatus.tempAlert = result[8].toInt()
+                            packStatus.soc = result[9].toInt().toFloat() / 100
+                            packStatus.socMin = result[10].toInt().toFloat() / 100
+                            packStatus.socMax = result[11].toInt().toFloat() / 100
+                            packStatus.volt = result[12].toInt().toFloat() / 10
+                            packStatus.voltMin = result[13].toInt().toFloat() / 10
+                            packStatus.voltMax = result[14].toInt().toFloat() / 10
+                            packStatus.temp = result[15].toFloat()
+                            packStatus.tempMin = result[16].toFloat()
+                            packStatus.tempMax = result[17].toFloat()
+                            packStatus.voltDevMax = result[18].toInt().toFloat() / 100
+                            packStatus.tempDevMax = result[19].toFloat()
+                            packStatus.maxDrivePwr = (result[20].toInt() * 100).toLong()
+                            packStatus.maxRecupPwr = (result[21].toInt() * 100).toLong()
 
                             // store record:
                             if (packStatus.volt > 0) packHistory.add(packStatus)
@@ -130,7 +114,7 @@ class BatteryData {
                         }
                     } else if (recType == "RT-BAT-C") {
                         try {
-                            nrCell = result[6 + shift].toInt()
+                            nrCell = result[6].toInt()
                             if (nrCell > cellCount) cellCount = nrCell
 
                             // Pack record(s) complete?
@@ -152,16 +136,16 @@ class BatteryData {
 
                             // create new record:
                             cellStatus = CellStatus()
-                            cellStatus.voltAlert = result[7 + shift].toInt()
-                            cellStatus.tempAlert = result[8 + shift].toInt()
-                            cellStatus.volt = result[9 + shift].toInt().toFloat() / 1000
-                            cellStatus.voltMin = result[10 + shift].toInt().toFloat() / 1000
-                            cellStatus.voltMax = result[11 + shift].toInt().toFloat() / 1000
-                            cellStatus.voltDevMax = result[12 + shift].toInt().toFloat() / 1000
-                            cellStatus.temp = result[13 + shift].toFloat()
-                            cellStatus.tempMin = result[14 + shift].toFloat()
-                            cellStatus.tempMax = result[15 + shift].toFloat()
-                            cellStatus.tempDevMax = result[16 + shift].toFloat()
+                            cellStatus.voltAlert = result[7].toInt()
+                            cellStatus.tempAlert = result[8].toInt()
+                            cellStatus.volt = result[9].toInt().toFloat() / 1000
+                            cellStatus.voltMin = result[10].toInt().toFloat() / 1000
+                            cellStatus.voltMax = result[11].toInt().toFloat() / 1000
+                            cellStatus.voltDevMax = result[12].toInt().toFloat() / 1000
+                            cellStatus.temp = result[13].toFloat()
+                            cellStatus.tempMin = result[14].toFloat()
+                            cellStatus.tempMax = result[15].toFloat()
+                            cellStatus.tempDevMax = result[16].toFloat()
 
                             // store record:
                             cells!![nrCell - 1] = cellStatus
