@@ -141,7 +141,6 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         // Setup Cell status chart:
         //
         cellChart = (rootView.findViewById<View>(R.id.chart_cells) as CandleStickChart)
-        cellChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         cellChart.apply {
             description = cellChart.description.apply {
                 text = getString(R.string.battery_cell_description)
@@ -173,7 +172,6 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         // Setup Pack history chart:
         //
         packChart = rootView.findViewById<View>(R.id.chart_pack) as LineChart
-        packChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         packChart.description.isEnabled = false
         packChart.setDrawGridBackground(false)
         packChart.setDrawBorders(true)

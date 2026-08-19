@@ -33,8 +33,6 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
-import java.nio.charset.StandardCharsets
-
 class ApiTask(
 
     private var context: Context,
@@ -221,7 +219,7 @@ class ApiTask(
                 Log.i(TAG, "TX: $message")
                 outputstream!!.println(
                     Base64.encodeToString(
-                        txCipher.update(message.toByteArray(StandardCharsets.UTF_8)),
+                        txCipher.update(message.toByteArray()),
                         Base64.NO_WRAP
                     )
                 )
@@ -304,12 +302,11 @@ class ApiTask(
             outputstream = PrintWriter(
                 BufferedWriter(
                     OutputStreamWriter(
-                        socket!!.getOutputStream(),
-                        StandardCharsets.UTF_8
+                        socket!!.getOutputStream()
                     )
                 ), true
             )
-            inputstream = BufferedReader(InputStreamReader(socket!!.getInputStream(), StandardCharsets.UTF_8))
+            inputstream = BufferedReader(InputStreamReader(socket!!.getInputStream()))
             outputLock = Semaphore(1)
 
             // Encrypt password:

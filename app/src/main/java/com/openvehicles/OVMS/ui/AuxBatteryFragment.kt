@@ -126,7 +126,6 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
         // Setup Pack history chart:
         //
         packChart = rootView.findViewById<View>(R.id.auxbattery_chart_pack) as LineChart
-        packChart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         packChart.description.isEnabled = false
         packChart.setPinchZoom(false) // = pinch zoom in one direction at a time
         packChart.setDrawGridBackground(false)

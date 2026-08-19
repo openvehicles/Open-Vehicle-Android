@@ -120,7 +120,6 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         // Setup trip chart:
         //
         var chart: LineChart = rootView.findViewById<View>(R.id.chart_trip) as LineChart
-        chart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         tripChart = chart
         chart.description.isEnabled = false
         chart.setDrawGridBackground(false)
@@ -145,7 +144,6 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         // Setup power chart:
         //
         chart = rootView.findViewById<View>(R.id.chart_power) as LineChart
-        chart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         powerChart = chart
         chart.description.isEnabled = false
         chart.setDrawGridBackground(false)
@@ -170,7 +168,6 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         // Setup energy chart:
         //
         chart = rootView.findViewById<View>(R.id.chart_energy) as LineChart
-        chart.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
         energyChart = chart
         chart.description.isEnabled = false
         chart.setDrawGridBackground(false)
