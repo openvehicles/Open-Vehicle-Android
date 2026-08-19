@@ -120,8 +120,8 @@ class ApiTask(
                     // Read & decrypt message:
                     line = inputstream!!.readLine()
                     if (line == null) throw IOException("Connection lost")
-                    rx = line!!.trim { it <= ' ' }
-                    msg = String(rxCipher.update(Base64.decode(rx, 0)), StandardCharsets.UTF_8).trim { it <= ' ' }
+                    rx = line.trim { it <= ' ' }
+                    msg = String(rxCipher.update(Base64.decode(rx, 0))).trim { it <= ' ' }
                     Log.d(TAG, String.format("RX: %s (%s)", msg, rx))
 
                     // Process message:
