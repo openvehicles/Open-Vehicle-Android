@@ -54,6 +54,11 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
             pref.onPreferenceChangeListener =
                 OnPreferenceChangeListener { _, newValue ->
                     ThemeMode.applyAndStore(requireContext(), newValue as String)
+                    // Request widget update:
+                    requireContext().sendBroadcast(Intent(ApiService.ACTION_APIEVENT).apply {
+                        setPackage(requireContext().packageName)
+                        putExtra("event", "ThemeChanged")
+                    })
                     true
                 }
         }

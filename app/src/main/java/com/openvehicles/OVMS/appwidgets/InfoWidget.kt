@@ -4,6 +4,7 @@ import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -18,6 +19,7 @@ import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui.MainActivity
 import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui2.MainActivityUI2
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.Sys
 import java.text.SimpleDateFormat
@@ -90,6 +92,13 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         width: Int,
         height: Int
     ): Bitmap {
+        val themeMode = appPrefs?.getData(ThemeMode.PREF_KEY, ThemeMode.DEFAULT) ?: ThemeMode.DEFAULT
+        val isNight = when (themeMode) {
+            ThemeMode.DARK -> true
+            ThemeMode.LIGHT -> false
+            else -> (context!!.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        }
+
         val displayDensity = context!!.resources.displayMetrics.density
         val dim = (min(width, height) * displayDensity).toInt()
         val dps = (dim - 1) / 100f // scaling for coordinates normalized to range 0…100
@@ -99,9 +108,16 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         val paint = Paint()
         paint.isAntiAlias = true
 
+        val backgroundColor = if (isNight) Color.parseColor("#1E1E1E") else Color.parseColor("#F3F3F3")
+        val textColorMain = if (isNight) Color.WHITE else Color.BLACK
+        val textColorAux = if (isNight) Color.parseColor("#ffffaa54") else Color.parseColor("#ffaa6600")
+        val textColorKwh = if (isNight) Color.parseColor("#ffffa9ff") else Color.parseColor("#ffaa00aa")
+        val textColorUpdate = if (isNight) Color.parseColor("#ff00fff9") else Color.parseColor("#ff008888")
+        val colorScale = if (isNight) Color.parseColor("#ff666688") else Color.parseColor("#ff9999aa")
+
         // Create background:
         val bg = RectF(0 * dps, 0 * dps, 100 * dps, 100 * dps)
-        paint.color = context.resources.getColor(R.color.colorPrimary)
+        paint.color = backgroundColor
         paint.style = Paint.Style.FILL
         paint.strokeWidth = 0f
         canvas.drawRoundRect(bg, 5 * dps, 5 * dps, paint)
@@ -109,7 +125,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         // Check for car data availability:
         if (carData == null) {
             paint.textSize = 15 * dps
-            paint.color = Color.WHITE
+            paint.color = textColorMain
             paint.textAlign = Paint.Align.CENTER
             canvas.drawText("No Data", 50 * dps, 58 * dps, paint)
             return bitmap
@@ -132,8 +148,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         } else {
             Color.parseColor("#ffff1010")
         }
-        val colorSOCLimit = Color.parseColor("#ffffaa54")
-        val colorScale = Color.parseColor("#ff666688")
+        val colorSOCLimit = textColorAux
         paint.color = colorScale
         paint.style = Paint.Style.STROKE
         paint.strokeWidth = 2f
@@ -173,10 +188,6 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         //
         // Render text displays
         //
-        val textColorMain = Color.WHITE
-        val textColorAux = Color.parseColor("#ffffaa54")
-        val textColorKwh = Color.parseColor("#ffffa9ff")
-        val textColorUpdate = Color.parseColor("#ff00fff9")
         paint.reset()
         paint.isAntiAlias = true
         paint.style = Paint.Style.FILL
@@ -224,6 +235,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         val textRange =
             String.format("%d", Math.floor(carData.car_range_estimated_raw.toDouble()).toInt())
         paint.textSize = 15 * dps
+        paint.color = textColorMain
         Ui.drawUnitText(
             canvas,
             paint,
@@ -261,6 +273,7 @@ class InfoWidget : ApiWidget<InfoWidget>(InfoWidget::class.java) {
         // Estimated charge time:
         if (etr > 0) {
             paint.textAlign = Paint.Align.RIGHT
+            paint.color = textColorMain
             if (etr > 60) {
                 val w = Ui.drawUnitText(
                     canvas,

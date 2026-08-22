@@ -2,18 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
     android:id="@+id/quick_action_root">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/action_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="3dp"
         android:indeterminate="true"
         android:visibility="gone"
-        app:indicatorSize="48dp"
+        app:indicatorSize="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

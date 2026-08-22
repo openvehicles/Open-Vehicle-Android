@@ -95,7 +95,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         bottomActionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         bottomActionsRecyclerView.adapter = bottomActionsAdapter
 
-        mainActionsRecyclerView.layoutManager = GridLayoutManager(requireContext(), 2, VERTICAL, false)
+        mainActionsRecyclerView.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
         mainActionsRecyclerView.adapter = centerActionsAdapter
 
         updateServiceInfo(carData)
@@ -137,8 +137,10 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             loadTPMSConfig()
         }
         sideActionsAdapter.setCarData(carData)
+        bottomActionsAdapter.setCarData(carData)
         centerActionsAdapter.setCarData(carData)
         sideActionsAdapter.notifyDataSetChanged()
+        bottomActionsAdapter.notifyDataSetChanged()
         centerActionsAdapter.notifyDataSetChanged()
         initialiseCarRendering(carData)
     }
@@ -699,17 +701,18 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
 
     private fun initialiseSideActions(carData: CarData?) {
         sideActionsAdapter.mData.clear()
-        centerActionsAdapter.setCarData(carData)
+        sideActionsAdapter.setCarData(carData)
+        val context = requireContext()
         if (carData?.car_type == "RT") {
             // Renault Twizy: use Homelink for profile switching:
-            sideActionsAdapter.mData += TwizyDriveModeDefaultQuickAction({getService()})
-            sideActionsAdapter.mData += TwizyDriveMode1QuickAction({getService()})
-            sideActionsAdapter.mData += TwizyDriveMode2QuickAction({getService()})
-            sideActionsAdapter.mData += TwizyDriveMode3QuickAction({getService()})
+            sideActionsAdapter.mData += TwizyDriveModeDefaultQuickAction({getService()}, context)
+            sideActionsAdapter.mData += TwizyDriveMode1QuickAction({getService()}, context)
+            sideActionsAdapter.mData += TwizyDriveMode2QuickAction({getService()}, context)
+            sideActionsAdapter.mData += TwizyDriveMode3QuickAction({getService()}, context)
         } else {
-            sideActionsAdapter.mData += Homelink1QuickAction({getService()})
-            sideActionsAdapter.mData += Homelink2QuickAction({getService()})
-            sideActionsAdapter.mData += Homelink3QuickAction({getService()})
+            sideActionsAdapter.mData += Homelink1QuickAction({getService()}, context)
+            sideActionsAdapter.mData += Homelink2QuickAction({getService()}, context)
+            sideActionsAdapter.mData += Homelink3QuickAction({getService()}, context)
         }
         sideActionsAdapter.notifyDataSetChanged()
     }
@@ -717,13 +720,14 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
     private fun initialiseMainActions(carData: CarData?) {
         centerActionsAdapter.mData.clear()
         centerActionsAdapter.setCarData(carData)
-        centerActionsAdapter.mData += LockQuickAction({getService()})
-        if (carData?.car_type != "SQ") centerActionsAdapter.mData += ValetQuickAction({getService()})
-        centerActionsAdapter.mData += WakeupQuickAction({getService()})
-        if (carData?.car_type != "SQ") centerActionsAdapter.mData += ChargingQuickAction({getService()})
+        val context = requireContext()
+        centerActionsAdapter.mData += LockQuickAction({getService()}, context)
+        if (carData?.car_type != "SQ") centerActionsAdapter.mData += ValetQuickAction({getService()}, context)
+        centerActionsAdapter.mData += WakeupQuickAction({getService()}, context)
+        if (carData?.car_type != "SQ") centerActionsAdapter.mData += ChargingQuickAction({getService()}, context)
         if (carData?.car_type in listOf("SQ")) {
-            centerActionsAdapter.mData += CarInfoQuickAction({getService()})
-            centerActionsAdapter.mData += DDT4allQuickAction({getService()})
+            centerActionsAdapter.mData += CarInfoQuickAction({getService()}, context)
+            centerActionsAdapter.mData += DDT4allQuickAction({getService()}, context)
         }
         centerActionsAdapter.notifyDataSetChanged()
     }

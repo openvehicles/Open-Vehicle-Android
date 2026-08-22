@@ -71,24 +71,25 @@
         <ImageView
             android:id="@+id/battIndicatorImg"
             android:layout_width="0dp"
-            android:layout_height="400dp"
+            android:layout_height="480dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tpmsStale"
-            tools:srcCompat="@drawable/ol_car_leaf2_pearlwhite" />
+            tools:srcCompat="@drawable/ol_car_twizy" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/mainActions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTPMS_FL"
@@ -144,8 +145,8 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardTPMS_FR"
-            app:layout_constraintBottom_toTopOf="@+id/cardTPMS_RR"/>
+            app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
+            app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"/>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardTPMS_RR"
@@ -217,6 +218,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="12dp"
                 android:padding="12dp"
                 android:text="TextView"
                 android:textColor="@color/colorText"
@@ -227,9 +231,9 @@
             android:id="@+id/cardTPMSConfig"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="12dp"
             android:visibility="gone"
             app:cardCornerRadius="16dp"
             app:strokeWidth="1dp"

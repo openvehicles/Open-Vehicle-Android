@@ -101,6 +101,7 @@ class CarEditorFragment : BaseFragment() {
         VehicleType("smart_ed", "Smart ED (ForTwo)", listOf("white")),
         VehicleType("smart_eq", "Smart EQ (ForTwo)", listOf("red", "black", "white", "fl_black", "fl_white", "fl_red", "cabrio_black", "cabrio_crystalwhite", "cabrio_grey", "cabrio_lavaorange")),
         VehicleType("smart_44", "Smart ForFour", listOf("black", "white_silver", "fl_black")),
+        VehicleType("vwup", "VW e-Up", listOf("black", "blue", "red", "silver", "white", "yellow")),
         VehicleType("zoe", "Renault Zoe", listOf("black", "brown", "grey", "hellblau", "lila", "red", "white", "ytriumgrau")),
         VehicleType("mgzs", "MG ZS EV", listOf("white", "blue", "lightblue", "red", "black")),
         VehicleType("edeliver3", "Maxus eDeliver 3", listOf("white")),
@@ -170,7 +171,7 @@ class CarEditorFragment : BaseFragment() {
 
     private fun filterSecondaryGalleries() {
         val currentType = vehicleTypes.getOrNull(selectedVehicleTypeIndex) ?: return
-        val filterId = if (currentType.id.startsWith("smart_44")) "vwup" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
+        val filterId = if (currentType.id.startsWith("smart_44")) "smart_44" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
         
         // Filter OL images
         val filteredOl = availableOlImages.filter { it.contains(filterId) }.toTypedArray()
@@ -191,7 +192,7 @@ class CarEditorFragment : BaseFragment() {
         val targetOl = "car_${currentType.id}_${currentColor}"
         val olAdapter = galleryCarOl?.adapter as? CarImgAdapter ?: return
         var olIndex = -1
-        val baseId = if (currentType.id.startsWith("smart_44")) "vwup" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
+        val baseId = if (currentType.id.startsWith("smart_44")) "smart_44" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
         
         for (i in 0 until olAdapter.count) {
             val img = olAdapter.getItem(i) as String

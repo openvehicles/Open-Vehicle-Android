@@ -1410,29 +1410,30 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     private fun getActionFromId(id: String, apiServiceGetter: () -> ApiService?): QuickAction? {
+        val ctx = context
         return when (id) {
-            ChargingQuickAction.ACTION_ID -> ChargingQuickAction(apiServiceGetter)
-            ClimateQuickAction.ACTION_ID -> ClimateQuickAction(apiServiceGetter)
-            LockQuickAction.ACTION_ID -> LockQuickAction(apiServiceGetter)
-            ValetQuickAction.ACTION_ID -> ValetQuickAction(apiServiceGetter)
-            WakeupQuickAction.ACTION_ID -> WakeupQuickAction(apiServiceGetter)
-            ClimateScheduleQuickAction.ACTION_ID -> ClimateScheduleQuickAction(apiServiceGetter)
-            DDT4allQuickAction.ACTION_ID -> DDT4allQuickAction(apiServiceGetter)
+            ChargingQuickAction.ACTION_ID -> ChargingQuickAction(apiServiceGetter, ctx)
+            ClimateQuickAction.ACTION_ID -> ClimateQuickAction(apiServiceGetter, ctx)
+            LockQuickAction.ACTION_ID -> LockQuickAction(apiServiceGetter, ctx)
+            ValetQuickAction.ACTION_ID -> ValetQuickAction(apiServiceGetter, ctx)
+            WakeupQuickAction.ACTION_ID -> WakeupQuickAction(apiServiceGetter, ctx)
+            ClimateScheduleQuickAction.ACTION_ID -> ClimateScheduleQuickAction(apiServiceGetter, ctx)
+            DDT4allQuickAction.ACTION_ID -> DDT4allQuickAction(apiServiceGetter, ctx)
             else -> {
                 if (id.startsWith("rt_profile_")) {
                     return when (id) {
-                        "rt_profile_-1" -> TwizyDriveModeDefaultQuickAction(apiServiceGetter)
-                        "rt_profile_0" -> TwizyDriveMode1QuickAction(apiServiceGetter)
-                        "rt_profile_1" -> TwizyDriveMode2QuickAction(apiServiceGetter)
-                        "rt_profile_2" -> TwizyDriveMode3QuickAction(apiServiceGetter)
+                        "rt_profile_-1" -> TwizyDriveModeDefaultQuickAction(apiServiceGetter, ctx)
+                        "rt_profile_0" -> TwizyDriveMode1QuickAction(apiServiceGetter, ctx)
+                        "rt_profile_1" -> TwizyDriveMode2QuickAction(apiServiceGetter, ctx)
+                        "rt_profile_2" -> TwizyDriveMode3QuickAction(apiServiceGetter, ctx)
                         else -> null
                     }
                 }
                 if (id.startsWith("hl_")) {
                     return when (id) {
-                        "hl_0" -> Homelink1QuickAction(apiServiceGetter)
-                        "hl_1" -> Homelink2QuickAction(apiServiceGetter)
-                        "hl_2" -> Homelink3QuickAction(apiServiceGetter)
+                        "hl_1" -> Homelink1QuickAction(apiServiceGetter, ctx)
+                        "hl_2" -> Homelink2QuickAction(apiServiceGetter, ctx)
+                        "hl_3" -> Homelink3QuickAction(apiServiceGetter, ctx)
                         else -> null
                     }
                 }
