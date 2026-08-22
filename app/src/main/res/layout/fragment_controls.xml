@@ -19,6 +19,9 @@
             android:layout_height="50dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp"
             android:clickable="true"
             android:ellipsize="start"
             android:padding="8dp"
@@ -86,7 +89,7 @@
             android:id="@+id/mainActions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="20dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
             app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"/>
@@ -95,7 +98,7 @@
             android:id="@+id/cardTPMS_FL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="20dp"
             android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:strokeWidth="1dp"
@@ -119,7 +122,7 @@
             android:id="@+id/cardTPMS_FR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="20dp"
             android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:strokeWidth="1dp"
@@ -143,7 +146,7 @@
             android:id="@+id/sideActions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/battIndicatorImg"
             app:layout_constraintBottom_toBottomOf="@+id/battIndicatorImg"/>
@@ -152,7 +155,7 @@
             android:id="@+id/cardTPMS_RR"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="20dp"
             android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:strokeWidth="1dp"
@@ -176,7 +179,7 @@
             android:id="@+id/cardTPMS_RL"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="20dp"
             android:visibility="gone"
             app:cardCornerRadius="8dp"
             app:strokeWidth="1dp"
@@ -200,9 +203,9 @@
             android:id="@+id/cardServiceInfo"
             android:layout_width="match_parent"
             android:layout_height="58dp"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="24dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="20dp"
             android:visibility="gone"
             app:cardBackgroundColor="?attr/colorSurfaceContainer"
             app:cardCornerRadius="16dp"
@@ -217,8 +220,8 @@
                 android:id="@+id/serviceinfo"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginStart="12dp"
-                android:layout_marginEnd="12dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:gravity="center"
                 android:padding="12dp"
                 android:text="TextView"
@@ -230,8 +233,8 @@
             android:id="@+id/cardTPMSConfig"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
             android:layout_marginTop="15dp"
             android:visibility="gone"
             app:cardCornerRadius="16dp"
@@ -244,16 +247,18 @@
             tools:visibility="visible">
 
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_width="380dp"
+                android:layout_height="215dp"
+                android:orientation="vertical"
+                android:paddingStart="20dp"
+                android:paddingEnd="20dp">
 
                 <RelativeLayout
                     android:id="@+id/tpmsConfigHeader"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:background="?attr/selectableItemBackground">
+                    android:background="?attr/selectableItemBackground"
+                    android:padding="12dp">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -278,8 +283,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="12dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
                     android:paddingBottom="12dp"
                     android:visibility="gone"
                     tools:visibility="visible">
@@ -298,10 +303,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
-                        android:text="@string/Edit"
-                        android:padding="0dp"
+                        android:minWidth="0dp"
                         android:minHeight="0dp"
-                        android:minWidth="0dp"/>
+                        android:padding="0dp"
+                        android:text="@string/Edit" />
                 </LinearLayout>
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
