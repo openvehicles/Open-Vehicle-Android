@@ -123,7 +123,7 @@ class ApiTask(
                     line = inputstream!!.readLine()
                     if (line == null) throw IOException("Connection lost")
                     rx = line.trim { it <= ' ' }
-                    msg = String(rxCipher.update(Base64.decode(rx, 0))).trim { it <= ' ' }
+                    msg = String(rxCipher.update(Base64.decode(rx, 0)), StandardCharsets.UTF_8).trim { it <= ' ' }
                     Log.d(TAG, String.format("RX: %s (%s)", msg, rx))
 
                     // Process message:
@@ -480,7 +480,7 @@ class ApiTask(
                     var primeData = ""
                     for (cnt in 0..1023) primeData += "0"
                     pmCipher.update(primeData.toByteArray())
-                    msgData = String(pmCipher.update(decodedCmd))
+                    msgData = String(pmCipher.update(decodedCmd), StandardCharsets.UTF_8)
                 } catch (e: Exception) {
                     Log.d("ERR", e.message!!)
                     e.printStackTrace()
@@ -493,6 +493,11 @@ class ApiTask(
                     publishProgress(MsgType.UPDATE, msgCode, msgData)
                 }
             }
+        }
+        // Workaround for turboserv
+        if (carData.sel_server.startsWith("turboserv")  && msgCode == 'D') {
+            carData.car_lastupdate_raw = 0
+            carData.car_lastupdated = Date(System.currentTimeMillis())
         }
         Log.v(TAG, "$msgCode MSG Received: $msgData")
         when (msgCode) {

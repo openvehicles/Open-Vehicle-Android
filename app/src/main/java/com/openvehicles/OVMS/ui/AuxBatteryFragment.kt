@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle

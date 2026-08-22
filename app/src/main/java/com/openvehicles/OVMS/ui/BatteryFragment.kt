@@ -508,7 +508,7 @@ class BatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCa
         xAxis.removeAllLimitLines()
         for (i in xSections.indices) {
             val l = xSections[i]
-            if (i < xSections.size / 2) {
+            if (i < xSections.size / 1.5) {
                 l.labelPosition = LimitLine.LimitLabelPosition.RIGHT_BOTTOM
             } else {
                 l.labelPosition = LimitLine.LimitLabelPosition.LEFT_BOTTOM

@@ -80,6 +80,7 @@ class BatteryData {
             }
             for (resNr in cmd.results.indices) {
                 val result = cmd.results[resNr]
+                if (result.size < 6) continue
                 if (result[2] == "No historical data available") continue
                 try {
                     recNr = result[2].toInt()

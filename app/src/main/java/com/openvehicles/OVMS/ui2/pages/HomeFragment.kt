@@ -122,7 +122,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private lateinit var quickActionsAdapter: QuickActionsAdapter
     private lateinit var quickActionsEditorAdapter: QuickActionsEditorAdapter
     private lateinit var tabsAdapter: HomeTabsAdapter
-    private var textColor by Delegates.notNull<Int>()
 
     private lateinit var appPrefs: AppPrefs
 
@@ -389,11 +388,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             statusProgressBar.visibility = VISIBLE
             triggerCarDataUpdate()
         }
-
-        val typedValue = TypedValue()
-        val theme = requireContext().theme
-        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-        textColor = typedValue.data
 
         carData = CarsStorage.getSelectedCarData()
         setupVisualisation(carData)

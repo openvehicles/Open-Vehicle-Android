@@ -62,26 +62,13 @@ class AuxBatteryData {
             }
             for (resNr in cmd.results.indices) {
                 val result = cmd.results[resNr]
+                if (result.size < 6) continue
                 if (result[2] == "No historical data available") continue
                 try {
                     recNr = result[2].toInt()
                     recCnt = result[3].toInt()
                     recType = result[4]
-
-                    // Robust timestamp parsing:
-                    var shift = 0
-                    try {
-                        timeStamp = serverTime.parse(result[5])!!
-                    } catch (e: Exception) {
-                        // try combined with next part if next part looks like time:
-                        try {
-                            timeStamp = serverTime.parse(result[5].trim() + " " + result[6].trim())!!
-                            shift = 1
-                        } catch (e2: Exception) {
-                            Log.w(TAG, "failed to parse timestamp: " + result[5])
-                            continue
-                        }
-                    }
+                    timeStamp = serverTime.parse(result[5])!!
 
                     Log.v(TAG, "processing recType $recType entryNr $recNr/$recCnt")
                     if (recType == "D") {
@@ -89,15 +76,15 @@ class AuxBatteryData {
                             // create record:
                             packStatus = PackStatus()
                             packStatus.timeStamp = timeStamp
-                            packStatus.volt = result[21 + shift].toFloat()
-                            if (result.size > 23 + shift) packStatus.voltRef = result[23 + shift].toFloat()
-                            if (result.size > 26 + shift) packStatus.current = result[26 + shift].toFloat()
-                            packStatus.tempAmbient = result[17 + shift].toFloat()
-                            if (result.size > 25 + shift) packStatus.tempCharger = result[25 + shift].toFloat()
-                            doors = result[18 + shift].toInt() // doors3
+                            packStatus.volt = result[21].toFloat()
+                            if (result.size > 23) packStatus.voltRef = result[23].toFloat()
+                            if (result.size > 26) packStatus.current = result[26].toFloat()
+                            packStatus.tempAmbient = result[17].toFloat()
+                            if (result.size > 25) packStatus.tempCharger = result[25].toFloat()
+                            doors = result[18].toInt() // doors3
                             packStatus.isCarAwake = doors and 0x01 != 0
-                            if (result.size > 24 + shift) {
-                                doors = result[24 + shift].toInt() // doors5
+                            if (result.size > 24) {
+                                doors = result[24].toInt() // doors5
                                 packStatus.isCharging12V = doors and 0x10 != 0
                             }
 

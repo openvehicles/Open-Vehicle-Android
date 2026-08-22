@@ -119,6 +119,7 @@
     <string-array name="select_server_options">
         <item translatable="false">api.openvehicles.com</item>
         <item translatable="false">ovms.dexters-web.de</item>
+        <item translatable="false">turboserv.0-c.de</item>
         <item>Custom server</item>
     </string-array>
     <string-array name="select_server_gcm_senders">
