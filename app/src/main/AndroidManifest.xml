@@ -155,6 +155,7 @@
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="com.openvehicles.OVMS.ApiEvent" />
                 <action android:name="com.openvehicles.OVMS.action.EXECUTE_SCHEDULED_COMMAND" />
                 <action android:name="com.openvehicles.OVMS.action.MANUAL_TRIGGER_COMMAND" />
             </intent-filter>

@@ -7,10 +7,13 @@ import android.appwidget.AppWidgetProvider
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.content.res.Configuration
 import android.util.Log
 import android.widget.RemoteViews
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.utils.AppPrefs
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -21,7 +24,7 @@ import java.util.*
  * - Command to execute
  * - Command title/name
  */
-class ScheduledCommandWidget : AppWidgetProvider() {
+class ScheduledCommandWidget : ApiWidget<ScheduledCommandWidget>(ScheduledCommandWidget::class.java) {
 
     companion object {
         private const val TAG = "ScheduledCommandWidget"
@@ -134,9 +137,8 @@ class ScheduledCommandWidget : AppWidgetProvider() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        
-        when (intent.action) {
+        val action = intent.action
+        when (action) {
             ACTION_EXECUTE_COMMAND -> {
                 val appWidgetId = intent.getIntExtra(EXTRA_WIDGET_ID, AppWidgetManager.INVALID_APPWIDGET_ID)
                 if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
@@ -157,7 +159,16 @@ class ScheduledCommandWidget : AppWidgetProvider() {
                     updateAppWidget(context, appWidgetManager, appWidgetId)
                 }
             }
+            else -> super.onReceive(context, intent)
         }
+    }
+
+    override fun updateWidget(
+        context: Context,
+        appWidgetManager: AppWidgetManager?,
+        appWidgetId: Int
+    ) {
+        updateAppWidget(context, appWidgetManager!!, appWidgetId)
     }
 
     private fun updateAppWidget(
@@ -170,6 +181,26 @@ class ScheduledCommandWidget : AppWidgetProvider() {
             
             // Create RemoteViews
             val views = RemoteViews(context.packageName, R.layout.widget_scheduled_command)
+
+            // Apply theme
+            val appPrefs = AppPrefs(context, "ovms")
+            val themeMode = appPrefs.getData(ThemeMode.PREF_KEY, ThemeMode.DEFAULT) ?: ThemeMode.DEFAULT
+            val isNight = when (themeMode) {
+                ThemeMode.DARK -> true
+                ThemeMode.LIGHT -> false
+                else -> (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+            }
+
+            val backgroundColor = if (isNight) Color.parseColor("#CC000000") else Color.parseColor("#CCF3F3F3")
+            val textColorTitle = if (isNight) Color.parseColor("#AAAAAA") else Color.parseColor("#666666")
+            val textColorTime = if (isNight) Color.WHITE else Color.BLACK
+            val executeBtnColor = if (isNight) Color.parseColor("#88FF6600") else Color.parseColor("#BBFF8822")
+            
+            views.setInt(R.id.widget_main_layout, "setBackgroundColor", backgroundColor)
+            views.setTextColor(R.id.widget_title, textColorTitle)
+            views.setTextColor(R.id.widget_time, textColorTime)
+            views.setTextColor(R.id.widget_status, textColorTitle)
+            views.setInt(R.id.widget_execute_btn, "setBackgroundColor", executeBtnColor)
             
             // Always set default values first to prevent crashes
             views.setTextViewText(R.id.widget_title, "CMD")
