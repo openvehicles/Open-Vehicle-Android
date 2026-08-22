@@ -515,9 +515,21 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             val customDrawable = Ui.getCarDrawable(requireContext(), carData!!.sel_vehicle_image_map)
             if (customDrawable is BitmapDrawable) {
                 myLogo = customDrawable.bitmap
-                // Scale down if too large?
-                if (myLogo.width > 116 || myLogo.height > 116) {
-                    myLogo = Bitmap.createScaledBitmap(myLogo, 116, 116, true)
+                // Scale down while preserving aspect ratio
+                val originalWidth = myLogo.width
+                val originalHeight = myLogo.height
+                val maxDimension = 116
+                if (originalWidth > maxDimension || originalHeight > maxDimension) {
+                    val width: Int
+                    val height: Int
+                    if (originalWidth > originalHeight) {
+                        width = maxDimension
+                        height = (maxDimension * originalHeight / originalWidth.toFloat()).toInt()
+                    } else {
+                        height = maxDimension
+                        width = (maxDimension * originalWidth / originalHeight.toFloat()).toInt()
+                    }
+                    myLogo = Bitmap.createScaledBitmap(myLogo, width, height, true)
                 }
             }
         }
@@ -549,7 +561,21 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
                 if (icon != 0) icon else R.drawable.map_car_default, null
             )
             myLogo = (drawable as BitmapDrawable?)!!.bitmap
-            myLogo = Bitmap.createScaledBitmap(myLogo, 116, 116, true)
+            
+            // Scale while preserving aspect ratio
+            val originalWidth = myLogo.width
+            val originalHeight = myLogo.height
+            val maxDimension = 116
+            val width: Int
+            val height: Int
+            if (originalWidth > originalHeight) {
+                width = maxDimension
+                height = (maxDimension * originalHeight / originalWidth.toFloat()).toInt()
+            } else {
+                height = maxDimension
+                width = (maxDimension * originalWidth / originalHeight.toFloat()).toInt()
+            }
+            myLogo = Bitmap.createScaledBitmap(myLogo, width, height, true)
         }
         
         val marker = MarkerOptions().position(carPosition)

@@ -42,13 +42,22 @@ import com.google.android.material.button.MaterialButton
 import java.io.File
 import java.io.FileOutputStream
 import com.openvehicles.OVMS.ui.utils.Ui.getCarDrawable
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import android.widget.TextView
+import android.graphics.Paint
+import android.graphics.Color
+import android.view.Gravity
 
 class CarEditorFragment : BaseFragment() {
 
     private var carData: CarData? = null
     private var isSelectedCar = false
     private var editPosition = 0
-    private var galleryCar: Gallery? = null
+    
+    private var rvVehicleType: RecyclerView? = null
+    private var selectCarColor: MaterialAutoCompleteTextView? = null
+    
     private var selectServer: MaterialAutoCompleteTextView? = null
     private var selectServerPosition = 0
     private lateinit var servers: Array<String>
@@ -72,6 +81,158 @@ class CarEditorFragment : BaseFragment() {
     private var btnClearCustomImageMap: MaterialButton? = null
     private var imgCustomPreviewMap: ImageView? = null
     private var galleryCarMap: Gallery? = null
+
+    private data class VehicleColor(val name: String, val resName: String)
+    private data class VehicleType(val id: String, val name: String, val colors: List<String>)
+
+    private val vehicleTypes = listOf(
+        VehicleType("roadster", "Tesla Roadster", listOf("arcticwhite", "brilliantyellow", "electricblue", "fushionred", "glacierblue", "jetblack", "lightninggreen", "obsidianblack", "racinggreen", "radiantred", "sterlingsilver", "thundergray", "twilightblue", "veryorange")),
+        VehicleType("i3", "BMW i3", listOf("grey", "white", "darkblue", "babyblue")),
+        VehicleType("twizy", "Renault Twizy", listOf("diamondblackwithivygreen", "snowwhiteandflameorange", "snowwhiteandurbanblue", "snowwhitewithblack")),
+        VehicleType("kiasoul", "Kia Soul", listOf("carribianblueclearwhite", "cherryblackinfernored", "clearwhite", "pearlwhiteelectronicblue", "titaniumsilver")),
+        VehicleType("kianiro", "Kia Niro", listOf("black", "blue", "grey", "silver", "snowwhite")),
+        VehicleType("kiaev6", "Kia EV6", listOf("white")),
+        VehicleType("kona", "Hyundai Kona", listOf("grey", "white", "red", "blue", "yellow")),
+        VehicleType("ioniq", "Hyundai Ioniq", listOf("polarwhite")),
+        VehicleType("ioniq5", "Hyundai Ioniq 5", listOf("cybergray")),
+        VehicleType("leaf", "Nissan Leaf", listOf("coulisred", "deepblue", "planetblue", "forgedbronze", "gunmetallic", "pearlwhite", "superblack")),
+        VehicleType("leaf2", "Nissan Leaf (2018)", listOf("gunmetallic", "jadefrostmetallic", "pearlwhite", "superblack", "vividblue")),
+        VehicleType("env200", "Nissan e-NV200", listOf("white")),
+        VehicleType("smart_ed", "Smart ED (ForTwo)", listOf("white")),
+        VehicleType("smart_eq", "Smart EQ (ForTwo)", listOf("red", "black", "white", "fl_black", "fl_white", "fl_red", "cabrio_black", "cabrio_crystalwhite", "cabrio_grey", "cabrio_lavaorange")),
+        VehicleType("smart_44", "Smart ForFour", listOf("black", "white_silver", "fl_black")),
+        VehicleType("zoe", "Renault Zoe", listOf("black", "brown", "grey", "hellblau", "lila", "red", "white", "ytriumgrau")),
+        VehicleType("mgzs", "MG ZS EV", listOf("white", "blue", "lightblue", "red", "black")),
+        VehicleType("edeliver3", "Maxus eDeliver 3", listOf("white")),
+        VehicleType("ampera", "Opel Ampera", listOf("black", "crystalred", "cybergray", "lithiumwhite", "powerblue", "silvertopas", "sovereignsilver", "summitwhite")),
+        VehicleType("boltev", "Chevy Bolt EV", listOf("summitwhite")),
+        VehicleType("holdenvolt", "Holden Volt", listOf("black", "crystalclaret", "silvernitrate", "urbanfresh", "whitediamond")),
+        VehicleType("imiev", "Mitsubishi i-MiEV", listOf("black", "blue", "cherrybrown", "coolsilver", "white", "whitered")),
+        VehicleType("thinkcity", "Think City", listOf("brightred", "citrusyellow", "classicblack", "skyblue")),
+        VehicleType("kangoo", "Renault Kangoo", listOf("white", "black", "grey", "red", "blue", "brown")),
+        VehicleType("fiat500e", "Fiat 500e", listOf("black")),
+        VehicleType("nrjk", "Energica", listOf("ego_black", "experia_black", "experia_graybags", "ribelle_red", "ss9_orange")),
+        VehicleType("niu_mqi_gt", "Niu MQi GT", listOf("or", "silver", "white", "black"))
+    )
+
+    private inner class VehicleTypeAdapter(private val onClick: (Int) -> Unit) : RecyclerView.Adapter<VehicleTypeAdapter.ViewHolder>() {
+        var selectedIndex = 0
+
+        inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val img: ImageView = view.findViewById(android.R.id.icon)
+            init {
+                view.setOnClickListener {
+                    val pos = bindingAdapterPosition
+                    if (pos != RecyclerView.NO_POSITION) {
+                        val old = selectedIndex
+                        selectedIndex = pos
+                        notifyItemChanged(old)
+                        notifyItemChanged(selectedIndex)
+                        onClick(selectedIndex)
+                    }
+                }
+            }
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+            val v = ImageView(parent.context).apply {
+                id = android.R.id.icon
+                val d = resources.displayMetrics.density
+                layoutParams = ViewGroup.LayoutParams((120 * d).toInt(), (80 * d).toInt())
+                scaleType = ImageView.ScaleType.FIT_CENTER
+                setBackgroundResource(R.drawable.gallery_item_selector)
+                setPadding((8 * d).toInt(), (8 * d).toInt(), (8 * d).toInt(), (8 * d).toInt())
+            }
+            return ViewHolder(v)
+        }
+
+        override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+            val type = vehicleTypes[position]
+            val currentColor = type.colors[0]
+            val resName = if (type.id == "nrjk") "car_nrjk$currentColor" else "car_${type.id}_$currentColor"
+            holder.img.setImageResource(getDrawableIdentifier(holder.itemView.context, resName))
+            holder.itemView.isSelected = position == selectedIndex
+        }
+
+        override fun getItemCount() = vehicleTypes.size
+    }
+
+    private var selectedVehicleTypeIndex = 0
+    private var selectedColorIndex = 0
+    private var isAutoSyncEnabled = true
+    
+    private val vehicleTypeAdapter = VehicleTypeAdapter { index -> 
+        selectedVehicleTypeIndex = index
+        updateColorDropdown()
+        if (isAutoSyncEnabled) autoSyncImages()
+        filterSecondaryGalleries()
+    }
+
+    private fun filterSecondaryGalleries() {
+        val currentType = vehicleTypes.getOrNull(selectedVehicleTypeIndex) ?: return
+        val filterId = if (currentType.id.startsWith("smart_44")) "vwup" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
+        
+        // Filter OL images
+        val filteredOl = availableOlImages.filter { it.contains(filterId) }.toTypedArray()
+        val olList = if (filteredOl.isEmpty()) availableOlImages else filteredOl
+        galleryCarOl?.adapter = CarImgAdapter(olList, true)
+        
+        // Filter Map icons
+        val filteredMap = availableMapIcons.filter { it.contains(filterId) }.toTypedArray()
+        val mapList = if (filteredMap.isEmpty()) availableMapIcons else filteredMap
+        galleryCarMap?.adapter = CarImgAdapter(mapList, false)
+    }
+
+    private fun autoSyncImages() {
+        val currentType = vehicleTypes.getOrNull(selectedVehicleTypeIndex) ?: return
+        val currentColor = currentType.colors.getOrNull(selectedColorIndex) ?: currentType.colors[0]
+        
+        // Auto-select OL image
+        val targetOl = "car_${currentType.id}_${currentColor}"
+        val olAdapter = galleryCarOl?.adapter as? CarImgAdapter ?: return
+        var olIndex = -1
+        val baseId = if (currentType.id.startsWith("smart_44")) "vwup" else if (currentType.id.startsWith("smart_e")) "smart" else if (currentType.id.startsWith("niu")) "nrjk" else  currentType.id
+        
+        for (i in 0 until olAdapter.count) {
+            val img = olAdapter.getItem(i) as String
+            if (img == targetOl || img == "car_${currentType.id}" || img == currentType.id || img == "car_$baseId" || img == baseId) {
+                olIndex = i
+                break
+            }
+            // Special case for motorcycles/Experia
+            if (img.contains("experia") && currentColor.contains("experia")) {
+                olIndex = i
+                break
+            }
+        }
+        if (olIndex >= 0) galleryCarOl?.setSelection(olIndex)
+
+        // Auto-select Map image
+        val targetMap = "map_car_${currentType.id}_${currentColor}"
+        val mapAdapter = galleryCarMap?.adapter as? CarImgAdapter ?: return
+        var mapIndex = -1
+        val altTargetMap = "map_car_${currentType.id}"
+        val baseMapTarget = "map_car_$baseId"
+        
+        for (i in 0 until mapAdapter.count) {
+            val img = mapAdapter.getItem(i) as String
+            if (img == targetMap || img == altTargetMap || img == baseMapTarget) {
+                mapIndex = i
+                break
+            }
+        }
+        if (mapIndex >= 0) galleryCarMap?.setSelection(mapIndex)
+    }
+
+    private fun updateColorDropdown() {
+        val colors = vehicleTypes.getOrNull(selectedVehicleTypeIndex)?.colors ?: return
+        val displayColors = colors.map { it.replace("_", " ").uppercase() }
+        val adapter = ArrayAdapter(requireContext(), R.layout.dropdown_menu_popup_item, displayColors)
+        selectCarColor?.setAdapter(adapter)
+        if (selectedColorIndex >= displayColors.size) selectedColorIndex = 0
+        selectCarColor?.setText(displayColors.getOrNull(selectedColorIndex) ?: "", false)
+        updateCustomImageUI()
+    }
 
     private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
         uri?.let {
@@ -138,13 +299,23 @@ class CarEditorFragment : BaseFragment() {
             btnClearCustomImage?.visibility = View.VISIBLE
             imgCustomPreview?.visibility = View.VISIBLE
             imgCustomPreview?.setImageDrawable(getCarDrawable(requireContext(), customImagePath))
-            galleryCar?.alpha = 0.3f
-            galleryCar?.isEnabled = false
+            rvVehicleType?.alpha = 0.3f
+            rvVehicleType?.isEnabled = false
+            selectCarColor?.isEnabled = false
         } else {
             btnClearCustomImage?.visibility = View.GONE
-            imgCustomPreview?.visibility = View.GONE
-            galleryCar?.alpha = 1.0f
-            galleryCar?.isEnabled = true
+            imgCustomPreview?.visibility = View.VISIBLE
+            
+            val currentType = vehicleTypes.getOrNull(selectedVehicleTypeIndex)
+            val currentColor = currentType?.colors?.getOrNull(selectedColorIndex) ?: currentType?.colors?.getOrNull(0)
+            if (currentType != null && currentColor != null) {
+                val resName = if (currentType.id == "nrjk") "car_nrjk$currentColor" else "car_${currentType.id}_$currentColor"
+                imgCustomPreview?.setImageResource(getDrawableIdentifier(requireContext(), resName))
+            }
+            
+            rvVehicleType?.alpha = 1.0f
+            rvVehicleType?.isEnabled = true
+            selectCarColor?.isEnabled = true
         }
     }
 
@@ -218,8 +389,17 @@ class CarEditorFragment : BaseFragment() {
         gcmSender = requireView().findViewById<View>(R.id.txt_gcm_senderid) as EditText
         selectServer!!.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id -> setSelectedServer(position, true) }
-        galleryCar = requireView().findViewById<View>(R.id.ga_car) as Gallery
-        galleryCar!!.setAdapter(CarImgAdapter(availableColors))
+        
+        rvVehicleType = requireView().findViewById(R.id.rv_vehicle_type)
+        rvVehicleType?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        rvVehicleType?.adapter = vehicleTypeAdapter
+
+        selectCarColor = requireView().findViewById(R.id.select_car_color)
+        selectCarColor?.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
+            selectedColorIndex = position
+            updateCustomImageUI()
+            if (isAutoSyncEnabled) autoSyncImages()
+        }
 
         btnCustomImage = requireView().findViewById(R.id.btn_custom_image)
         btnClearCustomImage = requireView().findViewById(R.id.btn_clear_custom_image)
@@ -367,19 +547,33 @@ class CarEditorFragment : BaseFragment() {
             if (customImagePath != null) {
                 carData!!.sel_vehicle_image = customImagePath!!
             } else {
-                carData!!.sel_vehicle_image = availableColors[galleryCar!!.selectedItemPosition]
+                val currentType = vehicleTypes[selectedVehicleTypeIndex]
+                val currentColor = currentType.colors[selectedColorIndex]
+                carData!!.sel_vehicle_image = if (currentType.id == "nrjk") "car_nrjk$currentColor" else "car_${currentType.id}_${currentColor}"
             }
 
             if (customImagePathOl != null) {
                 carData!!.sel_vehicle_image_ol = customImagePathOl!!
             } else {
-                carData!!.sel_vehicle_image_ol = availableOlImages[galleryCarOl!!.selectedItemPosition]
+                val pos = galleryCarOl?.selectedItemPosition ?: -1
+                val adapter = galleryCarOl?.adapter as? CarImgAdapter
+                if (pos >= 0 && adapter != null) {
+                    carData!!.sel_vehicle_image_ol = adapter.getItem(pos) as String
+                } else {
+                    carData!!.sel_vehicle_image_ol = ""
+                }
             }
 
             if (customImagePathMap != null) {
                 carData!!.sel_vehicle_image_map = customImagePathMap!!
             } else {
-                carData!!.sel_vehicle_image_map = availableMapIcons[galleryCarMap!!.selectedItemPosition]
+                val pos = galleryCarMap?.selectedItemPosition ?: -1
+                val adapter = galleryCarMap?.adapter as? CarImgAdapter
+                if (pos >= 0 && adapter != null) {
+                    carData!!.sel_vehicle_image_map = adapter.getItem(pos) as String
+                } else {
+                    carData!!.sel_vehicle_image_map = ""
+                }
             }
         } catch (e: ValidationException) {
             Log.e("Validation", e.message, e)
@@ -399,102 +593,126 @@ class CarEditorFragment : BaseFragment() {
     }
 
     private fun load() {
-        val rootView = view
-        if (carData == null) {
-            // edit new car:
-            setSelectedServer(0, false)
-        } else {
-            // edit existing car:
-            compatActivity?.supportActionBar?.setTitle(carData!!.sel_vehicleid)
-            setValue(rootView!!, R.id.txt_vehicle_id, carData!!.sel_vehicleid)
-            setValue(rootView, R.id.txt_vehicle_label, carData!!.sel_vehicle_label)
-            setValue(rootView, R.id.txt_server_passwd, carData!!.sel_server_password)
-            setValue(rootView, R.id.txt_module_passwd, carData!!.sel_module_password)
-
-            // set server:
-            var position = servers.size - 1
-            for (i in servers.indices) {
-                if (servers[i] == carData!!.sel_server && gcmSenders[i] == carData!!.sel_gcm_senderid) {
-                    position = i
-                    break
-                }
-            }
-            Log.d(TAG, "load: server=" + carData!!.sel_server + " → position=" + position)
-            setSelectedServer(position, false)
-
-            // set TLS options:
-            val chkTlsEnabled = requireView().findViewById<View>(R.id.chk_tls_enabled) as SwitchMaterial
-            val chkTlsTrustAll = requireView().findViewById<View>(R.id.chk_tls_trust_all) as SwitchMaterial
-            chkTlsEnabled.isChecked = carData!!.sel_tls
-            chkTlsTrustAll.isChecked = carData!!.sel_tls_trust_all
-            chkTlsTrustAll.isEnabled = carData!!.sel_tls
-            chkTlsEnabled.setOnClickListener {
-                chkTlsTrustAll.isEnabled = (it as SwitchMaterial).isChecked
-            }
-
-            // set car image:
-            if (carData!!.sel_vehicle_image.startsWith("file://")) {
-                customImagePath = carData!!.sel_vehicle_image
-                updateCustomImageUI()
+        try {
+            val rootView = view
+            if (carData == null) {
+                // edit new car:
+                setSelectedServer(0, false)
             } else {
-                customImagePath = null
-                updateCustomImageUI()
-                var index = -1
-                for (imgRes in availableColors) {
-                    index++
-                    if (imgRes == carData!!.sel_vehicle_image) {
+                // edit existing car:
+                compatActivity?.supportActionBar?.setTitle(carData!!.sel_vehicleid)
+                setValue(rootView!!, R.id.txt_vehicle_id, carData!!.sel_vehicleid)
+                setValue(rootView, R.id.txt_vehicle_label, carData!!.sel_vehicle_label)
+                setValue(rootView, R.id.txt_server_passwd, carData!!.sel_server_password)
+                setValue(rootView, R.id.txt_module_passwd, carData!!.sel_module_password)
+
+                // set server:
+                var position = servers.size - 1
+                for (i in servers.indices) {
+                    if (servers[i] == carData!!.sel_server && gcmSenders[i] == carData!!.sel_gcm_senderid) {
+                        position = i
                         break
                     }
                 }
-                if (index >= 0) {
-                    galleryCar!!.setSelection(index)
-                }
-            }
+                Log.d(TAG, "load: server=" + carData!!.sel_server + " → position=" + position)
+                setSelectedServer(position, false)
 
-            // set top-down image:
-            if (carData!!.sel_vehicle_image_ol.isNotEmpty() && carData!!.sel_vehicle_image_ol.startsWith("file://")) {
-                customImagePathOl = carData!!.sel_vehicle_image_ol
-                updateCustomOlImageUI()
-            } else {
-                customImagePathOl = null
-                updateCustomOlImageUI()
-                var index = -1
-                val targetImg = if (carData!!.sel_vehicle_image_ol.isEmpty()) carData!!.sel_vehicle_image else carData!!.sel_vehicle_image_ol
-                for (imgRes in availableOlImages) {
-                    index++
-                    if (imgRes == targetImg) {
+                // set TLS options:
+                val chkTlsEnabled = requireView().findViewById<View>(R.id.chk_tls_enabled) as SwitchMaterial
+                val chkTlsTrustAll = requireView().findViewById<View>(R.id.chk_tls_trust_all) as SwitchMaterial
+                chkTlsEnabled.isChecked = carData!!.sel_tls
+                chkTlsTrustAll.isChecked = carData!!.sel_tls_trust_all
+                chkTlsTrustAll.isEnabled = carData!!.sel_tls
+                chkTlsEnabled.setOnClickListener {
+                    chkTlsTrustAll.isEnabled = (it as SwitchMaterial).isChecked
+                }
+
+                // set car image:
+                if (carData!!.sel_vehicle_image.startsWith("file://")) {
+                    customImagePath = carData!!.sel_vehicle_image
+                    updateCustomImageUI()
+                } else {
+                    customImagePath = null
+                    updateCustomImageUI()
+                    
+                    // Match image to type and color
+                for (typeIdx in vehicleTypes.indices) {
+                    val type = vehicleTypes[typeIdx]
+                    if (carData!!.sel_vehicle_image.startsWith("car_${type.id}")) {
+                        selectedVehicleTypeIndex = typeIdx
+                        vehicleTypeAdapter.selectedIndex = typeIdx
+                        vehicleTypeAdapter.notifyDataSetChanged()
+                        rvVehicleType?.scrollToPosition(typeIdx)
+                        
+                        val colorPart = if (type.id == "nrjk") {
+                            carData!!.sel_vehicle_image.substringAfter("car_nrjk", "")
+                        } else {
+                            carData!!.sel_vehicle_image.substringAfter("car_${type.id}_", "")
+                        }
+                        selectedColorIndex = type.colors.indexOf(colorPart).coerceAtLeast(0)
+                        
+                        updateColorDropdown()
+                        filterSecondaryGalleries()
                         break
                     }
                 }
-                if (index >= 0) {
-                    galleryCarOl!!.setSelection(index)
                 }
-            }
 
-            // set map image:
-            if (!carData!!.sel_vehicle_image_map.isNullOrEmpty() && carData!!.sel_vehicle_image_map.startsWith("file://")) {
-                customImagePathMap = carData!!.sel_vehicle_image_map
-                updateCustomMapImageUI()
-            } else {
-                customImagePathMap = null
-                updateCustomMapImageUI()
-                var index = -1
-                val targetImg = if (carData!!.sel_vehicle_image_map.isNullOrEmpty()) "map_car_default" else carData!!.sel_vehicle_image_map
-                for (imgRes in availableMapIcons) {
-                    index++
-                    if (imgRes == targetImg) {
-                        break
+                // set top-down image:
+                if (carData!!.sel_vehicle_image_ol.isNotEmpty() && carData!!.sel_vehicle_image_ol.startsWith("file://")) {
+                    customImagePathOl = carData!!.sel_vehicle_image_ol
+                    updateCustomOlImageUI()
+                } else {
+                    customImagePathOl = null
+                    updateCustomOlImageUI()
+                    
+                    val targetImg = if (carData!!.sel_vehicle_image_ol.isEmpty()) carData!!.sel_vehicle_image else carData!!.sel_vehicle_image_ol
+                    val adapter = galleryCarOl?.adapter as? CarImgAdapter
+                    if (adapter != null) {
+                        var index = -1
+                        for (i in 0 until adapter.count) {
+                            if (adapter.getItem(i) == targetImg) {
+                                index = i
+                                break
+                            }
+                        }
+                        if (index >= 0) {
+                            galleryCarOl?.setSelection(index)
+                        }
                     }
                 }
-                if (index >= 0) {
-                    galleryCarMap!!.setSelection(index)
-                }
-            }
 
-            // save selected vehicle label:
-            val appPrefs = AppPrefs(requireActivity(), "ovms")
-            Log.d(TAG, "load: sel_vehicle_label=" + carData!!.sel_vehicle_label)
-            appPrefs.saveData("sel_vehicle_label", carData!!.sel_vehicle_label)
+                // set map image:
+                if (!carData!!.sel_vehicle_image_map.isNullOrEmpty() && carData!!.sel_vehicle_image_map.startsWith("file://")) {
+                    customImagePathMap = carData!!.sel_vehicle_image_map
+                    updateCustomMapImageUI()
+                } else {
+                    customImagePathMap = null
+                    updateCustomMapImageUI()
+                    
+                    val targetImg = if (carData!!.sel_vehicle_image_map.isNullOrEmpty()) "map_car_default" else carData!!.sel_vehicle_image_map
+                    val adapter = galleryCarMap?.adapter as? CarImgAdapter
+                    if (adapter != null) {
+                        var index = -1
+                        for (i in 0 until adapter.count) {
+                            if (adapter.getItem(i) == targetImg) {
+                                index = i
+                                break
+                            }
+                        }
+                        if (index >= 0) {
+                            galleryCarMap?.setSelection(index)
+                        }
+                    }
+                }
+
+                // save selected vehicle label:
+                val appPrefs = AppPrefs(requireActivity(), "ovms")
+                Log.d(TAG, "load: sel_vehicle_label=" + carData!!.sel_vehicle_label)
+                appPrefs.saveData("sel_vehicle_label", carData!!.sel_vehicle_label)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error in load()", e)
         }
     }
 
@@ -539,6 +757,22 @@ class CarEditorFragment : BaseFragment() {
         private val availableMapIcons = arrayOf(
             "map_car_default",
             "map_car_ampera_black",
+            "map_car_ampera_crystalred",
+            "map_car_ampera_cybergray",
+            "map_car_ampera_lithiumwhite",
+            "map_car_ampera_powerblue",
+            "map_car_ampera_silvertopas",
+            "map_car_ampera_sovereignsilver",
+            "map_car_ampera_summitwhite",
+            "map_car_boltev_summitwhite",
+            "map_car_edeliver3_white",
+            "map_car_env200_white",
+            "map_car_fiat500e_black",
+            "map_car_holdenvolt_black",
+            "map_car_holdenvolt_crystalclaret",
+            "map_car_holdenvolt_silvernitrate",
+            "map_car_holdenvolt_urbanfresh",
+            "map_car_holdenvolt_whitediamond",
             "map_car_i3",
             "map_car_imiev",
             "map_car_ioniq5_cybergray",
@@ -546,16 +780,57 @@ class CarEditorFragment : BaseFragment() {
             "map_car_kangoo",
             "map_car_kiaev6_white",
             "map_car_kianiro_grey",
+            "map_car_kiasoul_carribianblueclearwhite",
+            "map_car_kiasoul_cherryblackinfernored",
+            "map_car_kiasoul_clearwhite",
+            "map_car_kiasoul_pearlwhiteelectronicblue",
+            "map_car_kiasoul_titaniumsilver",
+            "map_car_kona_blue",
+            "map_car_kona_grey",
+            "map_car_kona_red",
+            "map_car_kona_white",
+            "map_car_kona_yellow",
             "map_car_leaf2_gunmetallic",
+            "map_car_leaf2_jadefrostmetallic",
+            "map_car_leaf2_pearlwhite",
+            "map_car_leaf2_superblack",
+            "map_car_leaf2_vividblue",
+            "map_car_leaf_coulisred",
+            "map_car_leaf_deepblue",
+            "map_car_leaf_forgedbronze",
+            "map_car_leaf_gunmetallic",
             "map_car_leaf_pearlwhite",
+            "map_car_leaf_planetblue",
+            "map_car_leaf_superblack",
+            "map_car_mgzs_black",
+            "map_car_mgzs_blue",
+            "map_car_mgzs_lightblue",
+            "map_car_mgzs_red",
             "map_car_mgzs_white",
-            "map_car_niu_mqi_gt_white",
             "map_car_nrjk",
             "map_car_smart",
+            "map_car_thinkcity_brightred",
+            "map_car_thinkcity_citrusyellow",
             "map_car_thinkcity_classicblack",
+            "map_car_thinkcity_skyblue",
+            "map_car_twizy_diamondblackwithivygreen",
+            "map_car_twizy_snowwhiteandflameorange",
+            "map_car_twizy_snowwhiteandurbanblue",
             "map_car_twizy_snowwhitewithblack",
+            "map_car_vwup_black",
+            "map_car_vwup_blue",
+            "map_car_vwup_red",
+            "map_car_vwup_silver",
             "map_car_vwup_white",
-            "map_car_zoe_white"
+            "map_car_vwup_yellow",
+            "map_car_zoe_black",
+            "map_car_zoe_brown",
+            "map_car_zoe_grey",
+            "map_car_zoe_hellblau",
+            "map_car_zoe_lila",
+            "map_car_zoe_red",
+            "map_car_zoe_white",
+            "map_car_zoe_ytriumgrau"
         )
 
         private val availableOlImages = arrayOf(
@@ -574,6 +849,10 @@ class CarEditorFragment : BaseFragment() {
             "car_roadster_twilightblue",
             "car_roadster_veryorange",
             "car_ampera",
+            "car_boltev_summitwhite",
+            "car_edeliver3_white",
+            "car_env200_white",
+            "car_fiat500e_black",
             "car_i3",
             "car_imiev",
             "car_ioniq5_cybergray",
@@ -581,17 +860,56 @@ class CarEditorFragment : BaseFragment() {
             "car_kangoo",
             "car_kiaev6_white",
             "car_kianiro_grey",
+            "car_kiasoul_carribianblueclearwhite",
+            "car_kiasoul_cherryblackinfernored",
+            "car_kiasoul_clearwhite",
+            "car_kiasoul_pearlwhiteelectronicblue",
+            "car_kiasoul_titaniumsilver",
+            "car_kona_blue",
+            "car_kona_grey",
+            "car_kona_red",
+            "car_kona_white",
+            "car_kona_yellow",
+            "car_leaf2_gunmetallic",
+            "car_leaf2_jadefrostmetallic",
             "car_leaf2_pearlwhite",
+            "car_leaf2_superblack",
+            "car_leaf2_vividblue",
+            "car_leaf_coulisred",
+            "car_leaf_deepblue",
+            "car_leaf_forgedbronze",
+            "car_leaf_gunmetallic",
             "car_leaf_pearlwhite",
+            "car_leaf_planetblue",
+            "car_leaf_superblack",
+            "car_mgzs_black",
+            "car_mgzs_blue",
+            "car_mgzs_lightblue",
+            "car_mgzs_red",
             "car_mgzs_white",
             "car_niu_mqi_gt",
             "car_nrjk",
             "car_nrjkexperia",
             "car_smart",
+            "car_thinkcity_brightred",
+            "car_thinkcity_citrusyellow",
             "car_thinkcity_classicblack",
+            "car_thinkcity_skyblue",
             "car_twizy",
+            "car_vwup_black",
+            "car_vwup_blue",
+            "car_vwup_red",
+            "car_vwup_silver",
             "car_vwup_white",
-            "car_zoe_white"
+            "car_vwup_yellow",
+            "car_zoe_black",
+            "car_zoe_brown",
+            "car_zoe_grey",
+            "car_zoe_hellblau",
+            "car_zoe_lila",
+            "car_zoe_red",
+            "car_zoe_white",
+            "car_zoe_ytriumgrau"
         )
 
         private val availableColors = arrayOf(
@@ -713,11 +1031,11 @@ class CarEditorFragment : BaseFragment() {
             "car_kangoo_blue",
             "car_kangoo_brown",
             "car_fiat500e_black",
-            "car_nrjkss9_orange",
-            "car_nrjkribelle_red",
+            "car_nrjkego_black",
             "car_nrjkexperia_black",
             "car_nrjkexperia_graybags",
-            "car_nrjkego_black",
+            "car_nrjkribelle_red",
+            "car_nrjkss9_orange",
             "car_niu_mqi_gt_or",
             "car_niu_mqi_gt_silver",
             "car_niu_mqi_gt_white",

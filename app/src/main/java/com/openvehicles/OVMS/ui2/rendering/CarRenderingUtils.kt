@@ -40,9 +40,9 @@ object CarRenderingUtils {
             }
             overlayImage.startsWith("car_holdenvolt_") -> overlayResource = "car_ampera" // Holdenvolt: one ol image for all colors (same as ampera)
             overlayImage.startsWith("car_kianiro_") -> overlayResource = "car_kianiro_grey"
-            overlayImage.startsWith("car_smart_44") -> overlayResource = "car_vwup_silver" // Smart forfour share a single image
+            overlayImage.startsWith("car_smart_44") -> overlayResource = "car_vwup_black" // Smart forfour share a single image
             overlayImage.startsWith("car_smart_") -> overlayResource = "car_smart" // Smart fortwo share a single image
-            overlayImage.startsWith("car_nrjkexperia") -> overlayResource = "car_nrjkexperia"
+            overlayImage.contains("experia") -> overlayResource = "car_nrjkexperia"
             overlayImage.startsWith("car_nrjk") -> overlayResource = "car_nrjk"
             overlayImage.startsWith("car_niu_mqi_gt") -> overlayResource = "car_niu_mqi_gt"
         }
