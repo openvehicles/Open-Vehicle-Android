@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1C1C54</color>
-    <color name="colorPrimaryDark">#020245</color>
+    <color name="colorPrimary">#C7C7C7</color>
+    <color name="colorPrimaryDark">#C7C7C7</color>
     <color name="colorAccent">#359900</color>
-    <color name="colorBackgroundDark">#000000</color>
-    <color name="colorText">#ffffff</color>
+    <color name="colorBackground">#ffffff</color>
+    <color name="colorText">#000000</color>
+    <color name="colorForeground">#000000</color>
     <color name="colorTextError">#ff5555</color>
     <color name="black">#000000</color>
-    <color name="colorBackground">#000000</color>
-    <color name="colorForeground">#fffef6</color>
     <color name="chargePendingColor">#0067B0</color>
     <color name="chargePendingColor2">#BFE6FF</color>
     <color name="chargeOngoingColor">#059B00</color>
@@ -18,4 +17,6 @@
     <color name="colorDarkgreen">#2D6201</color>
     <color name="colorDarkRed">#7d1506</color>
     <color name="colorGreyBlue">#5d7f9b</color>
+    <color name="colorSurfaceContainer">#F3F3F3</color>
+    <color name="cardview_off_background">@color/colorSurfaceContainer</color>
 </resources>

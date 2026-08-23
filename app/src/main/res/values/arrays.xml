@@ -8,4 +8,16 @@
     <string-array name="home_range_display_mode_default">
         <item>estimated</item>
     </string-array>
+
+    <string-array name="app_theme_mode_values">
+        <item>light</item>
+        <item>dark</item>
+        <item>system</item>
+    </string-array>
+
+    <string-array name="app_theme_mode_labels">
+        <item>@string/ui_theme_light</item>
+        <item>@string/ui_theme_dark</item>
+        <item>@string/ui_theme_system</item>
+    </string-array>
 </resources>

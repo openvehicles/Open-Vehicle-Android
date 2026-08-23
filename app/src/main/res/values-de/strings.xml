@@ -892,4 +892,24 @@
     <string name="Copy">Kopieren</string>
     <string name="more">Mehr</string>
 
+    <!-- UI Settings -->
+    <string name="ui_theme_category">Darstellung</string>
+    <string name="ui_theme_title">Design</string>
+    <string name="ui_theme_light">Hell</string>
+    <string name="ui_theme_dark">Dunkel</string>
+    <string name="ui_theme_system">Automatisch (System)</string>
+
+    <!-- Car Editor Custom Images -->
+    <string name="lb_control_page_view_car">Homescreen-Ansicht</string>
+    <string name="lb_control_page_view">Steuerungs-Ansicht (Draufsicht)</string>
+    <string name="lb_control_page_view_desc">Auswahl für die Draufsicht auf der Steuerungsseite</string>
+    <string name="btn_custom_image">Eigenes Bild hochladen</string>
+    <string name="btn_clear_custom_image">Eigenes Bild löschen</string>
+    <string name="btn_custom_top_view">Eigene Draufsicht hochladen</string>
+    <string name="btn_clear_custom_top_view">Eigene Draufsicht löschen</string>
+    <string name="lb_map_icon_view">Karten-Icon</string>
+    <string name="lb_map_icon_view_desc">Auswahl für das Icon auf der Karte</string>
+    <string name="btn_custom_map_icon">Eigenes Kartenbild hochladen</string>
+    <string name="btn_clear_custom_map_icon">Eigenes Kartenbild löschen</string>
+
 </resources>

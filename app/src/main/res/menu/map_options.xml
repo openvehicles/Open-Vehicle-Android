@@ -4,7 +4,7 @@
 
     <item android:id="@+id/mi_map_options"
           app:showAsAction="ifRoom|withText"
-          android:icon="@android:drawable/ic_menu_more"
+          android:icon="@drawable/ic_more_vert"
           android:title="@string/mi_map_options">
 
         <menu>
@@ -24,6 +24,26 @@
                       android:title="@string/mi_map_filter_range"/>
 
             </group>
+
+            <item android:id="@+id/mi_map_type"
+                  android:title="@string/mi_map_type">
+                <menu>
+                    <group android:checkableBehavior="single">
+                        <item android:id="@+id/mi_map_type_normal"
+                              android:title="@string/mi_map_type_normal"/>
+                        <item android:id="@+id/mi_map_type_satellite"
+                              android:title="@string/mi_map_type_satellite"/>
+                        <item android:id="@+id/mi_map_type_hybrid"
+                              android:title="@string/mi_map_type_hybrid"/>
+                        <item android:id="@+id/mi_map_type_terrain"
+                              android:title="@string/mi_map_type_terrain"/>
+                    </group>
+                </menu>
+            </item>
+
+            <item android:id="@+id/mi_map_search"
+                  android:icon="@android:drawable/ic_menu_search"
+                  android:title="@string/mi_map_search"/>
 
             <item android:id="@+id/mi_map_settings"
                   app:showAsAction="never"

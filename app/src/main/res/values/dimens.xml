@@ -11,4 +11,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="dialog_padding">24dp</dimen>
+    <dimen name="space_s">8dp</dimen>
+    <dimen name="space_m">16dp</dimen>
+    <dimen name="space_l">24dp</dimen>
 </resources>

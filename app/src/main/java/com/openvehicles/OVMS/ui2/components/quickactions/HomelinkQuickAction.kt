@@ -17,7 +17,12 @@ class Homelink2QuickAction(apiServiceGetter: () -> ApiService?, context: Context
 class Homelink3QuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null):
     HomelinkQuickAction(2, R.drawable.ic_homelink_3, "${context?.getString(R.string.Garage)} 3", apiServiceGetter)
 open class HomelinkQuickAction(val garageNumber: Int,  icon: Int, label: String?, apiServiceGetter: () -> ApiService?) :
-    QuickAction("hl_$garageNumber", icon, apiServiceGetter, label = label) {
+    QuickAction("hl_$garageNumber", icon, apiServiceGetter,
+        actionOnTint = R.attr.colorSecondaryContainer,
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = label) {
 
     override fun onAction() {
         sendCommand("24,${garageNumber}")

@@ -345,6 +345,12 @@
     <string name="mi_map_filter_connections">My plugs</string>
     <string name="mi_map_filter_range">My range</string>
     <string name="mi_map_settings">Settings</string>
+    <string name="mi_map_type">Map type</string>
+    <string name="mi_map_type_normal">Normal</string>
+    <string name="mi_map_type_satellite">Satellite</string>
+    <string name="mi_map_type_hybrid">Hybrid</string>
+    <string name="mi_map_type_terrain">Terrain</string>
+    <string name="mi_map_search">Search Google for chargers</string>
 
     <string name="mi_car_details_temp">Fahrenheit</string>
     <string name="mi_car_details_tpms">TPMS in bar</string>
@@ -973,5 +979,25 @@
     <string name="Copy">Copy</string>
     <string name="more">More</string>
     <string name="lb_restart_time_off">Stop restart</string>
+
+    <!-- UI Settings -->
+    <string name="ui_theme_category">Appearance</string>
+    <string name="ui_theme_title">Theme</string>
+    <string name="ui_theme_light">Light</string>
+    <string name="ui_theme_dark">Dark</string>
+    <string name="ui_theme_system">Follow system</string>
+
+    <!-- Car Editor Custom Images -->
+    <string name="lb_control_page_view_car">Homescreen View</string>
+    <string name="lb_control_page_view">Control Page View (Top-Down)</string>
+    <string name="lb_control_page_view_desc">Choice for the top-view on the control page</string>
+    <string name="btn_custom_image">Custom Image</string>
+    <string name="btn_clear_custom_image">Clear Custom Image</string>
+    <string name="btn_custom_top_view">Custom Top-View Image</string>
+    <string name="btn_clear_custom_top_view">Clear Custom Top-View</string>
+    <string name="lb_map_icon_view">Map Icon View</string>
+    <string name="lb_map_icon_view_desc">Choice for the icon on the map</string>
+    <string name="btn_custom_map_icon">Custom Map Image</string>
+    <string name="btn_clear_custom_map_icon">Clear Custom Map Image</string>
 
 </resources>

@@ -21,7 +21,10 @@ class TwizyDriveMode3QuickAction(apiServiceGetter: () -> ApiService?, context: C
 open class TwizyDriveModeQuickAction(private val profileNumber: Int, icon: Int, label: String?, apiServiceGetter: () -> ApiService?) :
     QuickAction("rt_profile_${profileNumber}", icon, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.attr.colorTertiaryContainer, label = label) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = label) {
 
     override fun onAction() {
         sendCommand(if (profileNumber < 0) "24" else "24,${profileNumber}")

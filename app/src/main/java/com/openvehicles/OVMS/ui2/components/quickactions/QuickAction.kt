@@ -3,12 +3,14 @@ package com.openvehicles.OVMS.ui2.components.quickactions
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.LayerDrawable
 import android.util.TypedValue
 import android.view.View
 import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.content.res.AppCompatResources
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.color.MaterialColors
 import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
@@ -24,10 +26,12 @@ open class QuickAction {
     private val icon: Int
     private var actionOnTint: Int? = null
     private var actionOffTint: Int? = null
+    private var actionOnIconTint: Int? = null
+    private var actionOffIconTint: Int? = null
     private var carData: CarData? = null
     private var actionIsRunningCommand = false
     lateinit var progressBar: CircularProgressIndicator
-    lateinit var button: FloatingActionButton
+    lateinit var button: MaterialButton
     var context: Context? = null
     private var getApiService: () -> ApiService?
 
@@ -37,12 +41,16 @@ open class QuickAction {
         getApiService: () -> ApiService?,
         actionOnTint: Int? = null,
         actionOffTint: Int? = null,
-        label: String? = null
+        label: String? = null,
+        actionOnIconTint: Int? = null,
+        actionOffIconTint: Int? = null
     ) {
         this.id = id
         this.icon = icon
         this.actionOnTint = actionOnTint
         this.actionOffTint = actionOffTint
+        this.actionOnIconTint = actionOnIconTint
+        this.actionOffIconTint = actionOffIconTint
         this.getApiService = getApiService
         this.label = label
     }
@@ -51,7 +59,7 @@ open class QuickAction {
     fun initAction(view: View, clickCallback: () -> Boolean, editMode: Boolean) {
         // Init elements and let quick action do handling
         context = view.context
-        button = view.findViewById(R.id.action_button) as FloatingActionButton
+        button = view.findViewById(R.id.action_button) as MaterialButton
         progressBar = view.findViewById(R.id.action_progress) as CircularProgressIndicator
         button.setOnClickListener {
             if (clickCallback()) {
@@ -72,7 +80,7 @@ open class QuickAction {
 
     fun setCommandInProgress(value: Boolean) {
         this.commandInProgress = value
-        this.progressBar.visibility = if (value) View.VISIBLE else View.INVISIBLE
+        this.progressBar.visibility = if (value) View.VISIBLE else View.GONE
         this.button.isEnabled = commandsAvailable() && !value
     }
 
@@ -171,6 +179,9 @@ open class QuickAction {
     open fun renderAction(editMode: Boolean) {
         val commandsAvailable = commandsAvailable()
         button.isEnabled = commandsAvailable || editMode
+
+        val iconDrawable = getLiveCarIcon(actionOn, context!!)
+
         if (actionOnTint != null && actionOffTint != null && !editMode) {
             try {
                 button.backgroundTintList =
@@ -184,14 +195,40 @@ open class QuickAction {
                 button.backgroundTintList =
                     ColorStateList.valueOf(color)
             }
+
+            // Icon Tint Handling for custom states
+            if (actionOnIconTint != null && actionOffIconTint != null) {
+                try {
+                    button.iconTint =
+                        context?.resources?.getColor(if (actionOn) actionOnIconTint!! else actionOffIconTint!!)
+                            ?.let { ColorStateList.valueOf(it) }
+                } catch (ignored: java.lang.Exception) {
+                    val typedValue = TypedValue()
+                    val theme = context!!.theme
+                    theme.resolveAttribute(if (actionOn) actionOnIconTint!! else actionOffIconTint!!, typedValue, true)
+                    @ColorInt val color = typedValue.data
+                    button.iconTint = ColorStateList.valueOf(color)
+                }
+            } else if (iconDrawable !is LayerDrawable) {
+                val typedValue = TypedValue()
+                context!!.theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+                button.iconTint = ColorStateList.valueOf(typedValue.data)
+            } else {
+                button.iconTint = null
+            }
         } else {
-            val typedValue = TypedValue()
-            val theme = context!!.theme
-            theme.resolveAttribute(R.attr.colorPrimarySurface, typedValue, true)
-            @ColorInt val color = typedValue.data
-            button.backgroundTintList =
-                ColorStateList.valueOf(color)
+            // Use default Material3 Secondary Container colors for edit mode or standard state
+            val backgroundColor = MaterialColors.getColor(button, R.attr.colorSecondaryContainer)
+            button.backgroundTintList = ColorStateList.valueOf(backgroundColor)
+
+            if (iconDrawable !is LayerDrawable) {
+                val iconColor = MaterialColors.getColor(button, R.attr.colorOnSecondaryContainer)
+                button.iconTint = ColorStateList.valueOf(iconColor)
+            } else {
+                button.iconTint = null
+            }
         }
-        button.setImageDrawable(getLiveCarIcon(actionOn, context!!))
+
+        button.icon = iconDrawable
     }
 }

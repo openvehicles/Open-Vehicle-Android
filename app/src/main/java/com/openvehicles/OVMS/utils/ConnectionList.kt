@@ -9,7 +9,7 @@ import android.view.Window
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import androidx.appcompat.app.AppCompatDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.Main
 import com.openvehicles.OVMS.ui.utils.Database
@@ -49,14 +49,16 @@ class ConnectionList(
 
     fun sublist() {
         getList()
-        val dialog = AppCompatDialog(context)
-        dialog.supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-        dialog.setContentView(R.layout.connection_list)
+        val builder = MaterialAlertDialogBuilder(context)
+        builder.setTitle(R.string.connections)
+        val dialogView = View.inflate(context, R.layout.connection_list, null)
+        builder.setView(dialogView)
+        
         val adpt = ArrayAdapter(
             context,
             android.R.layout.simple_list_item_checked, al
         )
-        val listView = dialog.findViewById<View>(android.R.id.list) as ListView?
+        val listView = dialogView.findViewById<View>(android.R.id.list) as ListView?
         listView!!.choiceMode = ListView.CHOICE_MODE_MULTIPLE
         listView.adapter = adpt
         for (i in alCheck.indices) {
@@ -64,7 +66,8 @@ class ConnectionList(
                 listView.setItemChecked(i, true)
             }
         }
-        listView.onItemClickListener = OnItemClickListener { arg0, arg1, arg2, arg3 ->
+        
+        builder.setPositiveButton(R.string.msg_ok) { _, _ ->
             var title: String? = ""
             var tid = ""
             val selVehicleLabel = appPrefs.getData("sel_vehicle_label")
@@ -93,7 +96,8 @@ class ConnectionList(
             appPrefs.saveData("Id", tid)
             listener.onConnectionChanged(tid, title)
         }
-        dialog.show()
+        builder.setNegativeButton(R.string.Cancel, null)
+        builder.show()
     }
 
     // TODO: Remove "@SuppressLint("Range")" and handle this properly

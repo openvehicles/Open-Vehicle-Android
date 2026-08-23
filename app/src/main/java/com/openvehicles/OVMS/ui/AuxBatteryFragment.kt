@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Paint
 import android.os.Bundle
@@ -14,6 +15,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.LimitLine
 import com.github.mikephil.charting.components.XAxis
@@ -25,6 +28,7 @@ import com.github.mikephil.charting.formatter.DefaultAxisValueFormatter
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
+import com.google.android.material.color.MaterialColors
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.AuxBatteryData
 import com.openvehicles.OVMS.entities.AuxBatteryData.Companion.loadFile
@@ -32,6 +36,7 @@ import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.entities.CmdSeries
 import com.openvehicles.OVMS.ui.utils.ProgressOverlay
 import com.openvehicles.OVMS.ui.utils.TimeAxisValueFormatter
+import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage.getSelectedCarData
 import java.text.SimpleDateFormat
@@ -65,6 +70,15 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
     private var carData: CarData? = null
     private var cmdSeries: CmdSeries? = null
     private var appPrefs: AppPrefs? = null
+    
+    private var colorText = Color.WHITE
+    private var colorGrid = Color.GRAY
+    private var colorVolt = COLOR_VOLT
+    private var colorVoltGrid = COLOR_VOLT_GRID
+    private var colorTempAmbient = COLOR_TEMP_AMBIENT
+    private var colorTempCharger = COLOR_TEMP_CHARGER
+    private var colorCurrText = COLOR_CURR_TEXT
+    private var colorCurrGrid = COLOR_CURR_GRID
 
     /**
      * Check data model validity
@@ -87,6 +101,21 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
         if (!showVolt && !showTemp) {
             showVolt = true
             showTemp = true
+        }
+
+        // Init theme colors:
+        val ctx = requireContext()
+        colorText = MaterialColors.getColor(ctx, android.R.attr.textColorPrimary, Color.WHITE)
+        colorGrid = ColorUtils.setAlphaComponent(colorText, 40)
+        
+        val isNight = (ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        if (!isNight) {
+            colorVolt = Color.parseColor("#669900")
+            colorVoltGrid = ColorUtils.setAlphaComponent(colorVolt, 100)
+            colorTempAmbient = Color.parseColor("#998800")
+            colorTempCharger = Color.parseColor("#996600")
+            colorCurrText = Color.parseColor("#994444")
+            colorCurrGrid = ColorUtils.setAlphaComponent(colorCurrText, 100)
         }
 
         // Setup UI:
@@ -115,16 +144,16 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
             }
         })
         xAxis = packChart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.isGranularityEnabled = true
         xAxis.setGranularity(60f) // one minute
         yAxisLeft = packChart.axisLeft
-        yAxisLeft.textColor = COLOR_CURR_TEXT
-        yAxisLeft.gridColor = COLOR_CURR_GRID
+        yAxisLeft.textColor = colorCurrText
+        yAxisLeft.gridColor = colorCurrGrid
         yAxisLeft.valueFormatter = DefaultAxisValueFormatter(0)
         yAxisRight = packChart.axisRight
-        yAxisRight.textColor = COLOR_VOLT
-        yAxisRight.gridColor = COLOR_VOLT_GRID
+        yAxisRight.textColor = colorVolt
+        yAxisRight.gridColor = colorVoltGrid
         yAxisRight.valueFormatter = DefaultAxisValueFormatter(1)
         yAxisRight.setGranularity(0.1f)
 
@@ -343,7 +372,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
             if (packStatus.isNewSection(lastStatus)) {
                 val l = LimitLine(xpos)
                 l.label = timeFmt.format(packStatus.timeStamp!!)
-                l.textColor = Color.WHITE
+                l.textColor = colorText
                 l.textStyle = Paint.Style.FILL
                 l.setTextSize(6f)
                 l.enableDashedLine(3f, 2f, 0f)
@@ -368,7 +397,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
                 )
                 packTempAmbientSet = dataSet
                 dataSet.axisDependency = YAxis.AxisDependency.LEFT
-                dataSet.setColor(COLOR_TEMP_AMBIENT)
+                dataSet.setColor(colorTempAmbient)
                 dataSet.setLineWidth(3f)
                 dataSet.setDrawCircles(false)
                 dataSet.setDrawValues(false)
@@ -378,7 +407,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
                 LineDataSet(tempChargerValues, getString(R.string.aux_battery_data_temp_charger))
             packTempChargerSet = dataSet
             dataSet.axisDependency = YAxis.AxisDependency.LEFT
-            dataSet.setColor(COLOR_TEMP_CHARGER)
+            dataSet.setColor(colorTempCharger)
             dataSet.setLineWidth(3f)
             dataSet.setDrawCircles(false)
             dataSet.setDrawValues(false)
@@ -404,7 +433,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
             dataSet = LineDataSet(voltValues, getString(R.string.aux_battery_data_volt))
             packVoltSet = dataSet
             dataSet.axisDependency = YAxis.AxisDependency.RIGHT
-            dataSet.setColor(COLOR_VOLT)
+            dataSet.setColor(colorVolt)
             dataSet.setLineWidth(3f)
             dataSet.setDrawCircles(false)
             dataSet.setDrawValues(false)
@@ -455,7 +484,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
         // display data sets:
         val data = LineData(dataSets)
         packData = data
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(colorText)
         data.setValueTextSize(9f)
         packChart.setData(data)
         val xAxis = packChart.xAxis
@@ -469,7 +498,7 @@ class AuxBatteryFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.O
             }
             xAxis.addLimitLine(l)
         }
-        packChart.legend.textColor = Color.WHITE
+        packChart.legend.textColor = colorText
         packChart.invalidate()
     }
 

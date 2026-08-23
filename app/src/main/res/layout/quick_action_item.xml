@@ -2,19 +2,17 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="60dp"
+    android:layout_height="60dp"
     android:id="@+id/quick_action_root">
 
     <com.google.android.material.progressindicator.CircularProgressIndicator
         android:id="@+id/action_progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:layout_margin="3dp"
-        android:elevation="10dp"
         android:indeterminate="true"
-        android:visibility="invisible"
-        app:indicatorSize="48dp"
+        android:visibility="gone"
+        app:indicatorSize="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -22,24 +20,26 @@
         tools:visibility="visible" />
 
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/action_button"
-        style="@style/ThemeOverlay.Material3.FloatingActionButton.Secondary"
+        style="@style/Widget.Material3.Button.TonalButton"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/ic_ac"
-        app:fabCustomSize="50dp"
-        app:fabSize="normal"
+        android:padding="0dp"
+        android:insetLeft="0dp"
+        android:insetTop="0dp"
+        android:insetRight="0dp"
+        android:insetBottom="0dp"
+        app:iconSize="24dp"
+        app:iconGravity="textStart"
+        app:iconPadding="0dp"
+        app:cornerRadius="25dp"
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/colorGreyBlue"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:maxImageSize="30dp"
-        app:useCompatPadding="false" />
-
-
-
+        tools:icon="@drawable/ic_ac" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

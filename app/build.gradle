@@ -15,6 +15,7 @@ android {
         applicationId "com.openvehicles.OVMS"
         minSdk 21
         targetSdk 36
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {

@@ -20,6 +20,22 @@
     <PreferenceCategory
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:title="@string/ui_theme_category">
+
+        <ListPreference
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:title="@string/ui_theme_title"
+            app:defaultValue="system"
+            app:entries="@array/app_theme_mode_labels"
+            app:entryValues="@array/app_theme_mode_values"
+            app:key="app_theme_mode"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:title="@string/state_charging_label">
 
         <SwitchPreferenceCompat

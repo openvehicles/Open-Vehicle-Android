@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/mi_battery_menu"
-        android:icon="@android:drawable/ic_menu_more"
+        android:icon="@drawable/ic_more_vert"
         android:title="@string/battery_menu"
         app:showAsAction="always|withText">
 
@@ -51,7 +51,7 @@
 
             <item
                 android:id="@+id/mi_app_about"
-                android:icon="@android:drawable/ic_menu_help"
+                android:icon="@drawable/ic_help"
                 android:title="@string/mi_app_about"
                 app:showAsAction="never"/>
 

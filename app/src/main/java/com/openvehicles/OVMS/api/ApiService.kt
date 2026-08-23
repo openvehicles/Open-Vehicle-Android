@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.res.Configuration
 import android.net.ConnectivityManager
 import android.net.NetworkInfo
 import android.os.AsyncTask
@@ -231,6 +232,12 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
             System.currentTimeMillis() + pingIntervalMs, pingIntervalMs, pi
         )
         sendApiEvent("ServiceCreated")
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        Log.v(TAG, "onConfigurationChanged")
+        sendApiEvent("ConfigChanged")
     }
 
     override fun onDestroy() {

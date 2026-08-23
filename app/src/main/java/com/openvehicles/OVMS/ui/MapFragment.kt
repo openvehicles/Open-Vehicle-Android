@@ -40,6 +40,8 @@ import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragmentActivity.Companion.show
 import com.openvehicles.OVMS.ui.MapSettingsFragment.UpdateMap
 import com.openvehicles.OVMS.ui.utils.Database
+import com.openvehicles.OVMS.ui.utils.Ui
+import android.graphics.Bitmap
 import com.openvehicles.OVMS.ui.utils.DemoClusterOptionsProvider
 import com.openvehicles.OVMS.ui.utils.MarkerGenerator.addMarkers
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
@@ -112,6 +114,12 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
 
         map = googleMap
         Log.i(TAG, "getMap/onMapReady: map=$map")
+
+        // Set map type from prefs
+        val mapTypeStr = appPrefs.getData("map_type", GoogleMap.MAP_TYPE_NORMAL.toString())
+        val mapType = mapTypeStr?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+        map!!.mapType = mapType
+
         var clusterEnabled = true
         var clusterSizeIndex = 0
         try {
@@ -204,7 +212,7 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             // fetch chargepoints for view:
             val cameraPosition = map!!.cameraPosition
             Log.i(TAG, "getMap/onCameraIdle: get charge points for " + cameraPosition.target)
-            //mainActivity.startGetMapDetails(cameraPosition.target)
+            (activity as? MainActivityUI2)?.startGetMapDetails(cameraPosition.target)
         })
         update()
     }
@@ -251,6 +259,16 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             optionsMenu.findItem(R.id.mi_map_filter_range)
                 .setVisible(false)
         }
+
+        // Set checked map type
+        val mapTypeStr = appPrefs.getData("map_type", GoogleMap.MAP_TYPE_NORMAL.toString())
+        val mapType = mapTypeStr?.toIntOrNull() ?: GoogleMap.MAP_TYPE_NORMAL
+        when (mapType) {
+            GoogleMap.MAP_TYPE_NORMAL -> optionsMenu.findItem(R.id.mi_map_type_normal)?.setChecked(true)
+            GoogleMap.MAP_TYPE_SATELLITE -> optionsMenu.findItem(R.id.mi_map_type_satellite)?.setChecked(true)
+            GoogleMap.MAP_TYPE_HYBRID -> optionsMenu.findItem(R.id.mi_map_type_hybrid)?.setChecked(true)
+            GoogleMap.MAP_TYPE_TERRAIN -> optionsMenu.findItem(R.id.mi_map_type_terrain)?.setChecked(true)
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -275,6 +293,29 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
             appPrefs.saveData("inrange", if (newState) "on" else "off")
             item.setChecked(newState)
             updateMapDetails(false)
+        } else if (menuId == R.id.mi_map_type_normal || menuId == R.id.mi_map_type_satellite ||
+            menuId == R.id.mi_map_type_hybrid || menuId == R.id.mi_map_type_terrain
+        ) {
+            val type = when (menuId) {
+                R.id.mi_map_type_satellite -> GoogleMap.MAP_TYPE_SATELLITE
+                R.id.mi_map_type_hybrid -> GoogleMap.MAP_TYPE_HYBRID
+                R.id.mi_map_type_terrain -> GoogleMap.MAP_TYPE_TERRAIN
+                else -> GoogleMap.MAP_TYPE_NORMAL
+            }
+            map?.mapType = type
+            appPrefs.saveData("map_type", type.toString())
+            item.setChecked(true)
+        } else if (menuId == R.id.mi_map_search) {
+            val intent = Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("geo:${carPosition.latitude},${carPosition.longitude}?q=charging+station")
+            )
+            intent.setPackage("com.google.android.apps.maps")
+            if (intent.resolveActivity(requireContext().packageManager) != null) {
+                startActivity(intent)
+            } else {
+                startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("geo:0,0?q=charging+station")))
+            }
         } else if (menuId == R.id.mi_map_settings) {
             var baseActivity: MainActivity? = null
             try {
@@ -469,23 +510,78 @@ class MapFragment : BaseFragment(), GoogleMap.OnInfoWindowClickListener, GetMapD
         // update car position marker:
 
         // determine icon for this car:
-        val icon: Int = if (carData!!.sel_vehicle_image.startsWith("car_imiev_")) R.drawable.map_car_imiev // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_i3_")) R.drawable.map_car_i3 // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_smart_")) R.drawable.map_car_smart // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_kianiro_")) R.drawable.map_car_kianiro_grey // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_kangoo_")) R.drawable.map_car_kangoo // one map icon for all colors
-        else if (carData!!.sel_vehicle_image.startsWith("car_nrjk")) R.drawable.map_car_nrjk
-        else if (carData!!.sel_vehicle_image.startsWith("car_niu_mqi_gt_")) R.drawable.map_car_nrjk
-        else getDrawableIdentifier(activity, "map_" + carData!!.sel_vehicle_image)
-        val drawable = ResourcesCompat.getDrawable(
-            resources,
-            if (icon != 0) icon else R.drawable.map_car_default, null
-        )
-        val myLogo = (drawable as BitmapDrawable?)!!.bitmap
+        var myLogo: Bitmap? = null
+        if (carData!!.sel_vehicle_image_map.startsWith("file://")) {
+            val customDrawable = Ui.getCarDrawable(requireContext(), carData!!.sel_vehicle_image_map)
+            if (customDrawable is BitmapDrawable) {
+                myLogo = customDrawable.bitmap
+                // Scale down while preserving aspect ratio
+                val originalWidth = myLogo.width
+                val originalHeight = myLogo.height
+                val maxDimension = 116
+                if (originalWidth > maxDimension || originalHeight > maxDimension) {
+                    val width: Int
+                    val height: Int
+                    if (originalWidth > originalHeight) {
+                        width = maxDimension
+                        height = (maxDimension * originalHeight / originalWidth.toFloat()).toInt()
+                    } else {
+                        height = maxDimension
+                        width = (maxDimension * originalWidth / originalHeight.toFloat()).toInt()
+                    }
+                    myLogo = Bitmap.createScaledBitmap(myLogo, width, height, true)
+                }
+            }
+        }
+
+        if (myLogo == null) {
+            val icon: Int =
+                if (carData!!.sel_vehicle_image_map.isNotEmpty() && !carData!!.sel_vehicle_image_map.startsWith("file://")) {
+                    getDrawableIdentifier(activity, carData!!.sel_vehicle_image_map)
+                } else if (carData!!.sel_vehicle_image.startsWith("car_imiev_")) {
+                    R.drawable.map_car_imiev // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_i3_")) {
+                    R.drawable.map_car_i3 // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_smart_")) {
+                    R.drawable.map_car_smart // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_kianiro_")) {
+                    R.drawable.map_car_kianiro_grey // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_kangoo_")) {
+                    R.drawable.map_car_kangoo // one map icon for all colors
+                } else if (carData!!.sel_vehicle_image.startsWith("car_nrjk")) {
+                    R.drawable.map_car_nrjk
+                } else if (carData!!.sel_vehicle_image.startsWith("car_niu_mqi_gt_")) {
+                    R.drawable.map_car_nrjk
+                } else {
+                    getDrawableIdentifier(activity, "map_" + carData!!.sel_vehicle_image)
+                }
+
+            val drawable = ResourcesCompat.getDrawable(
+                resources,
+                if (icon != 0) icon else R.drawable.map_car_default, null
+            )
+            myLogo = (drawable as BitmapDrawable?)!!.bitmap
+            
+            // Scale while preserving aspect ratio
+            val originalWidth = myLogo.width
+            val originalHeight = myLogo.height
+            val maxDimension = 116
+            val width: Int
+            val height: Int
+            if (originalWidth > originalHeight) {
+                width = maxDimension
+                height = (maxDimension * originalHeight / originalWidth.toFloat()).toInt()
+            } else {
+                height = maxDimension
+                width = (maxDimension * originalWidth / originalHeight.toFloat()).toInt()
+            }
+            myLogo = Bitmap.createScaledBitmap(myLogo, width, height, true)
+        }
+        
         val marker = MarkerOptions().position(carPosition)
             .title(carData!!.sel_vehicle_label)
             .rotation(carData!!.car_direction.toFloat())
-            .icon(BitmapDescriptorFactory.fromBitmap(myLogo))
+            .icon(BitmapDescriptorFactory.fromBitmap(myLogo!!))
         val carMarker = map!!.addMarker(marker)
         carMarker.clusterGroup = ClusterGroup.NOT_CLUSTERED
 

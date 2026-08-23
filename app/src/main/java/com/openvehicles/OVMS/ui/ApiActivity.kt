@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import com.openvehicles.OVMS.api.ApiObservable.addObserver
 import com.openvehicles.OVMS.api.ApiObservable.deleteObserver
 import com.openvehicles.OVMS.api.ApiObservable.notifyOnBind

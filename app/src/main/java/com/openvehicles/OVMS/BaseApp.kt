@@ -5,6 +5,10 @@ import android.content.Context
 import com.maltaisn.icondialog.pack.IconPack
 import com.maltaisn.icondialog.pack.IconPackLoader
 import com.maltaisn.iconpack.defaultpack.createDefaultIconPack
+import com.openvehicles.OVMS.ui2.misc.ThemeMode
+import android.content.Intent
+import android.content.res.Configuration
+import com.openvehicles.OVMS.api.ApiService
 
 class BaseApp : Application() {
 
@@ -16,7 +20,20 @@ class BaseApp : Application() {
         app = this
         context = applicationContext
 
+        ThemeMode.apply(this)
+
         loadIconPack()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        
+        // Notify widgets about potential theme change
+        val intent = Intent(ApiService.ACTION_APIEVENT).apply {
+            setPackage(packageName)
+            putExtra("event", "ConfigChanged")
+        }
+        sendBroadcast(intent)
     }
 
     private fun loadIconPack() {

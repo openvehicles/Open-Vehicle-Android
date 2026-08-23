@@ -2,7 +2,6 @@ package com.openvehicles.OVMS.ui.settings
 
 import android.app.Activity
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -18,7 +17,7 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.content.res.ResourcesCompat
@@ -55,9 +54,6 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (container == null) {
-            return null
-        }
         val context = context
             ?: return null
 
@@ -75,12 +71,13 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
         // Create user interface:
         activity?.setTitle(R.string.stored_commands_title)
         setHasOptionsMenu(true)
-        listView = ListView(container.context)
-        listView.fitsSystemWindows = true
+        
+        val rootView = inflater.inflate(R.layout.fragment_stored_commands, container, false)
+        listView = rootView.findViewById(R.id.listView)
         listView.onItemClickListener = this
         adapter = StoredCommandAdapter(context, R.layout.item_stored_command, storedCommands, inflater)
         listView.setAdapter(adapter)
-        return listView
+        return rootView
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -118,7 +115,7 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
     private fun confirmDeleteCommand(cmd: StoredCommand) {
         val context = context ?: return
         
-        AlertDialog.Builder(context)
+        MaterialAlertDialogBuilder(context)
             .setTitle(R.string.Delete)
             .setMessage(getString(R.string.confirm_delete_stored_command, cmd.title))
             .setNegativeButton(R.string.Cancel, null)
@@ -132,14 +129,14 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
         val context = context
             ?: return
 
-        val view = LayoutInflater.from(context).inflate(R.layout.dlg_stored_command, null)
+        val view = LayoutInflater.from(context).inflate(R.layout.dlg_stored_command, null, false)
         if (cmd == null) {
             // Create new command:
-            val dialog = AlertDialog.Builder(context)
+            val dialog = MaterialAlertDialogBuilder(context)
                 .setMessage(R.string.stored_commands_add)
                 .setView(view)
                 .setNegativeButton(R.string.Cancel, null)
-                .setPositiveButton(R.string.Save) { dialog1: DialogInterface?, which: Int ->
+                .setPositiveButton(R.string.Save) { _, _ ->
                     val cmd1 = StoredCommand(
                         getValue(view, R.id.etxt_input_title),
                         getValue(view, R.id.etxt_input_command)
@@ -153,15 +150,15 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
             view.tag = cmd
             setValue(view, R.id.etxt_input_title, cmd.title)
             setValue(view, R.id.etxt_input_command, cmd.command)
-            val dialog = AlertDialog.Builder(context)
+            val dialog = MaterialAlertDialogBuilder(context)
                 .setMessage(R.string.stored_commands_edit)
                 .setView(view)
                 .setNegativeButton(R.string.Cancel, null)
-                .setNeutralButton(R.string.Delete) { dialog12: DialogInterface?, which: Int ->
+                .setNeutralButton(R.string.Delete) { _, _ ->
                     val cmd12 = view.tag as StoredCommand
                     deleteCommand(cmd12)
                 }
-                .setPositiveButton(R.string.Save) { dialog13: DialogInterface?, which: Int ->
+                .setPositiveButton(R.string.Save) { _, _ ->
                     val cmd13 = view.tag as StoredCommand
                     cmd13.title = getValue(view, R.id.etxt_input_title)
                     cmd13.command = getValue(view, R.id.etxt_input_command)
@@ -266,7 +263,7 @@ class StoredCommandFragment : BaseFragment(), OnItemClickListener {
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
             var view = convertView
             if (view == null) {
-                view = inflater.inflate(R.layout.item_stored_command, null)
+                view = inflater.inflate(R.layout.item_stored_command, parent, false)
             }
             setOnClick(view!!, R.id.linearLayout1, position, this, null)
             setOnClick(view, R.id.btn_select, position, this, null)

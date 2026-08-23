@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.res.Configuration.ORIENTATION_UNDEFINED
 import android.os.Bundle
 import android.widget.FrameLayout
+import androidx.core.view.WindowCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_FADE
 import com.openvehicles.OVMS.R
@@ -19,6 +20,7 @@ class BaseFragmentActivity : ApiActivity() {
         get() = supportFragmentManager.findFragmentById(contentId)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
+        WindowCompat.setDecorFitsSystemWindows(window, true)
         super.onCreate(savedInstanceState)
 
         if (intent == null) {
@@ -51,6 +53,7 @@ class BaseFragmentActivity : ApiActivity() {
     private fun setDefaultContentView() {
         val fl = FrameLayout(this)
         fl.setId(R.id.content)
+        fl.fitsSystemWindows = true
         setContentView(fl)
     }
 

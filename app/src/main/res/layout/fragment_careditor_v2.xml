@@ -144,18 +144,179 @@
 			android:layout_marginStart="20dp"
 			android:text="@string/lb_tls_trust_all" />
 
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="16dp"
+			android:background="?android:attr/listDivider" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/lb_control_page_view_car"
+			android:textAppearance="?attr/textAppearanceTitleMedium" />
+
 		<TextView
 			android:layout_width="wrap_content"
 			android:layout_height="wrap_content"
 			android:layout_marginTop="12dp"
 			android:text="@string/lb_slide_choice_vehicle" />
 
+		<androidx.recyclerview.widget.RecyclerView
+			android:id="@+id/rv_vehicle_type"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:orientation="horizontal" />
+
+		<com.google.android.material.textfield.TextInputLayout
+			style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.ExposedDropdownMenu"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="8dp"
+			android:hint="Vehicle Color">
+
+			<com.google.android.material.textfield.MaterialAutoCompleteTextView
+				android:id="@+id/select_car_color"
+				android:layout_width="match_parent"
+				android:layout_height="wrap_content"
+				android:inputType="none" />
+
+		</com.google.android.material.textfield.TextInputLayout>
+
+		<ImageView
+			android:id="@+id/img_custom_preview"
+			android:layout_width="match_parent"
+			android:layout_height="160dp"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:padding="16dp"
+			android:scaleType="centerInside"
+			android:visibility="visible" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_custom_image"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:text="@string/btn_custom_image" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_clear_custom_image"
+			style="@style/Widget.Material3.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/btn_clear_custom_image"
+			android:visibility="gone" />
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="16dp"
+			android:background="?android:attr/listDivider" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/lb_control_page_view"
+			android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:text="@string/lb_control_page_view_desc" />
 
 		<Gallery
-			android:id="@+id/ga_car"
+			android:id="@+id/ga_car_ol"
 			android:layout_width="match_parent"
-			android:layout_height="0dp"
-			android:layout_weight="1"
+			android:layout_height="100dp"
+			android:layout_marginTop="8dp"
 			android:spacing="20dp" />
+
+		<ImageView
+			android:id="@+id/img_custom_preview_ol"
+			android:layout_width="100dp"
+			android:layout_height="100dp"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:scaleType="centerInside"
+			android:visibility="gone" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_custom_image_ol"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:text="@string/btn_custom_top_view" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_clear_custom_image_ol"
+			style="@style/Widget.Material3.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/btn_clear_custom_top_view"
+			android:visibility="gone" />
+
+		<View
+			android:layout_width="match_parent"
+			android:layout_height="1dp"
+			android:layout_marginTop="16dp"
+			android:layout_marginBottom="16dp"
+			android:background="?android:attr/listDivider" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:text="@string/lb_map_icon_view"
+			android:textAppearance="?attr/textAppearanceTitleMedium" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_marginTop="4dp"
+			android:text="@string/lb_map_icon_view_desc" />
+
+		<Gallery
+			android:id="@+id/ga_car_map"
+			android:layout_width="match_parent"
+			android:layout_height="100dp"
+			android:layout_marginTop="8dp"
+			android:spacing="20dp" />
+
+		<ImageView
+			android:id="@+id/img_custom_preview_map"
+			android:layout_width="100dp"
+			android:layout_height="100dp"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:scaleType="centerInside"
+			android:visibility="gone" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_custom_image_map"
+			style="@style/Widget.Material3.Button.TonalButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:layout_marginTop="8dp"
+			android:text="@string/btn_custom_map_icon" />
+
+		<com.google.android.material.button.MaterialButton
+			android:id="@+id/btn_clear_custom_image_map"
+			style="@style/Widget.Material3.Button.TextButton"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_gravity="center_horizontal"
+			android:text="@string/btn_clear_custom_map_icon"
+			android:visibility="gone" />
 	</LinearLayout>
 </ScrollView>

@@ -13,13 +13,19 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.BaseAdapter
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.ListView
 import android.widget.TextView
+import androidx.core.view.MenuHost
+import com.google.android.material.button.MaterialButton
+import androidx.core.view.MenuProvider
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.ui.BaseFragment
+import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.ui.utils.Ui.getDrawableIdentifier
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
 
@@ -32,33 +38,40 @@ class SettingsFragment : BaseFragment(), OnItemClickListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        listView = ListView(container!!.context)
-        listView!!.fitsSystemWindows = true
-        return listView
+        val root = inflater.inflate(R.layout.fragment_settings_v2, container, false)
+        listView = root.findViewById(R.id.listView)
+        val appSettingsBtn = root.findViewById<MaterialButton>(R.id.appSettingsBtn)
+        appSettingsBtn.setOnClickListener { showGlobalOptions() }
+        return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE)
         listView.onItemClickListener = this
         listView.setAdapter(SettingsAdapter(activity, getStoredCars()))
-        setHasOptionsMenu(true)
-    }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.settings_options, menu)
-    }
+        val menuHost: MenuHost = requireActivity()
+        menuHost.addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.settings_options, menu)
+            }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.mi_add) {
-            edit(-1)
-            return true
-        } else if (item.itemId == R.id.mi_globaloptions) {
-            showGlobalOptions()
-            return true
-        }
-        return super.onOptionsItemSelected(item)
+            override fun onMenuItemSelected(item: MenuItem): Boolean {
+                return when (item.itemId) {
+                    R.id.mi_add -> {
+                        edit(-1)
+                        true
+                    }
+                    R.id.mi_globaloptions -> {
+                        showGlobalOptions()
+                        true
+                    }
+                    else -> false
+                }
+            }
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
     }
 
     override fun update(carData: CarData?) {
@@ -170,12 +183,17 @@ class SettingsFragment : BaseFragment(), OnItemClickListener {
             btnInfo.tag = position
             val it = items!![position]
             var iv = view.findViewById<View>(R.id.img_car) as ImageView
-            iv.setImageResource(
-                getDrawableIdentifier(
-                    parent.context,
-                    it.sel_vehicle_image
+            val customDrawable = Ui.getCarDrawable(parent.context, it.sel_vehicle_image)
+            if (customDrawable != null) {
+                iv.setImageDrawable(customDrawable)
+            } else {
+                iv.setImageResource(
+                    getDrawableIdentifier(
+                        parent.context,
+                        it.sel_vehicle_image
+                    )
                 )
-            )
+            }
             (view.findViewById<View>(R.id.txt_title) as TextView).text =
                 it.sel_vehicle_label
             if (listView == null && parent is ListView) {

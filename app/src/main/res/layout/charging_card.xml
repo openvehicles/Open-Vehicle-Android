@@ -7,15 +7,28 @@
     android:layout_margin="3dp"
     android:padding="8dp">
 
+    <com.google.android.material.progressindicator.LinearProgressIndicator
+        android:id="@+id/chargingFlowIndicator"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:indeterminate="true"
+        android:visibility="gone"
+        app:indicatorColor="@color/colorAccent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
     <TextView
         android:id="@+id/chargingStatus"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="7dp"
+        android:layout_marginTop="12dp"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/chargingFlowIndicator"
         tools:text="Charging" />
 
     <TextView

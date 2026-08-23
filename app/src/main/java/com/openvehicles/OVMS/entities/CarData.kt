@@ -48,6 +48,10 @@ class CarData : Serializable {
     @JvmField
     var sel_vehicle_image = "" // The vehicle image (on disk)
     @JvmField
+    var sel_vehicle_image_ol = "" // The vehicle top-view image (on disk)
+    @JvmField
+    var sel_vehicle_image_map = "" // The vehicle map icon image (on disk)
+    @JvmField
     var car_lastupdated: Date? = null
     var server_carsconnected = 0
 

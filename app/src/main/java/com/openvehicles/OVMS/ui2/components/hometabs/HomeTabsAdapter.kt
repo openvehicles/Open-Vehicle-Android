@@ -45,9 +45,9 @@ class HomeTabsAdapter internal constructor(
         if (defaultCardColor == null || defaultOnCardColor == null) {
             val tv = TypedValue()
             val theme = context.theme
-            theme.resolveAttribute(com.google.android.material.R.attr.colorSecondaryContainer, tv, true)
+            theme.resolveAttribute(com.google.android.material.R.attr.colorSurfaceContainer, tv, true)
             defaultCardColor = tv.data
-            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSecondaryContainer, tv, true)
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, tv, true)
             defaultOnCardColor = tv.data
         }
         holder.tabName.text = action.tabName

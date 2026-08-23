@@ -1,5 +1,6 @@
 package com.openvehicles.OVMS.ui
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Matrix
 import android.graphics.Paint
@@ -16,6 +17,7 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
+import androidx.core.graphics.ColorUtils
 import com.github.mikephil.charting.charts.BarLineChartBase
 import com.github.mikephil.charting.charts.Chart
 import com.github.mikephil.charting.charts.LineChart
@@ -29,6 +31,7 @@ import com.github.mikephil.charting.formatter.ValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.github.mikephil.charting.listener.ChartTouchListener.ChartGesture
 import com.github.mikephil.charting.listener.OnChartGestureListener
+import com.google.android.material.color.MaterialColors
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.entities.CmdSeries
@@ -60,6 +63,15 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
     private var carData: CarData? = null
     private var cmdSeries: CmdSeries? = null
     private lateinit var appPrefs: AppPrefs
+    
+    private var colorText = Color.WHITE
+    private var colorGrid = Color.GRAY
+    private var colorPowerAvg = COLOR_POWER_AVG
+    private var colorEnergyAvg = COLOR_ENERGY_AVG
+    private var colorAltitude = COLOR_ALTITUDE
+    private var colorAltitudeGrid = COLOR_ALTITUDE_GRID
+    private var colorSpeed = COLOR_SPEED
+    private var colorSpeedGrid = COLOR_SPEED_GRID
 
     private val isPackValid: Boolean
         // Check data model validity
@@ -81,6 +93,21 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
             showPower = true
         }
 
+        // Init theme colors:
+        val ctx = requireContext()
+        colorText = MaterialColors.getColor(ctx, android.R.attr.textColorPrimary, Color.WHITE)
+        colorGrid = ColorUtils.setAlphaComponent(colorText, 40)
+        
+        val isNight = (ctx.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+        if (!isNight) {
+            colorPowerAvg = Color.RED
+            colorEnergyAvg = Color.parseColor("#999900")
+            colorAltitude = Color.parseColor("#998833")
+            colorAltitudeGrid = ColorUtils.setAlphaComponent(colorAltitude, 100)
+            colorSpeed = Color.parseColor("#333399")
+            colorSpeedGrid = ColorUtils.setAlphaComponent(colorSpeed, 100)
+        }
+
         // Setup UI:
         //val progressOverlay = createProgressOverlay(inflater, container, false)
         //progressOverlay.setOnCancelListener(this)
@@ -99,17 +126,17 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         chart.setDrawBorders(true)
         chart.isHighlightPerTapEnabled = false
         xAxis = chart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.valueFormatter = xFormatter
         xAxis.granularity = 1f
         xAxis.isGranularityEnabled = true
         yAxis = chart.axisLeft // altitude
-        yAxis.textColor = COLOR_ALTITUDE
-        yAxis.gridColor = COLOR_ALTITUDE_GRID
+        yAxis.textColor = colorAltitude
+        yAxis.gridColor = colorAltitudeGrid
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         yAxis = chart.axisRight // speed
-        yAxis.textColor = COLOR_SPEED
-        yAxis.gridColor = COLOR_SPEED_GRID
+        yAxis.textColor = colorSpeed
+        yAxis.gridColor = colorSpeedGrid
         yAxis.axisMinimum = 0f
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
 
@@ -123,18 +150,18 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         chart.setDrawBorders(true)
         chart.isHighlightPerTapEnabled = false
         xAxis = chart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.valueFormatter = xFormatter
         xAxis.granularity = 1f
         xAxis.isGranularityEnabled = true
         yAxis = chart.axisLeft
-        yAxis.textColor = Color.WHITE
-        yAxis.gridColor = Color.LTGRAY
+        yAxis.textColor = colorText
+        yAxis.gridColor = colorGrid
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         yAxis.setDrawTopYLabelEntry(false)
         yAxis = chart.axisRight
-        yAxis.textColor = Color.WHITE
-        yAxis.gridColor = Color.LTGRAY
+        yAxis.textColor = colorText
+        yAxis.gridColor = colorGrid
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
 
         //
@@ -147,17 +174,17 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         chart.setDrawBorders(true)
         chart.isHighlightPerTapEnabled = false
         xAxis = chart.xAxis
-        xAxis.textColor = Color.WHITE
+        xAxis.textColor = colorText
         xAxis.valueFormatter = xFormatter
         xAxis.granularity = 1f
         xAxis.isGranularityEnabled = true
         yAxis = chart.axisLeft
-        yAxis.textColor = Color.WHITE
-        yAxis.gridColor = Color.LTGRAY
+        yAxis.textColor = colorText
+        yAxis.gridColor = colorGrid
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
         yAxis = chart.axisRight
-        yAxis.textColor = Color.WHITE
-        yAxis.gridColor = Color.LTGRAY
+        yAxis.textColor = colorText
+        yAxis.gridColor = colorGrid
         yAxis.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
 
         //
@@ -451,7 +478,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
                 if (entry.isSectionStart(refEntry)) {
                     val l = LimitLine(xpos)
                     l.label = String.format("%.0f", entry.getOdometer(units))
-                    l.textColor = Color.WHITE
+                    l.textColor = colorText
                     l.textStyle = Paint.Style.FILL
                     l.textSize = 6f
                     l.enableDashedLine(3f, 2f, 0f)
@@ -497,7 +524,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
         // display data sets:
         var data: LineData
         data = LineData(dataSets)
-        data.setValueTextColor(Color.WHITE)
+        data.setValueTextColor(colorText)
         data.setValueTextSize(9f)
         tripChart.data = data
         xAxis = tripChart.xAxis
@@ -511,7 +538,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
             }
             xAxis.addLimitLine(l)
         }
-        tripChart.legend.textColor = Color.WHITE
+        tripChart.legend.textColor = colorText
         tripChart.invalidate()
 
         //
@@ -543,7 +570,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
             dataSets.add(dataSet)
             dataSet = LineDataSet(pwrAvgValues, getString(R.string.power_data_pwr_avg))
             dataSet.axisDependency = YAxis.AxisDependency.LEFT
-            dataSet.color = COLOR_POWER_AVG
+            dataSet.color = colorPowerAvg
             dataSet.setDrawFilled(false)
             dataSet.lineWidth = 4f
             dataSet.setDrawCircles(false)
@@ -626,7 +653,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
                 getString(R.string.power_data_energy_avg, carData!!.car_distance_units)
             )
             dataSet.axisDependency = YAxis.AxisDependency.LEFT
-            dataSet.color = COLOR_ENERGY_AVG
+            dataSet.color = colorEnergyAvg
             dataSet.setDrawFilled(false)
             dataSet.lineWidth = 4f
             dataSet.setDrawCircles(false)
@@ -637,7 +664,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
 
             // display data sets:
             data = LineData(dataSets)
-            data.setValueTextColor(Color.WHITE)
+            data.setValueTextColor(colorText)
             data.setValueTextSize(9f)
             energyChart.data = data
             xAxis = energyChart.xAxis
@@ -651,7 +678,7 @@ class PowerFragment : BaseFragment(), CmdSeries.Listener, ProgressOverlay.OnCanc
                 }
                 xAxis.addLimitLine(l)
             }
-            energyChart.legend.textColor = Color.WHITE
+            energyChart.legend.textColor = colorText
             energyChart.invalidate()
         }
     }

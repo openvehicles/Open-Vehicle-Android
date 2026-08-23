@@ -22,6 +22,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_marginEnd="6dp"
+                app:tint="@color/colorText"
                 app:srcCompat="@drawable/ic_action_about" />
 
             <LinearLayout
@@ -36,7 +37,7 @@
                     android:paddingBottom="2dp"
                     android:text="Time"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/abc_secondary_text_material_dark"
+                    android:textColor="?android:attr/textColorSecondary"
                     android:textSize="11sp" />
 
                 <TextView
@@ -48,7 +49,7 @@
                     android:paddingBottom="2dp"
                     android:text="Title"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="14sp"
                     android:textStyle="bold" />
 
@@ -59,7 +60,7 @@
                     android:autoLink="none"
                     android:text="Message"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@color/abc_primary_text_material_dark"
+                    android:textColor="?android:attr/textColorPrimary"
                     android:textSize="12sp" />
             </LinearLayout>
         </LinearLayout>

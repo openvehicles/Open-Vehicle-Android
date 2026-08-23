@@ -17,29 +17,34 @@ object CarRenderingUtils {
     fun getTopDownCarLayers(carData: CarData, context: Context, climate: Boolean = false, heat: Boolean = false): List<Drawable> {
         var layers = emptyList<Drawable>()
 
+        val overlayImage = if (carData.sel_vehicle_image_ol.isNotEmpty()) carData.sel_vehicle_image_ol else carData.sel_vehicle_image
+        val customDrawable = Ui.getCarDrawable(context, overlayImage)
+        if (overlayImage.startsWith("file://") && customDrawable != null) {
+            return listOf(customDrawable)
+        }
 
-        var overlayResource: String = carData.sel_vehicle_image
+        var overlayResource: String = overlayImage
 
 
-        val name_splitted = carData.sel_vehicle_image.split("_");
+        val name_splitted = overlayImage.split("_");
 
         when {
-            carData.sel_vehicle_image.startsWith("car_imiev_")
-            || carData.sel_vehicle_image.startsWith("car_i3_")
-            || carData.sel_vehicle_image.startsWith("car_ampera_")
-            || carData.sel_vehicle_image.startsWith("car_twizy_")
-            || carData.sel_vehicle_image.startsWith("car_kangoo_") -> {
+            overlayImage.startsWith("car_imiev_")
+            || overlayImage.startsWith("car_i3_")
+            || overlayImage.startsWith("car_ampera_")
+            || overlayImage.startsWith("car_twizy_")
+            || overlayImage.startsWith("car_kangoo_") -> {
                 // one ol image for all colors:
                 overlayResource = name_splitted.minus(name_splitted.last())
                     .joinToString("_")
             }
-            carData.sel_vehicle_image.startsWith("car_holdenvolt_") -> overlayResource = "car_ampera" // Holdenvolt: one ol image for all colors (same as ampera)
-            carData.sel_vehicle_image.startsWith("car_kianiro_") -> overlayResource = "car_kianiro_grey"
-            carData.sel_vehicle_image.startsWith("car_smart_44") -> overlayResource = "car_vwup_silver" // Smart forfour share a single image
-            carData.sel_vehicle_image.startsWith("car_smart_") -> overlayResource = "car_smart" // Smart fortwo share a single image
-            carData.sel_vehicle_image.startsWith("car_nrjkexperia") -> overlayResource = "car_nrjkexperia"
-            carData.sel_vehicle_image.startsWith("car_nrjk") -> overlayResource = "car_nrjk"
-            carData.sel_vehicle_image.startsWith("car_niu_mqi_gt") -> overlayResource = "car_niu_mqi_gt"
+            overlayImage.startsWith("car_holdenvolt_") -> overlayResource = "car_ampera" // Holdenvolt: one ol image for all colors (same as ampera)
+            overlayImage.startsWith("car_kianiro_") -> overlayResource = "car_kianiro_grey"
+            overlayImage.startsWith("car_smart_44") -> overlayResource = "car_smart_44" // Smart forfour share a single image
+            overlayImage.startsWith("car_smart_") -> overlayResource = "car_smart" // Smart fortwo share a single image
+            overlayImage.contains("experia") -> overlayResource = "car_nrjkexperia"
+            overlayImage.startsWith("car_nrjk") -> overlayResource = "car_nrjk"
+            overlayImage.startsWith("car_niu_mqi_gt") -> overlayResource = "car_niu_mqi_gt"
         }
 
         var otherResName = overlayResource.split("_").minus(name_splitted.last())

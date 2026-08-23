@@ -42,6 +42,7 @@ import com.openvehicles.OVMS.api.ApiService
 import com.openvehicles.OVMS.ui.BaseFragmentActivity.Companion.finishCurrent
 import com.openvehicles.OVMS.ui.MapFragment.UpdateLocation
 import com.openvehicles.OVMS.ui.utils.Database
+import com.openvehicles.OVMS.ui2.MainActivityUI2
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.ConnectionList
 import com.openvehicles.OVMS.utils.ConnectionList.ConnectionsListener
@@ -164,6 +165,15 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
         super.onCreate(savedInstanceState)
         Log.d(TAG, "onCreate")
         appPrefs = AppPrefs(this, "ovms")
+
+        val isOldUI = appPrefs.getData("option_oldui_enabled", "0") == "1"
+        if (!isOldUI) {
+            Log.i(TAG, "onCreate: redirection to New UI (MainActivityUI2)")
+            startActivity(Intent(this, MainActivityUI2::class.java))
+            finish()
+            return
+        }
+
         database = Database(this)
 
         // get/create App UUID:
@@ -294,9 +304,19 @@ class MainActivity : ApiActivity(), ActionBar.OnNavigationListener, GetMapDetail
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy")
-        unregisterReceiver(apiEventReceiver)
-        unregisterReceiver(notificationReceiver)
-        database.close()
+        try {
+            unregisterReceiver(apiEventReceiver)
+        } catch (e: Exception) {
+            // ignore
+        }
+        try {
+            unregisterReceiver(notificationReceiver)
+        } catch (e: Exception) {
+            // ignore
+        }
+        if (::database.isInitialized) {
+            database.close()
+        }
 
         // Stop background ApiService?
         val serviceEnabled = appPrefs.getData("option_service_enabled", "0") == "1"

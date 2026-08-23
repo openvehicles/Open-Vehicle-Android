@@ -8,9 +8,13 @@ import com.openvehicles.OVMS.api.ApiService
  * Quick action handling custom commands
  */
 class WakeupQuickAction(apiServiceGetter: () -> ApiService?, context: Context? = null) :
-    QuickAction(ACTION_ID, R.drawable.ic_car_sleep, apiServiceGetter, label = context?.getString(R.string.Wakeup),
+    QuickAction(ACTION_ID, R.drawable.ic_car_sleep, apiServiceGetter,
         actionOnTint = R.attr.colorSecondaryContainer,
-        actionOffTint = R.color.cardview_dark_background) {
+        actionOffTint = R.color.cardview_off_background,
+        actionOnIconTint = R.attr.colorOnSecondaryContainer,
+        actionOffIconTint = R.color.colorText,
+        label = context?.getString(R.string.Wakeup),
+    ) {
 
     companion object {
         const val ACTION_ID = "wakeup"

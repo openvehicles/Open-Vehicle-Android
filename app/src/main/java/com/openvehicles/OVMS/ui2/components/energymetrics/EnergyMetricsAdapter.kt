@@ -1,14 +1,15 @@
 package com.openvehicles.OVMS.ui2.components.energymetrics
 
 import android.content.Context
-import android.os.Build
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.color.MaterialColors
 import com.openvehicles.OVMS.R
-import androidx.core.graphics.toColorInt
 
 
 class EnergyMetricsAdapter internal constructor(
@@ -30,17 +31,16 @@ class EnergyMetricsAdapter internal constructor(
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val metric = mData[position]
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            if (position.and(1) == 0)
-                holder.itemView.setBackgroundResource(R.color.material_dynamic_secondary20)
-            else
-                holder.itemView.setBackgroundResource(R.color.material_dynamic_secondary10)
+        
+        // Zebra striping using theme colors
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT)
         } else {
-            if (position.and(1) == 0)
-                holder.itemView.setBackgroundColor("#2A3042".toColorInt())
-            else
-                holder.itemView.setBackgroundColor("#151B2C".toColorInt())
+            val baseColor = MaterialColors.getColor(holder.itemView, R.attr.colorOnSurface, Color.BLACK)
+            val stripeColor = ColorUtils.setAlphaComponent(baseColor, 15) // very subtle overlay
+            holder.itemView.setBackgroundColor(stripeColor)
         }
+        
         holder.metricName.text = metric.metricName
         holder.metricValue.text = metric.metricValue
         holder.clickListener = mClickListener
