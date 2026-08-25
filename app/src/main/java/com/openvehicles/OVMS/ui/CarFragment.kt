@@ -802,8 +802,9 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         // "Temp PEM" box:
         val pemtvl = findViewById(R.id.tabCarTextPEMLabel) as TextView
         val pemtv = findViewById(R.id.tabCarTextPEM) as TextView
-        // Display of cabin temperature for all vehicles that support it: VWUP VWUP.T26 NL KS KN VA MI SE SQ
+        // Display of cabin temperature for all vehicles that support it: VWUP VWUP.T26 VWEG NL KS KN VA MI SE SQ
         if (carData.car_type == "VWUP"
+            || carData.car_type == "VWEG"
             || carData.car_type == "KS"
             || carData.car_type == "KN"
             || carData.car_type.startsWith("VA")

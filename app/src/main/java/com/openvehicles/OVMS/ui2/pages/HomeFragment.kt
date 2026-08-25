@@ -1761,6 +1761,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             "TS"              to "Tesla Model S",
             "TYR4"            to "Toyota RAV4 EV",
             "VA"              to "Chevrolet Volt/Ampera",
+            "VWEG"            to "VW e-Golf",
             "VWUP"            to "VW e-Up",
             "XX"              to "TRACK",
             "ZEVA"            to "ZEVA BMS",
