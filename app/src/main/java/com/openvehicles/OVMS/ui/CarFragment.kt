@@ -134,13 +134,14 @@ class CarFragment : BaseFragment(), View.OnClickListener, OnResultCommandListene
         val tabCarImageAC: ImageView = findViewById(R.id.tabCarImageAC) as ImageView
 
         // The V3 framework does not support capabilities yet, but
-        //	the Leaf, Smart, VW e-Up and Zoe Ph2 are the only cars providing command 26 up to now, so:
+        //	the Leaf, Smart, VW e-Up, VW e-Golf and Zoe Ph2 are the only cars providing command 26 up to now, so:
         if (carData.hasCommand(26)
             || carData.car_type == "NL"
             || carData.car_type == "SE"
             || carData.car_type == "SQ"
             || carData.car_type == "VWUP"
             || carData.car_type == "VWUP.T26"
+            || carData.car_type == "VWEG"
             || carData.car_type == "RZ2"
             || carData.car_type.startsWith("VA")
             || carData.car_type.startsWith("VB")
