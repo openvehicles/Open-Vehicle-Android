@@ -837,6 +837,7 @@
     <string name="drive_mode">Drive Mode</string>
     <string name="normal">Normal</string>
     <string name="drive_mode_eco">ECO/B Mode</string>
+    <string name="drive_mode_eco_plus">Eco+</string>
     <string name="unknown">Unknown</string>
     <string name="temp">Temperature</string>
     <string name="lb_communications">Communications</string>
