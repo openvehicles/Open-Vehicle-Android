@@ -219,11 +219,20 @@ class EnergyFragment : BaseFragment(), OnResultCommandListener, EnergyMetricsAda
         if(carData?.car_type !in listOf("SQ")) {
             energyMetricsAdapter.mData += EnergyMetric(
                 getString(R.string.drive_mode),
-                when (carData?.car_drivemode) {
-                    0 -> getString(R.string.normal)
-                    1 -> getString(R.string.drive_mode_eco)
-                    else -> getString(R.string.unknown)
-                }
+                if (carData?.car_type in listOf("VWUP", "VWUP.T26", "VWEG"))
+                    // VW e-Up / e-Golf drive profiles: 1=Normal, 2=Eco, 3=Eco+
+                    when (carData?.car_drivemode) {
+                        1 -> getString(R.string.normal)
+                        2 -> getString(R.string.drive_mode_eco)
+                        3 -> getString(R.string.drive_mode_eco_plus)
+                        else -> getString(R.string.unknown)
+                    }
+                else
+                    when (carData?.car_drivemode) {
+                        0 -> getString(R.string.normal)
+                        1 -> getString(R.string.drive_mode_eco)
+                        else -> getString(R.string.unknown)
+                    }
             )
         }
 
