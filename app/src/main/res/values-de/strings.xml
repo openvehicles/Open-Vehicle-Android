@@ -891,6 +891,7 @@
     <string name="Clear">Löschen</string>
     <string name="Copy">Kopieren</string>
     <string name="more">Mehr</string>
+    <string name="climate_target_temp">Zieltemperatur %s</string>
 
     <!-- UI Settings -->
     <string name="ui_theme_category">Darstellung</string>

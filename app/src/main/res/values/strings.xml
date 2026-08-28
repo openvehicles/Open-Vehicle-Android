@@ -979,6 +979,7 @@
     <string name="Copy">Copy</string>
     <string name="more">More</string>
     <string name="lb_restart_time_off">Stop restart</string>
+    <string name="climate_target_temp">Target %s</string>
 
     <!-- UI Settings -->
     <string name="ui_theme_category">Appearance</string>
