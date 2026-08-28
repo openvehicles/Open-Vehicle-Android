@@ -68,7 +68,7 @@ class ClimateQuickAction(apiServiceGetter: () -> ApiService?, context: Context? 
 
     override fun commandsAvailable(): Boolean {
         return this.getCarData()?.hasCommand(26) == true
-                || getCarData()?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ2")
+                || getCarData()?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ2","VWEG")
                 || getCarData()?.car_type.orEmpty().startsWith("VA")
                 || getCarData()?.car_type.orEmpty().startsWith("VB")
                 || getCarData()?.car_type.orEmpty().startsWith("OAE")
