@@ -123,11 +123,11 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
         // TPMS setting
 
         val vehicleId = getLastSelectedCarId()
-        val pressurePreference = findPreference<SwitchPreferenceCompat>("pressure_psi_bar")
-        pressurePreference?.isChecked = appPrefs.getData("showtpmsbar", "off") == "on"
+        val pressurePreference = findPreference<ListPreference>("pressure_psi_bar")
+        pressurePreference?.value = appPrefs.getData("showtpmsbar", "off")
         pressurePreference?.onPreferenceChangeListener =
             OnPreferenceChangeListener { preference, newValue ->
-                appPrefs.saveData("showtpmsbar", if (newValue as Boolean) "on" else "off")
+                appPrefs.saveData("showtpmsbar", newValue as String)
                 true
             }
 
@@ -150,10 +150,10 @@ class AppUISettingsFragment: PreferenceFragmentCompat() {
         // TODO: option only for supported Cars visible or enable?
         // tpmsSortByFirmwarePreference?.isVisible = carData?.car_type in listOf("SQ")
         tpmsSortByFirmwarePreference?.isEnabled = carData?.car_type !in listOf("RT", "EN", "NRJK", "SQ")
-        tpmsSortByFirmwarePreference?.isChecked = appPrefs.getData("tmps_firmware_$vehicleId", "off") == "on"
+        tpmsSortByFirmwarePreference?.isChecked = appPrefs.getData("tpms_firmware_$vehicleId", "off") == "on"
         tpmsSortByFirmwarePreference?.onPreferenceChangeListener =
             OnPreferenceChangeListener { preference, newValue ->
-                appPrefs.saveData("tmps_firmware_$vehicleId",if (newValue as Boolean) "on" else "off")
+                appPrefs.saveData("tpms_firmware_$vehicleId",if (newValue as Boolean) "on" else "off")
                 appPrefs.saveData("tpms_fl_$vehicleId", "0")
                 appPrefs.saveData("tpms_fr_$vehicleId", "1")
                 appPrefs.saveData("tpms_rl_$vehicleId", "2")

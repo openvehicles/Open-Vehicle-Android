@@ -476,8 +476,19 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             }
 
             override fun onStopTrackingTouch(slider: RangeSlider) {
+                val title = if (carData?.car_type == "SQ") {
+                    getString(R.string.lb_charger_confirm_soc_change, ampLimit.text.toString())
+                } else {
+                    getString(chargeLimitActionTitle)
+                }
+                val msg = if (carData?.car_type == "SQ") {
+                    R.string.lb_charger_sq_no_stop_hint
+                } else {
+                    R.string.blankspace
+                }
                 MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(chargeLimitActionTitle)
+                    .setTitle(title)
+                    .setMessage(msg)
                     .setNegativeButton(R.string.Cancel) {_, _ ->}
                     .setPositiveButton(android.R.string.ok, fun(dlg: DialogInterface, which: Int) {
                         if (carData?.car_type == "RT") {
