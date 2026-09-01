@@ -280,7 +280,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         val kpa = kpaStr?.toDoubleOrNull() ?: 0.0
         return when (getPressureUnit()) {
             "on" -> String.format(Locale.US, "%.2f", kpa / 100.0)
-            "off" -> String.format(Locale.US, "%.1f", kpa * 0.145038)
+            "off" -> String.format(Locale.US, "%.0f", kpa * 0.145038)
             else -> kpa.roundToInt().toString()
         }
     }

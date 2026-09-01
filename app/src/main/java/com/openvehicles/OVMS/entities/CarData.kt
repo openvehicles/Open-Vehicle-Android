@@ -501,10 +501,10 @@ class CarData : Serializable {
             car_tpms_rr_p = String.format("%.0f%s", car_tpms_rr_p_raw * 6.895, "kPa")
         } else {
             // default is psi ("off")
-            car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi")
-            car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi")
-            car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi")
-            car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi")
+            car_tpms_fl_p = String.format("%.0f%s", car_tpms_fl_p_raw, "psi")
+            car_tpms_fr_p = String.format("%.0f%s", car_tpms_fr_p_raw, "psi")
+            car_tpms_rl_p = String.format("%.0f%s", car_tpms_rl_p_raw, "psi")
+            car_tpms_rr_p = String.format("%.0f%s", car_tpms_rr_p_raw, "psi")
         }
         var sval: String
         var dval: Double
@@ -514,10 +514,10 @@ class CarData : Serializable {
                 sval = if (showTpmsBar == "on") {
                     String.format("%.1f%s", Math.floor(dval / 10) / 10, "bar")
                 } else if (showTpmsBar == "kpa") {
-                    String.format("%.0f%s", Math.floor(dval * 10) / 10, "kPa")
+                    String.format("%.0f%s", dval, "kPa")
                 } else {
                     // default is psi ("off")
-                    String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi")
+                    String.format("%.0f%s", Math.floor(dval * 1.450377) / 10, "psi")
                 }
 
                 car_tpms_pressure!![j] = sval
