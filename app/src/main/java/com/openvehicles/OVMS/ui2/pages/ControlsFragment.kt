@@ -27,6 +27,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import com.openvehicles.OVMS.R
 import com.openvehicles.OVMS.api.CommandActivity
 import com.openvehicles.OVMS.api.OnResultCommandListener
@@ -54,6 +55,8 @@ import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getLastSelectedCarId
 import java.text.DateFormat
 import java.util.Date
+import java.util.Locale
+import kotlin.math.roundToInt
 
 
 class ControlsFragment : BaseFragment(), OnResultCommandListener {
@@ -209,14 +212,20 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         body.visibility = if (isExpanded) View.VISIBLE else View.GONE
         chevron.rotation = if (isExpanded) 90f else 0f
         
+        val unitLabel = when (getPressureUnit()) {
+            "on" -> "bar"
+            "off" -> "psi"
+            else -> "kPa"
+        }
+
         val alert = tpmsConfig["tpms.alert.enable"] ?: "no"
-        val front = tpmsConfig["tpms.front.pressure"] ?: "0"
-        val rear = tpmsConfig["tpms.rear.pressure"] ?: "0"
+        val front = convertKpaToDisplay(tpmsConfig["tpms.front.pressure"])
+        val rear = convertKpaToDisplay(tpmsConfig["tpms.rear.pressure"])
         val temp = tpmsConfig["tpms.temp"] ?: "no"
-        val warnVal = tpmsConfig["tpms.value.warn"] ?: "0"
-        val alertVal = tpmsConfig["tpms.value.alert"] ?: "0"
+        val warnVal = convertKpaToDisplay(tpmsConfig["tpms.value.warn"])
+        val alertVal = convertKpaToDisplay(tpmsConfig["tpms.value.alert"])
         
-        summaryView.text = "\nAlert message: $alert \n\nShow temperatures: $temp \n\nTarget pressure:\n  Front: $front kPa • Rear: $rear kPa \n\nDifference from target pressure:\n  Warn: $warnVal kPa • Alert: $alertVal kPa"
+        summaryView.text = "\nAlert message: $alert \n\nShow temperatures: $temp \n\nTarget pressure:\n  Front: $front $unitLabel • Rear: $rear $unitLabel \n\nDifference from target pressure:\n  Warn: $warnVal $unitLabel • Alert: $alertVal $unitLabel"
     }
 
     private fun showEditTPMSConfigDialog() {
@@ -228,12 +237,24 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         val etWarn = dialogView.findViewById<TextInputEditText>(R.id.etWarnValue)
         val etAlert = dialogView.findViewById<TextInputEditText>(R.id.etAlertValue)
 
+        val unitLabel = when (getPressureUnit()) {
+            "on" -> "bar"
+            "off" -> "psi"
+            else -> "kPa"
+        }
+        
+        // Update hints to show current unit
+        dialogView.findViewById<TextInputLayout>(R.id.tilFrontPressure)?.hint = "Front Target ($unitLabel)"
+        dialogView.findViewById<TextInputLayout>(R.id.tilRearPressure)?.hint = "Rear Target ($unitLabel)"
+        dialogView.findViewById<TextInputLayout>(R.id.tilWarnValue)?.hint = "Warning Delta ($unitLabel)"
+        dialogView.findViewById<TextInputLayout>(R.id.tilAlertValue)?.hint = "Alert Delta ($unitLabel)"
+
         swAlert.isChecked = tpmsConfig["tpms.alert.enable"] == "yes"
-        etFront.setText(tpmsConfig["tpms.front.pressure"] ?: "0")
-        etRear.setText(tpmsConfig["tpms.rear.pressure"] ?: "0")
+        etFront.setText(convertKpaToDisplay(tpmsConfig["tpms.front.pressure"]))
+        etRear.setText(convertKpaToDisplay(tpmsConfig["tpms.rear.pressure"]))
         swTemp.isChecked = tpmsConfig["tpms.temp"] == "yes"
-        etWarn.setText(tpmsConfig["tpms.value.warn"] ?: "0")
-        etAlert.setText(tpmsConfig["tpms.value.alert"] ?: "0")
+        etWarn.setText(convertKpaToDisplay(tpmsConfig["tpms.value.warn"]))
+        etAlert.setText(convertKpaToDisplay(tpmsConfig["tpms.value.alert"]))
 
         MaterialAlertDialogBuilder(requireContext())
             .setTitle("TPMS Config (XSQ)")
@@ -241,16 +262,37 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             .setPositiveButton(R.string.Save) { _, _ ->
                 val newConfig = mapOf(
                     "tpms.alert.enable" to if (swAlert.isChecked) "yes" else "no",
-                    "tpms.front.pressure" to etFront.text.toString(),
-                    "tpms.rear.pressure" to etRear.text.toString(),
+                    "tpms.front.pressure" to convertDisplayToKpa(etFront.text.toString()),
+                    "tpms.rear.pressure" to convertDisplayToKpa(etRear.text.toString()),
                     "tpms.temp" to if (swTemp.isChecked) "yes" else "no",
-                    "tpms.value.warn" to etWarn.text.toString(),
-                    "tpms.value.alert" to etAlert.text.toString()
+                    "tpms.value.warn" to convertDisplayToKpa(etWarn.text.toString()),
+                    "tpms.value.alert" to convertDisplayToKpa(etAlert.text.toString())
                 )
                 saveTPMSConfig(newConfig)
             }
             .setNegativeButton(R.string.Cancel, null)
             .show()
+    }
+
+    private fun getPressureUnit(): String = appPrefs.getData("showtpmsbar", "off") ?: "off"
+
+    private fun convertKpaToDisplay(kpaStr: String?): String {
+        val kpa = kpaStr?.toDoubleOrNull() ?: 0.0
+        return when (getPressureUnit()) {
+            "on" -> String.format(Locale.US, "%.2f", kpa / 100.0)
+            "off" -> String.format(Locale.US, "%.1f", kpa * 0.145038)
+            else -> kpa.roundToInt().toString()
+        }
+    }
+
+    private fun convertDisplayToKpa(displayStr: String): String {
+        val value = displayStr.replace(",", ".").toDoubleOrNull() ?: 0.0
+        val kpa = when (getPressureUnit()) {
+            "on" -> value * 100.0
+            "off" -> value / 0.145038
+            else -> value
+        }
+        return kpa.roundToInt().toString()
     }
 
     private fun saveTPMSConfig(newConfig: Map<String, String>) {

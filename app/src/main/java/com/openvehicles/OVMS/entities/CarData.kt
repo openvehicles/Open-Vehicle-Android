@@ -455,7 +455,6 @@ class CarData : Serializable {
      * Calculate derived variables including prefs dependencies
      */
     fun recalc() {
-        val showTpmsBar = appPrefs!!.getData("showtpmsbar") == "on"
         val showFahrenheit = appPrefs!!.getData("showfahrenheit") == "on"
         if (showFahrenheit) {
             car_temp_pem = String.format("%.1f\u00B0F", car_temp_pem_raw * (9.0 / 5.0) + 32.0)
@@ -467,26 +466,7 @@ class CarData : Serializable {
             car_temp_charger =
                 String.format("%.1f\u00B0F", car_temp_charger_raw * (9.0 / 5.0) + 32.0)
             car_temp_cabin = String.format("%.1f\u00B0F", car_temp_cabin_raw * (9.0 / 5.0) + 32.0)
-        } else {
-            car_temp_pem = String.format("%.1f\u00B0C", car_temp_pem_raw)
-            car_temp_motor = String.format("%.1f\u00B0C", car_temp_motor_raw)
-            car_temp_battery = String.format("%.1f\u00B0C", car_temp_battery_raw)
-            car_temp_ambient = String.format("%.1f\u00B0C", car_temp_ambient_raw)
-            car_temp_charger = String.format("%.1f\u00B0C", car_temp_charger_raw)
-            car_temp_cabin = String.format("%.1f\u00B0C", car_temp_cabin_raw)
-        }
-        if (showTpmsBar) {
-            car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar")
-            car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar")
-            car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar")
-            car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar")
-        } else {
-            car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi")
-            car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi")
-            car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi")
-            car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi")
-        }
-        if (showFahrenheit) {
+            // wheels
             car_tpms_fl_t =
                 String.format("%.0f%s", car_tpms_fl_t_raw * (9.0 / 5.0) + 32.0, "\u00B0F")
             car_tpms_fr_t =
@@ -496,21 +476,50 @@ class CarData : Serializable {
             car_tpms_rr_t =
                 String.format("%.0f%s", car_tpms_rr_t_raw * (9.0 / 5.0) + 32.0, "\u00B0F")
         } else {
+            car_temp_pem = String.format("%.1f\u00B0C", car_temp_pem_raw)
+            car_temp_motor = String.format("%.1f\u00B0C", car_temp_motor_raw)
+            car_temp_battery = String.format("%.1f\u00B0C", car_temp_battery_raw)
+            car_temp_ambient = String.format("%.1f\u00B0C", car_temp_ambient_raw)
+            car_temp_charger = String.format("%.1f\u00B0C", car_temp_charger_raw)
+            car_temp_cabin = String.format("%.1f\u00B0C", car_temp_cabin_raw)
+            // wheels
             car_tpms_fl_t = String.format("%.0f%s", car_tpms_fl_t_raw, "\u00B0C")
             car_tpms_fr_t = String.format("%.0f%s", car_tpms_fr_t_raw, "\u00B0C")
             car_tpms_rl_t = String.format("%.0f%s", car_tpms_rl_t_raw, "\u00B0C")
             car_tpms_rr_t = String.format("%.0f%s", car_tpms_rr_t_raw, "\u00B0C")
+        }
+        val showTpmsBar = appPrefs!!.getData("showtpmsbar")
+        if (showTpmsBar == "on") {
+            car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw / 14.504, "bar")
+            car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw / 14.504, "bar")
+            car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw / 14.504, "bar")
+            car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw / 14.504, "bar")
+        } else if (showTpmsBar == "kpa") {
+            car_tpms_fl_p = String.format("%.0f%s", car_tpms_fl_p_raw * 6.895, "kPa")
+            car_tpms_fr_p = String.format("%.0f%s", car_tpms_fr_p_raw * 6.895, "kPa")
+            car_tpms_rl_p = String.format("%.0f%s", car_tpms_rl_p_raw * 6.895, "kPa")
+            car_tpms_rr_p = String.format("%.0f%s", car_tpms_rr_p_raw * 6.895, "kPa")
+        } else {
+            // default is psi ("off")
+            car_tpms_fl_p = String.format("%.1f%s", car_tpms_fl_p_raw, "psi")
+            car_tpms_fr_p = String.format("%.1f%s", car_tpms_fr_p_raw, "psi")
+            car_tpms_rl_p = String.format("%.1f%s", car_tpms_rl_p_raw, "psi")
+            car_tpms_rr_p = String.format("%.1f%s", car_tpms_rr_p_raw, "psi")
         }
         var sval: String
         var dval: Double
         if (car_tpms_pressure_raw != null && car_tpms_pressure != null && car_tpms_pressure_raw!!.size == car_tpms_pressure!!.size) {
             for (j in car_tpms_pressure_raw!!.indices) {
                 dval = car_tpms_pressure_raw!![j]
-                sval = if (showTpmsBar) String.format(
-                    "%.1f%s",
-                    Math.floor(dval / 10) / 10,
-                    "bar"
-                ) else String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi")
+                sval = if (showTpmsBar == "on") {
+                    String.format("%.1f%s", Math.floor(dval / 10) / 10, "bar")
+                } else if (showTpmsBar == "kpa") {
+                    String.format("%.0f%s", Math.floor(dval * 10) / 10, "kPa")
+                } else {
+                    // default is psi ("off")
+                    String.format("%.1f%s", Math.floor(dval * 1.450377) / 10, "psi")
+                }
+
                 car_tpms_pressure!![j] = sval
             }
         }

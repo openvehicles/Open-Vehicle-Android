@@ -802,7 +802,6 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 }
 
                 var chargeStateInfo = 0
-
                 when (carData!!.car_charge_state_i_raw) {
                     2 -> chargeStateInfo = R.string.state_topping_off_label
                     4 -> chargeStateInfo = R.string.state_done_label
@@ -1214,8 +1213,19 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             }
 
             override fun onStopTrackingTouch(slider: RangeSlider) {
+                val title = if (carData?.car_type == "SQ") {
+                    getString(R.string.lb_charger_confirm_soc_change, ampLimit.text.toString())
+                } else {
+                    getString(chargeLimitActionTitle)
+                }
+                val msg = if (carData?.car_type == "SQ") {
+                    R.string.lb_charger_sq_no_stop_hint
+                } else {
+                    R.string.blankspace
+                }
                 MaterialAlertDialogBuilder(requireActivity())
-                    .setTitle(chargeLimitActionTitle)
+                    .setTitle(title)
+                    .setMessage(msg)
                     .setNegativeButton(R.string.Cancel) {_, _ ->}
                     .setPositiveButton(android.R.string.ok, fun(dlg: DialogInterface, which: Int) {
                         if (carData?.car_type == "RT") {
