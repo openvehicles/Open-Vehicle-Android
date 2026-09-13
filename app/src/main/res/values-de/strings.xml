@@ -307,7 +307,17 @@
     <string name="mi_map_settings">Einstellungen</string>
     
     <string name="mi_car_details_temp">Fahrenheit</string>
-    <string name="mi_car_details_tpms">TPMS in bar</string>
+    <string name="mi_car_details_tpms">Reifendruck-Einheit</string>
+    <string-array name="tpms_unit_labels">
+        <item>bar</item>
+        <item>psi</item>
+        <item>kPa</item>
+    </string-array>
+    <string-array name="tpms_unit_values" translatable="false">
+        <item>on</item>
+        <item>off</item>
+        <item>kpa</item>
+    </string-array>
 
     <string name="ocm_title_charge_points">LADESTATIONEN</string>
     <string name="ocm_subtitle_charge_points">Quelle: https://openchargemap.org/</string>
@@ -819,7 +829,8 @@
     <string name="lb_booster_day_end">letzter Tag</string>
     <string name="chargingpower">Ladeleistung</string>
     <string name="chargingeff">Effizienz</string>
-    <string name="lb_charger_confirm_soc_change">SoC limit setzen?</string>
+    <string name="lb_charger_confirm_soc_change">Benachrichtigung bei SoC %s?</string>
+    <string name="lb_charger_sq_no_stop_hint">Beim smart kann der Ladevorgang nicht per App gestoppt werden!</string>
     <string name="action_set_tab_color">Tab-Farbe festlegen</string>
     <string name="action_reset_tab_color">Tab-Farbe zurücksetzen</string>
     <string name="dialog_choose_color">Farbe auswählen</string>

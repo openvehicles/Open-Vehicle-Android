@@ -77,12 +77,16 @@
             app:key="api_key" />
     </PreferenceCategory>
     <PreferenceCategory android:title="@string/tpms_settings">
-        <SwitchPreferenceCompat
+        <ListPreference
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:defaultValue="false"
+            android:defaultValue="off"
+            android:persistent="false"
             android:title="@string/mi_car_details_tpms"
-            app:key="pressure_psi_bar" />
+            app:entries="@array/tpms_unit_labels"
+            app:entryValues="@array/tpms_unit_values"
+            app:key="pressure_psi_bar"
+            app:useSimpleSummaryProvider="true" />
         <SwitchPreferenceCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

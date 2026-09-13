@@ -2,5 +2,6 @@
 <resources>
     <color name="colorBackground">#000000</color>
     <color name="colorText">#ffffff</color>
+    <color name="colorTextError">#FF4444</color>
     <color name="colorSurfaceContainer">#1E1E1E</color>
 </resources>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="blankspace"> </string>
     <string name="app_name">Open Vehicle</string>
     <string name="Loading">Please wait</string>
     <string name="Settings">Settings</string>
@@ -353,7 +354,17 @@
     <string name="mi_map_search">Search Google for chargers</string>
 
     <string name="mi_car_details_temp">Fahrenheit</string>
-    <string name="mi_car_details_tpms">TPMS in bar</string>
+    <string name="mi_car_details_tpms">TPMS unit</string>
+    <string-array name="tpms_unit_labels">
+        <item>bar</item>
+        <item>psi</item>
+        <item>kPa</item>
+    </string-array>
+    <string-array name="tpms_unit_values" translatable="false">
+        <item>on</item>
+        <item>off</item>
+        <item>kpa</item>
+    </string-array>
 
     <string name="cargroup_title">Car groups</string>
     <string name="cargroup_name_hint">Group name</string>
@@ -902,7 +913,8 @@
     <string name="select_ddt4all_action">DDT4all option</string>
     <string name="chargingpower">Charging power</string>
     <string name="chargingeff">efficiency</string>
-    <string name="lb_charger_confirm_soc_change">Really change SoC limit?</string>
+    <string name="lb_charger_confirm_soc_change">Notify when SOC reaches %s?</string>
+    <string name="lb_charger_sq_no_stop_hint">On the smart, the charging process cannot be stopped via the app!</string>
     <string name="action_set_tab_color">Set tab color</string>
     <string name="action_reset_tab_color">Reset tab color</string>
     <string name="dialog_choose_color">Choose a color</string>

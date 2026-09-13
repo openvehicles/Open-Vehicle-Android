@@ -17,27 +17,29 @@
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilFrontPressure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Front target pressure (kPa)"
+            android:hint="Front target pressure"
             android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFrontPressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+                android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilRearPressure"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Rear target pressure (kPa)"
+            android:hint="Rear target pressure"
             android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etRearPressure"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+                android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.materialswitch.MaterialSwitch
@@ -48,27 +50,29 @@
             android:layout_marginBottom="16dp"/>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilWarnValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Warning at difference (kPa)"
+            android:hint="Warning at difference"
             android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etWarnValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+                android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilAlertValue"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Alert at difference (kPa)"
+            android:hint="Alert at difference"
             android:layout_marginBottom="16dp">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etAlertValue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
+                android:inputType="numberDecimal"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
@@ -76,7 +80,7 @@
             android:layout_width="359dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:text="bar * 100 = kPa \n2,5 bar = 250 kPa\nNew values ​​only take effect upon the update of the TPMS value."
+            android:text="New values ​​only take effect upon the update of the TPMS value."
             android:textStyle="bold" />
     </LinearLayout>
 </ScrollView>
