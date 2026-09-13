@@ -10,11 +10,11 @@ repositories {
 
 android {
     namespace 'com.openvehicles.OVMS'
-    compileSdk 36
+    compileSdk 37
     defaultConfig {
         applicationId "com.openvehicles.OVMS"
         minSdk 24
-        targetSdk 36
+        targetSdk 37
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -43,6 +43,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    compileSdkMinor 2
 }
 
 if(project.hasProperty("OVMS.signing")
@@ -55,27 +56,27 @@ dependencies {
 
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'androidx.core:core:1.16.0'
+    implementation 'androidx.core:core:1.19.0'
     implementation 'androidx.core:core-google-shortcuts:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
 
-    implementation 'com.google.android.gms:play-services-maps:19.2.0'
+    implementation 'com.google.android.gms:play-services-maps:20.0.0'
     implementation 'com.google.android.gms:play-services-gcm:17.0.0'
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'com.google.firebase:firebase-messaging:24.1.2'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.code.gson:gson:2.14.0'
     implementation 'com.androidmapsextensions:android-maps-extensions:2.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
     implementation 'androidx.vectordrawable:vectordrawable:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.9.2'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.9.2'
-    implementation 'androidx.navigation:navigation-fragment:2.9.2'
-    implementation 'androidx.navigation:navigation-ui:2.9.2'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.2'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.9.2'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.11.0'
+    implementation 'androidx.navigation:navigation-fragment:2.10.1'
+    implementation 'androidx.navigation:navigation-ui:2.10.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.10.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.10.1'
     implementation 'androidx.preference:preference-ktx:1.2.1'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation "com.maltaisn:icondialog:3.3.0"

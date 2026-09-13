@@ -719,15 +719,10 @@
         <p>· <a href="https://www.openvehicles.com/privacypolicy">Datenschutz-Hinweise</a></p>
         <p>&nbsp;</p>
         <p><b><u>Hauptänderungen seit letztem Release</u></b>:</p>
-        <p>· Neuordnung und Einfärbung der Schaltflächen auf dem Startbildschirm pro Fahrzeug</p>
-        <p>· Erweiterte Lade- und Parkzeitinformationen</p>
-        <p>· NIU MQi GT-Fahrzeugbilder zugefügt</p>
-        <p>· Neues Widget „Geplanter Befehl“.</p>
-        <p>· Schnellaktion „Klimaplan“ (ersetzt die Schnellaktionen „Timer“ und „Tage“, benötigt Firmware 3.3.006)</p>
-        <p>· Smart EQ: Feature-Bereinigung, neue DDT4all-Schnellaktion, „Neustart stoppen“ aus dem Klimamenü</p>
-        <p>· Überarbeitung der TPMS-Zuordnung und -Anzeige (erfordert Firmware 3.3.006)</p>
-        <p>· Klimasteuerung für Volt/Ampera, BoltEv/AmperaE</p>
-        <p>· Russische Lokalisierung</p>
+        <p>· App-Farbschema Tag/Nacht/System</p>
+        <p>· Eigene Fahrzeugbilder</p>
+        <p>· Unterstützung für VW e-Golf</p>
+        <p>· Reifendruck-Einheit psi ergänzt</p>
         <p>· Korrekturen &amp; Optimierungen</p>
         <p>Alle Änderungen sind in der
          <a href="https://github.com/openvehicles/Open-Vehicle-Android/wiki/History">Versions-Historie</a>
