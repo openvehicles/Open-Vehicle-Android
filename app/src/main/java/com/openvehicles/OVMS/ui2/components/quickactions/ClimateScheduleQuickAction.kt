@@ -369,7 +369,7 @@ class ClimateScheduleQuickAction(
 
 
     override fun commandsAvailable(): Boolean {
-        return getCarData()?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ","RZ2")
+        return getCarData()?.car_type in listOf("NL","SE","SQ","VWUP","VWUP.T26","RZ","RZ2","VWEG")
                 || getCarData()?.car_type.orEmpty().startsWith("VA")
                 || getCarData()?.car_type.orEmpty().startsWith("VB")
                 || getCarData()?.car_type.orEmpty().startsWith("OAE")

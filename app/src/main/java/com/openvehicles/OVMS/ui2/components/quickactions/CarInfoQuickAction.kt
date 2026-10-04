@@ -34,7 +34,7 @@ class CarInfoQuickAction(apiServiceGetter: () -> ApiService?, context: Context? 
     }
 
     override fun getStateFromCarData(): Boolean {
-        return true
+        return false
     }
 
     override fun commandsAvailable(): Boolean {
