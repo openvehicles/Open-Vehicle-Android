@@ -62,6 +62,12 @@
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
             app:popExitAnim="@anim/nav_default_exit_anim" />
+        <action
+            android:id="@+id/action_navigation_home_to_vehicleConfigFragment"
+            app:destination="@id/vehicleConfigFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popExitAnim="@anim/nav_default_exit_anim" />
     </fragment>
     <fragment
         android:id="@+id/mapFragment"
@@ -221,5 +227,11 @@
         android:id="@+id/action_global_notificationsFragment"
         app:destination="@id/notificationsFragment"
         app:popUpTo="@id/navigation_home" />
+
+    <fragment
+        android:id="@+id/vehicleConfigFragment"
+        android:name="com.openvehicles.OVMS.ui2.pages.VehicleConfigFragment"
+        android:label="@string/vehicle_config_title"
+        tools:layout="@layout/fragment_vehicle_config" />
 
 </navigation>

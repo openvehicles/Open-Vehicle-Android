@@ -918,4 +918,25 @@
     <string name="btn_custom_map_icon">Eigenes Kartenbild hochladen</string>
     <string name="btn_clear_custom_map_icon">Eigenes Kartenbild löschen</string>
 
+    <!-- Vehicle Specific Config -->
+    <string name="vehicle_config_tab_label">Modul konfig</string>
+    <string name="vehicle_config_title">Konfiguration</string>
+    <string name="vehicle_config_prefix">Fahrzeug-Präfix</string>
+    <string name="vehicle_config_edit_prefix">Präfix ändern</string>
+    <string name="vehicle_config_prefix_dialog_title">Fahrzeug-Konfigurationspräfix</string>
+    <string name="vehicle_config_prefix_dialog_hint">Präfix (z.B. xsq, xup, xrt)</string>
+    <string name="vehicle_config_prefix_dialog_message">Standard-Präfix ist „x“ gefolgt vom Fahrzeugtyp. Sie können das Präfix für dieses Fahrzeug anpassen:</string>
+    <string name="vehicle_config_search_hint">Parameter filtern…</string>
+    <string name="vehicle_config_rubrik_vehicle">Fahrzeug (%s)</string>
+    <string name="vehicle_config_current_rubrik">Rubrik: %s</string>
+    <string name="vehicle_config_no_entries">Keine Konfigurationseinträge für „%s“ gefunden</string>
+    <string name="vehicle_config_add_param">Parameter hinzufügen</string>
+    <string name="vehicle_config_edit_param">Parameter bearbeiten</string>
+    <string name="vehicle_config_param_name">Parameterschlüssel</string>
+    <string name="vehicle_config_param_value">Wert</string>
+    <string name="vehicle_config_delete">Löschen</string>
+    <string name="vehicle_config_delete_confirm">Parameter „%s“ löschen?</string>
+    <string name="tpms_config_title">RDKS-Konfiguration (%s)</string>
+    <string name="tpms_config_dialog_title">RDKS-Konfiguration (%s)</string>
+
 </resources>

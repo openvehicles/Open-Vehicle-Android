@@ -262,10 +262,13 @@
                     android:padding="12dp">
 
                     <TextView
+                        android:id="@+id/tpmsConfigTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@id/tpmsConfigChevron"
                         android:layout_centerVertical="true"
-                        android:text="TPMS Configuration"
+                        android:text="@string/tpms_config_title"
                         android:textAppearance="@style/TextAppearance.Material3.LabelLarge"
                         android:textColor="@color/colorGreyBlue" />
 

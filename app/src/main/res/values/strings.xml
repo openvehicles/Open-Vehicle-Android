@@ -1008,4 +1008,25 @@
     <string name="btn_custom_map_icon">Custom Map Image</string>
     <string name="btn_clear_custom_map_icon">Clear Custom Map Image</string>
 
+    <!-- Vehicle Specific Config -->
+    <string name="vehicle_config_tab_label">Module Config</string>
+    <string name="vehicle_config_title">Configuration</string>
+    <string name="vehicle_config_prefix">Vehicle Prefix</string>
+    <string name="vehicle_config_edit_prefix">Change Prefix</string>
+    <string name="vehicle_config_prefix_dialog_title">Vehicle Config Prefix</string>
+    <string name="vehicle_config_prefix_dialog_hint">Prefix (e.g. xsq, xup, xrt)</string>
+    <string name="vehicle_config_prefix_dialog_message">Default prefix is \"x\" followed by car type. You can customize the prefix for this vehicle:</string>
+    <string name="vehicle_config_search_hint">Filter parameters…</string>
+    <string name="vehicle_config_rubrik_vehicle">Vehicle (%s)</string>
+    <string name="vehicle_config_current_rubrik">Section: %s</string>
+    <string name="vehicle_config_no_entries">No configuration entries found for \"%s\"</string>
+    <string name="vehicle_config_add_param">Add Parameter</string>
+    <string name="vehicle_config_edit_param">Edit Parameter</string>
+    <string name="vehicle_config_param_name">Parameter key</string>
+    <string name="vehicle_config_param_value">Value</string>
+    <string name="vehicle_config_delete">Delete</string>
+    <string name="vehicle_config_delete_confirm">Delete parameter \"%s\"?</string>
+    <string name="tpms_config_title">TPMS Configuration (%s)</string>
+    <string name="tpms_config_dialog_title">TPMS Config (%s)</string>
+
 </resources>
