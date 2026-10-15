@@ -35,14 +35,14 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         private const val TAG = "VehicleConfigFragment"
 
         private val STANDARD_RUBRIKEN = listOf(
+            "vehicle",
             "auto",
+            "system.adc",
             "modem",
             "network",
             "ota",
             "server.v2",
-            "server.v3",
-            "system.adc",
-            "vehicle"
+            "server.v3"
         )
     }
 
