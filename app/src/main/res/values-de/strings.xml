@@ -919,7 +919,7 @@
     <string name="btn_clear_custom_map_icon">Eigenes Kartenbild löschen</string>
 
     <!-- Vehicle Specific Config -->
-    <string name="vehicle_config_tab_label">Modul konfig</string>
+    <string name="vehicle_config_tab_label">Modul Konfig</string>
     <string name="vehicle_config_title">Konfiguration</string>
     <string name="vehicle_config_prefix">Fahrzeug-Präfix</string>
     <string name="vehicle_config_edit_prefix">Präfix ändern</string>
