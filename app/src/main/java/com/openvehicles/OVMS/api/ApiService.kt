@@ -581,10 +581,9 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
         // Parse command response:
         val cmdCode: Int
         val cmdError: Int
-        var cmdData: String? = ""
+        var cmdData: String = ""
         val data = cmdResponse
-            .split(",\\s*".toRegex())
-            .dropLastWhile { it.isEmpty() }
+            .split(',')
             .toTypedArray()
         try {
             cmdCode = data[0].toInt()
@@ -599,7 +598,7 @@ class ApiService : Service(), ApiTask.ApiTaskListener, ApiObserver {
             // TODO: use command request queue, move result listener into command request
             // Forward command response to listener:
             //Log.d(TAG, "onResultCommand: forward to listener");
-            onResultCommandListener!!.onResultCommand(data)
+            onResultCommandListener!!.onResultCommand(cmdCode, cmdError, cmdData, data)
         }
 
         // Check broadcast API configuration:

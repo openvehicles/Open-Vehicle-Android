@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.Legend
 import com.github.mikephil.charting.components.XAxis
@@ -156,17 +155,19 @@ class CellularStatsFragment : BaseFragment(), OnResultCommandListener {
         }
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size < 2) {
             return
         }
         if (context == null) {
             return
         }
-        val command = result[0].toInt()
-        val returnCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
-        if (command != 30) {
+        if (commandCode != 30) {
             // Not for us
             return
         }
@@ -217,7 +218,7 @@ class CellularStatsFragment : BaseFragment(), OnResultCommandListener {
             }
             1 -> {
                 Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 cancelCommand()

@@ -18,11 +18,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.google.android.material.color.MaterialColors
-import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.GridLayoutManager.VERTICAL
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.core.view.isVisible
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.materialswitch.MaterialSwitch
@@ -34,7 +31,6 @@ import com.openvehicles.OVMS.api.OnResultCommandListener
 import com.openvehicles.OVMS.entities.CarData
 import com.openvehicles.OVMS.entities.CarData.DataStale
 import com.openvehicles.OVMS.ui.BaseFragment
-import com.openvehicles.OVMS.ui.utils.Ui
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.ui2.components.quickactions.ChargingQuickAction
 import com.openvehicles.OVMS.ui2.components.quickactions.CarInfoQuickAction
@@ -162,7 +158,12 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         
         // Use prefix 7 (command with output) instead of 1
         sendCommand("", "7,config list xsq", object : OnResultCommandListener {
-            override fun onResultCommand(result: Array<String>) {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
                 isLoadingConfig = false
                 if (result.size > 2 && result[1] == "0") {
                     parseTPMSConfig(result[2])
@@ -775,21 +776,24 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
     }
 
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size <= 1) return
-        val resCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
         val cmdMessage = getSentCommandMessage(result[0])
         val context: Context? = activity
         if (context != null) {
-            when (resCode) {
+            when (returnCode) {
                 0 -> Toast.makeText(
                     context, cmdMessage + " " + getString(R.string.msg_ok),
                     Toast.LENGTH_SHORT
                 ).show()
 
                 1 -> Toast.makeText(
-                    context, cmdMessage + " " + getString(R.string.err_failed, resText),
+                    context, cmdMessage + " " + getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
 

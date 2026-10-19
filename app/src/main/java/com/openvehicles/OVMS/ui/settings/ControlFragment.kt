@@ -157,7 +157,12 @@ class ControlFragment
         }
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size < 2) {
             return
         }
@@ -165,14 +170,11 @@ class ControlFragment
             return
         }
         val context: Context? = activity
-        val command = result[0].toInt()
-        val resCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
         val cmdMessage = getSentCommandMessage(result[0])
 
-        when (resCode) {
+        when (returnCode) {
             0 -> {
-                if (command == 41) {
+                if (commandCode == 41) {
                     // only process second cmd result carrying data:
                     if (result.size >= 3) {
                         cancelCommand()
@@ -182,7 +184,7 @@ class ControlFragment
                         val isNew = ovmsNotifications!!.addNotification(
                             NotificationData.TYPE_USSD,
                             carData!!.sel_vehicleid + ": " + ussdCmd,
-                            result[2]
+                            returnData
                         )
                         if (isNew) {
                             // signal App to reload notifications:
@@ -192,7 +194,7 @@ class ControlFragment
                             // user info dialog:
                             AlertDialog.Builder(context)
                                 .setTitle(cmdMessage)
-                                .setMessage("$ussdCmd =>\n${result[2]}")
+                                .setMessage("$ussdCmd =>\n${returnData}")
                                 .setPositiveButton(android.R.string.ok, null)
                                 .show()
                         }
@@ -209,7 +211,7 @@ class ControlFragment
             1 -> {
                 cancelCommand()
                 Toast.makeText(
-                    context, cmdMessage + " => " + getString(R.string.err_failed, resText),
+                    context, cmdMessage + " => " + getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
             }

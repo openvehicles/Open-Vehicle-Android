@@ -73,7 +73,12 @@ class CarGroupFragment
         return false
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size <= 1) {
             return
         }
@@ -81,15 +86,13 @@ class CarGroupFragment
             adapter = CarGroupAdapter()
             listView!!.setAdapter(adapter)
         }
-        val command = result[0].toInt()
-        val resultCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
-        if (command == 2) {
+
+        if (commandCode == 2) {
             cancelCommand()
-            when (resultCode) {
+            when (returnCode) {
                 0 -> {}
                 1 -> Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 2 -> Toast.makeText(
@@ -103,11 +106,11 @@ class CarGroupFragment
             }
             return
         }
-        if (command != 1) {
+        if (commandCode != 1) {
             // Not for us
             return
         }
-        when (resultCode) {
+        when (returnCode) {
             0 -> if (result.size > 4) {
                 val fn = result[2].toInt()
                 //				int fm = Integer.parseInt(result[3]);
@@ -123,7 +126,7 @@ class CarGroupFragment
             }
             1 -> {
                 Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 cancelCommand()

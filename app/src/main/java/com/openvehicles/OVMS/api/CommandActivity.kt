@@ -358,6 +358,7 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
         // Success:
         val cmd = cmdSeries[0]
         val results = cmd.results
+        val retdata = cmd.returnData
 
         // Collect results, skip empty lines:
         var rows = 0
@@ -365,11 +366,12 @@ class CommandActivity : ApiActivity(), CmdSeries.Listener {
         var i = 0
         while (i < results.size) {
             val result = results[i]
+            val returnData = retdata[i]
             if (result.size < 3) {
                 i++
                 continue
             }
-            val line = java.lang.String.join(",", *Arrays.copyOfRange(result, 2, result.size))
+            val line = returnData
             if (line.isEmpty()) {
                 i++
                 continue

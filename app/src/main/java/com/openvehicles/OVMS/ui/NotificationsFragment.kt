@@ -338,34 +338,31 @@ class NotificationsFragment : BaseFragment(), OnItemClickListener, OnItemLongCli
         }
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size <= 1) {
             return
         }
         if (notifications == null) {
             initList()
         }
-        val command = result[0].toInt()
         val cmdMessage = getSentCommandMessage(result[0])
-        val resCode = result[1].toInt()
-        if (command != 7 && command != 41 && command != 49 && command != lastCommandSent) {
+        if (commandCode != 7 && commandCode != 41 && commandCode != 49 && commandCode != lastCommandSent) {
             // not for us
             return
         }
-        var cmdOutput: String? = null
-        if (result.size >= 3 && result[2] != null) {
-            cmdOutput = result[2]
-            for (i in 3 until result.size) {
-                cmdOutput += "," + result[i]
-            }
-        }
+        var cmdOutput: String? = if (returnData != "") returnData else null
         val vehicleId = getLastSelectedCarId()
-        when (resCode) {
+        when (returnCode) {
             0 -> {
                 val type =
-                    if (command == 41) NotificationData.TYPE_USSD else NotificationData.TYPE_RESULT_SUCCESS
+                    if (commandCode == 41) NotificationData.TYPE_USSD else NotificationData.TYPE_RESULT_SUCCESS
                 // suppress first (empty) OK result for cmd 41:
-                if (command == 7 || cmdOutput != null) {
+                if (commandCode == 7 || cmdOutput != null) {
                     cancelCommand()
                     notifications!!.addNotification(
                         type,

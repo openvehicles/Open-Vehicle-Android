@@ -118,26 +118,28 @@ class ControlParametersFragment : BaseFragment(), OnResultCommandListener, OnIte
         }
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size < 2) {
             return
         }
         if (context == null) {
             return
         }
-        val command = result[0].toInt()
-        val resCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
-        if (command == 4) {
+        if (commandCode == 4) {
             // Set parameter (single) response:
             cancelCommand()
-            when (resCode) {
+            when (returnCode) {
                 0 -> Toast.makeText(
                     activity, getString(R.string.msg_ok),
                     Toast.LENGTH_SHORT
                 ).show()
                 1 -> Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 2 -> Toast.makeText(
@@ -151,15 +153,15 @@ class ControlParametersFragment : BaseFragment(), OnResultCommandListener, OnIte
             }
             return
         }
-        if (command != 3) {
+        if (commandCode != 3) {
             // Not for us
             return
         }
-        when (resCode) {
+        when (returnCode) {
             0 -> if (result.size >= 4) {
                 val fn = result[2].toInt()
                 val fm = result[3].toInt()
-                val fv = if (result.size > 4) result[4] else ""
+                val fv = returnData.substring(result[2].length + result[3].length + 2)
                 stepProgressOverlay(fn + 1, fm)
                 if (fn < PARAM_FEATURE_S) {
                     adapter!!.setParam(fn, fv)
@@ -171,7 +173,7 @@ class ControlParametersFragment : BaseFragment(), OnResultCommandListener, OnIte
             }
             1 -> {
                 Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 cancelCommand()
