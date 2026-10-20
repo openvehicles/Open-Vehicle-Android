@@ -1,6 +1,10 @@
 package com.openvehicles.OVMS.ui2.rendering
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
+import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Animatable
 import android.graphics.drawable.VectorDrawable
@@ -310,18 +314,82 @@ object CarRenderingUtils {
                    finalDrawable.start()
                 }
 
-                layers = layers.plus(finalDrawable)
+                layers = layers.plus(fitToBase(finalDrawable, layers.first()))
             } else {
                 Log.e("DrawableError", "Could not load R.drawable.avd_animated_ac_arrows")
                 val staticArrows = ContextCompat.getDrawable(context, R.drawable.topview_ac_arrows)
                 if (staticArrows != null) {
                     val vectorDrawable = staticArrows.mutate() as VectorDrawable
                     vectorDrawable.setTint(tintColor)
-                    layers = layers.plus(vectorDrawable)
+                    layers = layers.plus(fitToBase(vectorDrawable, layers.first()))
                 }
             }
         }
 
         return layers
+    }
+
+    /**
+     * The AC arrows are a vector sized in dp and drawn for the Leaf's 320x560 top
+     * view. Every other car image is a nodpi bitmap, so the arrows come out far
+     * bigger in pixels, the LayerDrawable takes their size as its own, and the car
+     * underneath gets stretched to their aspect ratio. Reporting the base image's
+     * size keeps the composite unchanged whether the overlay is there or not.
+     */
+    private fun fitToBase(overlay: Drawable, base: Drawable): Drawable {
+        if (base.intrinsicWidth <= 0 || base.intrinsicHeight <= 0) return overlay
+        return FittedOverlayDrawable(overlay, base.intrinsicWidth, base.intrinsicHeight)
+    }
+
+    private class FittedOverlayDrawable(
+        private val inner: Drawable,
+        private val width: Int,
+        private val height: Int
+    ) : Drawable(), Drawable.Callback {
+
+        init {
+            inner.callback = this
+        }
+
+        override fun getIntrinsicWidth() = width
+
+        override fun getIntrinsicHeight() = height
+
+        override fun onBoundsChange(bounds: Rect) {
+            // Fit centred, keeping the overlay's own aspect ratio, so the arrows
+            // stay over the cabin instead of being stretched across the car.
+            val iw = if (inner.intrinsicWidth > 0) inner.intrinsicWidth else bounds.width()
+            val ih = if (inner.intrinsicHeight > 0) inner.intrinsicHeight else bounds.height()
+            if (iw <= 0 || ih <= 0) {
+                inner.bounds = bounds
+                return
+            }
+            val scale = minOf(bounds.width() / iw.toFloat(), bounds.height() / ih.toFloat())
+            val w = (iw * scale).toInt()
+            val h = (ih * scale).toInt()
+            val left = bounds.left + (bounds.width() - w) / 2
+            val top = bounds.top + (bounds.height() - h) / 2
+            inner.setBounds(left, top, left + w, top + h)
+        }
+
+        override fun draw(canvas: Canvas) = inner.draw(canvas)
+
+        override fun setAlpha(alpha: Int) {
+            inner.alpha = alpha
+        }
+
+        override fun setColorFilter(colorFilter: ColorFilter?) {
+            inner.colorFilter = colorFilter
+        }
+
+        @Deprecated("Deprecated in Drawable", ReplaceWith("PixelFormat.TRANSLUCENT"))
+        override fun getOpacity() = PixelFormat.TRANSLUCENT
+
+        override fun invalidateDrawable(who: Drawable) = invalidateSelf()
+
+        override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) =
+            scheduleSelf(what, `when`)
+
+        override fun unscheduleDrawable(who: Drawable, what: Runnable) = unscheduleSelf(what)
     }
 }

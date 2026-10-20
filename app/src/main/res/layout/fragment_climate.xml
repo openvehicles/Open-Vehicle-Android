@@ -12,9 +12,9 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="20dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toTopOf="@+id/climate_card"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,80 +36,47 @@
             android:layout_height="wrap_content"
             android:padding="12dp">
 
+            <!--
+                Linke Knopfspalte. Oben verankert statt senkrecht zentriert:
+                Sobald die Karte durch den Temperaturregler waechst, wuerde eine
+                zentrierte Spalte nach unten wandern und neben dem Regler statt
+                neben den Temperaturen stehen.
+            -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/climateActions"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!--
+                Rechte Knopfspalte. Traegt bei Fahrzeugen mit Temperaturregler
+                den Startknopf: mit dem Telefon in der rechten Hand ist der
+                Daumen dort, und Starten ist der haeufigste Griff. Bei allen
+                anderen Fahrzeugen bleibt sie leer und unsichtbar, damit sich an
+                deren Ansicht nichts aendert.
+            -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/climateActionsRight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
+
             <TextView
                 android:id="@+id/ambientTemp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="28sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@+id/cabinTemp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.17"
+                app:layout_constraintEnd_toStartOf="@+id/cabinTemp"
+                app:layout_constraintHorizontal_chainStyle="packed"
                 app:layout_constraintStart_toEndOf="@+id/climateActions"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="21" />
-
-            <TextView
-                android:id="@+id/ambientTempTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/textAMBIENT"
-                app:layout_constraintEnd_toEndOf="@+id/tempUnit1"
-                app:layout_constraintStart_toStartOf="@+id/ambientTemp"
-                app:layout_constraintTop_toBottomOf="@+id/ambientTemp" />
-
-            <TextView
-                android:id="@+id/ClimateTxtH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="05:15 h"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tempUnit1"
-                app:layout_constraintStart_toStartOf="@+id/ambientTempTxt"
-                app:layout_constraintTop_toBottomOf="@+id/ambientTempTxt" />
-
-            <TextView
-                android:id="@+id/cabinTemp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/ambientTemp"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:text="22" />
-
-            <TextView
-                android:id="@+id/cabinTempTxt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/textCAB"
-                app:layout_constraintEnd_toEndOf="@+id/tempUnit2"
-                app:layout_constraintStart_toStartOf="@+id/cabinTemp"
-                app:layout_constraintTop_toBottomOf="@+id/cabinTemp" />
-
-            <TextView
-                android:id="@+id/ClimateTxtD"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Mon. - Fri."
-                android:visibility="invisible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/tempUnit2"
-                app:layout_constraintStart_toStartOf="@+id/cabinTempTxt"
-                app:layout_constraintTop_toBottomOf="@+id/cabinTempTxt" />
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/climateActions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-            </androidx.recyclerview.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/tempUnit1"
@@ -122,6 +89,29 @@
                 tools:text="°C" />
 
             <TextView
+                android:id="@+id/ambientTempTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textAMBIENT"
+                app:layout_constraintEnd_toEndOf="@+id/tempUnit1"
+                app:layout_constraintStart_toStartOf="@+id/ambientTemp"
+                app:layout_constraintTop_toBottomOf="@+id/ambientTemp" />
+
+            <TextView
+                android:id="@+id/cabinTemp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="TextView"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/climateActionsRight"
+                app:layout_constraintStart_toEndOf="@+id/ambientTemp"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="22" />
+
+            <TextView
                 android:id="@+id/tempUnit2"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -132,17 +122,89 @@
                 tools:text="°C" />
 
             <TextView
+                android:id="@+id/cabinTempTxt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/textCAB"
+                app:layout_constraintEnd_toEndOf="@+id/tempUnit2"
+                app:layout_constraintStart_toStartOf="@+id/cabinTemp"
+                app:layout_constraintTop_toBottomOf="@+id/cabinTemp" />
+
+            <TextView
+                android:id="@+id/ClimateTxtH"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="05:15 h"
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/tempUnit1"
+                app:layout_constraintStart_toStartOf="@+id/ambientTempTxt"
+                app:layout_constraintTop_toBottomOf="@+id/ambientTempTxt" />
+
+            <TextView
+                android:id="@+id/ClimateTxtD"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mon. - Fri."
+                android:visibility="invisible"
+                app:layout_constraintEnd_toEndOf="@+id/tempUnit2"
+                app:layout_constraintStart_toStartOf="@+id/cabinTempTxt"
+                app:layout_constraintTop_toBottomOf="@+id/cabinTempTxt" />
+
+            <!--
+                Gehoert zu den Messwerten, nicht zu den Knoepfen: Sie sagt, dass
+                die angezeigten Temperaturen veraltet sind. Deshalb mittig
+                darunter und nicht am Kartenrand, wo sie wie eine Beschriftung
+                des naechstgelegenen Knopfes aussieht.
+            -->
+            <TextView
                 android:id="@+id/staleDataLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAllCaps="false"
                 android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@+id/tempUnit2"
+                app:layout_constraintStart_toStartOf="@+id/ambientTemp"
+                app:layout_constraintTop_toBottomOf="@+id/cabinTempTxt"
+                tools:text="@string/stale_data" />
+
+            <!--
+                Zieltemperatur der Vorklimatisierung. Nur fuer Fahrzeuge, deren
+                Modul den Sollwert setzen kann (derzeit VW e-Golf) sichtbar; sonst
+                bleibt die Karte unveraendert.
+            -->
+            <LinearLayout
+                android:id="@+id/ccTempGroup"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical"
+                android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                tools:text="@string/stale_data" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ClimateTxtD"
+                tools:visibility="visible">
+
+                <TextView
+                    android:id="@+id/ccTempLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="22.0 °C" />
+
+                <com.google.android.material.slider.Slider
+                    android:id="@+id/ccTempSlider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:stepSize="0.5"
+                    android:value="22.0"
+                    android:valueFrom="15.5"
+                    android:valueTo="30.0" />
+            </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
