@@ -156,8 +156,8 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         isLoadingConfig = true
         lastConfigVid = vid
         
-        // Use prefix 7 (command with output) instead of 1
-        sendCommand("", "7,config list xsq", object : OnResultCommandListener {
+        // Use prefix 7 (command with output)
+        sendCommand("", "7,config list $prefix", object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
