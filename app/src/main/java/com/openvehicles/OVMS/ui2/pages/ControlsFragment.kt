@@ -166,7 +166,12 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         
         // Use prefix 7 (command with output)
         sendCommand("", "7,config list $prefix", object : OnResultCommandListener {
-            override fun onResultCommand(result: Array<String>) {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
                 isLoadingConfig = false
                 if (result.size > 2 && result[1] == "0") {
                     parseTPMSConfig(result[2])

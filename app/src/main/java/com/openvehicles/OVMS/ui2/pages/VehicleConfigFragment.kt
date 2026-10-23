@@ -139,7 +139,12 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         }
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         // Default callback for commands sent without dedicated listener
     }
 
@@ -269,7 +274,12 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         isLoading = true
 
         sendCommand("", "7,config list $rubrik", object : OnResultCommandListener {
-            override fun onResultCommand(result: Array<String>) {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
                 isLoading = false
                 swipeRefresh.isRefreshing = false
                 pbLoading.visibility = View.GONE
@@ -297,16 +307,22 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         val items = mutableListOf<VehicleConfigParam>()
         val lines = output.lines()
         for (line in lines) {
-            val parts = line.trim().split(":", limit = 2)
+            val rawLine = line.trimEnd('\r', '\n')
+            val parts = rawLine.split(":", limit = 2)
             if (parts.size == 2) {
                 val key = parts[0].trim()
-                val value = parts[1].trim()
+                val value = parts[1]
                 if (key.isNotEmpty()) {
                     items.add(VehicleConfigParam(key, value))
                 }
             }
         }
         return items
+    }
+
+    private fun formatConfigSetCommand(rubrik: String, key: String, value: String): String {
+        val escapedValue = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
+        return "7,config set $rubrik $key $escapedValue"
     }
 
     private fun updateEmptyState() {
@@ -335,14 +351,23 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
             .setMessage(getString(R.string.vehicle_config_current_rubrik, targetRubrik))
             .setView(dialogView)
             .setPositiveButton(R.string.Save) { _, _ ->
-                val newValue = etValue.text?.toString()?.trim() ?: ""
+                val newValue = etValue.text?.toString() ?: ""
                 sendCommand(
                     "Saving...",
-                    "7,config set $targetRubrik ${param.key} $newValue",
+                    formatConfigSetCommand(targetRubrik, param.key, newValue),
                     object : OnResultCommandListener {
-                        override fun onResultCommand(result: Array<String>) {
+                        override fun onResultCommand(
+                            commandCode: Int,
+                            returnCode: Int,
+                            returnData: String,
+                            result: Array<String>
+                        ) {
                             cachedConfigs.remove(targetRubrik)
-                            view?.postDelayed({ loadVehicleConfig(showProgress = false, forceReload = true) }, 1000)
+                            view?.postDelayed({
+                                if (isAdded && view != null) {
+                                    loadVehicleConfig(showProgress = false, forceReload = true)
+                                }
+                            }, 1000)
                         }
                     }
                 )
@@ -367,18 +392,27 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
             .setView(dialogView)
             .setPositiveButton(R.string.Save) { _, _ ->
                 val newKey = etKey.text?.toString()?.trim() ?: ""
-                val newValue = etValue.text?.toString()?.trim() ?: ""
+                val newValue = etValue.text?.toString() ?: ""
                 if (newKey.isBlank()) {
                     Toast.makeText(requireContext(), "Key cannot be empty", Toast.LENGTH_SHORT).show()
                     return@setPositiveButton
                 }
                 sendCommand(
                     "Saving...",
-                    "7,config set $targetRubrik $newKey $newValue",
+                    formatConfigSetCommand(targetRubrik, newKey, newValue),
                     object : OnResultCommandListener {
-                        override fun onResultCommand(result: Array<String>) {
+                        override fun onResultCommand(
+                            commandCode: Int,
+                            returnCode: Int,
+                            returnData: String,
+                            result: Array<String>
+                        ) {
                             cachedConfigs.remove(targetRubrik)
-                            view?.postDelayed({ loadVehicleConfig(showProgress = false, forceReload = true) }, 1000)
+                            view?.postDelayed({
+                                if (isAdded && view != null) {
+                                    loadVehicleConfig(showProgress = false, forceReload = true)
+                                }
+                            }, 1000)
                         }
                     }
                 )
@@ -397,9 +431,18 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
                     "Deleting...",
                     "7,config rm $targetRubrik ${param.key}",
                     object : OnResultCommandListener {
-                        override fun onResultCommand(result: Array<String>) {
+                        override fun onResultCommand(
+                            commandCode: Int,
+                            returnCode: Int,
+                            returnData: String,
+                            result: Array<String>
+                        ) {
                             cachedConfigs.remove(targetRubrik)
-                            view?.postDelayed({ loadVehicleConfig(showProgress = false, forceReload = true) }, 1000)
+                            view?.postDelayed({
+                                if (isAdded && view != null) {
+                                    loadVehicleConfig(showProgress = false, forceReload = true)
+                                }
+                            }, 1000)
                         }
                     }
                 )
