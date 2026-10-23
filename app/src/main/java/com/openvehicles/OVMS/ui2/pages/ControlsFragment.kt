@@ -49,6 +49,7 @@ import com.openvehicles.OVMS.ui2.components.quickactions.adapters.QuickActionsAd
 import com.openvehicles.OVMS.ui2.rendering.CarRenderingUtils
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getLastSelectedCarId
+import com.openvehicles.OVMS.utils.VehicleConfigHelper
 import java.text.DateFormat
 import java.util.Date
 import java.util.Locale
@@ -146,7 +147,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
 
     private fun loadTPMSConfig() {
         val vid = carData?.sel_vehicleid
-        if (carData?.car_type != "SQ" || vid == null) {
+        if (vid == null) {
             findViewById(R.id.cardTPMSConfig).visibility = View.GONE
             return
         }
@@ -155,9 +156,16 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         
         isLoadingConfig = true
         lastConfigVid = vid
+
+        val prefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
+        if (prefix.isBlank()) {
+            isLoadingConfig = false
+            findViewById(R.id.cardTPMSConfig).visibility = View.GONE
+            return
+        }
         
-        // Use prefix 7 (command with output) instead of 1
-        sendCommand("", "7,config list xsq", object : OnResultCommandListener {
+        // Use prefix 7 (command with output)
+        sendCommand("", "7,config list $prefix", object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -169,7 +177,6 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                     parseTPMSConfig(result[2])
                     updateTPMSConfigUI()
                 } else {
-                    // Try without prefix if 7 fails, or maybe it's just slow
                     Log.w("ControlsFragment", "TPMS Config load failed with code ${result.getOrNull(1)}")
                 }
             }
@@ -198,8 +205,13 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         val card = findViewById(R.id.cardTPMSConfig)
         val body = findViewById(R.id.tpmsConfigBody)
         val chevron = findViewById(R.id.tpmsConfigChevron) as ImageView
+        val titleView = findViewById(R.id.tpmsConfigTitle) as? TextView
+
+        val prefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
+        titleView?.text = getString(R.string.tpms_config_title, prefix.uppercase(Locale.ROOT))
         
-        if (tpmsConfig.isEmpty()) {
+        val hasTpmsKeys = tpmsConfig.keys.any { it.startsWith("tpms.") }
+        if (!hasTpmsKeys) {
             card.visibility = View.GONE
             return
         }
@@ -231,12 +243,16 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
 
     private fun showEditTPMSConfigDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_tpms_config, null)
+        val etPrefix = dialogView.findViewById<TextInputEditText>(R.id.etConfigPrefix)
         val swAlert = dialogView.findViewById<MaterialSwitch>(R.id.swAlertEnable)
         val etFront = dialogView.findViewById<TextInputEditText>(R.id.etFrontPressure)
         val etRear = dialogView.findViewById<TextInputEditText>(R.id.etRearPressure)
         val swTemp = dialogView.findViewById<MaterialSwitch>(R.id.swTempEnable)
         val etWarn = dialogView.findViewById<TextInputEditText>(R.id.etWarnValue)
         val etAlert = dialogView.findViewById<TextInputEditText>(R.id.etAlertValue)
+
+        val currentPrefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
+        etPrefix?.setText(currentPrefix)
 
         val unitLabel = when (getPressureUnit()) {
             "on" -> "bar"
@@ -258,9 +274,19 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         etAlert.setText(convertKpaToDisplay(tpmsConfig["tpms.value.alert"]))
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("TPMS Config (XSQ)")
+            .setTitle(getString(R.string.tpms_config_dialog_title, currentPrefix.uppercase(Locale.ROOT)))
             .setView(dialogView)
             .setPositiveButton(R.string.Save) { _, _ ->
+                val enteredPrefix = etPrefix?.text?.toString()?.trim()?.lowercase(Locale.ROOT)
+                val targetPrefix = if (!enteredPrefix.isNullOrBlank()) {
+                    carData?.sel_vehicleid?.let { vid ->
+                        VehicleConfigHelper.setConfigPrefix(appPrefs, vid, enteredPrefix)
+                    }
+                    enteredPrefix
+                } else {
+                    currentPrefix
+                }
+
                 val newConfig = mapOf(
                     "tpms.alert.enable" to if (swAlert.isChecked) "yes" else "no",
                     "tpms.front.pressure" to convertDisplayToKpa(etFront.text.toString()),
@@ -269,7 +295,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
                     "tpms.value.warn" to convertDisplayToKpa(etWarn.text.toString()),
                     "tpms.value.alert" to convertDisplayToKpa(etAlert.text.toString())
                 )
-                saveTPMSConfig(newConfig)
+                saveTPMSConfig(targetPrefix, newConfig)
             }
             .setNegativeButton(R.string.Cancel, null)
             .show()
@@ -296,11 +322,11 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         return kpa.roundToInt().toString()
     }
 
-    private fun saveTPMSConfig(newConfig: Map<String, String>) {
+    private fun saveTPMSConfig(prefix: String, newConfig: Map<String, String>) {
         val commands = mutableListOf<String>()
         for ((key, value) in newConfig) {
             if (tpmsConfig[key] != value) {
-                commands.add("7,config set xsq $key $value")
+                commands.add("7,config set $prefix $key $value")
             }
         }
         
@@ -410,7 +436,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         cardRL?.visibility = initialVis
         cardRR?.visibility = initialVis
         staleTPMS.visibility = initialVis
-        if (carData?.car_type == "SQ" && !tpmsConfig.isEmpty()) {
+        if (!tpmsConfig.isEmpty()) {
             cardConfig?.visibility = initialVis
         }
 
@@ -421,7 +447,7 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             cardRL?.visibility = nextVis
             cardRR?.visibility = nextVis
             staleTPMS.visibility = nextVis
-            if (carData?.car_type == "SQ" && !tpmsConfig.isEmpty()) {
+            if (!tpmsConfig.isEmpty()) {
                 cardConfig?.visibility = nextVis
             }
             appPrefs.saveData("pref_controls_show_tpms_$vehicleId", if (nextVis == View.VISIBLE) "1" else "0")

@@ -95,6 +95,7 @@ import com.openvehicles.OVMS.ui2.misc.CarAnimationDrawable
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
+import com.openvehicles.OVMS.utils.VehicleConfigHelper
 import java.io.IOException
 import java.util.Locale
 import kotlin.math.min
@@ -174,6 +175,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         private val TAB_CLIMATE = 4
         private val TAB_SETTINGS = 5
         private val TAB_ENERGY = 6
+        private val TAB_VEHICLE_CONFIG = 7
         private val ICON_DIALOG_TAG = "add-quickaction-icon-dialog"
 
         private fun getEditorQuickActions(context: Context): List<QuickAction> {
@@ -1675,6 +1677,16 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             }
             newTabsList.add(HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), energyTabDesc))
 
+            val configPrefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
+            newTabsList.add(
+                HomeTab(
+                    TAB_VEHICLE_CONFIG,
+                    R.drawable.ic_vehicle_config,
+                    getString(R.string.vehicle_config_tab_label),
+                    "Prefix: $configPrefix"
+                )
+            )
+
             newTabsList.add(HomeTab(TAB_SETTINGS, R.drawable.ic_settings, getString(R.string.Settings), null))
 
             // Keep a snapshot of the complete (unfiltered) list for the More dialog
@@ -1889,6 +1901,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             TAB_CHARGING -> findNavController().navigate(R.id.action_navigation_home_to_chargingFragment)
             TAB_SETTINGS -> findNavController().navigate(R.id.action_navigation_home_to_settingsFragment)
             TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_energyFragment)
+            TAB_VEHICLE_CONFIG -> findNavController().navigate(R.id.action_navigation_home_to_vehicleConfigFragment)
         }
     }
 
@@ -2057,6 +2070,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     TAB_CHARGING -> findNavController().navigate(R.id.action_navigation_home_to_chargingFragment)
                     TAB_SETTINGS -> findNavController().navigate(R.id.action_navigation_home_to_settingsFragment)
                     TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_energyFragment)
+                    TAB_VEHICLE_CONFIG -> findNavController().navigate(R.id.action_navigation_home_to_vehicleConfigFragment)
                 }
             }
             .setNegativeButton(R.string.Close, null)
