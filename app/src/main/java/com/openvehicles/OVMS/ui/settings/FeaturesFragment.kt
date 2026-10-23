@@ -110,26 +110,28 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
 		*/
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size < 2) {
             return
         }
         if (context == null) {
             return
         }
-        val command = result[0].toInt()
-        val resCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
-        if (command == 2) {
+        if (commandCode == 2) {
             // Set feature (single) response:
             cancelCommand()
-            when (resCode) {
+            when (returnCode) {
                 0 -> Toast.makeText(
                     activity, getString(R.string.msg_ok),
                     Toast.LENGTH_SHORT
                 ).show()
                 1 -> Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 2 -> Toast.makeText(
@@ -143,15 +145,15 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
             }
             return
         }
-        if (command != 1) {
+        if (commandCode != 1) {
             // Not for us
             return
         }
-        when (resCode) {
+        when (returnCode) {
             0 -> if (result.size > 4) {
                 val fn = result[2].toInt()
                 val fm = result[3].toInt()
-                val fv = result[4]
+                val fv = returnData.substring(result[2].length + result[3].length + 2)
                 stepProgressOverlay(fn + 1, fm)
                 if (fm != adapter!!.featuresMax) {
                     adapter!!.featuresMax = fm
@@ -166,7 +168,7 @@ class FeaturesFragment : BaseFragment(), OnResultCommandListener, OnItemClickLis
             }
             1 -> {
                 Toast.makeText(
-                    activity, getString(R.string.err_failed, resText),
+                    activity, getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
                 cancelCommand()

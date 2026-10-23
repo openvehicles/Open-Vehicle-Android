@@ -1355,21 +1355,24 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         update(carData)
     }
 
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size <= 1) return
-        val resCode = result[1].toInt()
-        val resText = if (result.size > 2) result[2] else ""
         val cmdMessage = getSentCommandMessage(result[0])
         val context: Context? = activity
         if (context != null) {
-            when (resCode) {
+            when (returnCode) {
                 0 -> Toast.makeText(
                     context, cmdMessage + " " + getString(R.string.msg_ok),
                     Toast.LENGTH_SHORT
                 ).show()
 
                 1 -> Toast.makeText(
-                    context, cmdMessage + " " + getString(R.string.err_failed, resText),
+                    context, cmdMessage + " " + getString(R.string.err_failed, returnData),
                     Toast.LENGTH_SHORT
                 ).show()
 

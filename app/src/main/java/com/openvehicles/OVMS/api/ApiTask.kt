@@ -121,7 +121,7 @@ class ApiTask(
                     line = inputstream!!.readLine()
                     if (line == null) throw IOException("Connection lost")
                     rx = line.trim { it <= ' ' }
-                    msg = String(rxCipher.update(Base64.decode(rx, 0))).trim { it <= ' ' }
+                    msg = String(rxCipher.update(Base64.decode(rx, 0))).trim { it < ' ' }
                     Log.d(TAG, String.format("RX: %s (%s)", msg, rx))
 
                     // Process message:

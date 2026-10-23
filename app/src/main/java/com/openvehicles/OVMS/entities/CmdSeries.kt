@@ -11,7 +11,8 @@ import com.openvehicles.OVMS.api.OnResultCommandListener
  * Created by balzer on 09.03.15.
  *
  * This class takes care of execution of a series of commands.
- * All results will be stored in the Cmd.results arrays.
+ * All results will be stored CSV-split in the Cmd.results arrays, with the respective
+ * raw (unsplit) responses in the Cmd.returnData array.
  * Execution stops on command errors (except empty history records).
  *
  * The Listener can react to progress and finish events.
@@ -128,13 +129,18 @@ class CmdSeries(
      * is handled as a normal result (no failure = no abort). The record
      * count/position are told to the listener as sub step progress.
      *
-     * @param result -- return string received from server
+     * @param commandCode -- numerical MP command code
+     * @param returnCode -- command return code (0=ok, 1=failed, 2=unsupported, 3=unimplemented)
+     * @param returnData -- command return data / output, unparsed
+     * @param result -- full return string received from server, split at ','
      */
-    override fun onResultCommand(result: Array<String>) {
+    override fun onResultCommand(
+        commandCode: Int,
+        returnCode: Int,
+        returnData: String,
+        result: Array<String>
+    ) {
         if (result.size < 2) return
-        val commandCode = result[0].toInt()
-        val returnCode = result[1].toInt()
-        val returnText = if (result.size > 2) result[2] else ""
 
         // check command:
         val cmd = getCurrent()
@@ -149,6 +155,7 @@ class CmdSeries(
 
         // store result:
         cmd.returnCode = returnCode
+        cmd.returnData.add(returnData)
         cmd.results.add(result)
         Log.v(
             TAG, "onResult: " + cmd.message + " / key=" + cmd.commandCode
@@ -156,7 +163,7 @@ class CmdSeries(
         )
         if (hasMultiRowResponse(commandCode)) {
             // multiple result command:
-            if (returnText == "No historical data available") {
+            if (returnData == "No historical data available") {
                 // no records: continue without error
                 executeNext()
             } else if (returnCode != 0) {
@@ -196,7 +203,7 @@ class CmdSeries(
             listener?.onCmdSeriesFinish(this, returnCode)
         } else if (commandCode == 41) {
             // ignore initial empty response
-            if (!returnText.isEmpty()) executeNext()
+            if (!returnData.isEmpty()) executeNext()
         } else {
             // single result command success:
             executeNext()
@@ -240,8 +247,7 @@ class CmdSeries(
      */
     fun getErrorDetail(): String {
         val cmd = getCurrent() ?: return ""
-        val result = if (cmd.results.size > 0) cmd.results[cmd.results.size - 1] else null
-        return if (result != null && result.size >= 3) result[2] else ""
+        return if (cmd.returnData.isNotEmpty()) cmd.returnData.last() else ""
     }
 
     /*
@@ -291,7 +297,11 @@ class CmdSeries(
         /** Last return code  */
         var returnCode = 0
 
-        /** All results collected  */
+        /** All results collected (raw payloads)  */
+        @JvmField
+        var returnData: ArrayList<String> = ArrayList()
+
+        /** All results collected (split at commas)  */
         @JvmField
         var results: ArrayList<Array<String>> = ArrayList()
 

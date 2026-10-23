@@ -163,11 +163,15 @@ open class QuickAction {
         actionIsRunningCommand = true
         setCommandInProgress(true)
         service.sendCommand(command, object : OnResultCommandListener {
-            override fun onResultCommand(result: Array<String>) {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
                 if (result.isEmpty()) return
-                val resCode = result[1].toInt()
-                val resText = if (result.size > 2 && result[2] != "") result[2] else null
-                commandCallback(command, resCode, resText)
+                val details: String? = if (returnData != "") returnData else null
+                commandCallback(command, returnCode, details)
             }
         })
     }
