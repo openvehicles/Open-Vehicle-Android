@@ -791,7 +791,7 @@
     <string name="select_ddt4all_action">Опция DDT4all</string>
     <string name="chargingpower">Мощность зарядки</string>
     <string name="chargingeff">КПД</string>
-    <string name="lb_charger_confirm_soc_change">Действительно изменить лимит SOC?</string>
+    <string name="lb_charger_confirm_soc_change">Уведомить при достижении SOC %s?</string>
     <string name="action_set_tab_color">Установить цвет вкладки</string>
     <string name="action_reset_tab_color">Сбросить цвет вкладки</string>
     <string name="dialog_choose_color">Выберите цвет</string>
