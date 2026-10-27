@@ -1798,9 +1798,14 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val baseInfoBuilder = StringBuilder()
         if (carData?.car_odometer?.isNotEmpty() == true) baseInfoBuilder.append(carData.car_odometer)
 
-        if (carData?.car_gsmlock?.isNotEmpty() == true) {
+        if (carData?.car_gsmlock?.isNotEmpty() == true || !netType.isNullOrEmpty()) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
-            baseInfoBuilder.append("Network: ${carData.car_gsmlock} \nMode: ${carData.car_mdm_mode} ${carData.car_gsm_signal}")
+            val modeValue = if (netType.isNullOrEmpty() || netType.equals("MODEM", ignoreCase = true)) {
+                carData?.car_mdm_mode
+            } else {
+                netType
+            }
+            baseInfoBuilder.append("Network: ${carData?.car_gsmlock} \nMode: $modeValue ${carData?.car_gsm_signal}")
         }
 
         if (carData?.car_vin?.isNotEmpty() == true) {
@@ -1811,6 +1816,31 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
         // Populate collapsible footer content (app / firmware / server / SOH)
         applyFooterVisibility()
+    }
+
+    private var netType: String? = null
+    private var isLoadingNetType = false
+
+    private fun loadNetType() {
+        if (isLoadingNetType || carData?.sel_vehicleid.isNullOrBlank()) return
+        isLoadingNetType = true
+
+        sendCommand("", "7,metrics get m.net.type", object : OnResultCommandListener {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
+                isLoadingNetType = false
+                if (returnCode == 0 && returnData.isNotBlank()) {
+                    val parsed = returnData.substringAfter(":").trim()
+                    val rawNet = if (parsed.isNotEmpty()) parsed else returnData.trim()
+                    netType = rawNet.uppercase(Locale.ROOT)
+                    initialiseBottomInfo(carData)
+                }
+            }
+        })
     }
 
     private fun updateQuickActions(carData: CarData?) {
@@ -1853,7 +1883,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     override fun update(carData: CarData?) {
         Log.d(TAG, "update: lastupdated=" + carData?.car_lastupdated)
+        val carChanged = this.carData?.sel_vehicleid != carData?.sel_vehicleid
         this.carData = carData
+        if (carChanged) {
+            netType = null
+        }
         setupVisualisation(carData)
         initialiseChargingCard(carData)
         initialiseQuickActions(carData)
@@ -1862,6 +1896,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseCarDropDown()
         gsmicon(carData)
         gpsicon(carData)
+        if (netType == null) {
+            loadNetType()
+        }
     }
 
     override fun onServiceLoggedIn(service: ApiService?, isLoggedIn: Boolean) {
