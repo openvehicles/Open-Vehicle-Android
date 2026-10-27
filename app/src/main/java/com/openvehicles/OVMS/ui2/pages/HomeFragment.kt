@@ -1798,14 +1798,30 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val baseInfoBuilder = StringBuilder()
         if (carData?.car_odometer?.isNotEmpty() == true) baseInfoBuilder.append(carData.car_odometer)
 
-        if (carData?.car_gsmlock?.isNotEmpty() == true || !netType.isNullOrEmpty()) {
+        val vid = carData?.sel_vehicleid
+        val activeNetType: String = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+
+        val hasNetInfo = !carData?.car_gsmlock.isNullOrBlank() || !carData?.car_mdm_mode.isNullOrBlank() || activeNetType.isNotBlank()
+        if (hasNetInfo) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
-            val modeValue = if (netType.isNullOrEmpty() || netType.equals("MODEM", ignoreCase = true)) {
-                carData?.car_mdm_mode
-            } else {
-                netType
+
+            networkName = carData?.car_gsmlock
+
+            val modeValue = when {
+                activeNetType == "WIFI" -> "WIFI"
+                activeNetType.isNotBlank() && activeNetType != "MODEM" -> activeNetType
+                !carData?.car_mdm_mode.isNullOrBlank() -> carData!!.car_mdm_mode
+                else -> ""
             }
-            baseInfoBuilder.append("Network: ${carData?.car_gsmlock} \nMode: $modeValue ${carData?.car_gsm_signal}")
+
+            val signalStr = carData?.car_gsm_signal?.takeIf { it.isNotBlank() } ?: ""
+            val modeLine = if (signalStr.isNotEmpty()) "$modeValue $signalStr".trim() else modeValue
+
+            if (modeLine.isNotEmpty()) {
+                baseInfoBuilder.append("Network: ${networkName} \nMode: $modeLine")
+            } else {
+                baseInfoBuilder.append("Network: ${networkName} ")
+            }
         }
 
         if (carData?.car_vin?.isNotEmpty() == true) {
@@ -1818,12 +1834,15 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         applyFooterVisibility()
     }
 
+    private var networkName: String? = null
     private var netType: String? = null
     private var isLoadingNetType = false
 
     private fun loadNetType() {
-        if (isLoadingNetType || carData?.sel_vehicleid.isNullOrBlank()) return
+        val vid = carData?.sel_vehicleid
+        if (isLoadingNetType || vid.isNullOrBlank()) return
         isLoadingNetType = true
+        networkName = carData?.car_gsmlock
 
         sendCommand("", "7,metrics get m.net.type", object : OnResultCommandListener {
             override fun onResultCommand(
@@ -1832,13 +1851,15 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 returnData: String,
                 result: Array<String>
             ) {
-                isLoadingNetType = false
                 if (returnCode == 0 && returnData.isNotBlank()) {
-                    val parsed = returnData.substringAfter(":").trim()
-                    val rawNet = if (parsed.isNotEmpty()) parsed else returnData.trim()
-                    netType = rawNet.uppercase(Locale.ROOT)
-                    initialiseBottomInfo(carData)
+                    val rawNet = returnData.trim().uppercase(Locale.ROOT)
+                    if (rawNet.isNotEmpty()) {
+                        netType = rawNet
+                        appPrefs.saveData("pref_net_type_$vid", rawNet)
+                        initialiseBottomInfo(carData)
+                    }
                 }
+                isLoadingNetType = false
             }
         })
     }
@@ -1886,7 +1907,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val carChanged = this.carData?.sel_vehicleid != carData?.sel_vehicleid
         this.carData = carData
         if (carChanged) {
+            networkName = null
             netType = null
+            isLoadingNetType = false
         }
         setupVisualisation(carData)
         initialiseChargingCard(carData)
@@ -1896,7 +1919,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseCarDropDown()
         gsmicon(carData)
         gpsicon(carData)
-        if (netType == null) {
+        if (networkName != carData?.car_gsmlock || (netType == null && !isLoadingNetType)) {
             loadNetType()
         }
     }
