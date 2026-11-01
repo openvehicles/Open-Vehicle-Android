@@ -1806,7 +1806,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
 
             val displayNetwork = if (!carData?.car_gsmlock.isNullOrBlank()) {
-                carData!!.car_gsmlock
+                carData.car_gsmlock
             } else if (activeNetType == "WIFI") {
                 "WIFI"
             } else if (activeNetType.isNotBlank()) {
@@ -1818,7 +1818,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             val modeValue = when {
                 activeNetType == "WIFI" -> "WIFI"
                 activeNetType.isNotBlank() && activeNetType != "MODEM" -> activeNetType
-                !carData?.car_mdm_mode.isNullOrBlank() -> carData!!.car_mdm_mode
+                !carData?.car_mdm_mode.isNullOrBlank() -> carData.car_mdm_mode
                 else -> ""
             }
 
@@ -1877,18 +1877,39 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     }
 
     private fun gsmicon(carData: CarData?) {
-        // GSM Bar
+        // GSM / Wi-Fi Bar
         val gsmimg = findViewById(R.id.gsmView) as ImageView
         if (appPrefs.getData("gsm_icon", "off") == "on") {
             gsmimg.visibility = VISIBLE
-            val resId = getDrawableIdentifier(
-                requireContext(),
-                "signal_strength_" + (carData?.car_gsm_bars ?: 0)
-            )
-            if (resId > 0) {
-                gsmimg.setImageResource(resId)
+
+            val vid = carData?.sel_vehicleid
+            val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+            val isWifiActive = activeNetType.equals("WIFI", ignoreCase = true) ||
+                               carData?.car_gsmlock?.contains("WIFI", ignoreCase = true) == true
+
+            if (isWifiActive) {
+                val wifiBars = carData?.car_wifi_bars ?: 0
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "wifi_signal_" + wifiBars
+                )
+                if (resId > 0) {
+                    gsmimg.setImageResource(resId)
+                } else {
+                    gsmimg.setImageResource(R.drawable.wifi_signal_0)
+                }
+                gsmimg.alpha = 1.0f
             } else {
-                gsmimg.setImageResource(R.drawable.signal_strength_0)
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "signal_strength_" + (carData?.car_gsm_bars ?: 0)
+                )
+                if (resId > 0) {
+                    gsmimg.setImageResource(resId)
+                } else {
+                    gsmimg.setImageResource(R.drawable.signal_strength_0)
+                }
+                gsmimg.alpha = 1.0f
             }
             // Use static tint from resources to be safe
             gsmimg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorText))

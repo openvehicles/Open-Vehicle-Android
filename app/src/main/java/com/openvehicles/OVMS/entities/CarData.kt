@@ -133,6 +133,8 @@ class CarData : Serializable {
     @JvmField
     var car_gsm_bars = 0
     @JvmField
+    var car_wifi_bars = 0
+    @JvmField
     var server_firmware = ""
     @JvmField
     var car_12vline_voltage = 0.0
@@ -893,6 +895,8 @@ class CarData : Serializable {
                 car_gsm_signal = String.format("%d%s", car_gsm_dbm, " dBm")
                 car_gsm_bars =
                     if (car_gsm_dbm < -121 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -107) 1 else if (car_gsm_dbm < -98) 2 else if (car_gsm_dbm < -87) 3 else if (car_gsm_dbm < -76) 4 else 5
+                car_wifi_bars =
+                    if (car_gsm_dbm < -96 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -89) 1 else if (car_gsm_dbm < -82) 2 else if (car_gsm_dbm < -75) 3 else if (car_gsm_dbm < -68) 4 else 5
                 stale_firmware = DataStale.Good
             }
             if (dataParts.size >= 5) {
@@ -1319,6 +1323,7 @@ class CarData : Serializable {
             b.putString("car_vin", car_vin)
             b.putInt("car_gsm_dbm", car_gsm_dbm)
             b.putInt("car_gsm_bars", car_gsm_bars)
+            b.putInt("car_wifi_bars", car_wifi_bars)
             b.putString("car_gsm_lock", car_gsmlock)
             b.putInt("car_canwrite", car_canwrite_raw)
             b.putInt("car_servicedays", car_servicetime)
