@@ -896,7 +896,7 @@ class CarData : Serializable {
                 car_gsm_bars =
                     if (car_gsm_dbm < -121 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -107) 1 else if (car_gsm_dbm < -98) 2 else if (car_gsm_dbm < -87) 3 else if (car_gsm_dbm < -76) 4 else 5
                 car_wifi_bars =
-                    if (car_gsm_dbm < -91 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -86) 1 else if (car_gsm_dbm < -76) 2 else if (car_gsm_dbm < -66) 3 else if (car_gsm_dbm < -50) 4 else 5
+                    if (car_gsm_dbm < -89 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -86) 1 else if (car_gsm_dbm < -76) 2 else if (car_gsm_dbm < -66) 3 else if (car_gsm_dbm < -50) 4 else 5
                 stale_firmware = DataStale.Good
             }
             if (dataParts.size >= 5) {
