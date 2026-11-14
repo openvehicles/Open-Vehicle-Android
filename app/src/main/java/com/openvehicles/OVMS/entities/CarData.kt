@@ -898,10 +898,10 @@ class CarData : Serializable {
                 car_gsm_bars = when {
                     car_gsm_dbm == 0 -> 5
                     car_gsm_dbm < -120 -> 0
-                    car_gsm_dbm < -107 -> 1
-                    car_gsm_dbm < -98 -> 2
-                    car_gsm_dbm < -76 -> 3
-                    car_gsm_dbm < -60 -> 4
+                    car_gsm_dbm < -110 -> 1
+                    car_gsm_dbm < -100 -> 2
+                    car_gsm_dbm < -90 -> 3
+                    car_gsm_dbm < -80 -> 4
                     else -> 5
                 }
 
