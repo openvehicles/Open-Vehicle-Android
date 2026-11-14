@@ -1799,26 +1799,33 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         if (carData?.car_odometer?.isNotEmpty() == true) baseInfoBuilder.append(carData.car_odometer)
 
         val vid = carData?.sel_vehicleid
-        val activeNetType: String = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+        val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+        val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+        val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+        val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
 
-        val hasNetInfo = !carData?.car_gsmlock.isNullOrBlank() || !carData?.car_mdm_mode.isNullOrBlank() || activeNetType.isNotBlank()
+        val isWifi = when {
+            netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+            netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+            gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+            else -> false
+        }
+
+        val hasNetInfo = gsmLock.isNotBlank() || mdmMode.isNotBlank() || activeNetType.isNotBlank()
         if (hasNetInfo) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
 
-            val displayNetwork = if (!carData?.car_gsmlock.isNullOrBlank()) {
-                carData.car_gsmlock
-            } else if (activeNetType == "WIFI") {
-                "WIFI"
-            } else if (activeNetType.isNotBlank()) {
-                activeNetType
-            } else {
-                "Cellular"
+            val displayNetwork = when {
+                gsmLock.isNotBlank() -> gsmLock
+                activeNetType.isNotBlank() -> activeNetType
+                isWifi -> "WIFI"
+                else -> "Cellular"
             }
 
             val modeValue = when {
-                activeNetType == "WIFI" -> "WIFI"
+                isWifi -> "WIFI"
+                mdmMode.isNotBlank() -> mdmMode
                 activeNetType.isNotBlank() && activeNetType != "MODEM" -> activeNetType
-                !carData?.car_mdm_mode.isNullOrBlank() -> carData.car_mdm_mode
                 else -> ""
             }
 
@@ -1884,20 +1891,23 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
             val vid = carData?.sel_vehicleid
             val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
-            val isWifiActive = activeNetType.equals("WIFI", ignoreCase = true) ||
-                               carData?.car_gsmlock?.contains("WIFI", ignoreCase = true) == true
+            val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+            val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+
+            val isWifiActive = when {
+                netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+                netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+                gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+                else -> false
+            }
 
             if (isWifiActive) {
-                val wifiBars = carData?.car_wifi_bars ?: 0
+                val wifiBars = if ((carData?.car_wifi_bars ?: 0) > 0) carData!!.car_wifi_bars else 5
                 val resId = getDrawableIdentifier(
                     requireContext(),
-                    "wifi_signal_" + wifiBars
+                    "wifi_signal_$wifiBars"
                 )
-                if (resId > 0) {
-                    gsmimg.setImageResource(resId)
-                } else {
-                    gsmimg.setImageResource(R.drawable.wifi_signal_0)
-                }
+                gsmimg.setImageResource(if (resId > 0) resId else R.drawable.wifi_signal_5)
                 gsmimg.alpha = 1.0f
             } else {
                 val resId = getDrawableIdentifier(
