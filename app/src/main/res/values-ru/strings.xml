@@ -791,7 +791,7 @@
     <string name="select_ddt4all_action">Опция DDT4all</string>
     <string name="chargingpower">Мощность зарядки</string>
     <string name="chargingeff">КПД</string>
-    <string name="lb_charger_confirm_soc_change">Действительно изменить лимит SOC?</string>
+    <string name="lb_charger_confirm_soc_change">Уведомить при достижении SOC %s?</string>
     <string name="action_set_tab_color">Установить цвет вкладки</string>
     <string name="action_reset_tab_color">Сбросить цвет вкладки</string>
     <string name="dialog_choose_color">Выберите цвет</string>
@@ -815,4 +815,5 @@
     </string-array>
 
     <string name="scheduled_command">Запланированная команда</string>
+    <string name="feature_requires_firmware">Для этой функции требуется прошивка OVMS версии %s или новее.</string>
 </resources>

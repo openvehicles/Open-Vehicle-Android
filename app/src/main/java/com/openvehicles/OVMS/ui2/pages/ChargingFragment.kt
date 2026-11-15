@@ -476,8 +476,9 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
             }
 
             override fun onStopTrackingTouch(slider: RangeSlider) {
+                val valInt = slider.values.firstOrNull()?.toInt() ?: 0
                 val title = if (carData?.car_type == "SQ") {
-                    getString(R.string.lb_charger_confirm_soc_change, ampLimit.text.toString())
+                    getString(R.string.lb_charger_confirm_soc_change, "$valInt%")
                 } else {
                     getString(chargeLimitActionTitle)
                 }
@@ -489,36 +490,36 @@ class ChargingFragment : BaseFragment(), OnResultCommandListener {
                 MaterialAlertDialogBuilder(requireActivity())
                     .setTitle(title)
                     .setMessage(msg)
-                    .setNegativeButton(R.string.Cancel) {_, _ ->}
-                    .setPositiveButton(android.R.string.ok, fun(dlg: DialogInterface, which: Int) {
+                    .setNegativeButton(R.string.Cancel) { _, _ -> }
+                    .setPositiveButton(android.R.string.ok) { dlg, _ ->
                         if (carData?.car_type == "RT") {
                             // CMD_SetChargeAlerts(<range>,<soc>,<powerlevel>,<stopmode>)
                             sendCommand(
                                 R.string.msg_setting_charge_c,
-                                String.format("204,%d,%d,%d,%d",
+                                String.format(
+                                    "204,%d,%d,%d,%d",
                                     chargeSuffRange,
                                     chargeSuffSOC,
-                                    ampLimitSlider.values.first().div(5).toInt(),
-                                    chargeLimitAction),
+                                    valInt.div(5),
+                                    chargeLimitAction
+                                ),
                                 this@ChargingFragment
                             )
                         } else if (carData?.car_type == "SQ") {
                             sendCommand(
                                 R.string.lb_sufficient_soc,
-                                String.format(
-                                    "204,%d",
-                                    ampLimitSlider.values.first().toInt()),
+                                String.format("204,%d", valInt),
                                 this@ChargingFragment
                             )
                         } else {
                             sendCommand(
                                 R.string.msg_setting_charge_c,
-                                String.format("15,%d", ampLimitSlider.values.first().toInt()),
+                                String.format("15,%d", valInt),
                                 this@ChargingFragment
                             )
                         }
                         dlg.dismiss()
-                    })
+                    }
                     .show()
             }
         }
