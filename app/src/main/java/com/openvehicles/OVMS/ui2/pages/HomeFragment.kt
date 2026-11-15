@@ -1856,9 +1856,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private fun loadNetType() {
         val vid = carData?.sel_vehicleid
         if (isLoadingNetType || vid.isNullOrBlank() || netType != null) return
+        if (!VehicleConfigHelper.isFirmwareSupported(carData)) return
         isLoadingNetType = true
 
-        sendCommand("", "7,metrics get m.net.type", object : OnResultCommandListener {
+        val jsCmd = "8,net_type,JSON.print(OvmsMetrics.Value(\"m.net.type\"),false)"
+        sendCommand("", jsCmd, object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -1867,8 +1869,18 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             ) {
                 isLoadingNetType = false
                 if (returnCode == 0 && returnData.isNotBlank()) {
-                    val rawNet = returnData.trim().uppercase(Locale.ROOT)
-                    if (rawNet.isNotEmpty()) {
+                    val jsonPayload = returnData.substringAfter("net_type,").trim().removePrefix(",")
+                    val rawNet = if (jsonPayload.startsWith("{")) {
+                        try {
+                            org.json.JSONObject(jsonPayload).optString("m.net.type", "")
+                        } catch (e: Exception) {
+                            ""
+                        }
+                    } else {
+                        jsonPayload.trim('"', ' ', '\r', '\n')
+                    }.uppercase(Locale.ROOT)
+
+                    if (rawNet.isNotEmpty() && rawNet != "NULL" && rawNet != "UNDEFINED") {
                         netType = rawNet
                         appPrefs.saveData("pref_net_type_$vid", rawNet)
                         initialiseBottomInfo(carData)
