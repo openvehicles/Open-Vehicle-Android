@@ -285,14 +285,24 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
             return
         }
 
+        if (!VehicleConfigHelper.isFirmwareSupported(car)) {
+            swipeRefresh.isRefreshing = false
+            pbLoading.visibility = View.GONE
+            tvEmptyConfig.text = getString(R.string.feature_requires_firmware, VehicleConfigHelper.MIN_SUPPORTED_FIRMWARE)
+            tvEmptyConfig.visibility = View.VISIBLE
+            adapter.setItems(emptyList())
+            return
+        }
+
         if (showProgress) {
             pbLoading.visibility = View.VISIBLE
         }
         isLoading = true
 
-        Log.d(TAG, "loadAllConfigs: sending '7,config list'")
+        val jsCmd = "8,cfg_params,JSON.print(OvmsConfig.Params(),false)"
+        Log.d(TAG, "loadAllConfigs: sending '$jsCmd'")
 
-        sendCommand("", "7,config list", object : OnResultCommandListener {
+        sendCommand("", jsCmd, object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -306,7 +316,8 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
                 Log.d(TAG, "loadAllConfigs response: returnCode=$returnCode, dataLength=${returnData.length}")
 
                 if (returnCode == 0 && returnData.isNotEmpty()) {
-                    parseAndStoreRubriken(returnData)
+                    val jsonPayload = returnData.substringAfter("cfg_params,").trim().removePrefix(",")
+                    parseAndStoreRubriken(jsonPayload)
                     setupRubrikenTabs()
                     if (currentRubrikId.isNotEmpty()) {
                         onRubrikSelected(currentRubrikId)
@@ -319,20 +330,18 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         })
     }
 
-    private fun parseAndStoreRubriken(output: String) {
+    private fun parseAndStoreRubriken(jsonOutput: String) {
         discoveredRubriken.clear()
-        val lines = output.split("\r\n", "\n", "\r")
-
-        for (line in lines) {
-            val rawLine = line.trim()
-            if (rawLine.isEmpty()) continue
-            val parts = rawLine.split("\\s+".toRegex(), limit = 2)
-            if (parts.isNotEmpty()) {
-                val rubrikId = parts[0].trim().lowercase(Locale.ROOT)
+        try {
+            val jsonArray = org.json.JSONArray(jsonOutput)
+            for (i in 0 until jsonArray.length()) {
+                val rubrikId = jsonArray.optString(i).trim().lowercase(Locale.ROOT)
                 if (rubrikId.isNotEmpty()) {
                     discoveredRubriken.add(rubrikId)
                 }
             }
+        } catch (e: Exception) {
+            Log.e(TAG, "parseAndStoreRubriken: JSON parse error: ${e.message}, payload: $jsonOutput")
         }
 
         Log.d(TAG, "parseAndStoreRubriken: discovered ${discoveredRubriken.size} rubriken: $discoveredRubriken")
@@ -348,14 +357,25 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
             return
         }
 
+        if (!VehicleConfigHelper.isFirmwareSupported(car)) {
+            swipeRefresh.isRefreshing = false
+            pbLoading.visibility = View.GONE
+            tvEmptyConfig.text = getString(R.string.feature_requires_firmware, VehicleConfigHelper.MIN_SUPPORTED_FIRMWARE)
+            tvEmptyConfig.visibility = View.VISIBLE
+            adapter.setItems(emptyList())
+            return
+        }
+
         if (showProgress) {
             pbLoading.visibility = View.VISIBLE
         }
         isLoading = true
 
-        Log.d(TAG, "loadVehicleConfig: sending '7,config list $rubrikId'")
+        val quotedRubrik = org.json.JSONObject.quote(rubrikId)
+        val jsCmd = "8,cfg_vals,JSON.print(OvmsConfig.GetValues($quotedRubrik),false)"
+        Log.d(TAG, "loadVehicleConfig: sending '$jsCmd'")
 
-        sendCommand("", "7,config list $rubrikId", object : OnResultCommandListener {
+        sendCommand("", jsCmd, object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -369,7 +389,8 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
                 Log.d(TAG, "loadVehicleConfig response for $rubrikId: returnCode=$returnCode, dataLength=${returnData.length}")
 
                 if (returnCode == 0 && returnData.isNotEmpty()) {
-                    val items = parseConfigList(returnData)
+                    val jsonPayload = returnData.substringAfter("cfg_vals,").trim().removePrefix(",")
+                    val items = parseConfigList(jsonPayload)
                     cachedConfigs[rubrikId] = items
                     if (currentRubrikId == rubrikId) {
                         adapter.setItems(items)
@@ -387,27 +408,28 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
         })
     }
 
-    private fun parseConfigList(output: String): List<VehicleConfigParam> {
+    private fun parseConfigList(jsonOutput: String): List<VehicleConfigParam> {
         val items = mutableListOf<VehicleConfigParam>()
-        val lines = output.split("\r\n", "\n", "\r")
-        for (line in lines) {
-            val rawLine = line.trim()
-            if (rawLine.isEmpty()) continue
-            val parts = rawLine.split(":", limit = 2)
-            if (parts.size == 2) {
-                val key = parts[0].trim()
-                val value = parts[1].removePrefix(" ")
-                if (key.isNotEmpty()) {
-                    items.add(VehicleConfigParam(key, value))
-                }
+        try {
+            val jsonObject = org.json.JSONObject(jsonOutput)
+            val keys = jsonObject.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val value = jsonObject.optString(key, "")
+                items.add(VehicleConfigParam(key, value))
             }
+            items.sortBy { it.key.lowercase(Locale.ROOT) }
+        } catch (e: Exception) {
+            Log.e(TAG, "parseConfigList: JSON parse error: ${e.message}, payload: $jsonOutput")
         }
         return items
     }
 
     private fun formatConfigSetCommand(rubrik: String, key: String, value: String): String {
-        val escapedValue = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
-        return "7,config set $rubrik $key $escapedValue"
+        val qRubrik = org.json.JSONObject.quote(rubrik)
+        val qKey = org.json.JSONObject.quote(key)
+        val qVal = org.json.JSONObject.quote(value)
+        return "8,cfg_set,OvmsConfig.Set($qRubrik,$qKey,$qVal)"
     }
 
     private fun updateEmptyState() {
@@ -516,9 +538,12 @@ class VehicleConfigFragment : BaseFragment(), OnResultCommandListener {
             .setTitle(R.string.vehicle_config_delete)
             .setMessage(getString(R.string.vehicle_config_delete_confirm, param.key))
             .setPositiveButton(R.string.vehicle_config_delete) { _, _ ->
+                val qRubrik = org.json.JSONObject.quote(targetRubrik)
+                val qKey = org.json.JSONObject.quote(param.key)
+                val jsCmd = "8,cfg_del,OvmsConfig.Delete($qRubrik,$qKey)"
                 sendCommand(
                     "Deleting...",
-                    "7,config rm $targetRubrik ${param.key}",
+                    jsCmd,
                     object : OnResultCommandListener {
                         override fun onResultCommand(
                             commandCode: Int,

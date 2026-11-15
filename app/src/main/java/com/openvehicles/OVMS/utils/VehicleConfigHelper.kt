@@ -36,4 +36,40 @@ object VehicleConfigHelper {
         if (vehicleId.isNullOrBlank()) return
         appPrefs.saveData(PREF_PREFIX_KEY + vehicleId, prefix.trim().lowercase(Locale.ROOT))
     }
+
+    const val MIN_SUPPORTED_FIRMWARE = "3.0.0.6-435"
+
+    /**
+     * Checks if the vehicle firmware meets the minimum version required for JavaScript (MP Cmd 8).
+     */
+    fun isFirmwareSupported(carData: CarData?, minVersion: String = MIN_SUPPORTED_FIRMWARE): Boolean {
+        val fw = carData?.car_firmware?.trim() ?: return false
+        if (fw.isEmpty()) return false
+
+        val token = fw.split('/', ' ').firstOrNull { it.isNotBlank() } ?: return false
+        val dashParts = token.split('-', limit = 2)
+        val verPart = dashParts[0]
+        val subVer = if (dashParts.size > 1) dashParts[1].filter { it.isDigit() }.toIntOrNull() ?: 0 else 0
+
+        val actualNums = verPart.split('.').mapNotNull { it.toIntOrNull() }.toMutableList()
+        while (actualNums.size < 4) {
+            actualNums.add(0)
+        }
+
+        val minToken = minVersion.split('-', limit = 2)
+        val minVerPart = minToken[0]
+        val minSubVer = if (minToken.size > 1) minToken[1].filter { it.isDigit() }.toIntOrNull() ?: 0 else 0
+        val targetNums = minVerPart.split('.').mapNotNull { it.toIntOrNull() }.toMutableList()
+        while (targetNums.size < 4) {
+            targetNums.add(0)
+        }
+
+        for (i in 0 until 4) {
+            val a = actualNums[i]
+            val t = targetNums[i]
+            if (a > t) return true
+            if (a < t) return false
+        }
+        return subVer >= minSubVer
+    }
 }

@@ -904,7 +904,7 @@ class CarData : Serializable {
                     car_gsm_dbm < -80 -> 4
                     else -> 5
                 }
-
+100
                 car_wifi_bars = when {
                     car_gsm_dbm >= 0 -> 5
                     car_gsm_dbm < -89 -> 0

@@ -121,14 +121,27 @@ class MetricsFragment : BaseFragment(), OnResultCommandListener {
             return
         }
 
+        if (!com.openvehicles.OVMS.utils.VehicleConfigHelper.isFirmwareSupported(car)) {
+            swipeRefresh.isRefreshing = false
+            pbLoading.visibility = View.GONE
+            tvEmptyMetrics.text = getString(
+                R.string.feature_requires_firmware,
+                com.openvehicles.OVMS.utils.VehicleConfigHelper.MIN_SUPPORTED_FIRMWARE
+            )
+            tvEmptyMetrics.visibility = View.VISIBLE
+            adapter.setItems(emptyList())
+            return
+        }
+
         if (showProgress) {
             pbLoading.visibility = View.VISIBLE
         }
         isLoading = true
 
-        Log.d(TAG, "loadMetrics: sending '7,metrics list'")
+        val jsCmd = "8,metrics_all,JSON.print(OvmsMetrics.GetValues(),false)"
+        Log.d(TAG, "loadMetrics: sending '$jsCmd'")
 
-        sendCommand("", "7,metrics list", object : OnResultCommandListener {
+        sendCommand("", jsCmd, object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -142,7 +155,8 @@ class MetricsFragment : BaseFragment(), OnResultCommandListener {
                 Log.d(TAG, "loadMetrics response: returnCode=$returnCode, dataLength=${returnData.length}")
 
                 if (returnCode == 0 && returnData.isNotEmpty()) {
-                    val items = parseMetricsList(returnData)
+                    val jsonPayload = returnData.substringAfter("metrics_all,").trim().removePrefix(",")
+                    val items = parseMetricsList(jsonPayload)
                     adapter.setItems(items)
                     adapter.filter(etSearchMetrics.text?.toString() ?: "")
                     updateEmptyState()
@@ -154,55 +168,29 @@ class MetricsFragment : BaseFragment(), OnResultCommandListener {
         })
     }
 
-    private fun parseMetricsList(output: String): List<MetricItem> {
+    private fun parseMetricsList(jsonOutput: String): List<MetricItem> {
         val items = mutableListOf<MetricItem>()
-        val lines = output.split("\r\n", "\n", "\r")
-
-        Log.d(TAG, "parseMetricsList: output line count=${lines.size}, sample=${output.take(300)}")
-
-        for (line in lines) {
-            val rawLine = line.trim()
-            if (rawLine.isEmpty()) continue
-
-            val key: String
-            val value: String
-
-            when {
-                rawLine.contains(":") -> {
-                    val parts = rawLine.split(":", limit = 2)
-                    key = parts[0].trim()
-                    value = parts[1].trim()
-                }
-                rawLine.contains("=") -> {
-                    val parts = rawLine.split("=", limit = 2)
-                    key = parts[0].trim()
-                    value = parts[1].trim()
-                }
-                else -> {
-                    val parts = rawLine.split("\\s{2,}".toRegex(), limit = 2)
-                    if (parts.size == 2) {
-                        key = parts[0].trim()
-                        value = parts[1].trim()
-                    } else {
-                        val singleSpaceParts = rawLine.split("\\s+".toRegex(), limit = 2)
-                        key = singleSpaceParts[0].trim()
-                        value = singleSpaceParts.getOrNull(1)?.trim() ?: ""
-                    }
-                }
-            }
-
-            if (key.isNotEmpty() && !key.startsWith("Metric") && !key.startsWith("---")) {
+        try {
+            val jsonObject = org.json.JSONObject(jsonOutput)
+            val keys = jsonObject.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val rawVal = jsonObject.opt(key)
+                val value = if (rawVal == null || rawVal == org.json.JSONObject.NULL) "" else rawVal.toString()
                 items.add(MetricItem(key, value))
             }
+            items.sortBy { it.key.lowercase(java.util.Locale.ROOT) }
+        } catch (e: Exception) {
+            Log.e(TAG, "parseMetricsList: JSON parse error: ${e.message}, payload: $jsonOutput")
         }
-
-        Log.d(TAG, "parseMetricsList: parsed ${items.size} metric items")
         return items
     }
 
     private fun formatMetricsSetCommand(key: String, value: String): String {
-        val escapedValue = "\"" + value.replace("\\", "\\\\").replace("\"", "\\\"") + "\""
-        return "7,metrics set $key $escapedValue"
+        val qKey = org.json.JSONObject.quote(key)
+        val qVal = org.json.JSONObject.quote(value)
+        val jsExpr = "OvmsCommand.Exec(\"metrics set \" + $qKey + \" \" + $qVal)"
+        return "8,metrics_set,$jsExpr"
     }
 
     private fun updateEmptyState() {
