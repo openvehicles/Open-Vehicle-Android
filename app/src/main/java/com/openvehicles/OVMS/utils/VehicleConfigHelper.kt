@@ -37,7 +37,7 @@ object VehicleConfigHelper {
         appPrefs.saveData(PREF_PREFIX_KEY + vehicleId, prefix.trim().lowercase(Locale.ROOT))
     }
 
-    const val MIN_SUPPORTED_FIRMWARE = "3.0.0.6-435"
+    const val MIN_SUPPORTED_FIRMWARE = "3.3.006-435"
 
     /**
      * Checks if the vehicle firmware meets the minimum version required for JavaScript (MP Cmd 8).
