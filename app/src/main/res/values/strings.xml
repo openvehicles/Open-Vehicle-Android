@@ -1038,5 +1038,6 @@
     <string name="metrics_edit_hint">New value for %s</string>
     <string name="metrics_key_label">Metric Key</string>
     <string name="metrics_value_label">Metric Value</string>
+    <string name="feature_requires_firmware">This feature requires OVMS firmware version %s or newer.</string>
 
 </resources>

@@ -158,14 +158,14 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         lastConfigVid = vid
 
         val prefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
-        if (prefix.isBlank()) {
+        if (prefix.isBlank() || !VehicleConfigHelper.isFirmwareSupported(carData)) {
             isLoadingConfig = false
             findViewById(R.id.cardTPMSConfig).visibility = View.GONE
             return
         }
-        
-        // Use prefix 7 (command with output)
-        sendCommand("", "7,config list $prefix", object : OnResultCommandListener {
+
+        val qPrefix = org.json.JSONObject.quote(prefix)
+        sendCommand("", "8,tpms_cfg,JSON.print(OvmsConfig.GetValues($qPrefix),false)", object : OnResultCommandListener {
             override fun onResultCommand(
                 commandCode: Int,
                 returnCode: Int,
@@ -174,7 +174,8 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
             ) {
                 isLoadingConfig = false
                 if (returnCode == 0 && returnData.isNotEmpty()) {
-                    parseTPMSConfig(returnData)
+                    val jsonPayload = returnData.substringAfter("tpms_cfg,").trim().removePrefix(",")
+                    parseTPMSConfig(jsonPayload)
                     updateTPMSConfigUI()
                 } else {
                     Log.w("ControlsFragment", "TPMS Config load failed with code $returnCode")
@@ -183,19 +184,18 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
         })
     }
 
-    private fun parseTPMSConfig(output: String) {
+    private fun parseTPMSConfig(jsonOutput: String) {
         tpmsConfig.clear()
-        val lines = output.lines()
-        for (line in lines) {
-            // More robust parsing: split at first colon, trim both sides
-            val parts = line.trim().split(":", limit = 2)
-            if (parts.size == 2) {
-                val key = parts[0].trim()
-                val value = parts[1].trim()
-                if (key.isNotEmpty()) {
-                    tpmsConfig[key] = value
-                }
+        try {
+            val jsonObject = org.json.JSONObject(jsonOutput)
+            val keys = jsonObject.keys()
+            while (keys.hasNext()) {
+                val key = keys.next()
+                val value = jsonObject.optString(key, "")
+                tpmsConfig[key] = value
             }
+        } catch (e: Exception) {
+            Log.e("ControlsFragment", "parseTPMSConfig: JSON parse error: ${e.message}, payload: $jsonOutput")
         }
     }
 
@@ -324,19 +324,22 @@ class ControlsFragment : BaseFragment(), OnResultCommandListener {
 
     private fun saveTPMSConfig(prefix: String, newConfig: Map<String, String>) {
         val commands = mutableListOf<String>()
+        val qPrefix = org.json.JSONObject.quote(prefix)
         for ((key, value) in newConfig) {
             if (tpmsConfig[key] != value) {
-                commands.add("7,config set $prefix $key $value")
+                val qKey = org.json.JSONObject.quote(key)
+                val qVal = org.json.JSONObject.quote(value)
+                commands.add("8,tpms_set,OvmsConfig.Set($qPrefix,$qKey,$qVal)")
             }
         }
-        
+
         if (commands.isEmpty()) return
-        
+
         // Send commands one by one
         for (cmd in commands) {
             sendCommand("Saving...", cmd, null)
         }
-        
+
         // Give it a short delay and reload
         view?.postDelayed({ loadTPMSConfig() }, 1500)
     }

@@ -815,4 +815,5 @@
     </string-array>
 
     <string name="scheduled_command">Запланированная команда</string>
+    <string name="feature_requires_firmware">Для этой функции требуется прошивка OVMS версии %s или новее.</string>
 </resources>
