@@ -1807,6 +1807,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val isWifi = when {
             netTypeLower == "wifi" || netTypeLower == "wlan" -> true
             netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+            mdmMode.isNotBlank() -> false
             gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
             else -> false
         }
@@ -1851,13 +1852,22 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     private var netType: String? = null
     private var lastGsmLock: String? = null
+    private var lastMdmMode: String? = null
+    private var lastNetTypeCheckTime: Long = 0L
     private var isLoadingNetType = false
 
-    private fun loadNetType() {
+    private fun loadNetType(force: Boolean = false) {
         val vid = carData?.sel_vehicleid
-        if (isLoadingNetType || vid.isNullOrBlank() || netType != null) return
+        if (isLoadingNetType || vid.isNullOrBlank()) return
         if (!VehicleConfigHelper.isFirmwareSupported(carData)) return
+
+        val now = System.currentTimeMillis()
+        if (!force && netType != null && now - lastNetTypeCheckTime < 30_000L) {
+            return
+        }
+
         isLoadingNetType = true
+        lastNetTypeCheckTime = now
 
         val jsCmd = "8,net_type,JSON.print(OvmsMetrics.Value(\"m.net.type\"),false)"
         sendCommand("", jsCmd, object : OnResultCommandListener {
@@ -1881,9 +1891,13 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     }.uppercase(Locale.ROOT)
 
                     if (rawNet.isNotEmpty() && rawNet != "NULL" && rawNet != "UNDEFINED") {
+                        val changed = netType != rawNet
                         netType = rawNet
                         appPrefs.saveData("pref_net_type_$vid", rawNet)
-                        initialiseBottomInfo(carData)
+                        if (changed) {
+                            initialiseBottomInfo(carData)
+                            gsmicon(carData)
+                        }
                     }
                 }
             }
@@ -1905,10 +1919,12 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
             val netTypeLower = activeNetType.lowercase(Locale.ROOT)
             val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+            val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
 
             val isWifiActive = when {
                 netTypeLower == "wifi" || netTypeLower == "wlan" -> true
                 netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+                mdmMode.isNotBlank() -> false
                 gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
                 else -> false
             }
@@ -1956,10 +1972,13 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         Log.d(TAG, "update: lastupdated=" + carData?.car_lastupdated)
         val carChanged = this.carData?.sel_vehicleid != carData?.sel_vehicleid
         val gsmLockChanged = carData?.car_gsmlock != null && carData.car_gsmlock != lastGsmLock
+        val mdmModeChanged = carData?.car_mdm_mode != null && carData.car_mdm_mode != lastMdmMode
         this.carData = carData
         lastGsmLock = carData?.car_gsmlock
+        lastMdmMode = carData?.car_mdm_mode
 
-        if (carChanged || gsmLockChanged) {
+        val shouldForceReload = carChanged || gsmLockChanged || mdmModeChanged
+        if (shouldForceReload) {
             netType = null
             isLoadingNetType = false
         }
@@ -1971,9 +1990,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseCarDropDown()
         gsmicon(carData)
         gpsicon(carData)
-        if (netType == null && !isLoadingNetType) {
-            loadNetType()
-        }
+        loadNetType(force = shouldForceReload)
     }
 
     override fun onServiceLoggedIn(service: ApiService?, isLoggedIn: Boolean) {
