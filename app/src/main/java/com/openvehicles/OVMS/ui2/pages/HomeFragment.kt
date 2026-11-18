@@ -1798,9 +1798,46 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val baseInfoBuilder = StringBuilder()
         if (carData?.car_odometer?.isNotEmpty() == true) baseInfoBuilder.append(carData.car_odometer)
 
-        if (carData?.car_gsmlock?.isNotEmpty() == true) {
+        val vid = carData?.sel_vehicleid
+        val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+        val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+        val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+        val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
+
+        val isWifi = when {
+            netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+            netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+            mdmMode.isNotBlank() -> false
+            gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+            else -> false
+        }
+
+        val hasNetInfo = gsmLock.isNotBlank() || mdmMode.isNotBlank() || activeNetType.isNotBlank()
+        if (hasNetInfo) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
-            baseInfoBuilder.append("Network: ${carData.car_gsmlock} \nMode: ${carData.car_mdm_mode} ${carData.car_gsm_signal}")
+
+            val displayNetwork = when {
+                gsmLock.isNotBlank() -> gsmLock
+                activeNetType.isNotBlank() -> activeNetType
+                isWifi -> "WIFI"
+                else -> "Cellular"
+            }
+
+            val modeValue = when {
+                isWifi -> "WIFI"
+                mdmMode.isNotBlank() -> mdmMode
+                activeNetType.isNotBlank() && activeNetType != "MODEM" -> activeNetType
+                else -> ""
+            }
+
+            val signalStr = carData?.car_gsm_signal?.takeIf { it.isNotBlank() } ?: ""
+            val modeLine = if (signalStr.isNotEmpty()) "$modeValue $signalStr".trim() else modeValue
+
+            if (modeLine.isNotEmpty()) {
+                baseInfoBuilder.append("Network: $displayNetwork \nMode: $modeLine")
+            } else {
+                baseInfoBuilder.append("Network: $displayNetwork")
+            }
         }
 
         if (carData?.car_vin?.isNotEmpty() == true) {
@@ -1813,24 +1850,104 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         applyFooterVisibility()
     }
 
+    private var netType: String? = null
+    private var lastGsmLock: String? = null
+    private var lastMdmMode: String? = null
+    private var lastNetTypeCheckTime: Long = 0L
+    private var isLoadingNetType = false
+
+    private fun loadNetType(force: Boolean = false) {
+        val vid = carData?.sel_vehicleid
+        if (isLoadingNetType || vid.isNullOrBlank()) return
+        if (!VehicleConfigHelper.isFirmwareSupported(carData)) return
+
+        val now = System.currentTimeMillis()
+        if (!force && netType != null && now - lastNetTypeCheckTime < 30_000L) {
+            return
+        }
+
+        isLoadingNetType = true
+        lastNetTypeCheckTime = now
+
+        val jsCmd = "8,net_type,JSON.print(OvmsMetrics.Value(\"m.net.type\"),false)"
+        sendCommand("", jsCmd, object : OnResultCommandListener {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
+                isLoadingNetType = false
+                if (returnCode == 0 && returnData.isNotBlank()) {
+                    val jsonPayload = returnData.substringAfter("net_type,").trim().removePrefix(",")
+                    val rawNet = if (jsonPayload.startsWith("{")) {
+                        try {
+                            org.json.JSONObject(jsonPayload).optString("m.net.type", "")
+                        } catch (e: Exception) {
+                            ""
+                        }
+                    } else {
+                        jsonPayload.trim('"', ' ', '\r', '\n')
+                    }.uppercase(Locale.ROOT)
+
+                    if (rawNet.isNotEmpty() && rawNet != "NULL" && rawNet != "UNDEFINED") {
+                        val changed = netType != rawNet
+                        netType = rawNet
+                        appPrefs.saveData("pref_net_type_$vid", rawNet)
+                        if (changed) {
+                            initialiseBottomInfo(carData)
+                            gsmicon(carData)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     private fun updateQuickActions(carData: CarData?) {
         quickActionsAdapter.setCarData(carData)
         quickActionsAdapter.notifyDataSetChanged()
     }
 
     private fun gsmicon(carData: CarData?) {
-        // GSM Bar
+        // GSM / Wi-Fi Bar
         val gsmimg = findViewById(R.id.gsmView) as ImageView
         if (appPrefs.getData("gsm_icon", "off") == "on") {
             gsmimg.visibility = VISIBLE
-            val resId = getDrawableIdentifier(
-                requireContext(),
-                "signal_strength_" + (carData?.car_gsm_bars ?: 0)
-            )
-            if (resId > 0) {
-                gsmimg.setImageResource(resId)
+
+            val vid = carData?.sel_vehicleid
+            val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+            val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+            val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+            val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
+
+            val isWifiActive = when {
+                netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+                netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+                mdmMode.isNotBlank() -> false
+                gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+                else -> false
+            }
+
+            if (isWifiActive) {
+                val wifiBars = if ((carData?.car_wifi_bars ?: 0) > 0) carData!!.car_wifi_bars else 5
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "wifi_signal_$wifiBars"
+                )
+                gsmimg.setImageResource(if (resId > 0) resId else R.drawable.wifi_signal_5)
+                gsmimg.alpha = 1.0f
             } else {
-                gsmimg.setImageResource(R.drawable.signal_strength_0)
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "signal_strength_" + (carData?.car_gsm_bars ?: 0)
+                )
+                if (resId > 0) {
+                    gsmimg.setImageResource(resId)
+                } else {
+                    gsmimg.setImageResource(R.drawable.signal_strength_0)
+                }
+                gsmimg.alpha = 1.0f
             }
             // Use static tint from resources to be safe
             gsmimg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorText))
@@ -1853,7 +1970,18 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     override fun update(carData: CarData?) {
         Log.d(TAG, "update: lastupdated=" + carData?.car_lastupdated)
+        val carChanged = this.carData?.sel_vehicleid != carData?.sel_vehicleid
+        val gsmLockChanged = carData?.car_gsmlock != null && carData.car_gsmlock != lastGsmLock
+        val mdmModeChanged = carData?.car_mdm_mode != null && carData.car_mdm_mode != lastMdmMode
         this.carData = carData
+        lastGsmLock = carData?.car_gsmlock
+        lastMdmMode = carData?.car_mdm_mode
+
+        val shouldForceReload = carChanged || gsmLockChanged || mdmModeChanged
+        if (shouldForceReload) {
+            netType = null
+            isLoadingNetType = false
+        }
         setupVisualisation(carData)
         initialiseChargingCard(carData)
         initialiseQuickActions(carData)
@@ -1862,6 +1990,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseCarDropDown()
         gsmicon(carData)
         gpsicon(carData)
+        loadNetType(force = shouldForceReload)
     }
 
     override fun onServiceLoggedIn(service: ApiService?, isLoggedIn: Boolean) {

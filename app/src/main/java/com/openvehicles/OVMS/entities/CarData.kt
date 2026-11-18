@@ -133,6 +133,10 @@ class CarData : Serializable {
     @JvmField
     var car_gsm_bars = 0
     @JvmField
+    var car_wifi_bars = 0
+    @JvmField
+    var car_net_type = ""
+    @JvmField
     var server_firmware = ""
     @JvmField
     var car_12vline_voltage = 0.0
@@ -891,8 +895,25 @@ class CarData : Serializable {
                 car_gsm_dbm = 0
                 if (car_gsm_signal_raw <= 31) car_gsm_dbm = -113 + car_gsm_signal_raw * 2
                 car_gsm_signal = String.format("%d%s", car_gsm_dbm, " dBm")
-                car_gsm_bars =
-                    if (car_gsm_dbm < -121 || car_gsm_dbm >= 0) 0 else if (car_gsm_dbm < -107) 1 else if (car_gsm_dbm < -98) 2 else if (car_gsm_dbm < -87) 3 else if (car_gsm_dbm < -76) 4 else 5
+                car_gsm_bars = when {
+                    car_gsm_dbm == 0 -> 5
+                    car_gsm_dbm < -120 -> 0
+                    car_gsm_dbm < -110 -> 1
+                    car_gsm_dbm < -100 -> 2
+                    car_gsm_dbm < -90 -> 3
+                    car_gsm_dbm < -80 -> 4
+                    else -> 5
+                }
+
+                car_wifi_bars = when {
+                    car_gsm_dbm >= 0 -> 5
+                    car_gsm_dbm < -89 -> 0
+                    car_gsm_dbm < -86 -> 1
+                    car_gsm_dbm < -76 -> 2
+                    car_gsm_dbm < -66 -> 3
+                    car_gsm_dbm < -50 -> 4
+                    else -> 5
+                }
                 stale_firmware = DataStale.Good
             }
             if (dataParts.size >= 5) {
@@ -920,7 +941,10 @@ class CarData : Serializable {
             }
             if (dataParts.size >= 10) {
                 car_mdm_mode = dataParts[9].split(";")[0].toString()
-            }
+            }/*
+            if (dataParts.size >= 11) {
+                car_net_type = dataParts[10].trim()
+            }*/
         } catch (e: Exception) {
             Log.e(TAG, "processFirmware: ERROR", e)
             return false
@@ -1319,6 +1343,7 @@ class CarData : Serializable {
             b.putString("car_vin", car_vin)
             b.putInt("car_gsm_dbm", car_gsm_dbm)
             b.putInt("car_gsm_bars", car_gsm_bars)
+            b.putInt("car_wifi_bars", car_wifi_bars)
             b.putString("car_gsm_lock", car_gsmlock)
             b.putInt("car_canwrite", car_canwrite_raw)
             b.putInt("car_servicedays", car_servicetime)
