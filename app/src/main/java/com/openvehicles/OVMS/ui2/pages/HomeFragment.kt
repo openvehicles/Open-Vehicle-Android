@@ -95,6 +95,7 @@ import com.openvehicles.OVMS.ui2.misc.CarAnimationDrawable
 import com.openvehicles.OVMS.utils.AppPrefs
 import com.openvehicles.OVMS.utils.CarsStorage
 import com.openvehicles.OVMS.utils.CarsStorage.getStoredCars
+import com.openvehicles.OVMS.utils.VehicleConfigHelper
 import java.io.IOException
 import java.util.Locale
 import kotlin.math.min
@@ -174,6 +175,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         private val TAB_CLIMATE = 4
         private val TAB_SETTINGS = 5
         private val TAB_ENERGY = 6
+        private val TAB_VEHICLE_CONFIG = 7
+        private val TAB_METRICS = 8
         private val ICON_DIALOG_TAG = "add-quickaction-icon-dialog"
 
         private fun getEditorQuickActions(context: Context): List<QuickAction> {
@@ -1213,8 +1216,9 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             }
 
             override fun onStopTrackingTouch(slider: RangeSlider) {
+                val valInt = slider.values.firstOrNull()?.toInt() ?: 0
                 val title = if (carData?.car_type == "SQ") {
-                    getString(R.string.lb_charger_confirm_soc_change, ampLimit.text.toString())
+                    getString(R.string.lb_charger_confirm_soc_change, "$valInt%")
                 } else {
                     getString(chargeLimitActionTitle)
                 }
@@ -1226,36 +1230,36 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                 MaterialAlertDialogBuilder(requireActivity())
                     .setTitle(title)
                     .setMessage(msg)
-                    .setNegativeButton(R.string.Cancel) {_, _ ->}
-                    .setPositiveButton(android.R.string.ok, fun(dlg: DialogInterface, which: Int) {
+                    .setNegativeButton(R.string.Cancel) { _, _ -> }
+                    .setPositiveButton(android.R.string.ok) { dlg, _ ->
                         if (carData?.car_type == "RT") {
                             // CMD_SetChargeAlerts(<range>,<soc>,<powerlevel>,<stopmode>)
                             sendCommand(
                                 R.string.msg_setting_charge_c,
-                                String.format("204,%d,%d,%d,%d",
-                                    carData.car_chargelimit_rangelimit_raw,
-                                    carData.car_chargelimit_soclimit,
-                                    ampLimitSlider.values.first().div(5).toInt(),
-                                    carData.car_charge_mode_i_raw),
+                                String.format(
+                                    "204,%d,%d,%d,%d",
+                                    carData?.car_chargelimit_rangelimit_raw ?: 0,
+                                    carData?.car_chargelimit_soclimit ?: 0,
+                                    valInt.div(5),
+                                    carData?.car_charge_mode_i_raw ?: 0
+                                ),
                                 this@HomeFragment
                             )
                         } else if (carData?.car_type == "SQ") {
                             sendCommand(
                                 R.string.lb_sufficient_soc,
-                                String.format(
-                                    "204,%d",
-                                    ampLimitSlider.values.first().toInt()),
+                                String.format("204,%d", valInt),
                                 this@HomeFragment
                             )
                         } else {
                             sendCommand(
                                 R.string.msg_setting_charge_c,
-                                String.format("15,%d", ampLimitSlider.values.first().toInt()),
+                                String.format("15,%d", valInt),
                                 this@HomeFragment
                             )
                         }
                         dlg.dismiss()
-                    })
+                    }
                     .show()
             }
         }
@@ -1675,6 +1679,25 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             }
             newTabsList.add(HomeTab(TAB_ENERGY, R.drawable.ic_energy, getString(R.string.power_energy_description), energyTabDesc))
 
+            val configPrefix = VehicleConfigHelper.getConfigPrefix(appPrefs, carData)
+            newTabsList.add(
+                HomeTab(
+                    TAB_VEHICLE_CONFIG,
+                    R.drawable.ic_vehicle_config,
+                    getString(R.string.vehicle_config_tab_label),
+                    "Prefix: $configPrefix"
+                )
+            )
+
+            newTabsList.add(
+                HomeTab(
+                    TAB_METRICS,
+                    R.drawable.ic_metrics,
+                    getString(R.string.metrics_tab_label),
+                    null
+                )
+            )
+
             newTabsList.add(HomeTab(TAB_SETTINGS, R.drawable.ic_settings, getString(R.string.Settings), null))
 
             // Keep a snapshot of the complete (unfiltered) list for the More dialog
@@ -1798,9 +1821,46 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         val baseInfoBuilder = StringBuilder()
         if (carData?.car_odometer?.isNotEmpty() == true) baseInfoBuilder.append(carData.car_odometer)
 
-        if (carData?.car_gsmlock?.isNotEmpty() == true) {
+        val vid = carData?.sel_vehicleid
+        val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+        val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+        val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+        val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
+
+        val isWifi = when {
+            netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+            netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+            mdmMode.isNotBlank() -> false
+            gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+            else -> false
+        }
+
+        val hasNetInfo = gsmLock.isNotBlank() || mdmMode.isNotBlank() || activeNetType.isNotBlank()
+        if (hasNetInfo) {
             if (baseInfoBuilder.isNotEmpty()) baseInfoBuilder.append("\n")
-            baseInfoBuilder.append("Network: ${carData.car_gsmlock} \nMode: ${carData.car_mdm_mode} ${carData.car_gsm_signal}")
+
+            val displayNetwork = when {
+                gsmLock.isNotBlank() -> gsmLock
+                activeNetType.isNotBlank() -> activeNetType
+                isWifi -> "WIFI"
+                else -> "Cellular"
+            }
+
+            val modeValue = when {
+                isWifi -> "WIFI"
+                mdmMode.isNotBlank() -> mdmMode
+                activeNetType.isNotBlank() && activeNetType != "MODEM" -> activeNetType
+                else -> ""
+            }
+
+            val signalStr = carData?.car_gsm_signal?.takeIf { it.isNotBlank() } ?: ""
+            val modeLine = if (signalStr.isNotEmpty()) "$modeValue $signalStr".trim() else modeValue
+
+            if (modeLine.isNotEmpty()) {
+                baseInfoBuilder.append("Network: $displayNetwork \nMode: $modeLine")
+            } else {
+                baseInfoBuilder.append("Network: $displayNetwork")
+            }
         }
 
         if (carData?.car_vin?.isNotEmpty() == true) {
@@ -1813,24 +1873,108 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         applyFooterVisibility()
     }
 
+    private var netType: String? = null
+    private var lastGsmLock: String? = null
+    private var lastMdmMode: String? = null
+    private var lastNetTypeCheckTime: Long = 0L
+    private var isLoadingNetType = false
+
+    private fun loadNetType(force: Boolean = false) {
+        val vid = carData?.sel_vehicleid
+        if (isLoadingNetType || vid.isNullOrBlank()) return
+        if (!VehicleConfigHelper.isFirmwareSupported(carData))
+        {
+            appPrefs.saveData("pref_net_type_$vid", "modem")
+            return
+        }
+
+        val now = System.currentTimeMillis()
+        if (!force && netType != null && now - lastNetTypeCheckTime < 30_000L) {
+            return
+        }
+
+        isLoadingNetType = true
+        lastNetTypeCheckTime = now
+
+        val jsCmd = "8,net_type,JSON.print(OvmsMetrics.Value(\"m.net.type\"),false)"
+        sendCommand("", jsCmd, object : OnResultCommandListener {
+            override fun onResultCommand(
+                commandCode: Int,
+                returnCode: Int,
+                returnData: String,
+                result: Array<String>
+            ) {
+                isLoadingNetType = false
+                if (returnCode == 0 && returnData.isNotBlank()) {
+                    val jsonPayload = returnData.substringAfter("net_type,").trim().removePrefix(",")
+                    val rawNet = if (jsonPayload.startsWith("{")) {
+                        try {
+                            org.json.JSONObject(jsonPayload).optString("m.net.type", "")
+                        } catch (e: Exception) {
+                            ""
+                        }
+                    } else {
+                        jsonPayload.trim('"', ' ', '\r', '\n')
+                    }.uppercase(Locale.ROOT)
+
+                    if (rawNet.isNotEmpty() && rawNet != "NULL" && rawNet != "UNDEFINED") {
+                        val changed = netType != rawNet
+                        netType = rawNet
+                        appPrefs.saveData("pref_net_type_$vid", rawNet)
+                        if (changed) {
+                            initialiseBottomInfo(carData)
+                            gsmicon(carData)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
     private fun updateQuickActions(carData: CarData?) {
         quickActionsAdapter.setCarData(carData)
         quickActionsAdapter.notifyDataSetChanged()
     }
 
     private fun gsmicon(carData: CarData?) {
-        // GSM Bar
+        // GSM / Wi-Fi Bar
         val gsmimg = findViewById(R.id.gsmView) as ImageView
         if (appPrefs.getData("gsm_icon", "off") == "on") {
             gsmimg.visibility = VISIBLE
-            val resId = getDrawableIdentifier(
-                requireContext(),
-                "signal_strength_" + (carData?.car_gsm_bars ?: 0)
-            )
-            if (resId > 0) {
-                gsmimg.setImageResource(resId)
+
+            val vid = carData?.sel_vehicleid
+            val activeNetType = netType ?: if (!vid.isNullOrBlank()) (appPrefs.getData("pref_net_type_$vid", "") ?: "") else ""
+            val netTypeLower = activeNetType.lowercase(Locale.ROOT)
+            val gsmLock = carData?.car_gsmlock?.trim() ?: ""
+            val mdmMode = carData?.car_mdm_mode?.trim() ?: ""
+
+            val isWifiActive = when {
+                netTypeLower == "wifi" || netTypeLower == "wlan" -> true
+                netTypeLower == "modem" || netTypeLower == "gsm" || netTypeLower == "lte" -> false
+                mdmMode.isNotBlank() -> false
+                gsmLock.contains("WIFI", ignoreCase = true) || gsmLock.contains("WLAN", ignoreCase = true) -> true
+                else -> false
+            }
+
+            if (isWifiActive) {
+                val wifiBars = if ((carData?.car_wifi_bars ?: 0) > 0) carData!!.car_wifi_bars else 5
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "wifi_signal_$wifiBars"
+                )
+                gsmimg.setImageResource(if (resId > 0) resId else R.drawable.wifi_signal_5)
+                gsmimg.alpha = 1.0f
             } else {
-                gsmimg.setImageResource(R.drawable.signal_strength_0)
+                val resId = getDrawableIdentifier(
+                    requireContext(),
+                    "signal_strength_" + (carData?.car_gsm_bars ?: 0)
+                )
+                if (resId > 0) {
+                    gsmimg.setImageResource(resId)
+                } else {
+                    gsmimg.setImageResource(R.drawable.signal_strength_0)
+                }
+                gsmimg.alpha = 1.0f
             }
             // Use static tint from resources to be safe
             gsmimg.imageTintList = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.colorText))
@@ -1853,7 +1997,18 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
 
     override fun update(carData: CarData?) {
         Log.d(TAG, "update: lastupdated=" + carData?.car_lastupdated)
+        val carChanged = this.carData?.sel_vehicleid != carData?.sel_vehicleid
+        val gsmLockChanged = carData?.car_gsmlock != null && carData.car_gsmlock != lastGsmLock
+        val mdmModeChanged = carData?.car_mdm_mode != null && carData.car_mdm_mode != lastMdmMode
         this.carData = carData
+        lastGsmLock = carData?.car_gsmlock
+        lastMdmMode = carData?.car_mdm_mode
+
+        val shouldForceReload = carChanged || gsmLockChanged || mdmModeChanged
+        if (shouldForceReload) {
+            netType = null
+            isLoadingNetType = false
+        }
         setupVisualisation(carData)
         initialiseChargingCard(carData)
         initialiseQuickActions(carData)
@@ -1862,6 +2017,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
         initialiseCarDropDown()
         gsmicon(carData)
         gpsicon(carData)
+        loadNetType(force = shouldForceReload)
     }
 
     override fun onServiceLoggedIn(service: ApiService?, isLoggedIn: Boolean) {
@@ -1889,6 +2045,8 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
             TAB_CHARGING -> findNavController().navigate(R.id.action_navigation_home_to_chargingFragment)
             TAB_SETTINGS -> findNavController().navigate(R.id.action_navigation_home_to_settingsFragment)
             TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_energyFragment)
+            TAB_VEHICLE_CONFIG -> findNavController().navigate(R.id.action_navigation_home_to_vehicleConfigFragment)
+            TAB_METRICS -> findNavController().navigate(R.id.action_navigation_home_to_metricsFragment)
         }
     }
 
@@ -1972,7 +2130,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     fillColor = android.content.res.ColorStateList.valueOf(colorInt)
                     setCornerSize(corner)
                     if (currentSelectedColor != null && currentSelectedColor == colorInt) {
-                        val strokeColor = com.google.android.material.color.MaterialColors.getColor(v, com.google.android.material.R.attr.colorPrimary)
+                        val strokeColor = com.google.android.material.color.MaterialColors.getColor(v, R.attr.colorPrimary)
                         setStroke(2f * density, strokeColor)
                     }
                 }
@@ -2057,6 +2215,7 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
                     TAB_CHARGING -> findNavController().navigate(R.id.action_navigation_home_to_chargingFragment)
                     TAB_SETTINGS -> findNavController().navigate(R.id.action_navigation_home_to_settingsFragment)
                     TAB_ENERGY -> findNavController().navigate(R.id.action_navigation_home_to_energyFragment)
+                    TAB_VEHICLE_CONFIG -> findNavController().navigate(R.id.action_navigation_home_to_vehicleConfigFragment)
                 }
             }
             .setNegativeButton(R.string.Close, null)
