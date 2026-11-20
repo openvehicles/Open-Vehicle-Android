@@ -47,18 +47,18 @@ object VehicleConfigHelper {
         if (fw.isEmpty()) return false
 
         val token = fw.split('/', ' ').firstOrNull { it.isNotBlank() } ?: return false
-        val dashParts = token.split('-', limit = 2)
+        val dashParts = token.split('-')
         val verPart = dashParts[0]
-        val subVer = if (dashParts.size > 1) dashParts[1].filter { it.isDigit() }.toIntOrNull() ?: 0 else 0
+        val subVer = if (dashParts.size > 1) dashParts[1].takeWhile { it.isDigit() }.toIntOrNull() ?: 0 else 0
 
         val actualNums = verPart.split('.').mapNotNull { it.toIntOrNull() }.toMutableList()
         while (actualNums.size < 4) {
             actualNums.add(0)
         }
 
-        val minToken = minVersion.split('-', limit = 2)
+        val minToken = minVersion.split('-')
         val minVerPart = minToken[0]
-        val minSubVer = if (minToken.size > 1) minToken[1].filter { it.isDigit() }.toIntOrNull() ?: 0 else 0
+        val minSubVer = if (minToken.size > 1) minToken[1].takeWhile { it.isDigit() }.toIntOrNull() ?: 0 else 0
         val targetNums = minVerPart.split('.').mapNotNull { it.toIntOrNull() }.toMutableList()
         while (targetNums.size < 4) {
             targetNums.add(0)
