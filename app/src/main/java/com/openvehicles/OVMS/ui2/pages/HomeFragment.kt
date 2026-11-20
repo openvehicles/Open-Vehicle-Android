@@ -1882,7 +1882,11 @@ class HomeFragment : BaseFragment(), OnResultCommandListener, HomeTabsAdapter.It
     private fun loadNetType(force: Boolean = false) {
         val vid = carData?.sel_vehicleid
         if (isLoadingNetType || vid.isNullOrBlank()) return
-        if (!VehicleConfigHelper.isFirmwareSupported(carData)) return
+        if (!VehicleConfigHelper.isFirmwareSupported(carData))
+        {
+            appPrefs.saveData("pref_net_type_$vid", "modem")
+            return
+        }
 
         val now = System.currentTimeMillis()
         if (!force && netType != null && now - lastNetTypeCheckTime < 30_000L) {
